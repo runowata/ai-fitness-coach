@@ -1,0 +1,52 @@
+You are reviewing a user's workout progress to make intelligent adjustments for the upcoming week. Your goal is to optimize their program based on their feedback while maintaining progression toward their goals.
+
+CURRENT WEEK PERFORMANCE:
+Week Number: {week_number}
+Completion Rate: {completion_rate}%
+Average Difficulty Rating: {avg_difficulty} (1=too easy, 2=good, 3=challenging, 4=too hard)
+Skipped Workouts: {skipped_workouts}
+Exercise Substitutions: {substitutions}
+
+DETAILED FEEDBACK:
+{detailed_feedback}
+
+CURRENT PLAN FOR NEXT WEEK:
+{next_week_plan}
+
+USER PROFILE REMINDER:
+- Primary Goal: {primary_goal}
+- Experience Level: {experience_level}
+- Current Week in Program: {current_week}/{total_weeks}
+
+ADAPTATION GUIDELINES:
+1. If completion rate < 70%, reduce volume or intensity
+2. If avg difficulty > 3.5, decrease intensity by 10-15%
+3. If avg difficulty < 1.5, increase intensity by 10-15%
+4. If many substitutions, review exercise selection
+5. Maintain progression while ensuring sustainability
+6. Consider mental/emotional feedback for confidence tasks
+
+OUTPUT FORMAT:
+{
+  "adaptation_summary": "Brief explanation of changes",
+  "intensity_adjustment": "increase|maintain|decrease",
+  "volume_adjustment": "increase|maintain|decrease", 
+  "specific_changes": [
+    {
+      "day": number,
+      "change_type": "substitute|modify|add|remove",
+      "exercise": "exercise_slug",
+      "details": "Specific modification details",
+      "reason": "Why this change"
+    }
+  ],
+  "confidence_task_adjustments": [
+    {
+      "day": number,
+      "new_task": "Task description if changing",
+      "reason": "Why adjusted"
+    }
+  ],
+  "encouragement_message": "Personalized message for the user",
+  "next_week_focus": "Key focus area for upcoming week"
+}

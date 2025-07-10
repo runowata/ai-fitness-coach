@@ -1,0 +1,185 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Настройки профиля - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h2>⚙️ Настройки профиля</h2>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Уведомления</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.notification_time.id_for_label }}" class="form-label">
+                                    {{ form.notification_time.label }}
+                                </label>
+                                {{ form.notification_time }}
+                                <div class="form-text">Время ежедневного напоминания о тренировке</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    {{ form.push_notifications_enabled }}
+                                    <label class="form-check-label" for="{{ form.push_notifications_enabled.id_for_label }}">
+                                        {{ form.push_notifications_enabled.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    {{ form.email_notifications_enabled }}
+                                    <label class="form-check-label" for="{{ form.email_notifications_enabled.id_for_label }}">
+                                        {{ form.email_notifications_enabled.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Сохранить настройки
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Archetype Change -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Смена тренера</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">
+                            Текущий архетип: 
+                            <strong>
+                                {% if user.profile.archetype == 'bro' %}🤙 Бро
+                                {% elif user.profile.archetype == 'sergeant' %}🎖️ Сержант
+                                {% elif user.profile.archetype == 'intellectual' %}🎓 Интеллектуал
+                                {% else %}Не выбран{% endif %}
+                            </strong>
+                        </p>
+                        
+                        <a href="{% url 'onboarding:select_archetype' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-edit"></i> Сменить тренера
+                        </a>
+                        
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                Смена тренера повлияет на стиль подачи упражнений и мотивацию
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <!-- User Stats -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">📊 Ваша статистика</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="h3 text-primary">{{ user.profile.level }}</div>
+                            <small class="text-muted">Уровень</small>
+                        </div>
+                        
+                        <div class="progress mb-3">
+                            {% with current_xp=user.profile.experience_points %}
+                            {% with next_level_xp=user.profile.level|add:"1"|floatformat:"0" %}
+                            <div class="progress-bar" style="width: {% widthratio current_xp 100 100 %}%"></div>
+                            {% endwith %}
+                            {% endwith %}
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="h5 text-success">{{ user.profile.current_streak }}</div>
+                                <small class="text-muted">дней подряд</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h5 text-info">{{ user.profile.total_workouts_completed }}</div>
+                                <small class="text-muted">тренировок</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Management -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">🔐 Аккаунт</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-key"></i> Сменить пароль
+                            </a>
+                            
+                            {% if not user.profile.is_2fa_enabled %}
+                                <button class="btn btn-outline-warning btn-sm" disabled>
+                                    <i class="fas fa-shield-alt"></i> Включить 2FA
+                                </button>
+                                <small class="text-muted">Скоро доступно</small>
+                            {% endif %}
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="text-center">
+                            <button class="btn btn-outline-danger btn-sm" onclick="confirmDelete()">
+                                <i class="fas fa-user-times"></i> Удалить аккаунт
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">⚠️ Удаление аккаунта</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить аккаунт?</p>
+                <p class="text-danger">
+                    <strong>Это действие необратимо!</strong> 
+                    Все ваши данные, прогресс и доступ к историям будут утеряны.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" onclick="deleteAccount()">
+                    Да, удалить аккаунт
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmDelete() {
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+function deleteAccount() {
+    // TODO: Implement account deletion
+    alert('Функция удаления аккаунта будет доступна в следующих версиях');
+}
+</script>
+{% endblock %}

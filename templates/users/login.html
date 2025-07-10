@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Вход - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4>Добро пожаловать!</h4>
+                <p class="mb-0 text-muted">Войдите в свой аккаунт</p>
+            </div>
+            
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Email или имя пользователя</label>
+                        <input type="text" class="form-control" name="username" id="id_username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" name="password" id="id_password" required>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" name="remember_me" id="remember_me">
+                        <label class="form-check-label" for="remember_me">
+                            Запомнить меня
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </button>
+                    
+                    <div class="text-center">
+                        <a href="{% url 'password_reset' %}" class="text-muted">
+                            Забыли пароль?
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card-footer text-center">
+                <p class="mb-0">
+                    Нет аккаунта? 
+                    <a href="{% url 'users:register' %}" class="text-primary">
+                        Зарегистрироваться
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,273 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Настройка программы - AI Fitness Coach{% endblock %}
+
+{% block extra_css %}
+<style>
+.onboarding-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.progress-bar-custom {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(45deg, #2196f3, #42a5f5);
+    transition: width 0.5s ease;
+}
+
+.answer-option {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.answer-option:hover {
+    border-color: #2196f3;
+    background-color: #f8f9fa;
+}
+
+.answer-option.selected {
+    border-color: #2196f3;
+    background-color: #e3f2fd;
+}
+
+.motivational-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.motivational-card img {
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="onboarding-container">
+    <!-- Progress Bar -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-muted">Прогресс</small>
+            <small class="text-muted">{{ current_index }} из {{ total_questions }}</small>
+        </div>
+        <div class="progress">
+            <div class="progress-bar-custom" style="width: {{ progress_percent }}%"></div>
+        </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title mb-4">{{ question.question_text }}</h5>
+            
+            {% if question.help_text %}
+                <p class="text-muted mb-4">{{ question.help_text }}</p>
+            {% endif %}
+
+            <form id="questionForm">
+                {% if question.question_type == 'single_choice' %}
+                    {% for option in question.answer_options.all %}
+                        <div class="answer-option" data-option-id="{{ option.id }}">
+                            <strong>{{ option.option_text }}</strong>
+                            <input type="radio" name="answer" value="{{ option.id }}" 
+                                   style="display: none;"
+                                   {% if existing_response and option in existing_response.answer_options.all %}checked{% endif %}>
+                        </div>
+                    {% endfor %}
+                
+                {% elif question.question_type == 'multiple_choice' %}
+                    {% for option in question.answer_options.all %}
+                        <div class="answer-option" data-option-id="{{ option.id }}">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       name="answers" value="{{ option.id }}"
+                                       {% if existing_response and option in existing_response.answer_options.all %}checked{% endif %}>
+                                <label class="form-check-label">
+                                    <strong>{{ option.option_text }}</strong>
+                                </label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                
+                {% elif question.question_type == 'number' %}
+                    <div class="mb-3">
+                        <input type="number" class="form-control form-control-lg" 
+                               name="answer" 
+                               min="{{ question.min_value|default:1 }}"
+                               max="{{ question.max_value|default:100 }}"
+                               value="{{ existing_response.answer_number|default:'' }}"
+                               required>
+                    </div>
+                
+                {% else %}
+                    <div class="mb-3">
+                        <textarea class="form-control" name="answer" rows="4" 
+                                  placeholder="Ваш ответ...">{{ existing_response.answer_text|default:'' }}</textarea>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                        ← Назад
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        {% if is_last_question %}
+                            Завершить →
+                        {% else %}
+                            Далее →
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Motivational Card Modal -->
+<div class="modal fade" id="motivationalModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="motivational-card" id="motivationalCard">
+                    <!-- Content will be injected by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle answer option clicks
+    document.querySelectorAll('.answer-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const questionType = '{{ question.question_type }}';
+            
+            if (questionType === 'single_choice') {
+                // Single choice - select only one
+                document.querySelectorAll('.answer-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+                
+            } else if (questionType === 'multiple_choice') {
+                // Multiple choice - toggle
+                this.classList.toggle('selected');
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                if (checkbox) checkbox.checked = !checkbox.checked;
+            }
+        });
+    });
+
+    // Form submission
+    document.getElementById('questionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const questionType = '{{ question.question_type }}';
+        
+        let answerData = {};
+        
+        if (questionType === 'single_choice') {
+            const selectedRadio = this.querySelector('input[type="radio"]:checked');
+            if (!selectedRadio) {
+                alert('Пожалуйста, выберите ответ');
+                return;
+            }
+            answerData.answer = parseInt(selectedRadio.value);
+            
+        } else if (questionType === 'multiple_choice') {
+            const selectedCheckboxes = this.querySelectorAll('input[type="checkbox"]:checked');
+            if (selectedCheckboxes.length === 0) {
+                alert('Пожалуйста, выберите хотя бы один ответ');
+                return;
+            }
+            answerData.answers = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+            
+        } else if (questionType === 'number') {
+            const numberInput = this.querySelector('input[type="number"]');
+            if (!numberInput.value) {
+                alert('Пожалуйста, введите число');
+                return;
+            }
+            answerData.answer = parseInt(numberInput.value);
+            
+        } else {
+            const textInput = this.querySelector('textarea, input[type="text"]');
+            if (!textInput.value.trim()) {
+                alert('Пожалуйста, введите ответ');
+                return;
+            }
+            answerData.answer = textInput.value.trim();
+        }
+
+        // Submit answer
+        fetch(`{% url 'onboarding:save_answer' question.id %}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(answerData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show motivational card if available
+                if (data.motivational_card) {
+                    showMotivationalCard(data.motivational_card);
+                    // Navigate after modal is dismissed
+                    setTimeout(() => {
+                        navigateNext(data);
+                    }, 3000);
+                } else {
+                    navigateNext(data);
+                }
+            } else {
+                alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Произошла ошибка при сохранении ответа');
+        });
+    });
+
+    function showMotivationalCard(card) {
+        const cardHtml = `
+            <img src="${card.image_url}" alt="Motivation" onerror="this.style.display='none'">
+            <h4>${card.title}</h4>
+            <p>${card.message}</p>
+        `;
+        
+        document.getElementById('motivationalCard').innerHTML = cardHtml;
+        new bootstrap.Modal(document.getElementById('motivationalModal')).show();
+    }
+
+    function navigateNext(data) {
+        if (data.redirect_to_archetype) {
+            window.location.href = '{% url "onboarding:select_archetype" %}';
+        } else if (data.next_question_url) {
+            window.location.href = data.next_question_url;
+        } else {
+            window.location.href = '{% url "users:dashboard" %}';
+        }
+    }
+});
+</script>
+{% endblock %}

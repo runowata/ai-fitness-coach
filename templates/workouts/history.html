@@ -1,0 +1,192 @@
+{% extends 'base/base.html' %}
+
+{% block title %}История тренировок - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📊 История тренировок</h2>
+    <a href="{% url 'users:dashboard' %}" class="btn btn-outline-primary">
+        ← В дашборд
+    </a>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ total_completed }}</h3>
+                <p class="mb-0">Всего тренировок</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ current_streak }}</h3>
+                <p class="mb-0">Текущая серия</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ user.profile.level }}</h3>
+                <p class="mb-0">Уровень</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Workout History -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Последние тренировки</h5>
+    </div>
+    
+    <div class="card-body">
+        {% if workouts %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Название</th>
+                            <th>Неделя/День</th>
+                            <th>Оценка</th>
+                            <th>Время</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for workout in workouts %}
+                        <tr>
+                            <td>
+                                <strong>{{ workout.completed_at|date:"d.m.Y" }}</strong>
+                                <br>
+                                <small class="text-muted">{{ workout.completed_at|date:"H:i" }}</small>
+                            </td>
+                            <td>
+                                {% if workout.is_rest_day %}
+                                    <i class="fas fa-bed text-info"></i>
+                                {% else %}
+                                    <i class="fas fa-dumbbell text-primary"></i>
+                                {% endif %}
+                                {{ workout.name }}
+                                
+                                {% if not workout.is_rest_day %}
+                                    <br><small class="text-muted">{{ workout.exercises|length }} упражнений</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">Н{{ workout.week_number }}</span>
+                                <span class="badge bg-light text-dark">Д{{ workout.day_number }}</span>
+                            </td>
+                            <td>
+                                {% if workout.feedback_rating %}
+                                    {% if workout.feedback_rating == 'fire' %}
+                                        <span class="text-danger">🔥 Отлично</span>
+                                    {% elif workout.feedback_rating == 'smile' %}
+                                        <span class="text-success">🙂 Хорошо</span>
+                                    {% elif workout.feedback_rating == 'neutral' %}
+                                        <span class="text-warning">😐 Нормально</span>
+                                    {% elif workout.feedback_rating == 'tired' %}
+                                        <span class="text-secondary">🤕 Тяжело</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if workout.started_at and workout.completed_at %}
+                                    {% with duration=workout.completed_at|timesince:workout.started_at %}
+                                        {% if "minute" in duration or "hour" in duration %}
+                                            {{ duration }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    {% endwith %}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if workout.feedback_note %}
+                                    <button class="btn btn-sm btn-outline-info" 
+                                            data-bs-toggle="tooltip" 
+                                            title="{{ workout.feedback_note }}">
+                                        <i class="fas fa-comment"></i>
+                                    </button>
+                                {% endif %}
+                                
+                                {% if workout.substitutions %}
+                                    <button class="btn btn-sm btn-outline-warning"
+                                            data-bs-toggle="tooltip"
+                                            title="Были замены упражнений">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-dumbbell fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Пока нет завершенных тренировок</h5>
+                <p class="text-muted">Начните тренироваться, чтобы увидеть историю здесь</p>
+                <a href="{% url 'users:dashboard' %}" class="btn btn-primary">
+                    Начать тренировку
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Progress Chart (Placeholder for future implementation) -->
+{% if workouts %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">📈 Прогресс по неделям</h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">
+            <i class="fas fa-chart-line"></i> 
+            График прогресса будет доступен в следующих обновлениях
+        </p>
+        
+        <!-- Simple weekly completion rate -->
+        <div class="row">
+            {% regroup workouts by week_number as weekly_workouts %}
+            {% for week_group in weekly_workouts %}
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h6>Неделя {{ week_group.grouper }}</h6>
+                            <div class="h4 text-primary">{{ week_group.list|length }}</div>
+                            <small class="text-muted">тренировок</small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

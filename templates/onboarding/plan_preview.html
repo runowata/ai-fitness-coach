@@ -1,0 +1,156 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Ваш план готов! - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center mb-5">
+        <h1 class="text-success">🎉 Ваш план готов!</h1>
+        <p class="lead">AI создал персональную программу тренировок специально для вас</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ plan.name }}</h5>
+                    <small>{{ plan.duration_weeks }} недель • {{ plan.goal|title }}</small>
+                </div>
+                
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="stat-box">
+                                <h3 class="text-primary">{{ plan.duration_weeks }}</h3>
+                                <p class="text-muted">недель</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="stat-box">
+                                <h3 class="text-success">{{ plan_data.weeks|length }}</h3>
+                                <p class="text-muted">тренировочных недель</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="stat-box">
+                                {% with total_days=plan_data.weeks.0.days|length %}
+                                <h3 class="text-info">{{ total_days }}</h3>
+                                <p class="text-muted">дней в неделю</p>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Overview -->
+                    <h6 class="mb-3">Обзор по неделям:</h6>
+                    <div class="weekly-overview">
+                        {% for week in plan_data.weeks %}
+                        <div class="week-card mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Неделя {{ week.week_number }}</h6>
+                                    <p class="mb-0 text-muted">{{ week.theme|default:"Общая подготовка" }}</p>
+                                </div>
+                                <span class="badge bg-{{ week.intensity_level|default:'moderate'|intensity_color }}">
+                                    {{ week.intensity_level|default:'moderate'|title }}
+                                </span>
+                            </div>
+                            
+                            <!-- Week Days Preview -->
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    {% for day in week.days %}
+                                        {% if day.is_rest_day %}
+                                            <i class="fas fa-bed text-info"></i>
+                                        {% else %}
+                                            <i class="fas fa-dumbbell text-primary"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Sample Day -->
+                    {% if plan_data.weeks.0.days.0 %}
+                    <div class="mt-4">
+                        <h6>Пример первого дня:</h6>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ plan_data.weeks.0.days.0.workout_name }}</h6>
+                                
+                                {% if not plan_data.weeks.0.days.0.is_rest_day %}
+                                    <div class="exercises-preview">
+                                        {% for exercise in plan_data.weeks.0.days.0.exercises|slice:":3" %}
+                                            <div class="exercise-item">
+                                                <strong>{{ exercise.exercise_name|default:exercise.exercise_slug|title }}</strong>
+                                                - {{ exercise.sets }} x {{ exercise.reps }}
+                                            </div>
+                                        {% endfor %}
+                                        {% if plan_data.weeks.0.days.0.exercises|length > 3 %}
+                                            <small class="text-muted">
+                                                ... и еще {{ plan_data.weeks.0.days.0.exercises|length|add:"-3" }} упражнений
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-info">🧘‍♂️ День отдыха и восстановления</p>
+                                {% endif %}
+                                
+                                {% if plan_data.weeks.0.days.0.confidence_task %}
+                                    <div class="mt-3 p-2 bg-warning bg-opacity-10 rounded">
+                                        <small><strong>💪 Задание на уверенность:</strong></small>
+                                        <p class="mb-0 small">{{ plan_data.weeks.0.days.0.confidence_task.description|default:plan_data.weeks.0.days.0.confidence_task }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer text-center">
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-rocket"></i> Начать тренировки!
+                    </a>
+                    
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            План будет адаптироваться под ваш прогресс каждую неделю
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.stat-box {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.week-card {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+}
+
+.exercise-item {
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.exercise-item:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

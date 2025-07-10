@@ -1,0 +1,114 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Выбор тренера - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center mb-5">
+        <h2 class="text-gradient">Выберите своего тренера</h2>
+        <p class="lead text-muted">Каждый тренер имеет уникальный стиль общения и подачи материала</p>
+    </div>
+
+    <form method="post" id="archetypeForm">
+        {% csrf_token %}
+        <div class="row">
+            {% for archetype in archetypes %}
+            <div class="col-md-4 mb-4">
+                <div class="archetype-card" data-archetype="{{ archetype.key }}">
+                    <img src="{{ archetype.image }}" alt="{{ archetype.name }}" 
+                         class="archetype-avatar" 
+                         onerror="this.src='/static/images/default-trainer.jpg'">
+                    
+                    <h4 class="archetype-name">{{ archetype.name }}</h4>
+                    <p class="archetype-description">{{ archetype.description }}</p>
+                    
+                    <div class="mt-3">
+                        <span class="badge bg-primary">{{ archetype.style }}</span>
+                    </div>
+                    
+                    <input type="radio" name="archetype" value="{{ archetype.key }}" style="display: none;">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <button type="submit" class="btn btn-primary btn-lg" disabled id="continueBtn">
+                <i class="fas fa-rocket"></i> Создать план тренировок
+            </button>
+        </div>
+    </form>
+
+    <!-- Preview cards for each archetype -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h5 class="text-center mb-4">Примеры стиля общения:</h5>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">🤙 Стиль "Бро"</h6>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">"Йо, братан! Сегодня качаем грудь и трицепс. Помни - техника прежде всего! Давай покажем этим весам, кто тут босс! 💪"</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0">🎖️ Стиль "Сержант"</h6>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">"Внимание! Сегодня 3 подхода по 12 повторений. Никаких поблажек! Чувствуешь жжение? Отлично! Еще 2 повтора!"</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">🎓 Стиль "Интеллектуал"</h6>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">"Сегодня активируем грудные мышцы через горизонтальную аддукцию плеча. Негативная фаза 2-3 секунды для максимальной эксцентрической нагрузки."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const archetypeCards = document.querySelectorAll('.archetype-card');
+    const continueBtn = document.getElementById('continueBtn');
+    
+    archetypeCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove selection from all cards
+            archetypeCards.forEach(c => c.classList.remove('selected'));
+            
+            // Select this card
+            this.classList.add('selected');
+            
+            // Update radio button
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Enable continue button
+            continueBtn.disabled = false;
+        });
+    });
+    
+    // Form submission with loading state
+    document.getElementById('archetypeForm').addEventListener('submit', function() {
+        continueBtn.innerHTML = '<span class="loading"></span> Создаем план...';
+        continueBtn.disabled = true;
+    });
+});
+</script>
+{% endblock %}

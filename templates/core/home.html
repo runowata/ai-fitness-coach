@@ -1,0 +1,177 @@
+{% extends 'base/base.html' %}
+
+{% block title %}AI Fitness Coach - Персональный тренер для геев{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <h1 class="display-4 text-gradient mb-4">
+            AI Fitness Coach
+        </h1>
+        <p class="lead mb-4">
+            Персонализированные программы тренировок с AI-ассистентом, 
+            созданные специально для мужчин-геев
+        </p>
+        
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8">
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                        <h5>AI-генерация планов</h5>
+                        <p>Персональная программа на основе ваших целей и возможностей</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <i class="fas fa-video fa-3x text-primary mb-3"></i>
+                        <h5>Видео-тренировки</h5>
+                        <p>Качественные инструкции от профессиональных тренеров</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <i class="fas fa-heart fa-3x text-primary mb-3"></i>
+                        <h5>Развитие уверенности</h5>
+                        <p>Специальные задания для повышения самооценки</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <i class="fas fa-trophy fa-3x text-primary mb-3"></i>
+                        <h5>Система наград</h5>
+                        <p>Достижения и эксклюзивный контент за прогресс</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg me-3">
+                <i class="fas fa-rocket"></i> Начать сейчас
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Войти
+            </a>
+        </div>
+        
+        <div class="mt-4">
+            <small class="text-muted">
+                ⚠️ Только для лиц старше 18 лет
+            </small>
+        </div>
+    </div>
+</div>
+
+<div class="how-it-works py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Как это работает</h2>
+        
+        <div class="row">
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-number">1</div>
+                <h5>Регистрация</h5>
+                <p>Создайте аккаунт и подтвердите возраст</p>
+            </div>
+            
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-number">2</div>
+                <h5>Опросник</h5>
+                <p>Ответьте на вопросы о целях и возможностях</p>
+            </div>
+            
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-number">3</div>
+                <h5>AI-план</h5>
+                <p>Получите персональную программу тренировок</p>
+            </div>
+            
+            <div class="col-md-3 text-center mb-4">
+                <div class="step-number">4</div>
+                <h5>Тренировки</h5>
+                <p>Следуйте плану и достигайте целей</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="testimonials py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Что говорят пользователи</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <p>"За 2 месяца не только привел тело в форму, но и стал намного увереннее в себе!"</p>
+                    <cite>— Алексей, 28 лет</cite>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <p>"Наконец-то программа, которая понимает мои потребности. Тренер-сержант просто огонь!"</p>
+                    <cite>— Максим, 24 года</cite>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <p>"Система наград мотивирует лучше любого персонального тренера. Истории просто топ!"</p>
+                    <cite>— Дмитрий, 31 год</cite>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-top: -24px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #2196f3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.testimonial-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    height: 100%;
+}
+
+.testimonial-card p {
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.testimonial-card cite {
+    font-weight: bold;
+    color: #666;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ chapter.title }} - {{ story.title }} - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="reading-container">
+    <!-- Chapter Header -->
+    <div class="chapter-header mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'content:stories' %}">Истории</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'content:story_detail' story.slug %}">{{ story.title }}</a>
+                </li>
+                <li class="breadcrumb-item active">Глава {{ chapter.chapter_number }}</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3">{{ chapter.title }}</h1>
+                <p class="text-muted mb-0">
+                    Глава {{ chapter.chapter_number }} из {{ story.total_chapters }} • 
+                    {{ chapter.estimated_reading_time }} мин чтения
+                </p>
+            </div>
+            
+            <div class="reading-controls">
+                <button class="btn btn-outline-secondary btn-sm" onclick="adjustFontSize(-1)">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="adjustFontSize(1)">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chapter Image -->
+    {% if chapter.image_url %}
+    <div class="chapter-image mb-4">
+        <img src="{{ chapter.image_url }}" 
+             class="img-fluid rounded" 
+             alt="{{ chapter.title }}"
+             style="width: 100%; max-height: 300px; object-fit: cover;">
+    </div>
+    {% endif %}
+    
+    <!-- Reading Progress -->
+    <div class="reading-progress mb-4">
+        <div class="progress" style="height: 3px;">
+            <div class="progress-bar bg-success" id="readingProgressBar" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <!-- Chapter Content -->
+    <div class="chapter-content" id="chapterContent">
+        <div class="content-text">
+            {{ chapter.content|linebreaks }}
+        </div>
+        
+        <!-- Chapter End -->
+        <div class="chapter-end mt-5 p-4 bg-light rounded text-center">
+            <h5>Конец главы {{ chapter.chapter_number }}</h5>
+            
+            {% if first_read %}
+                <div class="alert alert-success">
+                    <i class="fas fa-star"></i> 
+                    Поздравляем с прочтением новой главы!
+                </div>
+            {% else %}
+                <p class="text-muted">
+                    Вы читали эту главу {{ reading_time }} раз
+                </p>
+            {% endif %}
+            
+            <!-- Navigation -->
+            <div class="chapter-navigation mt-4">
+                {% if prev_chapter %}
+                    <a href="{% url 'content:read_chapter' story.slug prev_chapter.chapter_number %}" 
+                       class="btn btn-outline-primary me-3">
+                        <i class="fas fa-arrow-left"></i> Предыдущая глава
+                    </a>
+                {% endif %}
+                
+                {% if next_chapter %}
+                    {% if next_accessible %}
+                        <a href="{% url 'content:read_chapter' story.slug next_chapter.chapter_number %}" 
+                           class="btn btn-primary">
+                            Следующая глава <i class="fas fa-arrow-right"></i>
+                        </a>
+                    {% else %}
+                        <button class="btn btn-outline-secondary" disabled>
+                            <i class="fas fa-lock"></i> Следующая глава заблокирована
+                        </button>
+                        <br>
+                        <small class="text-muted mt-2 d-block">
+                            Выполните больше тренировок для разблокировки
+                        </small>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-check-circle"></i> История завершена!</h6>
+                        <p class="mb-0">Вы прочитали все доступные главы этой истории.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Back to Story -->
+            <div class="mt-4">
+                <a href="{% url 'content:story_detail' story.slug %}" 
+                   class="btn btn-outline-secondary">
+                    <i class="fas fa-list"></i> Все главы
+                </a>
+                
+                <a href="{% url 'content:stories' %}" 
+                   class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-book"></i> Другие истории
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.reading-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.content-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    font-family: Georgia, serif;
+    color: #333;
+}
+
+.content-text p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.chapter-header {
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 1rem;
+}
+
+.reading-controls .btn {
+    margin-left: 0.25rem;
+}
+
+.chapter-end {
+    border: 2px dashed #ddd;
+}
+
+/* Dark mode styles */
+.dark-mode {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+.dark-mode .content-text {
+    color: #e0e0e0;
+}
+
+.dark-mode .card,
+.dark-mode .bg-light {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0;
+}
+
+.dark-mode .chapter-end {
+    background-color: #2d2d2d !important;
+    border-color: #555;
+}
+
+/* Font size classes */
+.font-small { font-size: 0.9rem !important; }
+.font-normal { font-size: 1.1rem !important; }
+.font-large { font-size: 1.3rem !important; }
+.font-xlarge { font-size: 1.5rem !important; }
+
+/* Reading progress */
+.reading-progress {
+    position: sticky;
+    top: 70px;
+    z-index: 100;
+    background: white;
+    padding: 0.5rem 0;
+}
+
+.dark-mode .reading-progress {
+    background: #1a1a1a;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let fontSize = 1; // 0=small, 1=normal, 2=large, 3=xlarge
+const fontClasses = ['font-small', 'font-normal', 'font-large', 'font-xlarge'];
+let isDarkMode = false;
+
+// Font size adjustment
+function adjustFontSize(delta) {
+    fontSize = Math.max(0, Math.min(3, fontSize + delta));
+    
+    const contentText = document.querySelector('.content-text');
+    
+    // Remove all font classes
+    fontClasses.forEach(cls => contentText.classList.remove(cls));
+    
+    // Add new font class
+    contentText.classList.add(fontClasses[fontSize]);
+    
+    // Save preference
+    localStorage.setItem('reading-font-size', fontSize);
+}
+
+// Dark mode toggle
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    
+    const icon = document.querySelector('.fa-moon');
+    if (isDarkMode) {
+        icon.className = 'fas fa-sun';
+    } else {
+        icon.className = 'fas fa-moon';
+    }
+    
+    // Save preference
+    localStorage.setItem('reading-dark-mode', isDarkMode);
+}
+
+// Reading progress tracking
+function updateReadingProgress() {
+    const content = document.getElementById('chapterContent');
+    const scrollTop = window.pageYOffset;
+    const docHeight = content.offsetHeight;
+    const winHeight = window.innerHeight;
+    const scrollPercent = scrollTop / (docHeight - winHeight);
+    const scrollPercentRounded = Math.round(scrollPercent * 100);
+    
+    const progressBar = document.getElementById('readingProgressBar');
+    progressBar.style.width = Math.min(100, Math.max(0, scrollPercentRounded)) + '%';
+}
+
+// Load saved preferences
+document.addEventListener('DOMContentLoaded', function() {
+    // Load font size
+    const savedFontSize = localStorage.getItem('reading-font-size');
+    if (savedFontSize !== null) {
+        fontSize = parseInt(savedFontSize);
+        adjustFontSize(0); // Apply saved font size
+    }
+    
+    // Load dark mode
+    const savedDarkMode = localStorage.getItem('reading-dark-mode');
+    if (savedDarkMode === 'true') {
+        toggleDarkMode();
+    }
+    
+    // Add scroll listener for progress
+    window.addEventListener('scroll', updateReadingProgress);
+    
+    // Initial progress update
+    updateReadingProgress();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Only if not typing in an input
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        switch(e.key) {
+            case '+':
+            case '=':
+                e.preventDefault();
+                adjustFontSize(1);
+                break;
+            case '-':
+                e.preventDefault();
+                adjustFontSize(-1);
+                break;
+            case 'd':
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    toggleDarkMode();
+                }
+                break;
+        }
+    }
+});
+</script>
+{% endblock %}

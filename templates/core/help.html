@@ -1,0 +1,120 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Помощь - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-4">💡 Помощь и FAQ</h1>
+    
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="accordion" id="faqAccordion">
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Как начать тренировки?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <ol>
+                                <li>Зарегистрируйтесь и подтвердите возраст 18+</li>
+                                <li>Пройдите онбординг - ответьте на вопросы о целях</li>
+                                <li>Выберите архетип тренера</li>
+                                <li>Получите персональный план от AI</li>
+                                <li>Начните ежедневные тренировки!</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Что такое архетипы тренеров?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            У нас есть 3 архетипа:
+                            <ul>
+                                <li><strong>Бро</strong> - дружелюбный и мотивирующий стиль</li>
+                                <li><strong>Сержант</strong> - строгий и требовательный подход</li>
+                                <li><strong>Интеллектуал</strong> - научный подход с объяснениями</li>
+                            </ul>
+                            Выберите тот, который вам больше подходит!
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Как разблокировать новые истории?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Главы историй разблокируются за достижения:
+                            <ul>
+                                <li>Выполнение определенного количества тренировок</li>
+                                <li>Поддержание серий дней подряд</li>
+                                <li>Набор опыта (XP)</li>
+                                <li>Выполнение заданий на уверенность</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            Можно ли изменить план тренировок?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Да! Ваш план автоматически адаптируется каждую неделю на основе:
+                            <ul>
+                                <li>Вашей обратной связи после тренировок</li>
+                                <li>Частоты выполнения упражнений</li>
+                                <li>Замен упражнений</li>
+                            </ul>
+                            Также вы можете заменить любое упражнение альтернативным прямо во время тренировки.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            Что делать если видео не загружается?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <ol>
+                                <li>Проверьте интернет-соединение</li>
+                                <li>Обновите страницу (F5)</li>
+                                <li>Попробуйте другой браузер</li>
+                                <li>Очистите кеш браузера</li>
+                                <li>Если проблема повторяется - напишите в поддержку</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="text-center mt-5">
+                <h5>Не нашли ответ?</h5>
+                <p>Свяжитесь с нами:</p>
+                <a href="mailto:support@aifitnesscoach.com" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> support@aifitnesscoach.com
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

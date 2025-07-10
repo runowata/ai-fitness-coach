@@ -1,0 +1,323 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ workout.name }} - AI Fitness Coach{% endblock %}
+
+{% block extra_css %}
+<style>
+    .video-container {
+        position: relative;
+        background: #000;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .video-player {
+        width: 100%;
+        height: 400px;
+    }
+    
+    .playlist-item {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .playlist-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .playlist-item.active {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+    }
+    
+    .feedback-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .feedback-btn {
+        font-size: 2rem;
+        border: none;
+        background: none;
+        transition: transform 0.2s;
+    }
+    
+    .feedback-btn:hover {
+        transform: scale(1.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ workout.name }}</h5>
+                <span class="badge bg-info">День {{ workout.day_number }} • Неделя {{ workout.week_number }}</span>
+            </div>
+            
+            <div class="card-body">
+                {% if workout.is_rest_day %}
+                    <div class="text-center p-4">
+                        <h3>🧘‍♂️ День отдыха</h3>
+                        <p class="lead">Сегодня время для восстановления и отдыха</p>
+                        
+                        {% if video_playlist %}
+                            <div class="video-container mb-4">
+                                <video id="mainVideo" class="video-player" controls>
+                                    <source src="{{ video_playlist.0.url }}" type="video/mp4">
+                                    Ваш браузер не поддерживает видео.
+                                </video>
+                            </div>
+                        {% endif %}
+                        
+                        <button class="btn btn-success btn-lg" onclick="completeWorkout()">
+                            <i class="fas fa-check"></i> Отметить как выполненное
+                        </button>
+                    </div>
+                {% else %}
+                    <!-- Video Player -->
+                    <div class="video-container mb-4">
+                        <video id="mainVideo" class="video-player" controls>
+                            {% if video_playlist %}
+                                <source src="{{ video_playlist.0.url }}" type="video/mp4">
+                            {% endif %}
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                    </div>
+                    
+                    <!-- Current Exercise Info -->
+                    <div id="currentExerciseInfo" class="mb-3">
+                        {% if video_playlist %}
+                            <h6 id="currentTitle">{{ video_playlist.0.title }}</h6>
+                            {% if video_playlist.0.sets %}
+                                <p class="text-muted">
+                                    {{ video_playlist.0.sets }} подходов × {{ video_playlist.0.reps }} повторений
+                                    • Отдых: {{ video_playlist.0.rest }} сек
+                                </p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Exercise Substitution -->
+                    {% if substitutions %}
+                        <div class="mb-3">
+                            <button class="btn btn-outline-secondary btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#substitutionModal">
+                                <i class="fas fa-exchange-alt"></i> Заменить упражнение
+                            </button>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Workout Completion -->
+                    {% if not is_completed %}
+                        <div class="text-center">
+                            <button class="btn btn-success btn-lg" onclick="showFeedbackModal()">
+                                <i class="fas fa-check"></i> Завершить тренировку
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success text-center">
+                            <i class="fas fa-check-circle"></i> Тренировка завершена!
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Confidence Task -->
+        {% if workout.confidence_task %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">💪 Задание на уверенность</h6>
+                </div>
+                <div class="card-body">
+                    <p>{{ workout.confidence_task }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Video Playlist -->
+        {% if video_playlist %}
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Плейлист тренировки</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for video in video_playlist %}
+                            <div class="list-group-item playlist-item {% if forloop.first %}active{% endif %}" 
+                                 data-video-url="{{ video.url }}"
+                                 data-video-title="{{ video.title }}"
+                                 data-video-index="{{ forloop.counter0 }}">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ video.title }}</h6>
+                                        <small class="text-muted">{{ video.duration }} сек</small>
+                                    </div>
+                                    <span class="badge bg-secondary">{{ video.type }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Как прошла тренировка?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Оцените свои ощущения после тренировки:</p>
+                <div class="feedback-buttons">
+                    <button class="feedback-btn" onclick="submitFeedback('fire')" title="Отлично">🔥</button>
+                    <button class="feedback-btn" onclick="submitFeedback('smile')" title="Хорошо">🙂</button>
+                    <button class="feedback-btn" onclick="submitFeedback('neutral')" title="Нормально">😐</button>
+                    <button class="feedback-btn" onclick="submitFeedback('tired')" title="Тяжело">🤕</button>
+                </div>
+                <textarea id="feedbackNote" class="form-control mt-3" 
+                          placeholder="Дополнительные комментарии (необязательно)"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Substitution Modal -->
+{% if substitutions %}
+<div class="modal fade" id="substitutionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Заменить упражнение</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% for original_slug, alternatives in substitutions.items %}
+                    <div class="mb-3">
+                        <h6>{{ original_slug|title }}</h6>
+                        <div class="list-group">
+                            {% for alternative in alternatives %}
+                                <button class="list-group-item list-group-item-action" 
+                                        onclick="substituteExercise('{{ original_slug }}', '{{ alternative.slug }}')">
+                                    {{ alternative.name }}
+                                    <small class="text-muted d-block">{{ alternative.description }}</small>
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Video playlist functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('mainVideo');
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    
+    playlistItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const videoUrl = this.getAttribute('data-video-url');
+            const videoTitle = this.getAttribute('data-video-title');
+            
+            // Update video source
+            video.src = videoUrl;
+            video.load();
+            
+            // Update title
+            document.getElementById('currentTitle').textContent = videoTitle;
+            
+            // Update active state
+            playlistItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Auto-play next video when current ends
+    video.addEventListener('ended', function() {
+        const activeItem = document.querySelector('.playlist-item.active');
+        const nextItem = activeItem.nextElementSibling;
+        
+        if (nextItem && nextItem.classList.contains('playlist-item')) {
+            nextItem.click();
+        }
+    });
+});
+
+function showFeedbackModal() {
+    new bootstrap.Modal(document.getElementById('feedbackModal')).show();
+}
+
+function submitFeedback(rating) {
+    const note = document.getElementById('feedbackNote').value;
+    
+    fetch(`{% url 'workouts:complete_workout' workout.id %}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            feedback_rating: rating,
+            feedback_note: note
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Тренировка завершена! Получено ${data.xp_earned} XP`);
+            if (data.new_achievements.length > 0) {
+                alert(`Новые достижения: ${data.new_achievements.map(a => a.name).join(', ')}`);
+            }
+            location.reload();
+        } else {
+            alert('Ошибка: ' + data.error);
+        }
+    });
+}
+
+function substituteExercise(originalSlug, substituteSlug) {
+    fetch(`{% url 'workouts:substitute_exercise' workout.id %}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            original_exercise: originalSlug,
+            substitute_exercise: substituteSlug
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Ошибка: ' + data.error);
+        }
+    });
+}
+
+function completeWorkout() {
+    submitFeedback('smile');
+}
+</script>
+{% endblock %}
