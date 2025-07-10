@@ -134,8 +134,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Always include STATICFILES_DIRS
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise configuration - use simpler storage for reliability
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Media files
 if DEBUG:
