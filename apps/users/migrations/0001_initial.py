@@ -43,10 +43,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'user',
                 'verbose_name_plural': 'users',
                 'db_table': 'users',
-                'indexes': [
-                    models.Index(fields=['email'], name='users_email_idx'),
-                    models.Index(fields=['created_at'], name='users_created_at_idx'),
-                ],
             },
             managers=[
                 ('objects', django.contrib.auth.models.UserManager()),
