@@ -130,7 +130,11 @@ DEFAULT_USER_TIMEZONE = 'Europe/Zurich'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Only include STATICFILES_DIRS if the directory exists
+import os
+if os.path.exists(BASE_DIR / 'static'):
+    STATICFILES_DIRS = [BASE_DIR / 'static']
 
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
