@@ -1,0 +1,78 @@
+{% extends "simple/base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <div class="gradient-bg rounded p-5 mb-5">
+            <h1 class="display-4 fw-bold mb-4">AI Fitness Coach</h1>
+            <p class="lead mb-4">
+                Персональные тренировки с ИИ-тренером для мужчин-геев. 
+                Достигай целей, получай награды, развивайся!
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-4">Начать тренировки</a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">Войти</a>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="fs-1 mb-3">🤖</div>
+                        <h5>ИИ-персонализация</h5>
+                        <p class="text-muted">Уникальные планы тренировок, адаптированные под ваши цели и предпочтения</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="fs-1 mb-3">🎬</div>
+                        <h5>Видео-гиды</h5>
+                        <p class="text-muted">Персональные видео с разными архетипами тренеров для мотивации</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="fs-1 mb-3">🏆</div>
+                        <h5>Достижения</h5>
+                        <p class="text-muted">Система XP, уровней и наград за прогресс в тренировках</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h5 class="mb-0">🎯 Выберите архетип тренера</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="mb-2">💪</div>
+                                <strong>Бро</strong>
+                                <p class="small text-muted">Дружелюбный и мотивирующий</p>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-2">🎖️</div>
+                                <strong>Сержант</strong>
+                                <p class="small text-muted">Строгий и дисциплинированный</p>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-2">🧠</div>
+                                <strong>Интеллектуал</strong>
+                                <p class="small text-muted">Научный подход</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

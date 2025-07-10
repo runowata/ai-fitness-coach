@@ -1,0 +1,126 @@
+{% extends "simple/base.html" %}
+
+{% block title %}Дашборд - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="gradient-bg rounded p-4 mb-4 text-white">
+            <h2 class="mb-2">Привет, {{ user.username }}! 👋</h2>
+            <p class="mb-0">Готов к тренировке? Твой уровень: {{ stats.level }} ({{ stats.xp }} XP)</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-primary h-100">
+            <div class="card-body text-center">
+                <div class="fs-2 text-primary mb-2">🏋️</div>
+                <h4 class="fw-bold text-primary">{{ stats.total_workouts }}</h4>
+                <p class="text-muted mb-0">Тренировок</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-warning h-100">
+            <div class="card-body text-center">
+                <div class="fs-2 text-warning mb-2">🔥</div>
+                <h4 class="fw-bold text-warning">{{ stats.current_streak }}</h4>
+                <p class="text-muted mb-0">Дней подряд</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <div class="fs-2 text-success mb-2">⭐</div>
+                <h4 class="fw-bold text-success">{{ stats.xp }}</h4>
+                <p class="text-muted mb-0">Опыта (XP)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-info h-100">
+            <div class="card-body text-center">
+                <div class="fs-2 text-info mb-2">🏆</div>
+                <h4 class="fw-bold text-info">{{ stats.level }}</h4>
+                <p class="text-muted mb-0">Уровень</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">🎯 Сегодняшняя тренировка</h5>
+            </div>
+            <div class="card-body text-center p-5">
+                <div class="fs-1 mb-3">💪</div>
+                <h4 class="mb-3">Готов к тренировке?</h4>
+                <p class="text-muted mb-4">
+                    Персональная программа ждет тебя. 
+                    {% if user.archetype %}
+                        Твой тренер-{{ user.archetype }} уже подготовил все упражнения!
+                    {% endif %}
+                </p>
+                <a href="{{ url_for('workout') }}" class="btn btn-success btn-lg px-5">🚀 Начать тренировку</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="mb-0">📊 Прогресс уровня</h6>
+            </div>
+            <div class="card-body">
+                {% set next_level_xp = stats.level * 100 %}
+                {% set current_level_xp = (stats.level - 1) * 100 %}
+                {% set progress = ((stats.xp - current_level_xp) / (next_level_xp - current_level_xp) * 100) %}
+                
+                <div class="mb-2">
+                    <small class="text-muted">Уровень {{ stats.level }} → {{ stats.level + 1 }}</small>
+                </div>
+                <div class="progress mb-2" style="height: 10px;">
+                    <div class="progress-bar bg-primary" style="width: {{ progress }}%"></div>
+                </div>
+                <small class="text-muted">{{ stats.xp }}/{{ next_level_xp }} XP</small>
+                
+                <hr>
+                
+                <h6 class="mb-2">🏆 Ближайшие достижения:</h6>
+                <ul class="list-unstyled small">
+                    {% if stats.total_workouts < 5 %}
+                    <li class="mb-1">🎯 5 тренировок ({{ stats.total_workouts }}/5)</li>
+                    {% endif %}
+                    {% if stats.current_streak < 7 %}
+                    <li class="mb-1">🔥 Неделя подряд ({{ stats.current_streak }}/7)</li>
+                    {% endif %}
+                    {% if stats.total_workouts < 10 %}
+                    <li class="mb-1">💪 10 тренировок ({{ stats.total_workouts }}/10)</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        
+        {% if workouts %}
+        <div class="card shadow mt-3">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">📅 Последние тренировки</h6>
+            </div>
+            <div class="card-body">
+                {% for workout in workouts %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small">{{ workout.date.strftime('%d.%m') }}</span>
+                    <span class="badge bg-success">Завершена</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

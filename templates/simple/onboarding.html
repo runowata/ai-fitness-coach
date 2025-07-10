@@ -1,0 +1,98 @@
+{% extends "simple/base.html" %}
+
+{% block title %}Настройка профиля - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header gradient-bg text-white text-center">
+                <h4 class="mb-0">🎯 Настройка персонального плана</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('onboarding_submit') }}">
+                    <!-- Questions -->
+                    {% for question in questions %}
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">{{ loop.index }}. {{ question.question }}</h6>
+                        <div class="row">
+                            {% for option in question.options %}
+                            <div class="col-md-6 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" 
+                                           name="{{ question.id }}" 
+                                           id="{{ question.id }}_{{ loop.index0 }}" 
+                                           value="{{ option }}" required>
+                                    <label class="form-check-label" for="{{ question.id }}_{{ loop.index0 }}">
+                                        {{ option }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Archetype Selection -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Выберите архетип тренера:</h6>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="archetype-card card h-100 text-center p-3" onclick="selectArchetype('bro', this)">
+                                    <div class="fs-1 mb-2">💪</div>
+                                    <h6 class="fw-bold">Бро</h6>
+                                    <p class="small text-muted mb-0">Дружелюбный, поддерживающий, мотивирующий братан</p>
+                                    <input type="radio" name="archetype" value="bro" style="display: none;">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="archetype-card card h-100 text-center p-3" onclick="selectArchetype('sergeant', this)">
+                                    <div class="fs-1 mb-2">🎖️</div>
+                                    <h6 class="fw-bold">Сержант</h6>
+                                    <p class="small text-muted mb-0">Строгий, дисциплинированный, требовательный</p>
+                                    <input type="radio" name="archetype" value="sergeant" style="display: none;">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="archetype-card card h-100 text-center p-3" onclick="selectArchetype('intellectual', this)">
+                                    <div class="fs-1 mb-2">🧠</div>
+                                    <h6 class="fw-bold">Интеллектуал</h6>
+                                    <p class="small text-muted mb-0">Научный подход, объяснения, анализ</p>
+                                    <input type="radio" name="archetype" value="intellectual" style="display: none;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">🚀 Создать мой план тренировок</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectArchetype(value, element) {
+    // Remove selected class from all cards
+    document.querySelectorAll('.archetype-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked card
+    element.classList.add('selected');
+    
+    // Set radio button value
+    element.querySelector('input[type="radio"]').checked = true;
+}
+
+// Auto-select first archetype
+document.addEventListener('DOMContentLoaded', function() {
+    const firstCard = document.querySelector('.archetype-card');
+    if (firstCard) {
+        selectArchetype('bro', firstCard);
+    }
+});
+</script>
+{% endblock %}
