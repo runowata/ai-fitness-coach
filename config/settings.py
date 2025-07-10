@@ -5,6 +5,7 @@ Django settings for AI Fitness Coach project.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 # Load environment variables
 load_dotenv()
@@ -77,14 +78,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'ai_fitness_coach'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
+    'default': dj_database_url.config(
+        default=f"postgresql://{os.getenv('DB_USER', 'postgres')}:{os.getenv('DB_PASSWORD', '')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'ai_fitness_coach')}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # Cache
