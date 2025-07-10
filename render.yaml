@@ -10,8 +10,18 @@ services:
     runtime: python
     plan: starter
     region: oregon
-    buildCommand: "./build.sh"
-    startCommand: "gunicorn config.wsgi:application"
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: |
+      python manage.py migrate --noinput
+      python manage.py loaddata fixtures/exercises.json
+      python manage.py loaddata fixtures/onboarding_questions.json
+      python manage.py loaddata fixtures/motivational_cards.json
+      python manage.py loaddata fixtures/stories.json
+      python manage.py loaddata fixtures/video_clips.json
+      python manage.py loaddata fixtures/achievements.json
+      gunicorn config.wsgi:application --log-file -
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.7
@@ -21,9 +31,7 @@ services:
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
-      - key: ALLOWED_HOSTS
-        value: .onrender.com
-      - key: DEBUG
+      - key: DJANGO_DEBUG
         value: false
       - key: DJANGO_SETTINGS_MODULE
         value: config.settings
