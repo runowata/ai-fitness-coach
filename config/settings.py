@@ -131,13 +131,11 @@ DEFAULT_USER_TIMEZONE = 'Europe/Zurich'
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Only include STATICFILES_DIRS if the directory exists
-import os
-if os.path.exists(BASE_DIR / 'static'):
-    STATICFILES_DIRS = [BASE_DIR / 'static']
+# Always include STATICFILES_DIRS
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# WhiteNoise configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 if DEBUG:
