@@ -1,0 +1,501 @@
+{
+  "categories": {
+    "B": "Базовые данные",
+    "G": "Цели и мотивация", 
+    "L": "Образ жизни",
+    "N": "Питание",
+    "T": "Текущий опыт тренировок",
+    "M": "Мышление и привычки",
+    "F": "Фокусные улучшения"
+  },
+  "trainers": {
+    "alex": {
+      "name": "Алекс \"Братан\"",
+      "avatar": "/static/images/trainers/bro-avatar.png",
+      "personality": "энергичный и мотивирующий"
+    },
+    "sergeant": {
+      "name": "Максим \"Сержант\"", 
+      "avatar": "/static/images/trainers/sergeant-avatar.png",
+      "personality": "строгий и дисциплинированный"
+    },
+    "dan": {
+      "name": "Дмитрий \"Профессор\"",
+      "avatar": "/static/images/trainers/intellectual-avatar.png", 
+      "personality": "детальный анализ и безопасность"
+    }
+  },
+  "questions": [
+    {
+      "id": "B1",
+      "question": "Ваш возраст (полных лет)?",
+      "trainer": "alex",
+      "trainer_card": "Возраст — это про восстановление, не про ограничения.",
+      "answer_type": "number",
+      "required": true,
+      "ai_field": "age"
+    },
+    {
+      "id": "B2", 
+      "question": "Ваш биологический пол?",
+      "trainer": "sergeant",
+      "trainer_card": "Важно для гормональной реакции на нагрузку.",
+      "answer_type": "single_choice",
+      "options": ["Женский", "Мужской", "Другое", "Предпочитаю не указывать"],
+      "required": true,
+      "ai_field": "sex"
+    },
+    {
+      "id": "B3",
+      "question": "Рост (см)?", 
+      "trainer": "alex",
+      "trainer_card": "Сочетаю с весом, чтобы настроить объём работы.",
+      "answer_type": "number",
+      "required": true,
+      "ai_field": "height_cm"
+    },
+    {
+      "id": "B4",
+      "question": "Вес (кг)?",
+      "trainer": "sergeant", 
+      "trainer_card": "Число без стресса: это только исходная точка.",
+      "answer_type": "number",
+      "required": true,
+      "ai_field": "weight_kg"
+    },
+    {
+      "id": "B5",
+      "question": "Есть ли клинически подтверждённые заболевания или травмы, влияющие на тренировки?",
+      "trainer": "dan",
+      "trainer_card": "Безопасность > рекордов; расскажите доктору и мне.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "injuries"
+    },
+    {
+      "id": "G6",
+      "question": "Главная цель на ближайшие 3 месяца?",
+      "trainer": "dan",
+      "trainer_card": "Чёткая цель → точный план.",
+      "answer_type": "single_choice",
+      "options": ["Снижение жира", "Набор мышц", "Силовая выносливость", "Общее самочувствие", "Другое"],
+      "required": true,
+      "ai_field": "main_goal"
+    },
+    {
+      "id": "G7",
+      "question": "Почему эта цель важна для вас именно сейчас?",
+      "trainer": "sergeant",
+      "trainer_card": "Ответ \"для здоровья\" хорош, но давайте глубже.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "goal_motivation"
+    },
+    {
+      "id": "G8", 
+      "question": "Как вы поймёте, что цель достигнута?",
+      "trainer": "alex",
+      "trainer_card": "Измерим? Видимо? Чувственно? Три маркёра хватит.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "success_metrics"
+    },
+    {
+      "id": "G9",
+      "question": "Сколько времени в неделю реально готовы выделять на тренировки?",
+      "trainer": "dan",
+      "trainer_card": "Честность экономит разочарования.",
+      "answer_type": "single_choice", 
+      "options": ["<2 ч", "2-4 ч", "4-6 ч", "6+ ч"],
+      "required": true,
+      "ai_field": "available_minutes"
+    },
+    {
+      "id": "G10",
+      "question": "Кто поддержит вас, если мотивация упадёт?",
+      "trainer": "sergeant",
+      "trainer_card": "Поддержка — предсказатель успеха сильнее дисциплины.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "support_system"
+    },
+    {
+      "id": "L11",
+      "question": "Какую работу вы выполняете большую часть дня?",
+      "trainer": "alex",
+      "trainer_card": "Движение в офисе и на стройке — разное.",
+      "answer_type": "single_choice",
+      "options": ["Сидячая", "Стоячая", "Физически активная", "Смешанная"],
+      "required": true,
+      "ai_field": "work_type"
+    },
+    {
+      "id": "L12", 
+      "question": "Сколько шагов в среднем проходите в день?",
+      "trainer": "sergeant",
+      "trainer_card": "Смарт-часы или приблизительная цифра — подойдёт.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "daily_steps"
+    },
+    {
+      "id": "L13",
+      "question": "Во сколько обычно ложитесь спать?",
+      "trainer": "alex", 
+      "trainer_card": "Час сна до полуночи = два после.",
+      "answer_type": "number",
+      "placeholder": "23 (24-час. формат)",
+      "required": false,
+      "ai_field": "bedtime"
+    },
+    {
+      "id": "L14",
+      "question": "Средняя длительность сна (ч)?",
+      "trainer": "dan",
+      "trainer_card": "Недосып – главный антагонист прогресса.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "sleep_hours"
+    },
+    {
+      "id": "L15",
+      "question": "Частота путешествий или смены часовых поясов (раз/мес)?",
+      "trainer": "sergeant",
+      "trainer_card": "Джетлаг любит разрушать график тренировок.", 
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "travel_frequency"
+    },
+    {
+      "id": "L16",
+      "question": "Как часто чувствуете стресс ≥ 7/10?",
+      "trainer": "alex",
+      "trainer_card": "Стресс = скрытая нагрузка на ЦНС.",
+      "answer_type": "single_choice",
+      "options": ["Едва ли", "1-2 р/нед", "3-4 р/нед", "Каждый день"],
+      "required": false,
+      "ai_field": "stress_frequency"
+    },
+    {
+      "id": "L17",
+      "question": "Что обычно помогает вам расслабиться?",
+      "trainer": "sergeant",
+      "trainer_card": "Важно сохранить то, что уже работает.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "relaxation_methods"
+    },
+    {
+      "id": "L18",
+      "question": "Сколько кофеин-напитков пьёте в день?",
+      "trainer": "alex",
+      "trainer_card": "Кофеин — полезен, если дозу знать.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "caffeine_intake"
+    },
+    {
+      "id": "L19", 
+      "question": "Алкоголь — среднее кол-во порций в неделю?",
+      "trainer": "dan",
+      "trainer_card": "Честный ответ = точный расчёт восстановления.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "alcohol_intake"
+    },
+    {
+      "id": "L20",
+      "question": "Курите ли вы?",
+      "trainer": "sergeant",
+      "trainer_card": "Никотин и VO₂max — плохие соседи.",
+      "answer_type": "single_choice",
+      "options": ["Нет", "Иногда", "Регулярно"],
+      "required": false,
+      "ai_field": "smoking"
+    },
+    {
+      "id": "N21",
+      "question": "Сколько приемов пищи в день у вас обычно?",
+      "trainer": "sergeant",
+      "trainer_card": "Частота важнее идеального времени.",
+      "answer_type": "single_choice",
+      "options": ["1-2", "3", "4-5", "6+"],
+      "required": false,
+      "ai_field": "meals_per_day"
+    },
+    {
+      "id": "N22",
+      "question": "Примерно сколько воды пьете в день (л)?",
+      "trainer": "alex",
+      "trainer_card": "Жажда = уже обезвоживание.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "water_intake"
+    },
+    {
+      "id": "N23",
+      "question": "Какой процент рациона составляют обработанные продукты?",
+      "trainer": "dan",
+      "trainer_card": "Состав важнее калорий.",
+      "answer_type": "single_choice",
+      "options": ["<20%", "20-40%", "40-60%", ">60%"],
+      "required": false,
+      "ai_field": "processed_food_ratio"
+    },
+    {
+      "id": "N24",
+      "question": "Есть ли у вас пищевые аллергии или непереносимости?",
+      "trainer": "sergeant",
+      "trainer_card": "Важно учесть для безопасности.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "food_allergies"
+    },
+    {
+      "id": "N25",
+      "question": "Как часто едите вне дома (раз/неделю)?",
+      "trainer": "alex",
+      "trainer_card": "Планируем гибкость в питании.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "eating_out_frequency"
+    },
+    {
+      "id": "T26",
+      "question": "Сколько лет занимаетесь спортом/фитнесом?",
+      "trainer": "dan",
+      "trainer_card": "Опыт определяет сложность программы.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "training_experience_years"
+    },
+    {
+      "id": "T27",
+      "question": "Какой вид активности предпочитаете?",
+      "trainer": "alex",
+      "trainer_card": "Любимое = делаем чаще.",
+      "answer_type": "single_choice",
+      "options": ["Силовые", "Кардио", "Функциональные", "Смешанные"],
+      "required": false,
+      "ai_field": "preferred_activity"
+    },
+    {
+      "id": "T28",
+      "question": "Как часто тренировались последние 3 месяца?",
+      "trainer": "sergeant",
+      "trainer_card": "Текущая форма важнее прошлых достижений.",
+      "answer_type": "single_choice",
+      "options": ["Не тренировался", "1-2 р/нед", "3-4 р/нед", "5+ р/нед"],
+      "required": false,
+      "ai_field": "recent_training_frequency"
+    },
+    {
+      "id": "T29",
+      "question": "Какое оборудование у вас есть дома?",
+      "trainer": "alex",
+      "trainer_card": "Работаем с тем, что есть.",
+      "answer_type": "multiple_choice",
+      "options": ["Гантели", "Штанга", "Турник", "Эспандеры", "Ничего"],
+      "required": false,
+      "ai_field": "equipment_list"
+    },
+    {
+      "id": "T30",
+      "question": "Есть ли доступ к спортзалу?",
+      "trainer": "dan",
+      "trainer_card": "Расширяем возможности если есть доступ.",
+      "answer_type": "single_choice",
+      "options": ["Да, регулярно", "Да, иногда", "Нет, но планирую", "Нет"],
+      "required": false,
+      "ai_field": "gym_access"
+    },
+    {
+      "id": "T31",
+      "question": "Максимальная длительность тренировки (мин)?",
+      "trainer": "sergeant",
+      "trainer_card": "Эффективность важнее продолжительности.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "max_workout_duration"
+    },
+    {
+      "id": "T32",
+      "question": "В какое время дня предпочитаете тренироваться?",
+      "trainer": "alex",
+      "trainer_card": "Лучшее время = когда делаешь регулярно.",
+      "answer_type": "single_choice",
+      "options": ["Утром", "Днем", "Вечером", "Когда получится"],
+      "required": false,
+      "ai_field": "preferred_workout_time"
+    },
+    {
+      "id": "M33",
+      "question": "Что больше всего мотивирует вас тренироваться?",
+      "trainer": "sergeant",
+      "trainer_card": "Правильная мотивация = долгосрочный результат.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "motivation_source"
+    },
+    {
+      "id": "M34",
+      "question": "Как реагируете на неудачи в тренировках?",
+      "trainer": "alex",
+      "trainer_card": "Не падаем - учимся отскакивать.",
+      "answer_type": "single_choice",
+      "options": ["Расстраиваюсь", "Анализирую", "Игнорирую", "Мотивирует"],
+      "required": false,
+      "ai_field": "failure_response"
+    },
+    {
+      "id": "M35",
+      "question": "Сколько времени нужно для формирования привычки (по-вашему)?",
+      "trainer": "dan",
+      "trainer_card": "Знание психологии помогает в планировании.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "habit_formation_belief"
+    },
+    {
+      "id": "M36",
+      "question": "Как часто сравниваете себя с другими?",
+      "trainer": "sergeant",
+      "trainer_card": "Сравнение может быть инструментом или проблемой.",
+      "answer_type": "single_choice",
+      "options": ["Почти никогда", "Иногда", "Часто", "Постоянно"],
+      "required": false,
+      "ai_field": "comparison_frequency"
+    },
+    {
+      "id": "M37",
+      "question": "Что делаете когда не хочется тренироваться?",
+      "trainer": "alex",
+      "trainer_card": "У всех чемпионов есть такие дни.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "motivation_strategies"
+    },
+    {
+      "id": "M38",
+      "question": "Как относитесь к отслеживанию прогресса?",
+      "trainer": "dan",
+      "trainer_card": "Данные показывают то, что не видят глаза.",
+      "answer_type": "single_choice",
+      "options": ["Обожаю числа", "Иногда записываю", "Не отслеживаю", "Только фото"],
+      "required": false,
+      "ai_field": "progress_tracking_attitude"
+    },
+    {
+      "id": "F39",
+      "question": "Какую часть тела хотите улучшить в первую очередь?",
+      "trainer": "sergeant",
+      "trainer_card": "Приоритет помогает распределить усилия.",
+      "answer_type": "single_choice",
+      "options": ["Верх тела", "Низ тела", "Корпус", "Общая форма"],
+      "required": false,
+      "ai_field": "body_focus_priority"
+    },
+    {
+      "id": "F40",
+      "question": "Какое физическое качество важнее развить?",
+      "trainer": "alex",
+      "trainer_card": "Сила, выносливость или гибкость - что выбираешь?",
+      "answer_type": "single_choice",
+      "options": ["Сила", "Выносливость", "Гибкость", "Координация"],
+      "required": false,
+      "ai_field": "physical_quality_focus"
+    },
+    {
+      "id": "F41",
+      "question": "Как хотите чувствовать себя через 3 месяца?",
+      "trainer": "dan",
+      "trainer_card": "Эмоциональный результат важнее физического.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "emotional_goal"
+    },
+    {
+      "id": "F42",
+      "question": "Что мешает вам тренироваться регулярно?",
+      "trainer": "sergeant",
+      "trainer_card": "Понимание барьеров - половина решения.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "training_barriers"
+    },
+    {
+      "id": "F43",
+      "question": "Какой результат будет для вас главной победой?",
+      "trainer": "alex",
+      "trainer_card": "Большая цель состоит из малых побед.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "main_victory"
+    },
+    {
+      "id": "F44",
+      "question": "Сколько готовы потратить на фитнес в месяц (руб)?",
+      "trainer": "dan",
+      "trainer_card": "Бюджет определяет возможности.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "fitness_budget"
+    },
+    {
+      "id": "F45",
+      "question": "Как планируете отмечать достижения?",
+      "trainer": "sergeant",
+      "trainer_card": "Награды поддерживают мотивацию.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "reward_system"
+    },
+    {
+      "id": "F46",
+      "question": "Какие приложения для фитнеса использовали?",
+      "trainer": "alex",
+      "trainer_card": "Опыт с технологиями помогает интеграции.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "fitness_apps_experience"
+    },
+    {
+      "id": "F47",
+      "question": "Насколько важна социальная поддержка (1-10)?",
+      "trainer": "dan",
+      "trainer_card": "Сообщество может удвоить результат.",
+      "answer_type": "number",
+      "required": false,
+      "ai_field": "social_support_importance"
+    },
+    {
+      "id": "F48",
+      "question": "Что для вас значит быть в хорошей форме?",
+      "trainer": "sergeant",
+      "trainer_card": "У каждого свое определение успеха.",
+      "answer_type": "text",
+      "required": false,
+      "ai_field": "fitness_definition"
+    },
+    {
+      "id": "F49",
+      "question": "Как хотите чтобы вас поддерживал тренер?",
+      "trainer": "alex",
+      "trainer_card": "Строго, мягко или по-дружески?",
+      "answer_type": "single_choice",
+      "options": ["Строго и требовательно", "Мягко и понимающе", "По-дружески", "Научно и детально"],
+      "required": false,
+      "ai_field": "coach_support_style"
+    },
+    {
+      "id": "F50",
+      "question": "Готовы ли вы к изменениям образа жизни?",
+      "trainer": "dan",
+      "trainer_card": "Фитнес - это не только тренировки.",
+      "answer_type": "single_choice",
+      "options": ["Полностью готов", "Частично готов", "Не уверен", "Только тренировки"],
+      "required": false,
+      "ai_field": "lifestyle_change_readiness"
+    }
+  ]
+}

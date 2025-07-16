@@ -1,0 +1,141 @@
+{% extends "simple/base.html" %}
+
+{% block title %}Мотивация - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-gradient">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6 col-lg-5">
+            
+            <!-- Progress Bar -->
+            <div class="progress mb-4" style="height: 8px;">
+                <div class="progress-bar bg-primary" role="progressbar" 
+                     style="width: {{ progress_percentage }}%"
+                     aria-valuenow="{{ progress_percentage }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                </div>
+            </div>
+            
+            {% if motivational_card %}
+            <!-- Motivational Card -->
+            <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px;">
+                <div class="card-body text-center p-5">
+                    
+                    <!-- Trainer Avatar -->
+                    <div class="mb-4">
+                        <img src="{{ motivational_card.image_url }}" 
+                             alt="Тренер" 
+                             class="rounded-circle"
+                             style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #007bff;">
+                    </div>
+                    
+                    <!-- Card Title -->
+                    <h3 class="card-title text-primary mb-3">
+                        {{ motivational_card.title }}
+                    </h3>
+                    
+                    <!-- Card Message -->
+                    <p class="card-text lead text-muted mb-4">
+                        {{ motivational_card.message }}
+                    </p>
+                    
+                    <!-- Continue Button -->
+                    {% if next_question %}
+                        <a href="{% url 'onboarding:question' next_question.id %}" 
+                           class="btn btn-primary btn-lg px-5 py-3" 
+                           style="border-radius: 50px;">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Следующий вопрос
+                        </a>
+                    {% else %}
+                        <a href="{% url 'onboarding:select_archetype' %}" 
+                           class="btn btn-success btn-lg px-5 py-3" 
+                           style="border-radius: 50px;">
+                            <i class="fas fa-users me-2"></i>
+                            Выбрать тренера
+                        </a>
+                    {% endif %}
+                    
+                </div>
+            </div>
+            {% else %}
+            <!-- No Card Available -->
+            <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px;">
+                <div class="card-body text-center p-5">
+                    <h3 class="card-title text-primary mb-3">Отлично!</h3>
+                    <p class="card-text lead text-muted mb-4">
+                        Ваш ответ сохранен. Продолжаем создавать идеальную программу!
+                    </p>
+                    
+                    {% if next_question %}
+                        <a href="{% url 'onboarding:question' next_question.id %}" 
+                           class="btn btn-primary btn-lg px-5 py-3" 
+                           style="border-radius: 50px;">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Следующий вопрос
+                        </a>
+                    {% else %}
+                        <a href="{% url 'onboarding:select_archetype' %}" 
+                           class="btn btn-success btn-lg px-5 py-3" 
+                           style="border-radius: 50px;">
+                            <i class="fas fa-users me-2"></i>
+                            Выбрать тренера
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.card {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #1e7e34);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 3rem 2rem !important;
+    }
+    
+    .trainer-avatar {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+</style>
+{% endblock %}

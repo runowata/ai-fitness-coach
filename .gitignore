@@ -1,0 +1,151 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Static files (will be collected in production)
+staticfiles/
+static_collected/
+
+# User uploads
+media_uploads/
+
+# Backup files
+*.backup
+fixtures/onboarding_questions_old.json
+
+# AI Cache
+cache/
+*.db
+
+# Flask session files
+flask_session/
+
+# Video files - exclude from Git
+static/videos/
+*.mp4
+*.avi
+*.mov
+
+# Local development
+server.log
+video_upload_progress.json
+
+# Temporary files
+*.tmp
+*.temp
+c.txt
+cookies.txt
+
+# Documentation and audit files
+CELERY_SETUP_RENDER.md
+CRITICAL_ENV_SETUP.md
+DEPLOYMENT_STATUS.md
+DEPLOY_INSTRUCTIONS.md
+FINAL_CHANGES_SUMMARY.md
+FINAL_DIAGNOSIS.md
+PRODUCTION_CHECKLIST.md
+PRODUCTION_SETUP_PLAN.md
+RENDER_DEPLOYMENT_GUIDE.md
+RENDER_ENV_SETUP.md
+RENDER_ENV_VARIABLES.md
+АУДИТ_ГОТОВНОСТИ.md
+АУДИТ_РЕЗУЛЬТАТ.md
+СТАТУС_ПОСЛЕ_ИСПРАВЛЕНИЙ.md
+ТЕХНИЧЕСКОЕ_ЗАДАНИЕ.md
+
+# Backup and audit directories
+Аудит/
+Аудит.zip
+audit/
+
+# Python virtual environments
+3.13/
+python.org/
+pyenv/
+если/
+или/
+стоит/
+через/
+
+# Script files in root
+create_motivational_cards.py
+create_questions.py
+
+# AWS requirements
+requirements_aws.txt

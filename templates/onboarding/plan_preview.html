@@ -1,0 +1,331 @@
+{% extends 'simple/base.html' %}
+
+{% block title %}Ваш план готов! - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            
+            <!-- Header with Trainer -->
+            <div class="text-center mb-4">
+                <div class="trainer-header">
+                    <img src="/static/images/trainers/{{ archetype }}-avatar.png" 
+                         alt="Тренер {{ archetype|title }}" 
+                         class="trainer-avatar mb-3"
+                         style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; object-fit: cover;">
+                    
+                    <h1 class="text-white mb-2">🎉 Ваш план готов!</h1>
+                    
+                    {% if archetype == 'bro' %}
+                        <p class="text-white lead">Братан, мы создали крутую программу специально для тебя!</p>
+                    {% elif archetype == 'sergeant' %}
+                        <p class="text-white lead">Боец, ваша программа подготовки готова к выполнению!</p>
+                    {% elif archetype == 'intellectual' %}
+                        <p class="text-white lead">Ваш персонализированный протокол тренировок разработан!</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Main Plan Card -->
+            <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px;">
+                <div class="card-header text-center py-4" style="background: linear-gradient(45deg, #007bff, #0056b3); color: white; border-radius: 20px 20px 0 0;">
+                    <h3 class="mb-1">{{ plan.name }}</h3>
+                    <p class="mb-0 opacity-75">{{ plan.duration_weeks }} недель • {{ plan.goal|title }}</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    
+                    <!-- Stats Row -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="stat-box">
+                                <div class="stat-icon mb-2">
+                                    <i class="fas fa-calendar-alt text-primary" style="font-size: 2rem;"></i>
+                                </div>
+                                <h3 class="text-primary mb-1">{{ plan.duration_weeks }}</h3>
+                                <p class="text-muted mb-0">недель</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="stat-box">
+                                <div class="stat-icon mb-2">
+                                    <i class="fas fa-dumbbell text-success" style="font-size: 2rem;"></i>
+                                </div>
+                                <h3 class="text-success mb-1">{{ plan_data.weeks|length }}</h3>
+                                <p class="text-muted mb-0">тренировочных недель</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="stat-box">
+                                <div class="stat-icon mb-2">
+                                    <i class="fas fa-fire text-warning" style="font-size: 2rem;"></i>
+                                </div>
+                                {% with total_days=plan_data.weeks.0.days|length %}
+                                <h3 class="text-warning mb-1">{{ total_days }}</h3>
+                                <p class="text-muted mb-0">дней в неделю</p>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trainer Message -->
+                    {% if plan_data.trainer_motivation or plan_data.commander_briefing or plan_data.scientific_rationale %}
+                    <div class="trainer-message mb-4">
+                        <div class="alert alert-info" style="border-radius: 15px;">
+                            <div class="d-flex align-items-center">
+                                <img src="/static/images/trainers/{{ archetype }}-avatar.png" 
+                                     alt="Тренер" 
+                                     class="rounded-circle me-3" 
+                                     style="width: 50px; height: 50px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1">Сообщение от тренера:</h6>
+                                    <p class="mb-0">
+                                        {{ plan_data.trainer_motivation|default:plan_data.commander_briefing|default:plan_data.scientific_rationale }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Weekly Overview -->
+                    <h5 class="mb-3">📅 Обзор по неделям:</h5>
+                    <div class="weekly-overview mb-4">
+                        {% for week in plan_data.weeks %}
+                        <div class="week-card mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <i class="fas fa-calendar-week text-primary me-2"></i>
+                                        Неделя {{ week.week_number }}
+                                    </h6>
+                                    <p class="mb-0 text-muted">{{ week.theme|default:"Общая подготовка" }}</p>
+                                    
+                                    {% if week.bro_motivation %}
+                                        <small class="text-info">💪 {{ week.bro_motivation }}</small>
+                                    {% elif week.sergeant_orders %}
+                                        <small class="text-warning">🎖️ {{ week.sergeant_orders }}</small>
+                                    {% elif week.research_insight %}
+                                        <small class="text-success">🔬 {{ week.research_insight }}</small>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-{{ week.intensity_level|default:'moderate' }}">
+                                    {{ week.intensity_level|default:'moderate'|title }}
+                                </span>
+                            </div>
+                            
+                            <!-- Week Days Preview -->
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    {% for day in week.days %}
+                                        {% if day.is_rest_day %}
+                                            <i class="fas fa-bed text-info me-1"></i>
+                                        {% else %}
+                                            <i class="fas fa-dumbbell text-primary me-1"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Sample Day -->
+                    {% if plan_data.weeks.0.days.0 %}
+                    <div class="sample-day mb-4">
+                        <h5 class="mb-3">👀 Пример первого дня:</h5>
+                        <div class="card bg-light border-0" style="border-radius: 15px;">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">
+                                    <i class="fas fa-play-circle me-2"></i>
+                                    {{ plan_data.weeks.0.days.0.workout_name }}
+                                </h6>
+                                
+                                {% if not plan_data.weeks.0.days.0.is_rest_day %}
+                                    <div class="exercises-preview">
+                                        {% for exercise in plan_data.weeks.0.days.0.exercises|slice:":3" %}
+                                            <div class="exercise-item">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <strong>{{ exercise.exercise_name|default:exercise.exercise_slug|title }}</strong>
+                                                    <span class="badge bg-secondary">{{ exercise.sets }} x {{ exercise.reps }}</span>
+                                                </div>
+                                                
+                                                {% if exercise.bro_tip %}
+                                                    <small class="text-muted">💡 {{ exercise.bro_tip }}</small>
+                                                {% elif exercise.sergeant_command %}
+                                                    <small class="text-muted">⚡ {{ exercise.sergeant_command }}</small>
+                                                {% elif exercise.scientific_tip %}
+                                                    <small class="text-muted">🔬 {{ exercise.scientific_tip }}</small>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                        {% if plan_data.weeks.0.days.0.exercises|length > 3 %}
+                                            <div class="text-center mt-2">
+                                                <small class="text-muted">
+                                                    ... и еще {{ plan_data.weeks.0.days.0.exercises|length|add:"-3" }} упражнений
+                                                </small>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-info">🧘‍♂️ День отдыха и восстановления</p>
+                                {% endif %}
+                                
+                                {% if plan_data.weeks.0.days.0.confidence_task %}
+                                    <div class="mt-3 p-3 bg-warning bg-opacity-10 rounded">
+                                        <h6 class="text-warning">💪 Задание на уверенность:</h6>
+                                        <p class="mb-0">{{ plan_data.weeks.0.days.0.confidence_task.description|default:plan_data.weeks.0.days.0.confidence_task }}</p>
+                                        
+                                        {% if plan_data.weeks.0.days.0.confidence_task.bro_encouragement %}
+                                            <small class="text-info">👊 {{ plan_data.weeks.0.days.0.confidence_task.bro_encouragement }}</small>
+                                        {% elif plan_data.weeks.0.days.0.confidence_task.sergeant_motivation %}
+                                            <small class="text-warning">🎖️ {{ plan_data.weeks.0.days.0.confidence_task.sergeant_motivation }}</small>
+                                        {% elif plan_data.weeks.0.days.0.confidence_task.research_backing %}
+                                            <small class="text-success">🔬 {{ plan_data.weeks.0.days.0.confidence_task.research_backing }}</small>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="card-footer text-center py-4" style="border-radius: 0 0 20px 20px; background: #f8f9fa;">
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" name="action" value="confirm" class="btn btn-success btn-lg me-3" style="border-radius: 50px; padding: 12px 30px;">
+                            <i class="fas fa-check-circle me-2"></i>
+                            {% if archetype == 'bro' %}
+                                Погнали, братан!
+                            {% elif archetype == 'sergeant' %}
+                                Принимаю к исполнению!
+                            {% elif archetype == 'intellectual' %}
+                                Активировать протокол
+                            {% endif %}
+                        </button>
+                        
+                        <button type="submit" name="action" value="regenerate" class="btn btn-outline-primary btn-lg" style="border-radius: 50px; padding: 12px 30px;">
+                            <i class="fas fa-sync-alt me-2"></i>
+                            Другой план
+                        </button>
+                    </form>
+                    
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            План будет адаптироваться под ваш прогресс каждую неделю
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.trainer-avatar {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.trainer-avatar:hover {
+    transform: scale(1.05);
+}
+
+.stat-box {
+    padding: 1.5rem;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+}
+
+.week-card {
+    padding: 1.5rem;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.week-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.exercise-item {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 10px;
+    background: rgba(0,123,255,0.05);
+    border-left: 4px solid #007bff;
+}
+
+.exercise-item:last-child {
+    margin-bottom: 0;
+}
+
+.card {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.btn-outline-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.trainer-message {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bg-low { background-color: #28a745; }
+.bg-moderate { background-color: #ffc107; }
+.bg-high { background-color: #dc3545; }
+
+@media (max-width: 768px) {
+    .trainer-avatar {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    
+    .stat-box {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .week-card {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}

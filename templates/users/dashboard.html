@@ -1,0 +1,147 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Дашборд - AI Fitness Coach{% endblock %}
+
+{% block content %}
+
+<!-- Program Completion Notification -->
+{% if program_completion_available %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" 
+             style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-trophy fa-2x"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading mb-2">🎉 Программа завершена!</h5>
+                    <p class="mb-2">Поздравляем! Вы успешно завершили 6-недельную программу тренировок. 
+                       Время выбрать новый цикл и продолжить свое развитие!</p>
+                    <a href="{% url 'workouts:program_completion' %}" 
+                       class="btn btn-light btn-sm fw-bold">
+                        <i class="fas fa-rocket me-1"></i>
+                        Выбрать новый цикл
+                    </a>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" 
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Сегодняшняя тренировка</h5>
+                <span class="badge bg-info">Неделя {{ current_week }}</span>
+            </div>
+            <div class="card-body">
+                {% if today_workout %}
+                    <h6>{{ today_workout.name }}</h6>
+                    
+                    {% if today_workout.is_rest_day %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-bed"></i> Сегодня день отдыха! Отдохните и восстановитесь.
+                        </div>
+                    {% else %}
+                        <p class="text-muted">{{ today_workout.exercises|length }} упражнений</p>
+                        
+                        {% if today_workout.completed_at %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> Тренировка завершена!
+                                {% if today_workout.feedback_rating %}
+                                    <br>Ваша оценка: 
+                                    {% if today_workout.feedback_rating == 'fire' %}🔥 Отлично
+                                    {% elif today_workout.feedback_rating == 'smile' %}🙂 Хорошо
+                                    {% elif today_workout.feedback_rating == 'neutral' %}😐 Нормально
+                                    {% elif today_workout.feedback_rating == 'tired' %}🤕 Тяжело
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <a href="{% url 'workouts:daily_workout' today_workout.id %}" 
+                               class="btn btn-primary btn-lg">
+                                <i class="fas fa-play"></i> Начать тренировку
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    
+                    {% if today_workout.confidence_task %}
+                        <div class="mt-3">
+                            <h6>Задание на уверенность:</h6>
+                            <p class="text-muted">{{ today_workout.confidence_task }}</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Тренировка на сегодня не найдена. Обратитесь к администратору.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Progress Stats -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Ваш прогресс</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="h3 text-success">{{ streak }}</div>
+                        <small class="text-muted">Дней подряд</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h3 text-primary">{{ profile.total_workouts_completed }}</div>
+                        <small class="text-muted">Тренировок</small>
+                    </div>
+                </div>
+                
+                <!-- XP Progress Bar -->
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between">
+                        <small>Уровень {{ level }}</small>
+                        <small>{{ xp }} XP</small>
+                    </div>
+                    {% with next_level_xp=level|add:1|floatformat:0 %}
+                        {% with xp_needed=next_level_xp|floatformat:0 %}
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ xp|floatformat:0 }}%" 
+                                     aria-valuenow="{{ xp }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        {% endwith %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Achievements -->
+        {% if new_achievements %}
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">🏆 Новые достижения!</h6>
+            </div>
+            <div class="card-body">
+                {% for achievement in new_achievements %}
+                    <div class="alert alert-warning">
+                        <strong>{{ achievement.achievement.name }}</strong>
+                        <br>{{ achievement.achievement.description }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,498 @@
+{
+  "catalog_version": "1.0",
+  "total_exercises": 100,
+  "categories": {
+    "strength_base": "Силовые (база)",
+    "pulls_back": "Тяги и спина", 
+    "legs_core": "Ноги и корпус",
+    "core": "Core",
+    "cardio": "Кардио / меткон",
+    "mobility": "Мобилити / растяжка",
+    "equipment": "Mini-band / TRX / собственный вес",
+    "weights": "Гантели / гири",
+    "advanced": "Высокая сложность / прогрессии",
+    "recovery": "Восстановление / лёгкий день"
+  },
+  "exercises": [
+    {
+      "id": "EX001",
+      "name": "Классические отжимания",
+      "category": "strength_base",
+      "muscle_groups": ["грудь", "трицепс", "дельты"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX002", 
+      "name": "Широкие отжимания",
+      "category": "strength_base",
+      "muscle_groups": ["грудь", "дельты"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX003",
+      "name": "Алмазные отжимания", 
+      "category": "strength_base",
+      "muscle_groups": ["трицепс", "грудь"],
+      "equipment": "собственный вес",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX004",
+      "name": "Отжимания на брусьях",
+      "category": "strength_base",
+      "muscle_groups": ["грудь", "трицепс", "дельты"],
+      "equipment": "брусья",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX005",
+      "name": "Жим гантелей лёжа",
+      "category": "strength_base", 
+      "muscle_groups": ["грудь", "трицепс", "дельты"],
+      "equipment": "гантели",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX006",
+      "name": "Жим штанги лёжа",
+      "category": "strength_base",
+      "muscle_groups": ["грудь", "трицепс", "дельты"],
+      "equipment": "штанга",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX007",
+      "name": "Жим штанги узким хватом",
+      "category": "strength_base",
+      "muscle_groups": ["трицепс", "грудь"],
+      "equipment": "штанга",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX008",
+      "name": "Разводка гантелей лёжа",
+      "category": "strength_base",
+      "muscle_groups": ["грудь"],
+      "equipment": "гантели",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX009",
+      "name": "Жим гантелей сидя",
+      "category": "strength_base",
+      "muscle_groups": ["дельты", "трицепс"],
+      "equipment": "гантели", 
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX010",
+      "name": "Арнольд-жим",
+      "category": "strength_base",
+      "muscle_groups": ["дельты", "трицепс"],
+      "equipment": "гантели",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX011",
+      "name": "Подтягивания широким хватом",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "бицепс"],
+      "equipment": "перекладина",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX012",
+      "name": "Подтягивания обратным хватом",
+      "category": "pulls_back", 
+      "muscle_groups": ["спина", "бицепс"],
+      "equipment": "перекладина",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX013",
+      "name": "Горизонтальная тяга TRX",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "бицепс"],
+      "equipment": "TRX",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX014",
+      "name": "Тяга штанги в наклоне",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "бицепс"],
+      "equipment": "штанга",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX015",
+      "name": "Тяга гантели к поясу",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "бицепс"],
+      "equipment": "гантель",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX016",
+      "name": "Тяга верхнего блока",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "бицепс"],
+      "equipment": "тренажер",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX017",
+      "name": "Тяга нижнего блока",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "бицепс"],
+      "equipment": "тренажер",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX018",
+      "name": "Румынская тяга",
+      "category": "pulls_back",
+      "muscle_groups": ["задняя поверхность бедра", "ягодицы", "спина"],
+      "equipment": "штанга",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX019",
+      "name": "Гиперэкстензия",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "ягодицы"],
+      "equipment": "тренажер",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX020",
+      "name": "\"Супермен\" лёжа",
+      "category": "pulls_back",
+      "muscle_groups": ["спина", "ягодицы"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX021",
+      "name": "Приседания со штангой",
+      "category": "legs_core",
+      "muscle_groups": ["квадрицепс", "ягодицы"],
+      "equipment": "штанга",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX022",
+      "name": "Приседания \"кубковые\" с гантелью",
+      "category": "legs_core",
+      "muscle_groups": ["квадрицепс", "ягодицы"],
+      "equipment": "гантель",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX023",
+      "name": "Передний присед",
+      "category": "legs_core",
+      "muscle_groups": ["квадрицепс", "кор"],
+      "equipment": "штанга",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "EX024",
+      "name": "Болгарские выпады",
+      "category": "legs_core",
+      "muscle_groups": ["квадрицепс", "ягодицы"],
+      "equipment": "собственный вес",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX025",
+      "name": "Выпады шагом вперёд",
+      "category": "legs_core",
+      "muscle_groups": ["квадрицепс", "ягодицы"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX026",
+      "name": "Жим ногами в тренажёре",
+      "category": "legs_core",
+      "muscle_groups": ["квадрицепс", "ягодицы"],
+      "equipment": "тренажер",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX027",
+      "name": "Ягодичный мостик",
+      "category": "legs_core",
+      "muscle_groups": ["ягодицы", "задняя поверхность бедра"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX028",
+      "name": "Становая тяга классическая",
+      "category": "legs_core",
+      "muscle_groups": ["задняя поверхность бедра", "ягодицы", "спина"],
+      "equipment": "штанга",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX029",
+      "name": "Становая сумо",
+      "category": "legs_core",
+      "muscle_groups": ["задняя поверхность бедра", "ягодицы", "спина"],
+      "equipment": "штанга",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX030",
+      "name": "Подъём на носки стоя",
+      "category": "legs_core",
+      "muscle_groups": ["икры"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX031",
+      "name": "Планка передняя",
+      "category": "core",
+      "muscle_groups": ["кор"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX032",
+      "name": "Планка боковая",
+      "category": "core",
+      "muscle_groups": ["кор", "косые мышцы"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX033",
+      "name": "V-сит ап",
+      "category": "core",
+      "muscle_groups": ["кор"],
+      "equipment": "собственный вес",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX034",
+      "name": "Скручивания классические",
+      "category": "core",
+      "muscle_groups": ["пресс"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX035",
+      "name": "Велосипед лёжа",
+      "category": "core",
+      "muscle_groups": ["пресс", "косые мышцы"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX036",
+      "name": "Подъём коленей в висе",
+      "category": "core",
+      "muscle_groups": ["пресс"],
+      "equipment": "перекладина",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX037",
+      "name": "Russian twist",
+      "category": "core",
+      "muscle_groups": ["косые мышцы", "пресс"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX038",
+      "name": "\"Дровосек\" на блоке",
+      "category": "core",
+      "muscle_groups": ["косые мышцы", "кор"],
+      "equipment": "тренажер",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX039",
+      "name": "Dead bug",
+      "category": "core",
+      "muscle_groups": ["кор", "стабилизаторы"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX040",
+      "name": "Альпинист",
+      "category": "core",
+      "muscle_groups": ["кор", "кардио"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX041",
+      "name": "Бёрпи классические",
+      "category": "cardio",
+      "muscle_groups": ["всё тело"],
+      "equipment": "собственный вес",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX042",
+      "name": "Бёрпи с прыжком на тумбу",
+      "category": "cardio",
+      "muscle_groups": ["всё тело"],
+      "equipment": "тумба",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "EX043",
+      "name": "Прыжки на скакалке",
+      "category": "cardio",
+      "muscle_groups": ["икры", "кардио"],
+      "equipment": "скакалка",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX044",
+      "name": "Интервальный бег 30/30",
+      "category": "cardio",
+      "muscle_groups": ["ноги", "кардио"],
+      "equipment": "беговая дорожка",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX045",
+      "name": "Бег 5 км ровно",
+      "category": "cardio",
+      "muscle_groups": ["ноги", "кардио"],
+      "equipment": "беговая дорожка",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX046",
+      "name": "Ускорения 100 м",
+      "category": "cardio",
+      "muscle_groups": ["ноги", "кардио"],
+      "equipment": "беговая дорожка",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX047",
+      "name": "Гребля 500 м",
+      "category": "cardio",
+      "muscle_groups": ["спина", "ноги", "кардио"],
+      "equipment": "гребной тренажер",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX048",
+      "name": "Велотренажёр спринт",
+      "category": "cardio",
+      "muscle_groups": ["ноги", "кардио"],
+      "equipment": "велотренажер",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "EX049",
+      "name": "Бэдминтон любительский сет",
+      "category": "cardio",
+      "muscle_groups": ["всё тело", "кардио"],
+      "equipment": "ракетка",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX050",
+      "name": "Прыжки \"Джампинг Джек\"",
+      "category": "cardio",
+      "muscle_groups": ["всё тело", "кардио"],
+      "equipment": "собственный вес",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "EX091",
+      "name": "Ходьба 30 мин",
+      "category": "recovery",
+      "muscle_groups": ["восстановление"],
+      "equipment": "собственный вес",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX092",
+      "name": "Йога \"Сурья Намаскар\" 5 кругов",
+      "category": "recovery",
+      "muscle_groups": ["гибкость", "восстановление"],
+      "equipment": "собственный вес",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX093",
+      "name": "Foam-роллинг спины 10 мин",
+      "category": "recovery",
+      "muscle_groups": ["восстановление"],
+      "equipment": "ролик",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX094",
+      "name": "Foam-роллинг ног 10 мин",
+      "category": "recovery",
+      "muscle_groups": ["восстановление"],
+      "equipment": "ролик",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX095",
+      "name": "Дыхательная 4-7-8, 5 мин",
+      "category": "recovery",
+      "muscle_groups": ["восстановление"],
+      "equipment": "собственный вес",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX096",
+      "name": "Медитация \"скан тела\" 10 мин",
+      "category": "recovery",
+      "muscle_groups": ["восстановление"],
+      "equipment": "собственный вес",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX097",
+      "name": "Мягкая растяжка плеч 8 мин",
+      "category": "recovery",
+      "muscle_groups": ["гибкость"],
+      "equipment": "собственный вес",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX098",
+      "name": "Прогулка в парке 3 км",
+      "category": "recovery",
+      "muscle_groups": ["восстановление"],
+      "equipment": "собственный вес",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX099",
+      "name": "Лёгкое плавание 20 мин",
+      "category": "recovery",
+      "muscle_groups": ["всё тело", "восстановление"],
+      "equipment": "бассейн",
+      "difficulty": "recovery"
+    },
+    {
+      "id": "EX100",
+      "name": "Велосипед-круиз 45 мин",
+      "category": "recovery",
+      "muscle_groups": ["ноги", "восстановление"],
+      "equipment": "велосипед",
+      "difficulty": "recovery"
+    }
+  ]
+}

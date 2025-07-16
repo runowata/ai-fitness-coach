@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Время тренировки!</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+        .content { padding: 30px; }
+        .workout-card { background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .btn { display: inline-block; background: #2196f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 24px; font-weight: bold; color: #2196f3; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Время тренировки!</h1>
+            <p>Привет, {{ user.first_name|default:user.username }}!</p>
+        </div>
+        
+        <div class="content">
+            <p>Твоя ежедневная тренировка ждет тебя!</p>
+            
+            <div class="workout-card">
+                <h3>{{ workout.name }}</h3>
+                {% if workout.is_rest_day %}
+                    <p>🧘‍♂️ Сегодня день отдыха и восстановления</p>
+                {% else %}
+                    <p>📝 {{ workout.exercises|length }} упражнений</p>
+                    <p>⏱️ Примерное время: 30-45 минут</p>
+                {% endif %}
+                
+                {% if workout.confidence_task %}
+                    <div style="margin-top: 15px; padding: 15px; background: #e3f2fd; border-radius: 6px;">
+                        <strong>💪 Задание на уверенность:</strong>
+                        <p>{{ workout.confidence_task }}</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">{{ streak }}</div>
+                    <div>дней подряд</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">{{ user.total_workouts_completed }}</div>
+                    <div>тренировок</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">{{ user.level }}</div>
+                    <div>уровень</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <a href="{{ workout_url }}" class="btn">🚀 Начать тренировку</a>
+            </div>
+            
+            <p style="margin-top: 30px; color: #666; font-size: 14px;">
+                Помни: постоянство важнее интенсивности. Даже 15 минут лучше, чем пропуск!
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>AI Fitness Coach - Твой персональный тренер</p>
+            <p style="font-size: 12px;">
+                Не хочешь получать напоминания? 
+                <a href="{{ settings_url }}">Измени настройки</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

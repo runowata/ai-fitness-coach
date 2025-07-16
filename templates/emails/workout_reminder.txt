@@ -1,0 +1,25 @@
+💪 ВРЕМЯ ТРЕНИРОВКИ!
+
+Привет, {{ user.first_name|default:user.username }}!
+
+Твоя ежедневная тренировка ждет тебя:
+
+{{ workout.name }}
+{% if workout.is_rest_day %}🧘‍♂️ Сегодня день отдыха и восстановления{% else %}📝 {{ workout.exercises|length }} упражнений
+⏱️ Примерное время: 30-45 минут{% endif %}
+
+{% if workout.confidence_task %}💪 Задание на уверенность:
+{{ workout.confidence_task }}
+{% endif %}
+
+Твоя статистика:
+🔥 {{ streak }} дней подряд
+💪 {{ user.total_workouts_completed }} тренировок
+⭐ {{ user.level }} уровень
+
+Начать тренировку: {{ workout_url }}
+
+Помни: постоянство важнее интенсивности. Даже 15 минут лучше, чем пропуск!
+
+---
+AI Fitness Coach - Твой персональный тренер

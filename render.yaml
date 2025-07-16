@@ -1,0 +1,102 @@
+services:
+  # Redis service for Celery task queue
+  - type: redis
+    name: ai-fitness-redis
+    ipAllowList: []  # private access only
+
+  # Django web application
+  - type: web
+    name: ai-fitness-web
+    env: python
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+      python manage.py loaddata fixtures/onboarding_questions.json --verbosity=2 || echo "Onboarding questions already loaded or error occurred"
+      python manage.py loaddata fixtures/exercises.json --verbosity=2 || echo "Exercises already loaded or error occurred"
+      python manage.py loaddata fixtures/achievements.json --verbosity=2 || echo "Achievements already loaded or error occurred"
+      python manage.py loaddata fixtures/stories.json --verbosity=2 || echo "Stories already loaded or error occurred"
+      python manage.py reset_all_onboarding --verbosity=2 || echo "Onboarding reset completed"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
+    plan: standard
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.2
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: RENDER
+        value: "1"
+      - key: USE_S3
+        value: "False"
+      - key: DJANGO_DEBUG
+        value: "False"
+      # Critical environment variables (must be set manually in Render dashboard)
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      # Redis connection from service
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ai-fitness-redis
+          property: connectionString
+    disk:
+      name: videos-storage
+      mountPath: /opt/render/project/src/media
+      sizeGB: 10
+
+  # Celery worker for background tasks
+  - type: worker
+    name: ai-fitness-celery
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A config worker -l info --concurrency 2 -Q default"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.2
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: RENDER
+        value: "1"
+      - key: DJANGO_DEBUG
+        value: "False"
+      # Critical environment variables (must be set manually in Render dashboard)
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      # Redis connection from service
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ai-fitness-redis
+          property: connectionString
+
+  # Celery beat for scheduled tasks
+  - type: worker
+    name: ai-fitness-celery-beat
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.2
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: RENDER
+        value: "1"
+      - key: DJANGO_DEBUG
+        value: "False"
+      # Critical environment variables (must be set manually in Render dashboard)
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      # Redis connection from service
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ai-fitness-redis
+          property: connectionString

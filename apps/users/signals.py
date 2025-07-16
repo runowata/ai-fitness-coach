@@ -1,0 +1,1 @@
+# UserProfile signals removed - profile data now part of User model
