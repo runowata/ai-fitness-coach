@@ -149,3 +149,6 @@ create_questions.py
 
 # AWS requirements
 requirements_aws.txt
+
+# Git configuration with tokens
+.git/

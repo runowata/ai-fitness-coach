@@ -5,18 +5,18 @@ from django.http import JsonResponse
 
 def home_view(request):
     """Homepage - show landing page for guests, redirect authenticated users"""
-    if request.user.is_authenticated:
-        # Import here to avoid circular imports
-        from apps.onboarding.services import OnboardingService
-        
-        # Check if user needs onboarding - use same validation as dashboard
-        if not OnboardingService.validate_and_fix_onboarding_status(request.user):
-            return redirect('onboarding:start')
-        else:
-            return redirect('users:dashboard')
+    # Guests get landing page immediately
+    if not request.user.is_authenticated:
+        return render(request, 'core/home.html')
     
-    # Show landing page for guests
-    return render(request, 'core/home.html')
+    # Only for authenticated users
+    from apps.onboarding.services import OnboardingService
+    
+    # Check if user needs onboarding
+    if not OnboardingService.validate_and_fix_onboarding_status(request.user):
+        return redirect('onboarding:start')
+    
+    return redirect('users:dashboard')
 
 
 def about_view(request):

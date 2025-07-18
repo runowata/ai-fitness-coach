@@ -34,6 +34,7 @@ class OnboardingService:
     @staticmethod
     def validate_and_fix_onboarding_status(user) -> bool:
         """Validate and fix onboarding status - call this only when safe to save"""
+        # Early exit for anonymous users
         if not user.is_authenticated:
             return False
             
