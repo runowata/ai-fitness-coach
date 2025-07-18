@@ -34,8 +34,14 @@ class Exercise(models.Model):
     muscle_groups = models.TextField()  # Match existing table
     equipment = models.CharField(max_length=50)  # Match existing table name
     
-    # Remove fields not in existing table
-    # alternatives = models.ManyToManyField('self', blank=True, symmetrical=True)
+    # Alternatives for exercises
+    alternatives = models.ManyToManyField(
+        "self",
+        symmetrical=False,
+        blank=True,
+        related_name="alternative_for",
+        help_text="Упражнения-замены"
+    )
     # technique_video_url = models.URLField(blank=True)
     # mistake_video_url = models.URLField(blank=True)
     # created_at = models.DateTimeField(auto_now_add=True)
