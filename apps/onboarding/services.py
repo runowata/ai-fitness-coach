@@ -238,21 +238,21 @@ class ArchetypeService:
                 'key': 'bro',
                 'name': 'Бро',
                 'description': 'Дружелюбный и мотивирующий. Всегда поддержит и подскажет. Говорит простым языком.',
-                'image': '/static/images/avatars/bro_avatar_1.jpg',
+                'image': '/static/images/bro-avatar.png',
                 'style': 'Casual и расслабленный'
             },
             {
                 'key': 'sergeant',
                 'name': 'Сержант',
                 'description': 'Строгий и требовательный. Поможет вам превзойти себя. Четкие команды и дисциплина.',
-                'image': '/static/images/avatars/sergeant_avatar_1.jpg',
+                'image': '/static/images/sergeant-avatar.png',
                 'style': 'Военный стиль'
             },
             {
                 'key': 'intellectual',
                 'name': 'Интеллектуал',
                 'description': 'Научный подход к тренировкам. Детальные объяснения и обоснования.',
-                'image': '/static/images/avatars/intellectual_avatar_1.jpg',
+                'image': '/static/images/intellectual-avatar.png',
                 'style': 'Научный подход'
             }
         ]

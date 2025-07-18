@@ -159,6 +159,6 @@ class Command(BaseCommand):
                 category=card_data['category'],
                 title=card_data['title'],
                 message=card_data['message'],
-                image_url=f'/static/images/avatars/{card_data["archetype"]}_avatar_1.jpg',
+                image_url=f'/static/images/{card_data["archetype"]}-avatar.png',
                 is_active=True
             )

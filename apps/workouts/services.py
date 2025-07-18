@@ -370,22 +370,21 @@ class VideoPlaylistBuilder:
         try:
             exercise = Exercise.objects.get(slug=exercise_slug)
             
-            # Get alternatives that match user's equipment
-            alternatives = exercise.alternatives.filter(
-                is_active=True
-            ).all()
+            # First try to get predefined alternatives from the ManyToMany field
+            alternatives = list(exercise.alternatives.all())
             
-            # Filter by equipment availability
-            suitable_alternatives = []
-            for alt in alternatives:
-                required_equipment = set(alt.equipment_needed)
-                user_equipment_set = set(user_equipment)
-                
-                # Check if user has all required equipment
-                if required_equipment.issubset(user_equipment_set) or not required_equipment:
-                    suitable_alternatives.append(alt)
+            # If no predefined alternatives, find similar exercises by equipment and difficulty
+            if not alternatives:
+                alternatives = list(Exercise.objects.filter(
+                    equipment=exercise.equipment,
+                    difficulty=exercise.difficulty
+                ).exclude(id=exercise.id)[:3])
             
-            return suitable_alternatives
+            # Filter alternatives by user's available equipment
+            if user_equipment:
+                alternatives = [alt for alt in alternatives if alt.equipment in user_equipment]
+            
+            return alternatives[:3]  # Return up to 3 alternatives
             
         except Exercise.DoesNotExist:
             return []
