@@ -89,7 +89,7 @@ class VideoClip(models.Model):
         null=True
     )
     model_name = models.CharField(max_length=50, blank=True, null=True)  # mod1, mod2, mod3
-    url = models.URLField()
+    url = models.URLField(unique=True)
     duration_seconds = models.PositiveIntegerField()
     
     # For reminder clips

@@ -147,11 +147,11 @@ class Command(BaseCommand):
         for video_data in trainer_videos:
             if not dry_run:
                 video_clip, created = VideoClip.objects.get_or_create(
-                    exercise=None,  # Trainer videos not linked to specific exercise
-                    type=video_data['type'],
-                    archetype=video_data['archetype'],
                     url=f'/media/{video_data["file"]}',
                     defaults={
+                        'exercise': None,  # Trainer videos not linked to specific exercise
+                        'type': video_data['type'],
+                        'archetype': video_data['archetype'],
                         'duration_seconds': 60,  # Default duration
                         'is_active': True,
                     }
@@ -182,11 +182,11 @@ class Command(BaseCommand):
         for video_data in motivational_videos:
             if not dry_run:
                 video_clip, created = VideoClip.objects.get_or_create(
-                    exercise=None,
-                    type=video_data['type'],
-                    archetype=video_data['archetype'],
                     url=f'/media/{video_data["file"]}',
                     defaults={
+                        'exercise': None,
+                        'type': video_data['type'],
+                        'archetype': video_data['archetype'],
                         'duration_seconds': 30,  # Default duration
                         'is_active': True,
                     }
