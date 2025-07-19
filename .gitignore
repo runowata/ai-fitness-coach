@@ -97,8 +97,9 @@ cache/
 flask_session/
 
 # Video files - exclude from Git
-static/videos/
+# static/videos/  # Allow transformation video
 *.mp4
+!static/videos/Video_o_transformaciji_tela.mp4
 *.avi
 *.mov
 
