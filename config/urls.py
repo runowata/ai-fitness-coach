@@ -1,4 +1,5 @@
 """URL Configuration for AI Fitness Coach"""
+import os
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -25,8 +26,12 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 
-if settings.DEBUG:
+# Media files serving
+# Serve media files in DEBUG mode or when RENDER variable is set (production deployment on Render)
+if settings.DEBUG or os.getenv('RENDER'):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     
     import debug_toolbar
