@@ -9,7 +9,8 @@
       "description": "История о том, как молодой парень через фитнес обрел не только идеальное тело, но и настоящую любовь",
       "cover_image_url": "https://your-s3-bucket.s3.amazonaws.com/stories/confidence_journey_cover.jpg",
       "total_chapters": 8,
-      "is_published": true
+      "is_published": true,
+      "created_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -22,7 +23,8 @@
       "content": "Максим стоял перед дверью тренажерного зала, сжимая в руке абонемент. Сердце колотилось не от физической нагрузки, а от волнения. Ему было 25, и это был его первый раз...",
       "estimated_reading_time": 15,
       "image_url": "https://your-s3-bucket.s3.amazonaws.com/stories/confidence_journey_ch1.jpg",
-      "is_published": true
+      "is_published": true,
+      "created_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -35,7 +37,8 @@
       "description": "Страстная история о двух мужчинах, которые нашли друг друга между подходами к штанге",
       "cover_image_url": "https://your-s3-bucket.s3.amazonaws.com/stories/gym_romance_cover.jpg",
       "total_chapters": 10,
-      "is_published": true
+      "is_published": true,
+      "created_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -48,7 +51,8 @@
       "description": "От стеснительного программиста до уверенного в себе атлета - история полного преображения",
       "cover_image_url": "https://your-s3-bucket.s3.amazonaws.com/stories/transformation_cover.jpg",
       "total_chapters": 12,
-      "is_published": true
+      "is_published": true,
+      "created_at": "2025-07-23T00:00:00Z"
     }
   }
 ]

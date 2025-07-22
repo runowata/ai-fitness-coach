@@ -6,7 +6,8 @@
       "title": "Отличный выбор!",
       "message": "Похудение - это путешествие к лучшей версии себя. Мы поможем вам достичь цели шаг за шагом, с удовольствием и без изнурительных диет.",
       "image_url": "https://your-s3-bucket.s3.amazonaws.com/cards/weight_loss_motivation.jpg",
-      "category": "goal"
+      "category": "goal",
+      "created_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -16,7 +17,8 @@
       "title": "Сила и красота!",
       "message": "Набор мышечной массы - это не только о внешности. Это о силе, уверенности и здоровье. Готовьтесь удивить себя и окружающих!",
       "image_url": "https://your-s3-bucket.s3.amazonaws.com/cards/muscle_gain_motivation.jpg",
-      "category": "goal"
+      "category": "goal",
+      "created_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -26,7 +28,8 @@
       "title": "Каждый начинал с нуля",
       "message": "Быть новичком - это прекрасно! У вас впереди самый быстрый прогресс. Мы создадим программу, которая будет расти вместе с вами.",
       "image_url": "https://your-s3-bucket.s3.amazonaws.com/cards/beginner_welcome.jpg",
-      "category": "experience"
+      "category": "experience",
+      "created_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -36,7 +39,8 @@
       "title": "Уверенность начинается изнутри",
       "message": "Физические упражнения - это мощный инструмент для построения уверенности. С каждой тренировкой вы становитесь сильнее не только телом, но и духом.",
       "image_url": "https://your-s3-bucket.s3.amazonaws.com/cards/confidence_building.jpg",
-      "category": "goal"
+      "category": "goal",
+      "created_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -46,7 +50,8 @@
       "title": "Ваш опыт - ваше преимущество",
       "message": "Вы уже знаете, на что способны. Теперь пора выйти на новый уровень с персонализированной программой, созданной специально для вас.",
       "image_url": "https://your-s3-bucket.s3.amazonaws.com/cards/intermediate_level.jpg",
-      "category": "experience"
+      "category": "experience",
+      "created_at": "2025-07-23T00:00:00Z"
     }
   }
 ]

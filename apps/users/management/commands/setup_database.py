@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.db import connection
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,7 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.SUCCESS(f'✓ Loaded {fixture}'))
                     except Exception as e:
                         self.stdout.write(self.style.WARNING(f'⚠ Failed to load {fixture}: {e}'))
+                        self.stderr.write(traceback.format_exc())
                         # Continue with other fixtures - some may succeed
                         
                 self.stdout.write(self.style.SUCCESS('=== Database setup complete ==='))
