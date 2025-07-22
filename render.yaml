@@ -9,8 +9,7 @@ services:
     name: ai-fitness-coach
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    preDeployCommand: "python manage.py migrate --noinput && python manage.py loaddata fixtures/exercises.json fixtures/onboarding_questions.json fixtures/motivational_cards.json fixtures/stories.json fixtures/video_clips.json fixtures/achievements.json"
-    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
+    startCommand: "python manage.py migrate --noinput && python manage.py loaddata fixtures/exercises.json fixtures/onboarding_questions.json fixtures/motivational_cards.json fixtures/stories.json fixtures/video_clips.json fixtures/achievements.json && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
     plan: free
     region: frankfurt
     healthCheckPath: /
