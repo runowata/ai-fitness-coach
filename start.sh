@@ -12,5 +12,5 @@ python manage.py loaddata fixtures/stories.json
 python manage.py loaddata fixtures/video_clips.json
 python manage.py loaddata fixtures/achievements.json
 
-echo "Starting gunicorn..."
-gunicorn config.wsgi:application --log-file -
+echo "Starting gunicorn on port $PORT..."
+gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300 --log-file -
