@@ -1,11 +1,15 @@
 #!/bin/bash
 set -o errexit
 
+echo "Starting build process..."
+
 # Install dependencies
+echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
 # Run migrations
-python manage.py migrate
+echo "Running database migrations..."
+python manage.py migrate --verbosity=2
 
 # Debug: Check static files structure
 echo "Checking static files..."
