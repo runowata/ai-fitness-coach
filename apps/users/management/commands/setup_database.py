@@ -45,7 +45,8 @@ class Command(BaseCommand):
                         call_command('loaddata', fixture)
                         self.stdout.write(self.style.SUCCESS(f'✓ Loaded {fixture}'))
                     except Exception as e:
-                        self.stdout.write(self.style.ERROR(f'✗ Failed to load {fixture}: {e}'))
+                        self.stdout.write(self.style.WARNING(f'⚠ Failed to load {fixture}: {e}'))
+                        # Continue with other fixtures - some may succeed
                         
                 self.stdout.write(self.style.SUCCESS('=== Database setup complete ==='))
             else:
