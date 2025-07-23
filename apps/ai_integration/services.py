@@ -826,8 +826,8 @@ class WorkoutPlanGenerator:
         
         # 1) пользовательский флаг
         if hasattr(user, "profile"):
-            user.profile.onboarding_completed = True
-            user.profile.save(update_fields=["onboarding_completed"])
+            user.profile.onboarding_completed_at = timezone.now()
+            user.profile.save(update_fields=["onboarding_completed_at"])
         else:
             user.completed_onboarding = True  # если поле у самого User
             user.save(update_fields=["completed_onboarding"])
