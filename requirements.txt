@@ -30,6 +30,7 @@ redis==5.0.8
 # Authentication
 django-otp==1.5.4
 qrcode==7.4.2
+argon2-cffi==23.1.0
 
 # Time zones
 pytz==2024.1
