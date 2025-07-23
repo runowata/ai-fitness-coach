@@ -24,8 +24,8 @@ class RegisterView(CreateView):
         # Create user
         response = super().form_valid(form)
         
-        # Create profile
-        UserProfile.objects.create(user=self.object)
+        # Create profile if it doesn't exist
+        UserProfile.objects.get_or_create(user=self.object)
         
         # Auto-login
         user = authenticate(
