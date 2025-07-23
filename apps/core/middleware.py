@@ -95,7 +95,14 @@ class DatabaseSetupMiddleware:
                 else:
                     logger.error("❌ equipment_needed column still missing after migrations")
             else:
-                logger.info("✓ Database already set up")
+                # Check if we need to bootstrap exercises
+                from apps.workouts.models import Exercise
+                if Exercise.objects.count() == 0:
+                    logger.info("No exercises found - running bootstrap...")
+                    call_command('bootstrap_from_videos')
+                    logger.info("✓ Bootstrap from videos complete")
+                else:
+                    logger.info("✓ Database already set up")
                 
         except Exception as e:
             logger.error(f"Database setup failed: {e}")

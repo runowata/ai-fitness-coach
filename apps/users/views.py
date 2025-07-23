@@ -42,7 +42,13 @@ class RegisterView(CreateView):
 def dashboard_view(request):
     """Main dashboard showing today's workout"""
     user = request.user
-    profile = user.profile
+    
+    # Get or create user profile if it doesn't exist
+    try:
+        profile = user.profile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=user)
+        messages.info(request, 'Создан профиль пользователя. Пройдите онбординг для настройки!')
     
     # Get active workout plan
     workout_plan = user.workout_plans.filter(is_active=True).first()
