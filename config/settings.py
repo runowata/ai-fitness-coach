@@ -2,8 +2,8 @@
 Django settings for AI Fitness Coach project.
 """
 
-import os
 from pathlib import Path
+import os, secrets
 from dotenv import load_dotenv
 import dj_database_url
 
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'apps.core.middleware.WhiteNoiseExcludeMediaMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -246,3 +246,16 @@ LOGGING = {
         },
     },
 }
+
+# ─── Static files via WhiteNoise ────────────────────────────────
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Allow Render's dynamic hostname
+RENDER_HOST = os.getenv("RENDER_EXTERNAL_HOSTNAME", "")
+ALLOWED_HOSTS += [RENDER_HOST] if RENDER_HOST else []
+# Robust SECRET_KEY resolution
+if not os.getenv("SECRET_KEY"):
+    if DEBUG:
+        os.environ["SECRET_KEY"] = "dev-" + secrets.token_urlsafe(32)
+    else:
+        raise RuntimeError("SECRET_KEY env var required in production")
+SECRET_KEY = os.environ["SECRET_KEY"]
