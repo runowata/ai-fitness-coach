@@ -1,7 +1,7 @@
 [
   {
     "model": "content.story",
-    "pk": 1,
+    "pk": "1",
     "fields": {
       "slug": "confidence-journey",
       "title": "Путешествие к уверенности",
@@ -15,7 +15,7 @@
   },
   {
     "model": "content.storychapter",
-    "pk": 1,
+    "pk": "1",
     "fields": {
       "story": 1,
       "chapter_number": 1,
@@ -29,7 +29,7 @@
   },
   {
     "model": "content.story",
-    "pk": 2,
+    "pk": "2",
     "fields": {
       "slug": "gym-romance",
       "title": "Роман в тренажерном зале",
@@ -43,7 +43,7 @@
   },
   {
     "model": "content.story",
-    "pk": 3,
+    "pk": "3",
     "fields": {
       "slug": "transformation",
       "title": "Трансформация",

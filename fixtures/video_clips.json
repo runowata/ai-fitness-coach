@@ -1,7 +1,7 @@
 [
   {
     "model": "workouts.videoclip",
-    "pk": 1,
+    "pk": "1",
     "fields": {
       "exercise": 1,
       "type": "technique",
@@ -15,7 +15,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 2,
+    "pk": "2",
     "fields": {
       "exercise": 1,
       "type": "instruction",
@@ -29,7 +29,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 3,
+    "pk": "3",
     "fields": {
       "exercise": 1,
       "type": "reminder",
@@ -44,7 +44,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 4,
+    "pk": "4",
     "fields": {
       "exercise": 1,
       "type": "instruction",
@@ -58,7 +58,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 5,
+    "pk": "5",
     "fields": {
       "exercise": 1,
       "type": "instruction",
@@ -72,7 +72,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 6,
+    "pk": "6",
     "fields": {
       "exercise": 2,
       "type": "technique",
@@ -86,7 +86,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 7,
+    "pk": "7",
     "fields": {
       "exercise": null,
       "type": "weekly",
@@ -101,7 +101,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 8,
+    "pk": "8",
     "fields": {
       "exercise": null,
       "type": "final",
@@ -115,7 +115,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 9,
+    "pk": "9",
     "fields": {
       "exercise": 1,
       "type": "mistake",
@@ -129,7 +129,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 10,
+    "pk": "10",
     "fields": {
       "exercise": 2,
       "type": "instruction",
@@ -143,7 +143,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 11,
+    "pk": "11",
     "fields": {
       "exercise": 2,
       "type": "reminder",
@@ -158,7 +158,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 12,
+    "pk": "12",
     "fields": {
       "exercise": 3,
       "type": "technique",
@@ -172,7 +172,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 13,
+    "pk": "13",
     "fields": {
       "exercise": 3,
       "type": "instruction",
@@ -186,7 +186,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 14,
+    "pk": "14",
     "fields": {
       "exercise": null,
       "type": "weekly",
@@ -201,7 +201,7 @@
   },
   {
     "model": "workouts.videoclip",
-    "pk": 15,
+    "pk": "15",
     "fields": {
       "exercise": null,
       "type": "final",

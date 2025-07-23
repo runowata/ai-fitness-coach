@@ -1,7 +1,7 @@
 [
   {
     "model": "workouts.exercise",
-    "pk": 1,
+    "pk": "1",
     "fields": {
       "slug": "push-up",
       "name": "Отжимания",
@@ -19,7 +19,7 @@
   },
   {
     "model": "workouts.exercise",
-    "pk": 2,
+    "pk": "2",
     "fields": {
       "slug": "squat",
       "name": "Приседания",
@@ -35,7 +35,7 @@
   },
   {
     "model": "workouts.exercise",
-    "pk": 3,
+    "pk": "3",
     "fields": {
       "slug": "plank",
       "name": "Планка",
@@ -51,7 +51,7 @@
   },
   {
     "model": "workouts.exercise",
-    "pk": 4,
+    "pk": "4",
     "fields": {
       "slug": "dumbbell-curl",
       "name": "Сгибание рук с гантелями",
@@ -69,7 +69,7 @@
   },
   {
     "model": "workouts.exercise",
-    "pk": 5,
+    "pk": "5",
     "fields": {
       "slug": "pull-up",
       "name": "Подтягивания",

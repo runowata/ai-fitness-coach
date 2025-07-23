@@ -1,7 +1,7 @@
 [
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 1,
+    "pk": "1",
     "fields": {
       "order": 1,
       "question_text": "Какова ваша основная цель?",
@@ -15,7 +15,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 1,
+    "pk": "1",
     "fields": {
       "question": 1,
       "option_text": "Похудеть и подтянуть тело",
@@ -26,7 +26,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 2,
+    "pk": "2",
     "fields": {
       "question": 1,
       "option_text": "Набрать мышечную массу",
@@ -37,7 +37,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 3,
+    "pk": "3",
     "fields": {
       "question": 1,
       "option_text": "Улучшить выносливость и здоровье",
@@ -48,7 +48,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 4,
+    "pk": "4",
     "fields": {
       "question": 1,
       "option_text": "Стать более уверенным в себе",
@@ -59,7 +59,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 5,
+    "pk": "5",
     "fields": {
       "question": 1,
       "option_text": "Подготовиться к особому событию",
@@ -70,7 +70,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 2,
+    "pk": "2",
     "fields": {
       "order": 2,
       "question_text": "Ваш возраст?",
@@ -85,7 +85,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 3,
+    "pk": "3",
     "fields": {
       "order": 3,
       "question_text": "Ваш рост?",
@@ -101,7 +101,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 4,
+    "pk": "4",
     "fields": {
       "order": 4,
       "question_text": "Ваш вес?",
@@ -117,7 +117,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 5,
+    "pk": "5",
     "fields": {
       "order": 5,
       "question_text": "Ваш опыт тренировок?",
@@ -130,7 +130,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 6,
+    "pk": "6",
     "fields": {
       "question": 5,
       "option_text": "Новичок (менее 6 месяцев)",
@@ -141,7 +141,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 7,
+    "pk": "7",
     "fields": {
       "question": 5,
       "option_text": "Средний уровень (6 месяцев - 2 года)",
@@ -152,7 +152,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 8,
+    "pk": "8",
     "fields": {
       "question": 5,
       "option_text": "Продвинутый (более 2 лет)",
@@ -163,7 +163,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 6,
+    "pk": "6",
     "fields": {
       "order": 6,
       "question_text": "Сколько дней в неделю вы готовы тренироваться?",
@@ -176,7 +176,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 9,
+    "pk": "9",
     "fields": {
       "question": 6,
       "option_text": "2-3 дня (минимум)",
@@ -187,7 +187,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 10,
+    "pk": "10",
     "fields": {
       "question": 6,
       "option_text": "3-4 дня (оптимально)",
@@ -198,7 +198,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 11,
+    "pk": "11",
     "fields": {
       "question": 6,
       "option_text": "5-6 дней (интенсивно)",
@@ -209,7 +209,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 12,
+    "pk": "12",
     "fields": {
       "question": 6,
       "option_text": "Каждый день",
@@ -220,7 +220,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 7,
+    "pk": "7",
     "fields": {
       "order": 7,
       "question_text": "Сколько времени вы готовы уделять одной тренировке?",
@@ -233,7 +233,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 13,
+    "pk": "13",
     "fields": {
       "question": 7,
       "option_text": "20-30 минут (быстро)",
@@ -244,7 +244,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 14,
+    "pk": "14",
     "fields": {
       "question": 7,
       "option_text": "30-45 минут (стандартно)",
@@ -255,7 +255,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 15,
+    "pk": "15",
     "fields": {
       "question": 7,
       "option_text": "45-60 минут (полноценно)",
@@ -266,7 +266,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 16,
+    "pk": "16",
     "fields": {
       "question": 7,
       "option_text": "Более 60 минут (максимально)",
@@ -277,7 +277,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 8,
+    "pk": "8",
     "fields": {
       "order": 8,
       "question_text": "Какое оборудование у вас есть?",
@@ -291,7 +291,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 17,
+    "pk": "17",
     "fields": {
       "question": 8,
       "option_text": "Нет оборудования (только вес тела)",
@@ -302,7 +302,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 18,
+    "pk": "18",
     "fields": {
       "question": 8,
       "option_text": "Гантели",
@@ -313,7 +313,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 19,
+    "pk": "19",
     "fields": {
       "question": 8,
       "option_text": "Турник/брусья",
@@ -324,7 +324,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 20,
+    "pk": "20",
     "fields": {
       "question": 8,
       "option_text": "Эспандеры/резинки",
@@ -335,7 +335,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 21,
+    "pk": "21",
     "fields": {
       "question": 8,
       "option_text": "Коврик для йоги",
@@ -346,7 +346,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 22,
+    "pk": "22",
     "fields": {
       "question": 8,
       "option_text": "Полный доступ к тренажерному залу",
@@ -357,7 +357,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 9,
+    "pk": "9",
     "fields": {
       "order": 9,
       "question_text": "Есть ли у вас проблемы со здоровьем или травмы?",
@@ -371,7 +371,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 23,
+    "pk": "23",
     "fields": {
       "question": 9,
       "option_text": "Нет ограничений",
@@ -382,7 +382,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 24,
+    "pk": "24",
     "fields": {
       "question": 9,
       "option_text": "Проблемы со спиной",
@@ -393,7 +393,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 25,
+    "pk": "25",
     "fields": {
       "question": 9,
       "option_text": "Проблемы с коленями",
@@ -404,7 +404,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 26,
+    "pk": "26",
     "fields": {
       "question": 9,
       "option_text": "Проблемы с плечами",
@@ -415,7 +415,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 27,
+    "pk": "27",
     "fields": {
       "question": 9,
       "option_text": "Проблемы с сердцем",
@@ -426,7 +426,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 10,
+    "pk": "10",
     "fields": {
       "order": 10,
       "question_text": "Как часто вы занимались спортом в последние 6 месяцев?",
@@ -439,7 +439,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 28,
+    "pk": "28",
     "fields": {
       "question": 10,
       "option_text": "Не занимался вообще",
@@ -450,7 +450,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 29,
+    "pk": "29",
     "fields": {
       "question": 10,
       "option_text": "Несколько раз в месяц",
@@ -461,7 +461,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 30,
+    "pk": "30",
     "fields": {
       "question": 10,
       "option_text": "1-2 раза в неделю",
@@ -472,7 +472,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 31,
+    "pk": "31",
     "fields": {
       "question": 10,
       "option_text": "3+ раза в неделю",
@@ -483,7 +483,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 11,
+    "pk": "11",
     "fields": {
       "order": 11,
       "question_text": "Какие виды упражнений вам нравятся больше всего?",
@@ -497,7 +497,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 32,
+    "pk": "32",
     "fields": {
       "question": 11,
       "option_text": "Силовые упражнения",
@@ -508,7 +508,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 33,
+    "pk": "33",
     "fields": {
       "question": 11,
       "option_text": "Кардио (бег, велосипед)",
@@ -519,7 +519,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 34,
+    "pk": "34",
     "fields": {
       "question": 11,
       "option_text": "Функциональные тренировки",
@@ -530,7 +530,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 35,
+    "pk": "35",
     "fields": {
       "question": 11,
       "option_text": "Растяжка и йога",
@@ -541,7 +541,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 36,
+    "pk": "36",
     "fields": {
       "question": 11,
       "option_text": "Танцы",
@@ -552,7 +552,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 12,
+    "pk": "12",
     "fields": {
       "order": 12,
       "question_text": "В какое время дня вы планируете тренироваться?",
@@ -565,7 +565,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 37,
+    "pk": "37",
     "fields": {
       "question": 12,
       "option_text": "Утром (6:00-10:00)",
@@ -576,7 +576,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 38,
+    "pk": "38",
     "fields": {
       "question": 12,
       "option_text": "Днем (10:00-16:00)",
@@ -587,7 +587,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 39,
+    "pk": "39",
     "fields": {
       "question": 12,
       "option_text": "Вечером (16:00-20:00)",
@@ -598,7 +598,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 40,
+    "pk": "40",
     "fields": {
       "question": 12,
       "option_text": "Поздно вечером (20:00+)",
@@ -609,7 +609,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 13,
+    "pk": "13",
     "fields": {
       "order": 13,
       "question_text": "Насколько вы комфортно чувствуете себя в тренажерном зале?",
@@ -623,7 +623,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 41,
+    "pk": "41",
     "fields": {
       "question": 13,
       "option_text": "Очень некомфортно, избегаю",
@@ -634,7 +634,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 42,
+    "pk": "42",
     "fields": {
       "question": 13,
       "option_text": "Немного стесняюсь",
@@ -645,7 +645,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 43,
+    "pk": "43",
     "fields": {
       "question": 13,
       "option_text": "Нормально, но могу улучшить",
@@ -656,7 +656,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 44,
+    "pk": "44",
     "fields": {
       "question": 13,
       "option_text": "Чувствую себя уверенно",
@@ -667,7 +667,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 14,
+    "pk": "14",
     "fields": {
       "order": 14,
       "question_text": "Что мотивирует вас больше всего?",
@@ -680,7 +680,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 45,
+    "pk": "45",
     "fields": {
       "question": 14,
       "option_text": "Видимые результаты (фото, зеркало)",
@@ -691,7 +691,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 46,
+    "pk": "46",
     "fields": {
       "question": 14,
       "option_text": "Улучшение силы и выносливости",
@@ -702,7 +702,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 47,
+    "pk": "47",
     "fields": {
       "question": 14,
       "option_text": "Комплименты от окружающих",
@@ -713,7 +713,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 48,
+    "pk": "48",
     "fields": {
       "question": 14,
       "option_text": "Хорошее самочувствие и энергия",
@@ -724,7 +724,7 @@
   },
   {
     "model": "onboarding.onboardingquestion",
-    "pk": 15,
+    "pk": "15",
     "fields": {
       "order": 15,
       "question_text": "Как долго вы хотите заниматься по программе?",
@@ -737,7 +737,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 49,
+    "pk": "49",
     "fields": {
       "question": 15,
       "option_text": "4 недели (быстрый старт)",
@@ -748,7 +748,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 50,
+    "pk": "50",
     "fields": {
       "question": 15,
       "option_text": "6 недель (оптимально)",
@@ -759,7 +759,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 51,
+    "pk": "51",
     "fields": {
       "question": 15,
       "option_text": "8 недель (основательно)",
@@ -770,7 +770,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 52,
+    "pk": "52",
     "fields": {
       "question": 15,
       "option_text": "12 недель (трансформация)",
