@@ -53,7 +53,7 @@ class OnboardingDataProcessor:
         
         responses = UserOnboardingResponse.objects.filter(user=user)
         user_data = {
-            'archetype': user.archetype,
+            'archetype': user.profile.archetype,
             # Defaults that will be overridden by responses
             'age': 25,
             'height': 175,
