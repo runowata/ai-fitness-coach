@@ -85,7 +85,7 @@ DATABASES = {
     'default': dj_database_url.config(
         default=f"postgresql://{os.getenv('DB_USER', 'postgres')}:{os.getenv('DB_PASSWORD', '')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'ai_fitness_coach')}",
         conn_max_age=600,
-        ssl_require=True,
+        ssl_require=not DEBUG,  # SSL only in production
     )
 }
 
