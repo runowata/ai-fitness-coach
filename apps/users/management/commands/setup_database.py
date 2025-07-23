@@ -30,32 +30,15 @@ class Command(BaseCommand):
                 # Run migrations
                 call_command('migrate', '--noinput', verbosity=2)
                 
-                # Bootstrap from video files - CLEAN APPROACH
+                # CLEAN START - Bootstrap everything from video files
                 try:
-                    self.stdout.write('🚀 Bootstrapping from video files...')
+                    self.stdout.write('🚀 Bootstrapping complete application from video files...')
                     call_command('bootstrap_from_videos')
-                    self.stdout.write(self.style.SUCCESS('✓ Bootstrap complete'))
+                    self.stdout.write(self.style.SUCCESS('✓ Bootstrap complete - AI Fitness Coach ready!'))
                 except Exception as e:
                     self.stdout.write(self.style.WARNING(f'⚠ Bootstrap failed: {e}'))
                     self.stderr.write(traceback.format_exc())
-                    
-                # Load essential fixtures only
-                essential_fixtures = [
-                    'fixtures/onboarding_questions.json', 
-                    'fixtures/motivational_cards.json',
-                    'fixtures/stories.json',
-                    'fixtures/achievements.json'
-                ]
-                
-                for fixture in essential_fixtures:
-                    try:
-                        self.stdout.write(f'Loading {fixture}...')
-                        call_command('loaddata', fixture)
-                        self.stdout.write(self.style.SUCCESS(f'✓ Loaded {fixture}'))
-                    except Exception as e:
-                        self.stdout.write(self.style.WARNING(f'⚠ Failed to load {fixture}: {e}'))
-                        self.stderr.write(traceback.format_exc())
-                        # Continue with other fixtures - some may succeed
+                    # Don't fail deployment - let startCommand handle it
                         
                 self.stdout.write(self.style.SUCCESS('=== Database setup complete ==='))
             else:
