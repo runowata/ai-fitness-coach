@@ -122,6 +122,7 @@ class WorkoutPlan(models.Model):
     started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    is_confirmed = models.BooleanField(default=False)  # User confirmed the plan
     
     class Meta:
         db_table = 'workout_plans'
