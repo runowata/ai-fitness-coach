@@ -30,17 +30,24 @@ class Command(BaseCommand):
                 # Run migrations
                 call_command('migrate', '--noinput', verbosity=2)
                 
-                # Load fixtures
-                fixtures = [
-                    'fixtures/exercises.json',
+                # Bootstrap from video files - CLEAN APPROACH
+                try:
+                    self.stdout.write('🚀 Bootstrapping from video files...')
+                    call_command('bootstrap_from_videos')
+                    self.stdout.write(self.style.SUCCESS('✓ Bootstrap complete'))
+                except Exception as e:
+                    self.stdout.write(self.style.WARNING(f'⚠ Bootstrap failed: {e}'))
+                    self.stderr.write(traceback.format_exc())
+                    
+                # Load essential fixtures only
+                essential_fixtures = [
                     'fixtures/onboarding_questions.json', 
                     'fixtures/motivational_cards.json',
                     'fixtures/stories.json',
-                    'fixtures/video_clips.json',
                     'fixtures/achievements.json'
                 ]
                 
-                for fixture in fixtures:
+                for fixture in essential_fixtures:
                     try:
                         self.stdout.write(f'Loading {fixture}...')
                         call_command('loaddata', fixture)
