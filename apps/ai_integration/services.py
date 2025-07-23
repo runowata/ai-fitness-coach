@@ -825,12 +825,14 @@ class WorkoutPlanGenerator:
         from apps.onboarding.models import OnboardingSession
         
         # 1) пользовательский флаг
+        # Mark onboarding as completed in User model (critical for dashboard redirect)
+        user.completed_onboarding = True
+        user.save(update_fields=["completed_onboarding"])
+        
+        # Also update profile timestamp
         if hasattr(user, "profile"):
             user.profile.onboarding_completed_at = timezone.now()
             user.profile.save(update_fields=["onboarding_completed_at"])
-        else:
-            user.completed_onboarding = True  # если поле у самого User
-            user.save(update_fields=["completed_onboarding"])
         
         # 2) любая незакрытая сессия
         OnboardingSession.objects.filter(

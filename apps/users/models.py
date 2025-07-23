@@ -22,6 +22,7 @@ class User(AbstractUser):
         default='metric'
     )
     is_adult_confirmed = models.BooleanField(default=False)
+    completed_onboarding = models.BooleanField(default=False)  # Critical for dashboard redirect logic
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
