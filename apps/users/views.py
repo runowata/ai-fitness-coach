@@ -32,7 +32,11 @@ class RegisterView(CreateView):
             username=self.object.username,
             password=form.cleaned_data['password1']
         )
-        login(self.request, user)
+        if user:
+            login(self.request, user)
+        else:
+            # If authentication fails, login with the created user directly
+            login(self.request, self.object)
         
         messages.success(self.request, 'Добро пожаловать! Давайте создадим вашу персональную программу.')
         return response
