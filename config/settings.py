@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'apps.core.middleware.DatabaseSetupMiddleware',  # Auto-setup database on first request
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -259,3 +260,6 @@ if not os.getenv("SECRET_KEY"):
     else:
         raise RuntimeError("SECRET_KEY env var required in production")
 SECRET_KEY = os.environ["SECRET_KEY"]
+
+# Render.com detection
+RENDER = os.getenv('RENDER', 'false').lower() == 'true'
