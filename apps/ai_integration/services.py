@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
-import openai
+from openai import OpenAI
 from django.conf import settings
 from django.utils import timezone
 
@@ -121,17 +121,18 @@ def create_workout_plan_from_onboarding(user):
 
 class WorkoutPlanGenerator:
     def __init__(self):
-        openai.api_key = settings.OPENAI_API_KEY
+        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
         self.model = settings.OPENAI_MODEL
         self.max_tokens = settings.OPENAI_MAX_TOKENS
-        self.temperature = settings.OPENAI_TEMPERATURE
+        self.temperature = getattr(settings, 'OPENAI_TEMPERATURE', 0.7)
     
     def generate_plan(self, user_data: Dict) -> Dict:
         """Generate a complete workout plan based on user onboarding data"""
         prompt = self._build_prompt(user_data)
         
         try:
-            response = openai.ChatCompletion.create(
+            logger.info(f"Generating workout plan for user with model {self.model}")
+            response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": self._get_system_prompt()},
@@ -142,11 +143,14 @@ class WorkoutPlanGenerator:
                 response_format={"type": "json_object"}
             )
             
+            logger.info("OpenAI response received successfully")
             plan_data = json.loads(response.choices[0].message.content)
             return self._validate_and_enhance_plan(plan_data, user_data)
             
         except Exception as e:
+            import traceback
             logger.error(f"Error generating workout plan: {str(e)}")
+            logger.error(f"Full traceback: {traceback.format_exc()}")
             raise
     
     def adapt_weekly_plan(self, current_plan: Dict, user_feedback: List[Dict], week_number: int) -> Dict:
@@ -154,7 +158,7 @@ class WorkoutPlanGenerator:
         adaptation_prompt = self._build_adaptation_prompt(current_plan, user_feedback, week_number)
         
         try:
-            response = openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": self._get_adaptation_system_prompt()},
