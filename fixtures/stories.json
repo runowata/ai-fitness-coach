@@ -10,7 +10,8 @@
       "cover_image_url": "https://your-s3-bucket.s3.amazonaws.com/stories/confidence_journey_cover.jpg",
       "total_chapters": 8,
       "is_published": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -38,7 +39,8 @@
       "cover_image_url": "https://your-s3-bucket.s3.amazonaws.com/stories/gym_romance_cover.jpg",
       "total_chapters": 10,
       "is_published": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -52,7 +54,8 @@
       "cover_image_url": "https://your-s3-bucket.s3.amazonaws.com/stories/transformation_cover.jpg",
       "total_chapters": 12,
       "is_published": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   }
 ]

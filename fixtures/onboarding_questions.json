@@ -10,7 +10,8 @@
       "is_required": true,
       "ai_field_name": "primary_goal",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -20,8 +21,7 @@
       "question": 1,
       "option_text": "Похудеть и подтянуть тело",
       "option_value": "weight_loss",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -31,8 +31,7 @@
       "question": 1,
       "option_text": "Набрать мышечную массу",
       "option_value": "muscle_gain",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -42,8 +41,7 @@
       "question": 1,
       "option_text": "Улучшить выносливость и здоровье",
       "option_value": "endurance",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -53,8 +51,7 @@
       "question": 1,
       "option_text": "Стать более уверенным в себе",
       "option_value": "confidence",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -64,8 +61,7 @@
       "question": 1,
       "option_text": "Подготовиться к особому событию",
       "option_value": "event_preparation",
-      "order": 5,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 5
     }
   },
   {
@@ -80,7 +76,8 @@
       "is_required": true,
       "ai_field_name": "age",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -96,7 +93,8 @@
       "is_required": true,
       "ai_field_name": "height",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -112,7 +110,8 @@
       "is_required": true,
       "ai_field_name": "weight",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -125,7 +124,8 @@
       "is_required": true,
       "ai_field_name": "experience_level",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -135,8 +135,7 @@
       "question": 5,
       "option_text": "Новичок (менее 6 месяцев)",
       "option_value": "beginner",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -146,8 +145,7 @@
       "question": 5,
       "option_text": "Средний уровень (6 месяцев - 2 года)",
       "option_value": "intermediate",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -157,8 +155,7 @@
       "question": 5,
       "option_text": "Продвинутый (более 2 лет)",
       "option_value": "advanced",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -171,7 +168,8 @@
       "is_required": true,
       "ai_field_name": "days_per_week",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -181,8 +179,7 @@
       "question": 6,
       "option_text": "2-3 дня (минимум)",
       "option_value": "2-3",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -192,8 +189,7 @@
       "question": 6,
       "option_text": "3-4 дня (оптимально)",
       "option_value": "3-4",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -203,8 +199,7 @@
       "question": 6,
       "option_text": "5-6 дней (интенсивно)",
       "option_value": "5-6",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -214,8 +209,7 @@
       "question": 6,
       "option_text": "Каждый день",
       "option_value": "7",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -228,7 +222,8 @@
       "is_required": true,
       "ai_field_name": "workout_duration",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -238,8 +233,7 @@
       "question": 7,
       "option_text": "20-30 минут (быстро)",
       "option_value": "20-30",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -249,8 +243,7 @@
       "question": 7,
       "option_text": "30-45 минут (стандартно)",
       "option_value": "30-45",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -260,8 +253,7 @@
       "question": 7,
       "option_text": "45-60 минут (полноценно)",
       "option_value": "45-60",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -271,8 +263,7 @@
       "question": 7,
       "option_text": "Более 60 минут (максимально)",
       "option_value": "60+",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -286,7 +277,8 @@
       "is_required": true,
       "ai_field_name": "available_equipment",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -296,8 +288,7 @@
       "question": 8,
       "option_text": "Нет оборудования (только вес тела)",
       "option_value": "bodyweight_only",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -307,8 +298,7 @@
       "question": 8,
       "option_text": "Гантели",
       "option_value": "dumbbells",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -318,8 +308,7 @@
       "question": 8,
       "option_text": "Турник/брусья",
       "option_value": "pull_up_bar",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -329,8 +318,7 @@
       "question": 8,
       "option_text": "Эспандеры/резинки",
       "option_value": "resistance_bands",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -340,8 +328,7 @@
       "question": 8,
       "option_text": "Коврик для йоги",
       "option_value": "yoga_mat",
-      "order": 5,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 5
     }
   },
   {
@@ -351,8 +338,7 @@
       "question": 8,
       "option_text": "Полный доступ к тренажерному залу",
       "option_value": "full_gym",
-      "order": 6,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 6
     }
   },
   {
@@ -366,7 +352,8 @@
       "is_required": false,
       "ai_field_name": "health_limitations",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -376,8 +363,7 @@
       "question": 9,
       "option_text": "Нет ограничений",
       "option_value": "none",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -387,8 +373,7 @@
       "question": 9,
       "option_text": "Проблемы со спиной",
       "option_value": "back_issues",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -398,8 +383,7 @@
       "question": 9,
       "option_text": "Проблемы с коленями",
       "option_value": "knee_issues",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -409,8 +393,7 @@
       "question": 9,
       "option_text": "Проблемы с плечами",
       "option_value": "shoulder_issues",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -420,8 +403,7 @@
       "question": 9,
       "option_text": "Проблемы с сердцем",
       "option_value": "heart_issues",
-      "order": 5,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 5
     }
   },
   {
@@ -434,7 +416,8 @@
       "is_required": true,
       "ai_field_name": "recent_activity_level",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -444,8 +427,7 @@
       "question": 10,
       "option_text": "Не занимался вообще",
       "option_value": "sedentary",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -455,8 +437,7 @@
       "question": 10,
       "option_text": "Несколько раз в месяц",
       "option_value": "light_activity",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -466,8 +447,7 @@
       "question": 10,
       "option_text": "1-2 раза в неделю",
       "option_value": "moderate_activity",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -477,8 +457,7 @@
       "question": 10,
       "option_text": "3+ раза в неделю",
       "option_value": "active",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -492,7 +471,8 @@
       "is_required": false,
       "ai_field_name": "preferred_exercise_types",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -502,8 +482,7 @@
       "question": 11,
       "option_text": "Силовые упражнения",
       "option_value": "strength_training",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -513,8 +492,7 @@
       "question": 11,
       "option_text": "Кардио (бег, велосипед)",
       "option_value": "cardio",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -524,8 +502,7 @@
       "question": 11,
       "option_text": "Функциональные тренировки",
       "option_value": "functional_training",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -535,8 +512,7 @@
       "question": 11,
       "option_text": "Растяжка и йога",
       "option_value": "flexibility",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -546,8 +522,7 @@
       "question": 11,
       "option_text": "Танцы",
       "option_value": "dance",
-      "order": 5,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 5
     }
   },
   {
@@ -560,7 +535,8 @@
       "is_required": true,
       "ai_field_name": "preferred_workout_time",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -570,8 +546,7 @@
       "question": 12,
       "option_text": "Утром (6:00-10:00)",
       "option_value": "morning",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -581,8 +556,7 @@
       "question": 12,
       "option_text": "Днем (10:00-16:00)",
       "option_value": "afternoon",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -592,8 +566,7 @@
       "question": 12,
       "option_text": "Вечером (16:00-20:00)",
       "option_value": "evening",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -603,8 +576,7 @@
       "question": 12,
       "option_text": "Поздно вечером (20:00+)",
       "option_value": "late_evening",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -618,7 +590,8 @@
       "is_required": true,
       "ai_field_name": "gym_comfort_level",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -628,8 +601,7 @@
       "question": 13,
       "option_text": "Очень некомфортно, избегаю",
       "option_value": "very_uncomfortable",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -639,8 +611,7 @@
       "question": 13,
       "option_text": "Немного стесняюсь",
       "option_value": "somewhat_uncomfortable",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -650,8 +621,7 @@
       "question": 13,
       "option_text": "Нормально, но могу улучшить",
       "option_value": "neutral",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -661,8 +631,7 @@
       "question": 13,
       "option_text": "Чувствую себя уверенно",
       "option_value": "confident",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -675,7 +644,8 @@
       "is_required": true,
       "ai_field_name": "motivation_style",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -685,8 +655,7 @@
       "question": 14,
       "option_text": "Видимые результаты (фото, зеркало)",
       "option_value": "visual_results",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -696,8 +665,7 @@
       "question": 14,
       "option_text": "Улучшение силы и выносливости",
       "option_value": "performance_improvement",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -707,8 +675,7 @@
       "question": 14,
       "option_text": "Комплименты от окружающих",
       "option_value": "social_validation",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -718,8 +685,7 @@
       "question": 14,
       "option_text": "Хорошее самочувствие и энергия",
       "option_value": "wellbeing",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   },
   {
@@ -732,7 +698,8 @@
       "is_required": true,
       "ai_field_name": "duration_weeks",
       "is_active": true,
-      "created_at": "2025-07-23T00:00:00Z"
+      "created_at": "2025-07-23T00:00:00Z",
+      "updated_at": "2025-07-23T00:00:00Z"
     }
   },
   {
@@ -742,8 +709,7 @@
       "question": 15,
       "option_text": "4 недели (быстрый старт)",
       "option_value": "4",
-      "order": 1,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 1
     }
   },
   {
@@ -753,8 +719,7 @@
       "question": 15,
       "option_text": "6 недель (оптимально)",
       "option_value": "6",
-      "order": 2,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 2
     }
   },
   {
@@ -764,8 +729,7 @@
       "question": 15,
       "option_text": "8 недель (основательно)",
       "option_value": "8",
-      "order": 3,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 3
     }
   },
   {
@@ -775,8 +739,7 @@
       "question": 15,
       "option_text": "12 недель (трансформация)",
       "option_value": "12",
-      "order": 4,
-      "created_at": "2025-07-23T00:00:00Z"
+      "order": 4
     }
   }
 ]

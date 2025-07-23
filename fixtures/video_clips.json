@@ -3,7 +3,7 @@
     "model": "workouts.videoclip",
     "pk": "1",
     "fields": {
-      "exercise": 1,
+      "exercise": "1",
       "type": "technique",
       "archetype": "bro",
       "model_name": "mod1",
@@ -17,7 +17,7 @@
     "model": "workouts.videoclip",
     "pk": "2",
     "fields": {
-      "exercise": 1,
+      "exercise": "1",
       "type": "instruction",
       "archetype": "bro",
       "model_name": "mod1",
@@ -31,7 +31,7 @@
     "model": "workouts.videoclip",
     "pk": "3",
     "fields": {
-      "exercise": 1,
+      "exercise": "1",
       "type": "reminder",
       "archetype": "bro",
       "model_name": "mod1",
@@ -46,7 +46,7 @@
     "model": "workouts.videoclip",
     "pk": "4",
     "fields": {
-      "exercise": 1,
+      "exercise": "1",
       "type": "instruction",
       "archetype": "sergeant",
       "model_name": "mod1",
@@ -60,7 +60,7 @@
     "model": "workouts.videoclip",
     "pk": "5",
     "fields": {
-      "exercise": 1,
+      "exercise": "1",
       "type": "instruction",
       "archetype": "intellectual",
       "model_name": "mod1",
@@ -74,7 +74,7 @@
     "model": "workouts.videoclip",
     "pk": "6",
     "fields": {
-      "exercise": 2,
+      "exercise": "2",
       "type": "technique",
       "archetype": "bro",
       "model_name": "mod1",
@@ -117,7 +117,7 @@
     "model": "workouts.videoclip",
     "pk": "9",
     "fields": {
-      "exercise": 1,
+      "exercise": "1",
       "type": "mistake",
       "archetype": "bro",
       "model_name": "mod1",
@@ -131,7 +131,7 @@
     "model": "workouts.videoclip",
     "pk": "10",
     "fields": {
-      "exercise": 2,
+      "exercise": "2",
       "type": "instruction",
       "archetype": "sergeant",
       "model_name": "mod1",
@@ -145,7 +145,7 @@
     "model": "workouts.videoclip",
     "pk": "11",
     "fields": {
-      "exercise": 2,
+      "exercise": "2",
       "type": "reminder",
       "archetype": "sergeant",
       "model_name": "mod1",
@@ -160,7 +160,7 @@
     "model": "workouts.videoclip",
     "pk": "12",
     "fields": {
-      "exercise": 3,
+      "exercise": "3",
       "type": "technique",
       "archetype": "intellectual",
       "model_name": "mod1",
@@ -174,7 +174,7 @@
     "model": "workouts.videoclip",
     "pk": "13",
     "fields": {
-      "exercise": 3,
+      "exercise": "3",
       "type": "instruction",
       "archetype": "intellectual",
       "model_name": "mod2",
