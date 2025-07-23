@@ -1,0 +1,677 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Мотивация - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<!-- Modern motivational card page with video background -->
+<div class="motivation-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="motivation-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Gradient overlay -->
+    <div class="motivation-overlay"></div>
+    
+    <!-- Content -->
+    <div class="motivation-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-xl-5">
+                    
+                    <!-- Progress section -->
+                    <div class="progress-section">
+                        <div class="progress-info">
+                            <div class="progress-text">
+                                <span class="progress-label">Прогресс настройки</span>
+                                <span class="progress-percentage">{{ progress_percentage|default:50 }}%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-modern" style="width: {{ progress_percentage|default:50 }}%"></div>
+                                <div class="progress-bar-bg"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if motivational_card %}
+                    <!-- Motivational Card -->
+                    <div class="motivation-card">
+                        <div class="card-inner">
+                            <!-- Trainer Avatar with glow effect -->
+                            <div class="trainer-avatar-container">
+                                <div class="avatar-glow"></div>
+                                <img src="{{ motivational_card.image_url }}" 
+                                     alt="Тренер" 
+                                     class="trainer-avatar"
+                                     onerror="this.src='{% static 'images/avatars/default-avatar.png' %}'">
+                            </div>
+                            
+                            <!-- Card Content -->
+                            <div class="card-content">
+                                <h2 class="motivation-title">{{ motivational_card.title }}</h2>
+                                <p class="motivation-message">{{ motivational_card.message }}</p>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div class="card-actions">
+                                {% if next_question %}
+                                    <a href="{% url 'onboarding:question' next_question.id %}" 
+                                       class="btn-motivation continue">
+                                        <span class="btn-content">
+                                            <span>Продолжить</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                        <div class="btn-ripple"></div>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'onboarding:select_archetype' %}" 
+                                       class="btn-motivation trainer">
+                                        <span class="btn-content">
+                                            <i class="fas fa-users"></i>
+                                            <span>Выбрать тренера</span>
+                                        </span>
+                                        <div class="btn-ripple"></div>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Floating particles effect -->
+                        <div class="particles">
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                        </div>
+                    </div>
+                    
+                    {% else %}
+                    <!-- No Card Available - Default Motivation -->
+                    <div class="motivation-card">
+                        <div class="card-inner">
+                            <!-- Success Icon -->
+                            <div class="success-icon-container">
+                                <div class="success-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="success-pulse"></div>
+                            </div>
+                            
+                            <!-- Card Content -->
+                            <div class="card-content">
+                                <h2 class="motivation-title">Отлично! 🎯</h2>
+                                <p class="motivation-message">
+                                    Ваш ответ сохранен. Каждый шаг приближает нас к созданию 
+                                    идеальной программы специально для вас!
+                                </p>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div class="card-actions">
+                                {% if next_question %}
+                                    <a href="{% url 'onboarding:question' next_question.id %}" 
+                                       class="btn-motivation continue">
+                                        <span class="btn-content">
+                                            <span>Следующий шаг</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                        <div class="btn-ripple"></div>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'onboarding:select_archetype' %}" 
+                                       class="btn-motivation trainer">
+                                        <span class="btn-content">
+                                            <i class="fas fa-users"></i>
+                                            <span>Выбрать тренера</span>
+                                        </span>
+                                        <div class="btn-ripple"></div>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Full-screen motivational page */
+.motivation-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Video background */
+.motivation-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+/* Gradient overlay */
+.motivation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.9) 0%, 
+        rgba(78, 205, 196, 0.85) 50%,
+        rgba(255, 107, 107, 0.8) 100%
+    );
+    z-index: -1;
+}
+
+/* Content container */
+.motivation-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 2rem 0;
+}
+
+/* Progress section */
+.progress-section {
+    margin-bottom: 2rem;
+}
+
+.progress-info {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.progress-label {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.progress-percentage {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4ecdc4;
+}
+
+.progress-bar-container {
+    position: relative;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar-modern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #44a08d);
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 15px rgba(78, 205, 196, 0.6);
+}
+
+/* Motivational card */
+.motivation-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 35px;
+    padding: 3rem;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: cardFloatIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+@keyframes cardFloatIn {
+    from {
+        opacity: 0;
+        transform: translateY(80px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.card-inner {
+    position: relative;
+    z-index: 2;
+}
+
+/* Trainer Avatar */
+.trainer-avatar-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+}
+
+.avatar-glow {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 50%;
+    opacity: 0.2;
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.2; }
+    50% { transform: translateX(-50%) scale(1.1); opacity: 0.3; }
+}
+
+.trainer-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+    animation: avatarFloat 4s ease-in-out infinite;
+}
+
+@keyframes avatarFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Success Icon (for no card state) */
+.success-icon-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #4ecdc4;
+    animation: successBounce 1s ease-out;
+}
+
+@keyframes successBounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.success-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border: 3px solid #4ecdc4;
+    border-radius: 50%;
+    animation: successPulse 2s ease-in-out infinite;
+}
+
+@keyframes successPulse {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+/* Card Content */
+.card-content {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.motivation-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.motivation-message {
+    font-size: 1.2rem;
+    color: #5a6c7d;
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Action buttons */
+.card-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-motivation {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.2rem 2.5rem;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.btn-motivation.continue {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-motivation.trainer {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    color: white;
+}
+
+.btn-motivation:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+    color: white;
+}
+
+.btn-motivation.continue:hover {
+    box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+}
+
+.btn-motivation.trainer:hover {
+    box-shadow: 0 15px 50px rgba(78, 205, 196, 0.4);
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(0);
+    border-radius: 20px;
+    transition: transform 0.4s ease;
+}
+
+.btn-motivation:active .btn-ripple {
+    transform: scale(1);
+}
+
+/* Floating particles */
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #4ecdc4);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.particle:nth-child(1) {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.particle:nth-child(2) {
+    top: 40%;
+    right: 15%;
+    animation-delay: 1s;
+}
+
+.particle:nth-child(3) {
+    bottom: 30%;
+    left: 20%;
+    animation-delay: 2s;
+}
+
+.particle:nth-child(4) {
+    top: 60%;
+    right: 25%;
+    animation-delay: 3s;
+}
+
+.particle:nth-child(5) {
+    bottom: 20%;
+    right: 10%;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0) scale(1); 
+        opacity: 0.7; 
+    }
+    50% { 
+        transform: translateY(-20px) scale(1.2); 
+        opacity: 1; 
+    }
+}
+
+/* Auto-dismiss timer */
+.auto-dismiss-timer {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    backdrop-filter: blur(10px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .motivation-content {
+        padding: 1rem 0;
+    }
+    
+    .motivation-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+        border-radius: 25px;
+    }
+    
+    .motivation-title {
+        font-size: 1.8rem;
+    }
+    
+    .motivation-message {
+        font-size: 1.1rem;
+    }
+    
+    .trainer-avatar {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .avatar-glow {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .btn-motivation {
+        padding: 1rem 2rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .progress-info {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .motivation-title {
+        font-size: 1.6rem;
+    }
+    
+    .motivation-message {
+        font-size: 1rem;
+    }
+    
+    .trainer-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .motivation-card {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add entrance animations
+    const card = document.querySelector('.motivation-card');
+    const progressBar = document.querySelector('.progress-bar-modern');
+    
+    // Animate progress bar
+    setTimeout(() => {
+        if (progressBar) {
+            progressBar.style.width = '{{ progress_percentage|default:50 }}%';
+        }
+    }, 300);
+    
+    // Add interactive hover effects
+    const buttons = document.querySelectorAll('.btn-motivation');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.02)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+        
+        // Ripple effect on click
+        button.addEventListener('click', function(e) {
+            const ripple = this.querySelector('.btn-ripple');
+            if (ripple) {
+                ripple.style.transform = 'scale(1)';
+                setTimeout(() => {
+                    ripple.style.transform = 'scale(0)';
+                }, 400);
+            }
+        });
+    });
+    
+    // Auto-advance feature (optional - for quick testing)
+    // Uncomment next lines to enable auto-advance after 3 seconds
+    /*
+    const autoAdvanceTime = 3000; // 3 seconds
+    const continueButton = document.querySelector('.btn-motivation');
+    
+    if (continueButton) {
+        // Create timer display
+        const timerDiv = document.createElement('div');
+        timerDiv.className = 'auto-dismiss-timer';
+        timerDiv.innerHTML = `Автопереход через <span id="countdown">${autoAdvanceTime/1000}</span>с`;
+        card.appendChild(timerDiv);
+        
+        // Countdown
+        let seconds = autoAdvanceTime / 1000;
+        const countdown = setInterval(() => {
+            seconds--;
+            document.getElementById('countdown').textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(countdown);
+                window.location.href = continueButton.href;
+            }
+        }, 1000);
+        
+        // Cancel auto-advance on user interaction
+        document.addEventListener('click', () => {
+            clearInterval(countdown);
+            timerDiv.remove();
+        });
+    }
+    */
+    
+    // Enhanced particle animation
+    const particles = document.querySelectorAll('.particle');
+    particles.forEach((particle, index) => {
+        // Random starting positions
+        const randomX = Math.random() * 100;
+        const randomY = Math.random() * 100;
+        particle.style.left = randomX + '%';
+        particle.style.top = randomY + '%';
+        
+        // Different animation durations
+        particle.style.animationDuration = (4 + Math.random() * 4) + 's';
+        particle.style.animationDelay = (Math.random() * 2) + 's';
+    });
+});
+</script>
+{% endblock %}

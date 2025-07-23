@@ -1,0 +1,306 @@
+{% extends 'simple/base.html' %}
+
+{% block title %}Отзыв о неделе {{ week_number }} - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            
+            <!-- Header with Trainer -->
+            <div class="text-center mb-4">
+                <div class="trainer-header">
+                    <img src="/static/images/trainers/{{ archetype }}-avatar.png" 
+                         alt="Тренер {{ archetype|title }}" 
+                         class="trainer-avatar mb-3"
+                         style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid white; object-fit: cover;">
+                    
+                    <h1 class="text-white mb-2">📊 Как прошла неделя?</h1>
+                    
+                    {% if archetype == 'bro' %}
+                        <p class="text-white lead">Братан, давай обсудим как прошла неделя {{ week_number }}!</p>
+                    {% elif archetype == 'sergeant' %}
+                        <p class="text-white lead">Боец, рапортуйте о результатах недели {{ week_number }}!</p>
+                    {% elif archetype == 'intellectual' %}
+                        <p class="text-white lead">Проанализируем результаты недели {{ week_number }}!</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Feedback Form -->
+            <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px;">
+                <div class="card-header text-center py-3" style="background: linear-gradient(45deg, #007bff, #0056b3); color: white; border-radius: 20px 20px 0 0;">
+                    <h4 class="mb-0">Неделя {{ week_number }} - {{ plan.name }}</h4>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="post" id="feedbackForm">
+                        {% csrf_token %}
+                        
+                        <!-- Overall Assessment -->
+                        <div class="section mb-4">
+                            <h5 class="text-primary mb-3">📈 Общая оценка</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Сложность недели:</label>
+                                    <select name="overall_difficulty" class="form-select">
+                                        <option value="too_easy" {% if feedback.overall_difficulty == 'too_easy' %}selected{% endif %}>Слишком легко</option>
+                                        <option value="just_right" {% if feedback.overall_difficulty == 'just_right' %}selected{% endif %}>В самый раз</option>
+                                        <option value="too_hard" {% if feedback.overall_difficulty == 'too_hard' %}selected{% endif %}>Слишком тяжело</option>
+                                        <option value="varied" {% if feedback.overall_difficulty == 'varied' %}selected{% endif %}>По-разному</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Уровень энергии:</label>
+                                    <select name="energy_level" class="form-select">
+                                        <option value="low" {% if feedback.energy_level == 'low' %}selected{% endif %}>Низкий</option>
+                                        <option value="medium" {% if feedback.energy_level == 'medium' %}selected{% endif %}>Средний</option>
+                                        <option value="high" {% if feedback.energy_level == 'high' %}selected{% endif %}>Высокий</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Мотивация:</label>
+                                    <select name="motivation_level" class="form-select">
+                                        <option value="low" {% if feedback.motivation_level == 'low' %}selected{% endif %}>Низкая</option>
+                                        <option value="medium" {% if feedback.motivation_level == 'medium' %}selected{% endif %}>Средняя</option>
+                                        <option value="high" {% if feedback.motivation_level == 'high' %}selected{% endif %}>Высокая</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Perception -->
+                        <div class="section mb-4">
+                            <h5 class="text-primary mb-3">💪 Ваш прогресс</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Прогресс в силе (1-10):</label>
+                                    <input type="range" name="strength_progress" 
+                                           class="form-range" 
+                                           min="1" max="10" 
+                                           value="{{ feedback.strength_progress }}"
+                                           id="strengthRange">
+                                    <div class="d-flex justify-content-between">
+                                        <small>1 - Нет прогресса</small>
+                                        <small id="strengthValue">{{ feedback.strength_progress }}</small>
+                                        <small>10 - Отличный прогресс</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Прогресс в уверенности (1-10):</label>
+                                    <input type="range" name="confidence_progress" 
+                                           class="form-range" 
+                                           min="1" max="10" 
+                                           value="{{ feedback.confidence_progress }}"
+                                           id="confidenceRange">
+                                    <div class="d-flex justify-content-between">
+                                        <small>1 - Нет прогресса</small>
+                                        <small id="confidenceValue">{{ feedback.confidence_progress }}</small>
+                                        <small>10 - Отличный прогресс</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise Feedback -->
+                        <div class="section mb-4">
+                            <h5 class="text-primary mb-3">🏋️ Упражнения</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Самые сложные упражнения:</label>
+                                    <select name="challenging_exercises" multiple class="form-select" size="4">
+                                        {% for exercise in all_exercises %}
+                                            <option value="{{ exercise.slug }}" 
+                                                {% if exercise.slug in feedback.most_challenging_exercises %}selected{% endif %}>
+                                                {{ exercise.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-muted">Удерживайте Ctrl для множественного выбора</small>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Любимые упражнения:</label>
+                                    <select name="favorite_exercises" multiple class="form-select" size="4">
+                                        {% for exercise in all_exercises %}
+                                            <option value="{{ exercise.slug }}" 
+                                                {% if exercise.slug in feedback.favorite_exercises %}selected{% endif %}>
+                                                {{ exercise.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-muted">Удерживайте Ctrl для множественного выбора</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preferences -->
+                        <div class="section mb-4">
+                            <h5 class="text-primary mb-3">⚙️ Пожелания</h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="wants_more_cardio" 
+                                               {% if feedback.wants_more_cardio %}checked{% endif %}>
+                                        <label class="form-check-label">Больше кардио</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="wants_more_strength" 
+                                               {% if feedback.wants_more_strength %}checked{% endif %}>
+                                        <label class="form-check-label">Больше силовых</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="wants_shorter_workouts" 
+                                               {% if feedback.wants_shorter_workouts %}checked{% endif %}>
+                                        <label class="form-check-label">Короче тренировки</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="wants_longer_workouts" 
+                                               {% if feedback.wants_longer_workouts %}checked{% endif %}>
+                                        <label class="form-check-label">Длиннее тренировки</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Free Text Feedback -->
+                        <div class="section mb-4">
+                            <h5 class="text-primary mb-3">💬 Дополнительно</h5>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Что работало хорошо?</label>
+                                <textarea name="what_worked_well" class="form-control" rows="3" 
+                                          placeholder="Поделитесь тем, что вам особенно понравилось...">{{ feedback.what_worked_well }}</textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Что можно улучшить?</label>
+                                <textarea name="what_needs_improvement" class="form-control" rows="3" 
+                                          placeholder="Что бы вы хотели изменить или улучшить...">{{ feedback.what_needs_improvement }}</textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Дополнительные комментарии:</label>
+                                <textarea name="additional_notes" class="form-control" rows="3" 
+                                          placeholder="Любые другие мысли или предложения...">{{ feedback.additional_notes }}</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg px-5 py-3" style="border-radius: 50px;">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                {% if archetype == 'bro' %}
+                                    Отправить отзыв, братан!
+                                {% elif archetype == 'sergeant' %}
+                                    Передать рапорт!
+                                {% elif archetype == 'intellectual' %}
+                                    Отправить анализ
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.trainer-avatar {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.trainer-avatar:hover {
+    transform: scale(1.05);
+}
+
+.section {
+    padding: 1.5rem;
+    border-radius: 15px;
+    background: rgba(0,123,255,0.05);
+    border-left: 4px solid #007bff;
+}
+
+.card {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.form-range {
+    height: 0.5rem;
+}
+
+.form-range::-webkit-slider-thumb {
+    background: #007bff;
+    border-radius: 50%;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.form-range::-moz-range-thumb {
+    background: #007bff;
+    border-radius: 50%;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .trainer-avatar {
+        width: 80px !important;
+        height: 80px !important;
+    }
+    
+    .section {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Update range values in real-time
+    const strengthRange = document.getElementById('strengthRange');
+    const confidenceRange = document.getElementById('confidenceRange');
+    const strengthValue = document.getElementById('strengthValue');
+    const confidenceValue = document.getElementById('confidenceValue');
+    
+    strengthRange.addEventListener('input', function() {
+        strengthValue.textContent = this.value;
+    });
+    
+    confidenceRange.addEventListener('input', function() {
+        confidenceValue.textContent = this.value;
+    });
+});
+</script>
+{% endblock %}

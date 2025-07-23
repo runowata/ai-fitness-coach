@@ -21,8 +21,8 @@
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                         {{ user.username }}
-                        <span class="badge bg-primary">{{ user.profile.level }} lvl</span>
-                        <span class="badge bg-success">{{ user.profile.experience_points }} XP</span>
+                        <span class="badge bg-primary">{{ user.level }} lvl</span>
+                        <span class="badge bg-success">{{ user.experience_points }} XP</span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{% url 'users:profile_settings' %}">Настройки</a></li>

@@ -59,9 +59,9 @@
                         <p class="text-muted">
                             Текущий архетип: 
                             <strong>
-                                {% if user.profile.archetype == 'bro' %}🤙 Бро
-                                {% elif user.profile.archetype == 'sergeant' %}🎖️ Сержант
-                                {% elif user.profile.archetype == 'intellectual' %}🎓 Интеллектуал
+                                {% if user.archetype == 'bro' %}🤙 Бро
+                                {% elif user.archetype == 'sergeant' %}🎖️ Сержант
+                                {% elif user.archetype == 'intellectual' %}🎓 Интеллектуал
                                 {% else %}Не выбран{% endif %}
                             </strong>
                         </p>
@@ -87,13 +87,13 @@
                     </div>
                     <div class="card-body">
                         <div class="text-center mb-3">
-                            <div class="h3 text-primary">{{ user.profile.level }}</div>
+                            <div class="h3 text-primary">{{ user.level }}</div>
                             <small class="text-muted">Уровень</small>
                         </div>
                         
                         <div class="progress mb-3">
-                            {% with current_xp=user.profile.experience_points %}
-                            {% with next_level_xp=user.profile.level|add:"1"|floatformat:"0" %}
+                            {% with current_xp=user.experience_points %}
+                            {% with next_level_xp=user.level|add:"1"|floatformat:"0" %}
                             <div class="progress-bar" style="width: {% widthratio current_xp 100 100 %}%"></div>
                             {% endwith %}
                             {% endwith %}
@@ -101,11 +101,11 @@
                         
                         <div class="row text-center">
                             <div class="col-6">
-                                <div class="h5 text-success">{{ user.profile.current_streak }}</div>
+                                <div class="h5 text-success">{{ user.current_streak }}</div>
                                 <small class="text-muted">дней подряд</small>
                             </div>
                             <div class="col-6">
-                                <div class="h5 text-info">{{ user.profile.total_workouts_completed }}</div>
+                                <div class="h5 text-info">{{ user.total_workouts_completed }}</div>
                                 <small class="text-muted">тренировок</small>
                             </div>
                         </div>
@@ -123,7 +123,7 @@
                                 <i class="fas fa-key"></i> Сменить пароль
                             </a>
                             
-                            {% if not user.profile.is_2fa_enabled %}
+                            {% if not user.is_2fa_enabled %}
                                 <button class="btn btn-outline-warning btn-sm" disabled>
                                     <i class="fas fa-shield-alt"></i> Включить 2FA
                                 </button>

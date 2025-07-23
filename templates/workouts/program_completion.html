@@ -1,0 +1,468 @@
+{% extends 'simple/base.html' %}
+
+{% block title %}🎉 Программа завершена! - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            
+            <!-- Celebration Header -->
+            <div class="text-center mb-5">
+                <div class="celebration-header">
+                    <!-- Cycle Completion Video -->
+                    {% if cycle_options.completion_video.url %}
+                    <div class="completion-video mb-4">
+                        <video 
+                            class="completion-video-player"
+                            controls 
+                            autoplay 
+                            style="max-width: 400px; width: 100%; border-radius: 20px; box-shadow: 0 15px 35px rgba(255,215,0,0.3);">
+                            <source src="{{ cycle_options.completion_video.url }}" type="video/mp4">
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                    </div>
+                    {% else %}
+                    <img src="/static/images/trainers/{{ archetype }}-avatar.png" 
+                         alt="Тренер {{ archetype|title }}" 
+                         class="trainer-avatar mb-3"
+                         style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid #ffd700; object-fit: cover;">
+                    {% endif %}
+                    
+                    <h1 class="text-white mb-3">{{ cycle_options.completion_video.title }}</h1>
+                    <p class="text-white lead">{{ cycle_options.completion_video.message }}</p>
+                    <div class="achievement-highlight text-warning mb-4">
+                        <i class="fas fa-trophy me-2"></i>
+                        {{ cycle_options.completion_video.celebration }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="card shadow-lg border-0 mb-5" style="border-radius: 20px;">
+                <div class="card-header text-center py-3" style="background: linear-gradient(45deg, #28a745, #20c997); color: white; border-radius: 20px 20px 0 0;">
+                    <h4 class="mb-0">📊 Статистика завершенного цикла</h4>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <h3 class="text-success">{{ completion_data.progress_data.total_workouts_completed }}</h3>
+                                <p class="text-muted mb-0">Тренировок</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <h3 class="text-info">{{ completion_data.completion_stats.overall_completion_rate|floatformat:0 }}%</h3>
+                                <p class="text-muted mb-0">Завершение</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <h3 class="text-warning">{{ completion_data.progress_data.avg_strength_progress|floatformat:1 }}/10</h3>
+                                <p class="text-muted mb-0">Прогресс силы</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <h3 class="text-primary">{{ completion_data.progress_data.avg_confidence_progress|floatformat:1 }}/10</h3>
+                                <p class="text-muted mb-0">Уверенность</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Weekly Progress -->
+                    <div class="mt-4">
+                        <h6 class="text-primary mb-3">Прогресс по неделям:</h6>
+                        <div class="row">
+                            {% for week in completion_data.completion_stats.weekly_stats %}
+                            <div class="col-2 mb-2">
+                                <div class="week-progress text-center">
+                                    <div class="week-number">{{ week.week }}</div>
+                                    <div class="progress mb-1" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             style="width: {{ week.completion_rate }}%" 
+                                             aria-valuenow="{{ week.completion_rate }}" 
+                                             aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small class="text-muted">{{ week.completion_rate|floatformat:0 }}%</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Evolution Options -->
+            <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px;">
+                <div class="card-header text-center py-3" style="background: linear-gradient(45deg, #007bff, #0056b3); color: white; border-radius: 20px 20px 0 0;">
+                    <h4 class="mb-0">🚀 Выберите направление развития</h4>
+                    <p class="mb-0 mt-2">Время для нового 6-недельного цикла!</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div id="cycleOptions" class="row">
+                        {% for option in cycle_options.cycle_options %}
+                        <div class="col-md-4 mb-4">
+                            <div class="cycle-option card h-100 border-2" 
+                                 data-option="{{ option.focus }}" 
+                                 style="cursor: pointer; transition: all 0.3s ease;">
+                                <div class="card-header text-center bg-light">
+                                    <h5 class="mb-0 text-primary">{{ option.name }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ option.description }}</p>
+                                    <div class="trainer-message text-center p-3 bg-light rounded mb-3">
+                                        <i class="fas fa-quote-left text-muted"></i>
+                                        <p class="mb-0 font-italic">{{ option.message }}</p>
+                                    </div>
+                                    
+                                    <div class="preview-section">
+                                        <h6 class="text-primary">Что изменится:</h6>
+                                        <ul class="list-unstyled">
+                                            {% for change in option.preview.key_changes %}
+                                            <li><i class="fas fa-check text-success me-2"></i>{{ change }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        
+                                        <div class="difficulty-badge text-center mt-3">
+                                            <span class="badge badge-{{ option.preview.estimated_difficulty }} p-2">
+                                                Сложность: {{ option.preview.estimated_difficulty|title }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="text-center mt-4">
+                        <button id="createCycleBtn" class="btn btn-success btn-lg px-5 py-3 me-3" 
+                                style="border-radius: 50px;" disabled>
+                            <i class="fas fa-rocket me-2"></i>
+                            Начать новый цикл!
+                        </button>
+                        
+                        <button class="btn btn-secondary btn-lg px-4 py-3" 
+                                style="border-radius: 50px;"
+                                onclick="window.location.href='{% url 'users:dashboard' %}'">
+                            <i class="fas fa-home me-2"></i>
+                            Пока в дашборд
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-body text-center p-5">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+                <h5 class="mb-2">Создаем ваш новый цикл</h5>
+                <p class="text-muted">Анализируем ваш прогресс и создаем персональную программу...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.trainer-avatar {
+    box-shadow: 0 15px 35px rgba(255,215,0,0.3);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.stat-item h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.week-progress .week-number {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.cycle-option {
+    transition: all 0.3s ease;
+}
+
+.cycle-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border-color: #007bff !important;
+}
+
+.cycle-option.selected {
+    border-color: #28a745 !important;
+    background-color: rgba(40, 167, 69, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(40, 167, 69, 0.3);
+}
+
+.cycle-option.selected .card-header {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    color: white !important;
+}
+
+.badge-medium {
+    background: linear-gradient(45deg, #ffc107, #e0a800);
+    color: #000;
+}
+
+.badge-high {
+    background: linear-gradient(45deg, #fd7e14, #e8590c);
+    color: white;
+}
+
+.badge-advanced {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    color: white;
+}
+
+.achievement-highlight {
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.card {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.completion-video {
+    position: relative;
+}
+
+.completion-video-player {
+    animation: videoAppear 1s ease-out;
+    box-shadow: 0 15px 35px rgba(255,215,0,0.3);
+    border: 3px solid #ffd700;
+}
+
+@keyframes videoAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.celebration-header {
+    animation: celebrationEntry 1.5s ease-out;
+}
+
+@keyframes celebrationEntry {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Confetti effect for celebration */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #ffd700;
+    animation: confetti-fall 3s linear infinite;
+}
+
+.confetti:nth-child(1) { background: #ff6b6b; animation-delay: 0s; left: 10%; }
+.confetti:nth-child(2) { background: #4ecdc4; animation-delay: 0.5s; left: 20%; }
+.confetti:nth-child(3) { background: #45b7d1; animation-delay: 1s; left: 30%; }
+.confetti:nth-child(4) { background: #96ceb4; animation-delay: 1.5s; left: 40%; }
+.confetti:nth-child(5) { background: #ffd700; animation-delay: 2s; left: 50%; }
+.confetti:nth-child(6) { background: #ff9ff3; animation-delay: 2.5s; left: 60%; }
+.confetti:nth-child(7) { background: #ff6b6b; animation-delay: 0.3s; left: 70%; }
+.confetti:nth-child(8) { background: #4ecdc4; animation-delay: 0.8s; left: 80%; }
+.confetti:nth-child(9) { background: #45b7d1; animation-delay: 1.3s; left: 90%; }
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .trainer-avatar {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    
+    .stat-item h3 {
+        font-size: 2rem;
+    }
+    
+    .col-md-4 {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create confetti effect for celebration
+    createConfetti();
+    
+    let selectedOption = null;
+    const createBtn = document.getElementById('createCycleBtn');
+    const options = document.querySelectorAll('.cycle-option');
+    
+    // Option selection
+    options.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove previous selection
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Select current option
+            this.classList.add('selected');
+            selectedOption = this.dataset.option;
+            
+            // Enable create button
+            createBtn.disabled = false;
+            createBtn.classList.add('btn-pulse');
+        });
+    });
+    
+    // Create new cycle
+    createBtn.addEventListener('click', function() {
+        if (!selectedOption) return;
+        
+        // Show loading modal
+        const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+        loadingModal.show();
+        
+        // Send request to create new cycle
+        fetch('{% url "workouts:create_new_cycle" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                selected_option: selectedOption
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingModal.hide();
+            
+            if (data.success) {
+                // Show success message and redirect
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 1000);
+                
+                // Show celebration
+                createBtn.innerHTML = '<i class="fas fa-check me-2"></i>Готово!';
+                createBtn.className = 'btn btn-success btn-lg px-5 py-3';
+            } else {
+                alert('Ошибка создания цикла: ' + data.error);
+            }
+        })
+        .catch(error => {
+            loadingModal.hide();
+            console.error('Error:', error);
+            alert('Произошла ошибка. Попробуйте еще раз.');
+        });
+    });
+});
+
+// Confetti creation function
+function createConfetti() {
+    const confettiContainer = document.querySelector('.celebration-header');
+    
+    for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = getRandomColor();
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            
+            confettiContainer.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, 5000);
+        }, i * 100);
+    }
+}
+
+function getRandomColor() {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffd700', '#ff9ff3', '#f8b500', '#4a90e2'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Trigger confetti every 10 seconds for celebration effect
+setInterval(createConfetti, 10000);
+
+// Add pulse animation class
+const style = document.createElement('style');
+style.textContent = `
+.btn-pulse {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

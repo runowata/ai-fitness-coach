@@ -1,111 +1,678 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
-{% block title %}Регистрация - AI Fitness Coach{% endblock %}
+{% block title %}Начать Трансформацию - AI Fitness Coach{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header text-center">
-                <h4>Создать аккаунт</h4>
-                <p class="mb-0 text-muted">Присоединяйтесь к сообществу</p>
-            </div>
-            
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                            {{ form.username.label }}
-                        </label>
-                        {{ form.username }}
-                        {% if form.username.help_text %}
-                            <div class="form-text">{{ form.username.help_text }}</div>
-                        {% endif %}
-                        {% if form.username.errors %}
-                            <div class="text-danger">{{ form.username.errors }}</div>
-                        {% endif %}
+<!-- Full-screen registration with video background -->
+<div class="register-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="register-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Overlay for readability -->
+    <div class="register-overlay"></div>
+    
+    <!-- Registration content -->
+    <div class="register-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5 col-md-7">
+                    <!-- Back to home link -->
+                    <div class="back-to-home mb-4">
+                        <a href="{% url 'core:home' %}" class="back-link">
+                            <i class="fas fa-arrow-left"></i>
+                            Назад на главную
+                        </a>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">
-                            {{ form.email.label }}
-                        </label>
-                        {{ form.email }}
-                        {% if form.email.help_text %}
-                            <div class="form-text">{{ form.email.help_text }}</div>
-                        {% endif %}
-                        {% if form.email.errors %}
-                            <div class="text-danger">{{ form.email.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.password1.id_for_label }}" class="form-label">
-                            {{ form.password1.label }}
-                        </label>
-                        {{ form.password1 }}
-                        {% if form.password1.help_text %}
-                            <div class="form-text">{{ form.password1.help_text }}</div>
-                        {% endif %}
-                        {% if form.password1.errors %}
-                            <div class="text-danger">{{ form.password1.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.password2.id_for_label }}" class="form-label">
-                            {{ form.password2.label }}
-                        </label>
-                        {{ form.password2 }}
-                        {% if form.password2.errors %}
-                            <div class="text-danger">{{ form.password2.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <div class="form-check">
-                            {{ form.age_confirmed }}
-                            <label class="form-check-label" for="{{ form.age_confirmed.id_for_label }}">
-                                {{ form.age_confirmed.label }}
-                            </label>
-                            {% if form.age_confirmed.errors %}
-                                <div class="text-danger">{{ form.age_confirmed.errors }}</div>
-                            {% endif %}
+                    <!-- Registration card -->
+                    <div class="register-card">
+                        <div class="card-header text-center">
+                            <h1 class="register-title">
+                                🚀 <span class="text-gradient">Начать</span><br>
+                                Трансформацию
+                            </h1>
+                            <p class="register-subtitle">
+                                Создай аккаунт и получи персональную программу от AI тренера
+                            </p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <form method="post" class="register-form">
+                                {% csrf_token %}
+                                
+                                <!-- Username field -->
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-user input-icon"></i>
+                                        {{ form.username }}
+                                        <label for="{{ form.username.id_for_label }}" class="floating-label">
+                                            Имя пользователя
+                                        </label>
+                                    </div>
+                                    {% if form.username.help_text %}
+                                        <div class="form-hint">{{ form.username.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.username.errors %}
+                                        <div class="form-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ form.username.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Email field -->
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-envelope input-icon"></i>
+                                        {{ form.email }}
+                                        <label for="{{ form.email.id_for_label }}" class="floating-label">
+                                            Email адрес
+                                        </label>
+                                    </div>
+                                    {% if form.email.help_text %}
+                                        <div class="form-hint">{{ form.email.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.email.errors %}
+                                        <div class="form-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ form.email.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Password field -->
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-lock input-icon"></i>
+                                        {{ form.password1 }}
+                                        <label for="{{ form.password1.id_for_label }}" class="floating-label">
+                                            Пароль
+                                        </label>
+                                        <button type="button" class="password-toggle" onclick="togglePassword('{{ form.password1.id_for_label }}')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    {% if form.password1.help_text %}
+                                        <div class="form-hint">{{ form.password1.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.password1.errors %}
+                                        <div class="form-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ form.password1.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Confirm password field -->
+                                <div class="form-group">
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-lock input-icon"></i>
+                                        {{ form.password2 }}
+                                        <label for="{{ form.password2.id_for_label }}" class="floating-label">
+                                            Подтвердить пароль
+                                        </label>
+                                        <button type="button" class="password-toggle" onclick="togglePassword('{{ form.password2.id_for_label }}')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    {% if form.password2.errors %}
+                                        <div class="form-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ form.password2.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Age confirmation -->
+                                <div class="form-group">
+                                    <div class="custom-checkbox">
+                                        {{ form.age_confirmed }}
+                                        <label for="{{ form.age_confirmed.id_for_label }}" class="checkbox-label">
+                                            <span class="checkmark"></span>
+                                            <span class="checkbox-text">
+                                                <i class="fas fa-shield-alt text-primary"></i>
+                                                Мне есть 18 лет
+                                            </span>
+                                        </label>
+                                    </div>
+                                    {% if form.age_confirmed.errors %}
+                                        <div class="form-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ form.age_confirmed.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Terms agreement -->
+                                <div class="form-group">
+                                    <div class="custom-checkbox">
+                                        {{ form.agree_to_terms }}
+                                        <label for="{{ form.agree_to_terms.id_for_label }}" class="checkbox-label">
+                                            <span class="checkmark"></span>
+                                            <span class="checkbox-text">
+                                                Согласен с 
+                                                <a href="{% url 'core:terms' %}" target="_blank" class="terms-link">условиями</a>
+                                                и
+                                                <a href="{% url 'core:privacy' %}" target="_blank" class="terms-link">политикой</a>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    {% if form.agree_to_terms.errors %}
+                                        <div class="form-error">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ form.agree_to_terms.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Submit button -->
+                                <button type="submit" class="btn-register">
+                                    <span class="btn-content">
+                                        <i class="fas fa-rocket"></i>
+                                        Создать Аккаунт
+                                    </span>
+                                    <div class="btn-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        Создание...
+                                    </div>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Card footer -->
+                        <div class="card-footer">
+                            <p class="login-link">
+                                Уже есть аккаунт? 
+                                <a href="{% url 'login' %}" class="link-primary">
+                                    Войти <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </p>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <div class="form-check">
-                            {{ form.agree_to_terms }}
-                            <label class="form-check-label" for="{{ form.agree_to_terms.id_for_label }}">
-                                {{ form.agree_to_terms.label }}
-                                <a href="{% url 'core:terms' %}" target="_blank">условиями использования</a>
-                                и
-                                <a href="{% url 'core:privacy' %}" target="_blank">политикой конфиденциальности</a>
-                            </label>
-                            {% if form.agree_to_terms.errors %}
-                                <div class="text-danger">{{ form.agree_to_terms.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary w-100 mb-3">
-                        <i class="fas fa-user-plus"></i> Создать аккаунт
-                    </button>
-                </form>
-            </div>
-            
-            <div class="card-footer text-center">
-                <p class="mb-0">
-                    Уже есть аккаунт? 
-                    <a href="{% url 'login' %}" class="text-primary">
-                        Войти
-                    </a>
-                </p>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Full-screen registration page */
+.register-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    overflow: hidden;
+}
+
+/* Video background */
+.register-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.6;
+}
+
+/* Overlay */
+.register-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.9) 0%, 
+        rgba(118, 75, 162, 0.9) 50%,
+        rgba(255, 107, 107, 0.8) 100%
+    );
+    z-index: -1;
+}
+
+/* Registration content */
+.register-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+
+/* Back to home link */
+.back-to-home {
+    text-align: center;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.back-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Registration card */
+.register-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 30px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    animation: cardFadeIn 0.6s ease-out;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card header */
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 2rem 2rem;
+    border: none;
+}
+
+.register-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+.register-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+    line-height: 1.5;
+}
+
+/* Card body */
+.card-body {
+    padding: 2rem;
+}
+
+/* Form styling */
+.register-form .form-group {
+    margin-bottom: 2rem;
+}
+
+/* Input wrapper */
+.input-wrapper {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 15px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    background: white;
+}
+
+/* Input icons */
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #667eea;
+    z-index: 2;
+}
+
+/* Floating labels */
+.floating-label {
+    position: absolute;
+    left: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.input-wrapper input:focus + .floating-label,
+.input-wrapper input:not(:placeholder-shown) + .floating-label {
+    top: -0.5rem;
+    left: 1rem;
+    font-size: 0.8rem;
+    color: #667eea;
+    font-weight: 600;
+    background: white;
+    padding: 0 0.5rem;
+}
+
+/* Password toggle */
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 2;
+}
+
+.password-toggle:hover {
+    color: #667eea;
+}
+
+/* Custom checkbox */
+.custom-checkbox {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.checkmark {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 6px;
+    margin-right: 0.75rem;
+    margin-top: 0.1rem;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.custom-checkbox input:checked + .checkbox-label .checkmark {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-color: #667eea;
+}
+
+.checkmark::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -60%) scale(0);
+    width: 4px;
+    height: 8px;
+    border: 2px solid white;
+    border-left: 0;
+    border-top: 0;
+    transform-origin: center;
+    transition: all 0.2s ease;
+}
+
+.custom-checkbox input:checked + .checkbox-label .checkmark::after {
+    transform: translate(-50%, -60%) scale(1) rotate(45deg);
+}
+
+.checkbox-text {
+    color: #495057;
+}
+
+/* Terms links */
+.terms-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.terms-link:hover {
+    color: #4c63d2;
+    text-decoration: underline;
+}
+
+/* Form hints and errors */
+.form-hint {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #dc3545;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid #dc3545;
+}
+
+/* Submit button */
+.btn-register {
+    width: 100%;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    border: none;
+    border-radius: 15px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    margin-top: 1rem;
+}
+
+.btn-register:hover {
+    background: linear-gradient(45deg, #ff5252, #26a69a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+}
+
+.btn-register:active {
+    transform: translateY(0);
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-loading {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Card footer */
+.card-footer {
+    background: rgba(248, 249, 250, 0.8);
+    border: none;
+    padding: 1.5rem 2rem;
+    text-align: center;
+}
+
+.login-link {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.link-primary {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.link-primary:hover {
+    color: #4c63d2;
+    text-decoration: none;
+    transform: translateX(3px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .register-fullscreen {
+        padding: 1rem 0;
+    }
+    
+    .register-title {
+        font-size: 2rem;
+    }
+    
+    .card-header {
+        padding: 2rem 1.5rem 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .card-footer {
+        padding: 1rem 1.5rem;
+    }
+    
+    .input-wrapper input {
+        padding: 0.875rem 0.875rem 0.875rem 2.5rem;
+    }
+    
+    .input-icon {
+        left: 0.875rem;
+    }
+    
+    .floating-label {
+        left: 2.5rem;
+    }
+    
+    .password-toggle {
+        right: 0.875rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .register-title {
+        font-size: 1.75rem;
+    }
+    
+    .register-subtitle {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Password visibility toggle
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const toggle = field.nextElementSibling.nextElementSibling;
+    const icon = toggle.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Form submission loading state
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.register-form');
+    const submitBtn = document.querySelector('.btn-register');
+    const btnContent = submitBtn.querySelector('.btn-content');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+    
+    form.addEventListener('submit', function(e) {
+        submitBtn.disabled = true;
+        btnContent.style.display = 'none';
+        btnLoading.style.display = 'flex';
+        
+        // Re-enable after 5 seconds if form hasn't redirected
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            btnContent.style.display = 'flex';
+            btnLoading.style.display = 'none';
+        }, 5000);
+    });
+    
+    // Auto-hide placeholders for floating labels
+    const inputs = document.querySelectorAll('.input-wrapper input');
+    inputs.forEach(input => {
+        input.setAttribute('placeholder', ' ');
+    });
+});
+</script>
 {% endblock %}

@@ -1,137 +1,151 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}Настройка программы - AI Fitness Coach{% endblock %}
 
-{% block extra_css %}
-<style>
-.onboarding-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.progress-bar-custom {
-    height: 8px;
-    border-radius: 4px;
-    background: linear-gradient(45deg, #2196f3, #42a5f5);
-    transition: width 0.5s ease;
-}
-
-.answer-option {
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: white;
-}
-
-.answer-option:hover {
-    border-color: #2196f3;
-    background-color: #f8f9fa;
-}
-
-.answer-option.selected {
-    border-color: #2196f3;
-    background-color: #e3f2fd;
-}
-
-.motivational-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem;
-    border-radius: 16px;
-    text-align: center;
-    margin: 2rem 0;
-}
-
-.motivational-card img {
-    max-width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-}
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="onboarding-container">
-    <!-- Progress Bar -->
-    <div class="mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <small class="text-muted">Прогресс</small>
-            <small class="text-muted">{{ current_index }} из {{ total_questions }}</small>
-        </div>
-        <div class="progress">
-            <div class="progress-bar-custom" style="width: {{ progress_percent }}%"></div>
-        </div>
-    </div>
-
-    <!-- Question Card -->
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title mb-4">{{ question.question_text }}</h5>
-            
-            {% if question.help_text %}
-                <p class="text-muted mb-4">{{ question.help_text }}</p>
-            {% endif %}
-
-            <form id="questionForm">
-                {% if question.question_type == 'single_choice' %}
-                    {% for option in question.answer_options.all %}
-                        <div class="answer-option" data-option-id="{{ option.id }}">
-                            <strong>{{ option.option_text }}</strong>
-                            <input type="radio" name="answer" value="{{ option.id }}" 
-                                   style="display: none;"
-                                   {% if existing_response and option in existing_response.answer_options.all %}checked{% endif %}>
-                        </div>
-                    {% endfor %}
-                
-                {% elif question.question_type == 'multiple_choice' %}
-                    {% for option in question.answer_options.all %}
-                        <div class="answer-option" data-option-id="{{ option.id }}">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" 
-                                       name="answers" value="{{ option.id }}"
-                                       {% if existing_response and option in existing_response.answer_options.all %}checked{% endif %}>
-                                <label class="form-check-label">
-                                    <strong>{{ option.option_text }}</strong>
-                                </label>
+<!-- Modern onboarding page with video background -->
+<div class="onboarding-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="onboarding-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Gradient overlay -->
+    <div class="onboarding-overlay"></div>
+    
+    <!-- Content -->
+    <div class="onboarding-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7">
+                    
+                    <!-- Progress section -->
+                    <div class="progress-section">
+                        <div class="progress-info">
+                            <div class="progress-text">
+                                <span class="progress-label">Шаг {{ current_index }} из {{ total_questions }}</span>
+                                <span class="progress-percentage">{{ progress_percent }}%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-modern" style="width: {{ progress_percent }}%"></div>
+                                <div class="progress-bar-bg"></div>
                             </div>
                         </div>
-                    {% endfor %}
-                
-                {% elif question.question_type == 'number' %}
-                    <div class="mb-3">
-                        <input type="number" class="form-control form-control-lg" 
-                               name="answer" 
-                               min="{{ question.min_value|default:1 }}"
-                               max="{{ question.max_value|default:100 }}"
-                               value="{{ existing_response.answer_number|default:'' }}"
-                               required>
                     </div>
-                
-                {% else %}
-                    <div class="mb-3">
-                        <textarea class="form-control" name="answer" rows="4" 
-                                  placeholder="Ваш ответ...">{{ existing_response.answer_text|default:'' }}</textarea>
-                    </div>
-                {% endif %}
+                    
+                    <!-- Question card -->
+                    <div class="question-card">
+                        <div class="question-header">
+                            <h1 class="question-title">{{ question.question_text }}</h1>
+                            {% if question.help_text %}
+                                <p class="question-subtitle">{{ question.help_text }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <form id="questionForm" class="question-form">
+                            <div class="answers-container">
+                                {% if question.question_type == 'single_choice' %}
+                                    {% for option in question.answer_options.all %}
+                                        <div class="answer-option" data-option-id="{{ option.id }}">
+                                            <div class="answer-content">
+                                                <div class="answer-icon">
+                                                    <i class="fas fa-circle-check"></i>
+                                                </div>
+                                                <div class="answer-text">
+                                                    <h3>{{ option.option_text }}</h3>
+                                                    {% if option.description %}
+                                                        <p>{{ option.description }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <input type="radio" name="answer" value="{{ option.id }}" 
+                                                   style="display: none;"
+                                                   {% if existing_response and option in existing_response.answer_options.all %}checked{% endif %}>
+                                        </div>
+                                    {% endfor %}
+                                
+                                {% elif question.question_type == 'multiple_choice' %}
+                                    <div class="multi-select-hint">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Выберите все подходящие варианты</span>
+                                    </div>
+                                    {% for option in question.answer_options.all %}
+                                        <div class="answer-option multiple" data-option-id="{{ option.id }}">
+                                            <div class="answer-content">
+                                                <div class="answer-checkbox">
+                                                    <i class="fas fa-square-check"></i>
+                                                </div>
+                                                <div class="answer-text">
+                                                    <h3>{{ option.option_text }}</h3>
+                                                    {% if option.description %}
+                                                        <p>{{ option.description }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <input type="checkbox" name="answers" value="{{ option.id }}"
+                                                   style="display: none;"
+                                                   {% if existing_response and option in existing_response.answer_options.all %}checked{% endif %}>
+                                        </div>
+                                    {% endfor %}
+                                
+                                {% elif question.question_type == 'number' %}
+                                    <div class="number-input-container">
+                                        <div class="number-input-wrapper">
+                                            <label class="number-label">Введите значение</label>
+                                            <input type="number" class="number-input" 
+                                                   name="answer" 
+                                                   min="{{ question.min_value|default:1 }}"
+                                                   max="{{ question.max_value|default:100 }}"
+                                                   value="{{ existing_response.answer_number|default:'' }}"
+                                                   placeholder="Например, 25"
+                                                   required>
+                                            <div class="number-input-suffix">
+                                                {% if question.ai_field_name == 'age' %}лет
+                                                {% elif question.ai_field_name == 'height' %}см
+                                                {% elif question.ai_field_name == 'weight' %}кг
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                {% else %}
+                                    <div class="text-input-container">
+                                        <div class="text-input-wrapper">
+                                            <label class="text-label">Ваш ответ</label>
+                                            <textarea class="text-input" name="answer" rows="4" 
+                                                      placeholder="Расскажите подробнее...">{{ existing_response.answer_text|default:'' }}</textarea>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
-                        ← Назад
-                    </button>
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        {% if is_last_question %}
-                            Завершить →
-                        {% else %}
-                            Далее →
-                        {% endif %}
-                    </button>
+                            <!-- Navigation buttons -->
+                            <div class="question-navigation">
+                                {% if current_index > 1 %}
+                                    <button type="button" class="btn-back" onclick="history.back()">
+                                        <i class="fas fa-arrow-left"></i>
+                                        <span>Назад</span>
+                                    </button>
+                                {% else %}
+                                    <div></div>
+                                {% endif %}
+                                
+                                <button type="submit" class="btn-next">
+                                    <span class="btn-next-content">
+                                        <span>{% if is_last_question %}Завершить{% else %}Продолжить{% endif %}</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                    <div class="btn-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <span>Сохранение...</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -139,9 +153,9 @@
 <!-- Motivational Card Modal -->
 <div class="modal fade" id="motivationalModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content modern-modal">
             <div class="modal-body p-0">
-                <div class="motivational-card" id="motivationalCard">
+                <div class="motivational-card-modern" id="motivationalCard">
                     <!-- Content will be injected by JavaScript -->
                 </div>
             </div>
@@ -150,103 +164,743 @@
 </div>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+/* Full-screen onboarding page */
+.onboarding-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Video background */
+.onboarding-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.4;
+}
+
+/* Gradient overlay */
+.onboarding-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.95) 0%, 
+        rgba(118, 75, 162, 0.95) 50%,
+        rgba(255, 107, 107, 0.9) 100%
+    );
+    z-index: -1;
+}
+
+/* Content container */
+.onboarding-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 2rem 0;
+}
+
+/* Progress section */
+.progress-section {
+    margin-bottom: 2rem;
+}
+
+.progress-info {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.progress-label {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.progress-percentage {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4ecdc4;
+}
+
+.progress-bar-container {
+    position: relative;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar-modern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #44a08d);
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+}
+
+/* Question card */
+.question-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 30px;
+    padding: 3rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: cardSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Question header */
+.question-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.question-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.question-subtitle {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Multi-select hint */
+.multi-select-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Answer options */
+.answers-container {
+    margin-bottom: 3rem;
+}
+
+.answer-option {
+    background: white;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.answer-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.answer-option:hover::before {
+    left: 100%;
+}
+
+.answer-option:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.answer-option.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(78, 205, 196, 0.1));
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+}
+
+.answer-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.answer-icon, .answer-checkbox {
+    font-size: 1.5rem;
+    color: #bdc3c7;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.answer-option.selected .answer-icon,
+.answer-option.selected .answer-checkbox {
+    color: #667eea;
+    transform: scale(1.1);
+}
+
+.answer-text h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+}
+
+.answer-text p {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Number input */
+.number-input-container {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.number-input-wrapper {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+}
+
+.number-label {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.number-input {
+    width: 100%;
+    padding: 1.5rem 4rem 1.5rem 1.5rem;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 15px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+.number-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    background: white;
+}
+
+.number-input-suffix {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #7f8c8d;
+    pointer-events: none;
+}
+
+/* Text input */
+.text-input-container {
+    margin: 2rem 0;
+}
+
+.text-input-wrapper {
+    max-width: 100%;
+}
+
+.text-label {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.text-input {
+    width: 100%;
+    padding: 1.5rem;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 15px;
+    font-size: 1rem;
+    line-height: 1.5;
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 120px;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    background: white;
+}
+
+/* Navigation buttons */
+.question-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(108, 117, 125, 0.3);
+    color: #6c757d;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: #6c757d;
+    color: #495057;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.2);
+}
+
+.btn-next {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+    padding: 1.2rem 2.5rem;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-next:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+}
+
+.btn-next:active {
+    transform: translateY(-1px);
+}
+
+.btn-next-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-loading {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-next.loading .btn-next-content {
+    display: none;
+}
+
+.btn-next.loading .btn-loading {
+    display: flex;
+}
+
+/* Modern modal */
+.modern-modal .modal-content {
+    background: transparent;
+    border: none;
+}
+
+.motivational-card-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+}
+
+.motivational-card-modern img {
+    max-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 2rem;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.motivational-card-modern h4 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.motivational-card-modern p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .onboarding-content {
+        padding: 1rem 0;
+    }
+    
+    .question-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+        border-radius: 20px;
+    }
+    
+    .question-title {
+        font-size: 1.5rem;
+    }
+    
+    .answer-option {
+        padding: 1.2rem;
+    }
+    
+    .answer-text h3 {
+        font-size: 1.1rem;
+    }
+    
+    .question-navigation {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn-next {
+        width: 100%;
+    }
+    
+    .progress-info {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .question-title {
+        font-size: 1.3rem;
+    }
+    
+    .question-subtitle {
+        font-size: 1rem;
+    }
+    
+    .motivational-card-modern {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+    }
+}
+</style>
+{% endblock %}
+
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle answer option clicks
+    // Handle answer option clicks with modern animations
     document.querySelectorAll('.answer-option').forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function(e) {
             const questionType = '{{ question.question_type }}';
             
             if (questionType === 'single_choice') {
-                // Single choice - select only one
-                document.querySelectorAll('.answer-option').forEach(opt => opt.classList.remove('selected'));
+                // Single choice - select only one with animation
+                document.querySelectorAll('.answer-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
                 this.classList.add('selected');
+                
+                // Trigger a ripple effect
+                createRipple(e, this);
                 
                 const radio = this.querySelector('input[type="radio"]');
                 if (radio) radio.checked = true;
                 
             } else if (questionType === 'multiple_choice') {
-                // Multiple choice - toggle
+                // Multiple choice - toggle with animation
                 this.classList.toggle('selected');
+                createRipple(e, this);
+                
                 const checkbox = this.querySelector('input[type="checkbox"]');
-                if (checkbox) checkbox.checked = !checkbox.checked;
+                if (checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+            }
+        });
+        
+        // Add hover effect for better UX
+        option.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.transform = 'translateY(-2px)';
+            }
+        });
+        
+        option.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.transform = 'translateY(0)';
             }
         });
     });
 
-    // Form submission
-    document.getElementById('questionForm').addEventListener('submit', function(e) {
+    // Create ripple effect function
+    function createRipple(event, element) {
+        const circle = document.createElement('span');
+        const diameter = Math.max(element.clientWidth, element.clientHeight);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - element.offsetLeft - radius}px`;
+        circle.style.top = `${event.clientY - element.offsetTop - radius}px`;
+        circle.style.position = 'absolute';
+        circle.style.borderRadius = '50%';
+        circle.style.background = 'rgba(102, 126, 234, 0.3)';
+        circle.style.transform = 'scale(0)';
+        circle.style.animation = 'ripple 0.6s linear';
+        circle.style.pointerEvents = 'none';
+
+        const ripple = element.querySelector('.ripple');
+        if (ripple) {
+            ripple.remove();
+        }
+
+        circle.classList.add('ripple');
+        element.appendChild(circle);
+    }
+
+    // Add ripple animation CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        .answer-option {
+            position: relative;
+            overflow: hidden;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Enhanced form submission with loading states
+    const form = document.getElementById('questionForm');
+    const submitBtn = form.querySelector('.btn-next');
+    const btnContent = submitBtn.querySelector('.btn-next-content');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Show loading state
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
         
         const formData = new FormData(this);
         const questionType = '{{ question.question_type }}';
         
         let answerData = {};
+        let isValid = false;
         
         if (questionType === 'single_choice') {
             const selectedRadio = this.querySelector('input[type="radio"]:checked');
-            if (!selectedRadio) {
-                alert('Пожалуйста, выберите ответ');
+            if (selectedRadio) {
+                answerData.answer = parseInt(selectedRadio.value);
+                isValid = true;
+            } else {
+                showError('Пожалуйста, выберите ответ');
                 return;
             }
-            answerData.answer = parseInt(selectedRadio.value);
             
         } else if (questionType === 'multiple_choice') {
             const selectedCheckboxes = this.querySelectorAll('input[type="checkbox"]:checked');
-            if (selectedCheckboxes.length === 0) {
-                alert('Пожалуйста, выберите хотя бы один ответ');
+            if (selectedCheckboxes.length > 0) {
+                answerData.answers = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+                isValid = true;
+            } else {
+                showError('Пожалуйста, выберите хотя бы один ответ');
                 return;
             }
-            answerData.answers = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
             
         } else if (questionType === 'number') {
             const numberInput = this.querySelector('input[type="number"]');
-            if (!numberInput.value) {
-                alert('Пожалуйста, введите число');
+            if (numberInput.value) {
+                answerData.answer = parseInt(numberInput.value);
+                isValid = true;
+            } else {
+                showError('Пожалуйста, введите число');
                 return;
             }
-            answerData.answer = parseInt(numberInput.value);
             
         } else {
             const textInput = this.querySelector('textarea, input[type="text"]');
-            if (!textInput.value.trim()) {
-                alert('Пожалуйста, введите ответ');
+            if (textInput.value.trim()) {
+                answerData.answer = textInput.value.trim();
+                isValid = true;
+            } else {
+                showError('Пожалуйста, введите ответ');
                 return;
             }
-            answerData.answer = textInput.value.trim();
         }
 
-        // Submit answer
+        if (!isValid) return;
+
+        // Submit answer with enhanced error handling
         fetch(`{% url 'onboarding:save_answer' question.id %}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
             },
             body: JSON.stringify(answerData)
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show motivational card if available
-                if (data.motivational_card) {
-                    showMotivationalCard(data.motivational_card);
-                    // Navigate after modal is dismissed
-                    setTimeout(() => {
+                // Success animation before redirect
+                submitBtn.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+                setTimeout(() => {
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    } else {
                         navigateNext(data);
-                    }, 3000);
-                } else {
-                    navigateNext(data);
-                }
+                    }
+                }, 300);
             } else {
-                alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+                showError(data.error || 'Произошла ошибка при сохранении ответа');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Произошла ошибка при сохранении ответа');
+            showError('Произошла ошибка сети. Проверьте соединение и попробуйте снова.');
         });
     });
+
+    function showError(message) {
+        // Reset loading state
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+        
+        // Show modern error notification
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            z-index: 9999;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease;
+            max-width: 300px;
+        `;
+        errorDiv.innerHTML = `
+            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+            ${message}
+        `;
+        
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => {
+            errorDiv.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => errorDiv.remove(), 300);
+        }, 4000);
+        
+        // Add animations for error notifications
+        if (!document.getElementById('error-animations')) {
+            const errorStyle = document.createElement('style');
+            errorStyle.id = 'error-animations';
+            errorStyle.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(errorStyle);
+        }
+    }
 
     function showMotivationalCard(card) {
         const cardHtml = `
@@ -267,6 +921,22 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             window.location.href = '{% url "users:dashboard" %}';
         }
+    }
+
+    // Auto-focus number and text inputs for better UX
+    const numberInput = document.querySelector('.number-input');
+    const textInput = document.querySelector('.text-input');
+    
+    if (numberInput) {
+        numberInput.addEventListener('focus', function() {
+            this.select();
+        });
+    }
+    
+    if (textInput) {
+        textInput.addEventListener('focus', function() {
+            this.style.minHeight = '160px';
+        });
     }
 });
 </script>

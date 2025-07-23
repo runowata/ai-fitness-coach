@@ -3,6 +3,35 @@
 {% block title %}Дашборд - AI Fitness Coach{% endblock %}
 
 {% block content %}
+
+<!-- Program Completion Notification -->
+{% if program_completion_available %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" 
+             style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-trophy fa-2x"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading mb-2">🎉 Программа завершена!</h5>
+                    <p class="mb-2">Поздравляем! Вы успешно завершили 6-недельную программу тренировок. 
+                       Время выбрать новый цикл и продолжить свое развитие!</p>
+                    <a href="{% url 'workouts:program_completion' %}" 
+                       class="btn btn-light btn-sm fw-bold">
+                        <i class="fas fa-rocket me-1"></i>
+                        Выбрать новый цикл
+                    </a>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" 
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-md-8">
         <div class="card">

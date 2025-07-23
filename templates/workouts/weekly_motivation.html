@@ -1,0 +1,564 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Еженедельная мотивация - AI Fitness Coach{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Full-screen motivation page */
+    .motivation-fullscreen {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        color: white;
+    }
+
+    /* Video background */
+    .motivation-video-bg {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -2;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+        opacity: 0.3;
+    }
+
+    /* Dynamic gradient overlay */
+    .motivation-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, 
+            rgba(255, 107, 107, 0.9) 0%, 
+            rgba(78, 205, 196, 0.9) 30%,
+            rgba(102, 126, 234, 0.9) 60%,
+            rgba(255, 107, 107, 0.9) 100%
+        );
+        background-size: 400% 400%;
+        animation: motivationGradient 10s ease-in-out infinite;
+        z-index: -1;
+    }
+
+    @keyframes motivationGradient {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* Content container */
+    .motivation-content {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding: 2rem 0;
+    }
+
+    /* Main motivation card */
+    .motivation-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 35px;
+        padding: 3rem;
+        box-shadow: 0 50px 100px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Celebration animation */
+    .celebration-container {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .celebration-icon {
+        font-size: 6rem;
+        animation: celebrationBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes celebrationBounce {
+        0%, 100% { transform: translateY(0px) scale(1); }
+        50% { transform: translateY(-20px) scale(1.1); }
+    }
+
+    /* Week badge */
+    .week-badge {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        animation: badgePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+        0%, 100% { 
+            transform: scale(1);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        50% { 
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+    }
+
+    /* Motivation title */
+    .motivation-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .title-gradient {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #667eea, #764ba2);
+        background-size: 400% 400%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 4s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* Motivation message */
+    .motivation-message {
+        font-size: 1.3rem;
+        color: #34495e;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Weekly stats */
+    .weekly-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(78, 205, 196, 0.1));
+        border-radius: 20px;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border-color: #4ecdc4;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+        margin-top: 0.5rem;
+    }
+
+    /* Trainer video section */
+    .trainer-video-section {
+        margin: 3rem 0;
+    }
+
+    .video-container {
+        position: relative;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        margin-bottom: 2rem;
+    }
+
+    .trainer-video {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    }
+
+    .btn-hero {
+        padding: 1rem 2.5rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 200px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary.btn-hero {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        color: white;
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    }
+
+    .btn-primary.btn-hero:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(255, 107, 107, 0.6);
+        background: linear-gradient(45deg, #ff5252, #26a69a);
+    }
+
+    .btn-secondary.btn-hero {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary.btn-hero:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        background: linear-gradient(45deg, #5a67d8, #6b46c1);
+    }
+
+    /* Floating motivation particles */
+    .motivation-particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .motivation-particle {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        animation: particleFloat 6s ease-in-out infinite;
+    }
+
+    .motivation-particle:nth-child(1) {
+        width: 4px;
+        height: 4px;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .motivation-particle:nth-child(2) {
+        width: 6px;
+        height: 6px;
+        top: 40%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .motivation-particle:nth-child(3) {
+        width: 3px;
+        height: 3px;
+        bottom: 30%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    .motivation-particle:nth-child(4) {
+        width: 5px;
+        height: 5px;
+        top: 60%;
+        right: 25%;
+        animation-delay: 1s;
+    }
+
+    .motivation-particle:nth-child(5) {
+        width: 4px;
+        height: 4px;
+        bottom: 20%;
+        right: 10%;
+        animation-delay: 3s;
+    }
+
+    @keyframes particleFloat {
+        0%, 100% { 
+            opacity: 0.6;
+            transform: translateY(0px) scale(1); 
+        }
+        50% { 
+            opacity: 1;
+            transform: translateY(-30px) scale(1.2); 
+        }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .motivation-card {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .motivation-title {
+            font-size: 2rem;
+        }
+        
+        .motivation-message {
+            font-size: 1.1rem;
+        }
+        
+        .celebration-icon {
+            font-size: 4rem;
+        }
+        
+        .weekly-stats {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .trainer-video {
+            height: 250px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-hero {
+            min-width: 80%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Full-screen weekly motivation page -->
+<div class="motivation-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="motivation-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Dynamic gradient overlay -->
+    <div class="motivation-overlay"></div>
+    
+    <!-- Motivation content -->
+    <div class="motivation-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-8">
+                    
+                    <!-- Main motivation card -->
+                    <div class="motivation-card">
+                        <!-- Celebration animation -->
+                        <div class="celebration-container">
+                            <div class="celebration-icon">🎉</div>
+                        </div>
+                        
+                        <!-- Week badge -->
+                        <div class="week-badge">
+                            Неделя {{ week_number }} завершена!
+                        </div>
+                        
+                        <!-- Motivation title -->
+                        <h1 class="motivation-title">
+                            <span class="title-gradient">
+                                {% if archetype == 'bro' %}
+                                    Братан, ты молодец!
+                                {% elif archetype == 'sergeant' %}
+                                    Отличная работа, боец!
+                                {% elif archetype == 'intellectual' %}
+                                    Великолепные результаты!
+                                {% else %}
+                                    Потрясающий прогресс!
+                                {% endif %}
+                            </span>
+                        </h1>
+                        
+                        <!-- Motivation message -->
+                        <p class="motivation-message">
+                            {% if archetype == 'bro' %}
+                                Ты показал настоящий характер на этой неделе! Каждая тренировка приближает тебя к цели. 
+                                Продолжай в том же духе, и результаты не заставят себя ждать!
+                            {% elif archetype == 'sergeant' %}
+                                Дисциплина и упорство - ваши главные союзники. Вы успешно прошли еще одну неделю подготовки. 
+                                Впереди новые вызовы, но я знаю - вы справитесь!
+                            {% elif archetype == 'intellectual' %}
+                                Анализ показывает отличную динамику прогресса. Ваш методичный подход дает стабильные результаты. 
+                                Продолжайте следовать плану для достижения оптимальных показателей.
+                            {% else %}
+                                Каждая тренировка делает вас сильнее! Вы на правильном пути к достижению своих целей.
+                            {% endif %}
+                        </p>
+                        
+                        <!-- Weekly stats -->
+                        <div class="weekly-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-dumbbell stat-icon"></i>
+                                <span class="stat-value">{{ completed_workouts }}</span>
+                                <div class="stat-label">тренировок завершено</div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-fire stat-icon"></i>
+                                <span class="stat-value">{{ total_xp }}</span>
+                                <div class="stat-label">XP заработано</div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-trophy stat-icon"></i>
+                                <span class="stat-value">{{ achievements_count }}</span>
+                                <div class="stat-label">достижений</div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-calendar-check stat-icon"></i>
+                                <span class="stat-value">{{ streak_days }}</span>
+                                <div class="stat-label">дней подряд</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Trainer video section -->
+                        {% if weekly_video %}
+                        <div class="trainer-video-section">
+                            <div class="video-container">
+                                <video controls class="trainer-video" poster="{% static 'images/trainer-video-poster.jpg' %}">
+                                    <source src="{{ weekly_video.url }}" type="video/mp4">
+                                    Ваш браузер не поддерживает видео.
+                                </video>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Action buttons -->
+                        <div class="action-buttons">
+                            <a href="{% url 'users:dashboard' %}" class="btn btn-primary btn-hero">
+                                <i class="fas fa-rocket"></i>
+                                {% if archetype == 'bro' %}
+                                    Погнали дальше, братан!
+                                {% elif archetype == 'sergeant' %}
+                                    К следующему заданию!
+                                {% elif archetype == 'intellectual' %}
+                                    Продолжить программу
+                                {% else %}
+                                    Продолжить тренировки
+                                {% endif %}
+                            </a>
+                            
+                            <a href="{% url 'workouts:history' %}" class="btn btn-secondary btn-hero">
+                                <i class="fas fa-chart-line"></i>
+                                Посмотреть прогресс
+                            </a>
+                        </div>
+                        
+                        <!-- Floating particles -->
+                        <div class="motivation-particles">
+                            <div class="motivation-particle"></div>
+                            <div class="motivation-particle"></div>
+                            <div class="motivation-particle"></div>
+                            <div class="motivation-particle"></div>
+                            <div class="motivation-particle"></div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stats counters
+    const statValues = document.querySelectorAll('.stat-value');
+    
+    function animateCounter(element, target) {
+        let current = 0;
+        const increment = target / 50; // 50 steps
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.floor(current);
+        }, 30);
+    }
+    
+    // Start animations with delay
+    setTimeout(() => {
+        statValues.forEach((element, index) => {
+            const targetValue = parseInt(element.textContent);
+            element.textContent = '0';
+            setTimeout(() => {
+                animateCounter(element, targetValue);
+            }, index * 200);
+        });
+    }, 1000);
+    
+    // Add click effect to celebration icon
+    const celebrationIcon = document.querySelector('.celebration-icon');
+    if (celebrationIcon) {
+        celebrationIcon.addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'celebrationBounce 0.5s ease-out';
+                setTimeout(() => {
+                    this.style.animation = 'celebrationBounce 2s ease-in-out infinite';
+                }, 500);
+            }, 10);
+        });
+    }
+    
+    // Enhanced particle animations
+    const particles = document.querySelectorAll('.motivation-particle');
+    particles.forEach((particle, index) => {
+        // Add random colors
+        const colors = ['rgba(255, 107, 107, 0.8)', 'rgba(78, 205, 196, 0.8)', 'rgba(102, 126, 234, 0.8)'];
+        particle.style.background = colors[index % colors.length];
+        
+        // Random animation delays
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+    });
+});
+</script>
+{% endblock %}
