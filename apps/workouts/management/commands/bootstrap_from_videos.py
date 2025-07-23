@@ -2,7 +2,17 @@ import os
 import re
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils import timezone
 from apps.workouts.models import Exercise, VideoClip
+
+# Import other app models
+try:
+    from apps.achievements.models import Achievement
+    from apps.onboarding.models import OnboardingQuestion, AnswerOption, MotivationalCard
+    from apps.content.models import Story, Chapter
+except ImportError as e:
+    # Some models might not exist yet - we'll handle this gracefully
+    pass
 
 class Command(BaseCommand):
     help = 'Bootstrap entire application from video files on disk - FRESH START'
@@ -194,9 +204,206 @@ class Command(BaseCommand):
         final_exercises = Exercise.objects.count()
         final_videos = VideoClip.objects.count()
         
+        # Create essential app data
+        self.stdout.write(f"\\n📝 Creating essential app data...")
+        self.create_onboarding_questions()
+        self.create_achievements() 
+        self.create_motivational_cards()
+        self.create_stories()
+        
         self.stdout.write(f"\\n🎉 BOOTSTRAP COMPLETE!")
         self.stdout.write(f"   💪 Total exercises: {final_exercises}")
         self.stdout.write(f"   🎬 Total videos: {final_videos}")
         self.stdout.write(f"   🚀 AI Fitness Coach is ready!")
         
         return f"Bootstrapped {final_exercises} exercises and {final_videos} videos"
+    
+    def create_onboarding_questions(self):
+        """Create onboarding questions programmatically"""
+        try:
+            from apps.onboarding.models import OnboardingQuestion, AnswerOption
+            
+            # Clear existing
+            OnboardingQuestion.objects.all().delete()
+            
+            questions_data = [
+                {
+                    'order': 1,
+                    'question_text': 'Какова ваша основная цель?',
+                    'question_type': 'single_choice',
+                    'help_text': 'Выберите наиболее важную для вас цель',
+                    'options': [
+                        'Похудеть и привести себя в форму',
+                        'Набрать мышечную массу', 
+                        'Улучшить физическую форму и выносливость',
+                        'Поддерживать текущую форму'
+                    ]
+                },
+                {
+                    'order': 2,
+                    'question_text': 'Какой у вас опыт тренировок?',
+                    'question_type': 'single_choice',
+                    'help_text': 'Честно оцените ваш уровень подготовки',
+                    'options': [
+                        'Новичок - редко тренируюсь',
+                        'Начальный - тренируюсь иногда',
+                        'Средний - регулярные тренировки',
+                        'Продвинутый - многолетний опыт'
+                    ]
+                },
+                {
+                    'order': 3,
+                    'question_text': 'Сколько времени готовы тратить на тренировки?',
+                    'question_type': 'single_choice',
+                    'help_text': 'Реалистично оцените ваши возможности',
+                    'options': [
+                        '15-30 минут в день',
+                        '30-45 минут в день',
+                        '45-60 минут в день',
+                        'Более часа в день'
+                    ]
+                }
+            ]
+            
+            for q_data in questions_data:
+                question = OnboardingQuestion.objects.create(
+                    order=q_data['order'],
+                    question_text=q_data['question_text'],
+                    question_type=q_data['question_type'],
+                    help_text=q_data['help_text'],
+                    is_required=True
+                )
+                
+                for i, option_text in enumerate(q_data['options'], 1):
+                    AnswerOption.objects.create(
+                        question=question,
+                        option_text=option_text,
+                        order=i
+                    )
+            
+            self.stdout.write(f"   ✅ Created {len(questions_data)} onboarding questions")
+        except Exception as e:
+            self.stdout.write(f"   ⚠️  Onboarding questions creation failed: {e}")
+    
+    def create_achievements(self):
+        """Create achievements programmatically"""
+        try:
+            from apps.achievements.models import Achievement
+            
+            # Clear existing
+            Achievement.objects.all().delete()
+            
+            achievements_data = [
+                {
+                    'slug': 'first-workout',
+                    'name': 'Первая тренировка',
+                    'description': 'Завершите вашу первую тренировку',
+                    'trigger_type': 'workout_count',
+                    'trigger_value': '1',
+                    'xp_reward': 100,
+                    'icon': '🏆'
+                },
+                {
+                    'slug': 'week-warrior',
+                    'name': 'Недельный воин',
+                    'description': 'Тренируйтесь 7 дней подряд',
+                    'trigger_type': 'streak_days',
+                    'trigger_value': '7',
+                    'xp_reward': 250,
+                    'icon': '🔥'
+                },
+                {
+                    'slug': 'muscle-builder',
+                    'name': 'Строитель мышц',
+                    'description': 'Завершите 25 тренировок',
+                    'trigger_type': 'workout_count',
+                    'trigger_value': '25',
+                    'xp_reward': 500,
+                    'icon': '💪'
+                }
+            ]
+            
+            for ach_data in achievements_data:
+                Achievement.objects.create(**ach_data)
+            
+            self.stdout.write(f"   ✅ Created {len(achievements_data)} achievements")
+        except Exception as e:
+            self.stdout.write(f"   ⚠️  Achievements creation failed: {e}")
+    
+    def create_motivational_cards(self):
+        """Create motivational cards programmatically"""
+        try:
+            from apps.onboarding.models import MotivationalCard
+            
+            # Clear existing
+            MotivationalCard.objects.all().delete()
+            
+            cards_data = [
+                {
+                    'title': 'Отличный выбор!',
+                    'message': 'Похудение - это путешествие к лучшей версии себя. Мы поможем вам достичь цели шаг за шагом.',
+                    'category': 'goal',
+                },
+                {
+                    'title': 'Начинаем с основ',
+                    'message': 'Новичок? Отлично! Мы начнем с простых упражнений и постепенно увеличим нагрузку.',
+                    'category': 'experience',
+                },
+                {
+                    'title': 'Время - это всё',
+                    'message': 'Даже 15 минут в день могут изменить вашу жизнь. Главное - постоянство!',
+                    'category': 'time',
+                }
+            ]
+            
+            for card_data in cards_data:
+                MotivationalCard.objects.create(
+                    created_at=timezone.now(),
+                    **card_data
+                )
+            
+            self.stdout.write(f"   ✅ Created {len(cards_data)} motivational cards")
+        except Exception as e:
+            self.stdout.write(f"   ⚠️  Motivational cards creation failed: {e}")
+    
+    def create_stories(self):
+        """Create story content programmatically"""
+        try:
+            from apps.content.models import Story, Chapter
+            
+            # Clear existing
+            Story.objects.all().delete()
+            
+            story = Story.objects.create(
+                title='Путь к совершенству',
+                description='Ваше путешествие к идеальной форме',
+                is_active=True
+            )
+            
+            chapters_data = [
+                {
+                    'title': 'Первые шаги',
+                    'content': 'Каждый великий путь начинается с первого шага. Вы уже сделали его!',
+                    'order': 1,
+                    'unlock_level': 1
+                },
+                {
+                    'title': 'Набираем обороты',
+                    'content': 'Ваше тело начинает привыкать к нагрузкам. Продолжайте движение!',
+                    'order': 2,
+                    'unlock_level': 5
+                },
+                {
+                    'title': 'Мастер тренировок',
+                    'content': 'Вы освоили основы. Теперь пора переходить к более сложным вызовам!',
+                    'order': 3,
+                    'unlock_level': 10
+                }
+            ]
+            
+            for ch_data in chapters_data:
+                Chapter.objects.create(story=story, **ch_data)
+            
+            self.stdout.write(f"   ✅ Created story with {len(chapters_data)} chapters")
+        except Exception as e:
+            self.stdout.write(f"   ⚠️  Stories creation failed: {e}")
