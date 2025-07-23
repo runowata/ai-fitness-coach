@@ -1,22 +1,21 @@
-from django.db import migrations, connection
+from django.db import migrations
 
-SQL = """
-ALTER TABLE exercises
-  ALTER COLUMN id        TYPE integer USING id::integer,
-  ALTER COLUMN exercise_id TYPE integer USING exercise_id::integer;
+class Migration(migrations.Migration):
+    dependencies = [
+        ('workouts', '0006_alter_dailyworkout_options_and_more'),
+    ]
 
-ALTER TABLE workouts_plan_exercises
-  ALTER COLUMN exercise_id TYPE integer USING exercise_id::integer;
-"""
-
-class Migration(migrations.RunSQL):
-    run_sql = migrations.RunSQL.noop
-
-    def apply(self, project_state, schema_editor, collect_sql=False):
-        with connection.cursor() as c:
-            c.execute(SQL)
-        return project_state
-
-    def unapply(self, project_state, schema_editor, collect_sql=False):
-        pass
-PY < /dev/null
+    operations = [
+        migrations.RunSQL(
+            """
+            -- Просто меняем тип id на integer в PostgreSQL
+            ALTER TABLE workouts_exercise 
+                ALTER COLUMN id TYPE integer USING id::integer;
+            """,
+            reverse_sql="""
+            -- Откат: обратно в varchar
+            ALTER TABLE workouts_exercise 
+                ALTER COLUMN id TYPE varchar(36);
+            """
+        ),
+    ]
