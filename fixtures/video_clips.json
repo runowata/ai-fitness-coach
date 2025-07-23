@@ -8,7 +8,7 @@
       "archetype": "bro",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      "duration_seconds": 45,
+      "duration_seconds": "45",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
@@ -22,7 +22,7 @@
       "archetype": "bro",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      "duration_seconds": 30,
+      "duration_seconds": "30",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
@@ -36,7 +36,7 @@
       "archetype": "bro",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-      "duration_seconds": 15,
+      "duration_seconds": "15",
       "reminder_text": "Помни - локти близко к телу!",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
@@ -51,7 +51,7 @@
       "archetype": "sergeant",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-      "duration_seconds": 25,
+      "duration_seconds": "25",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
@@ -65,7 +65,7 @@
       "archetype": "intellectual",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-      "duration_seconds": 40,
+      "duration_seconds": "40",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
@@ -79,7 +79,7 @@
       "archetype": "bro",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-      "duration_seconds": 50,
+      "duration_seconds": "50",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
@@ -122,7 +122,7 @@
       "archetype": "bro",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
-      "duration_seconds": 20,
+      "duration_seconds": "20",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
@@ -136,7 +136,7 @@
       "archetype": "sergeant",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-      "duration_seconds": 35,
+      "duration_seconds": "35",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
@@ -150,7 +150,7 @@
       "archetype": "sergeant",
       "model_name": "mod1",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
-      "duration_seconds": 18,
+      "duration_seconds": "18",
       "reminder_text": "Колени не заходят за носки!",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
@@ -179,7 +179,7 @@
       "archetype": "intellectual",
       "model_name": "mod2",
       "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      "duration_seconds": 42,
+      "duration_seconds": "42",
       "is_active": true,
       "created_at": "2025-07-23T00:00:00Z"
     }
