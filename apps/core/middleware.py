@@ -56,11 +56,10 @@ class DatabaseSetupMiddleware:
                 call_command('bootstrap_from_videos')
                 logger.info("✓ Bootstrap from videos complete")
                 
-                logger.info("🎉 Database setup complete - AI Fitness Coach ready\!")
+                logger.info("🎉 Database setup complete - AI Fitness Coach ready!")
             else:
                 logger.info("✓ Database already set up")
                 
         except Exception as e:
             logger.error(f"Database setup failed: {e}")
             raise
-EOF < /dev/null
