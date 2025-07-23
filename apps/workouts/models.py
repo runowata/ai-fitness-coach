@@ -23,6 +23,7 @@ class Exercise(models.Model):
         ('full_body', 'Full Body'),
     ]
     
+    id = models.CharField(primary_key=True, max_length=36)
     slug = models.SlugField(unique=True, max_length=100)
     name = models.CharField(max_length=200)
     description = models.TextField()
