@@ -1,16 +1,17 @@
-#!/bin/bash
+#\!/bin/bash
 set -e
 
-echo "Running migrations..."
+echo "🚀 Starting AI Fitness Coach deployment..."
+
+# Run migrations
+echo "📊 Running database migrations..."
 python manage.py migrate --noinput
 
-echo "Loading fixtures..."
-python manage.py loaddata fixtures/exercises.json
-python manage.py loaddata fixtures/onboarding_questions.json
-python manage.py loaddata fixtures/motivational_cards.json
-python manage.py loaddata fixtures/stories.json
-python manage.py loaddata fixtures/video_clips.json
-python manage.py loaddata fixtures/achievements.json
+# Setup database with bootstrap
+echo "🏗️ Setting up database..."
+python manage.py setup_database
 
-echo "Starting gunicorn on port $PORT..."
-gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300 --log-file -
+# Start gunicorn
+echo "🌟 Starting gunicorn server..."
+exec gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300
+EOF < /dev/null
