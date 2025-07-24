@@ -17,12 +17,25 @@ def create_workout_plan_from_onboarding(user):
     """
     from apps.workouts.models import WorkoutPlan, DailyWorkout
     
-    # Use data processor to collect user data
-    user_data = OnboardingDataProcessor.collect_user_data(user)
+    logger.info("🔍 PLAN GENERATION: Starting for user %s", user.id)
     
-    # Create workout plan using dedicated service
-    plan_generator = WorkoutPlanGenerator()
-    return plan_generator.create_plan(user, user_data)
+    try:
+        # Use data processor to collect user data
+        logger.info("🔍 PLAN GENERATION: Collecting user data...")
+        user_data = OnboardingDataProcessor.collect_user_data(user)
+        logger.info("🔍 PLAN GENERATION: User data collected, keys: %s", list(user_data.keys()))
+        
+        # Create workout plan using dedicated service
+        logger.info("🔍 PLAN GENERATION: Creating plan with WorkoutPlanGenerator...")
+        plan_generator = WorkoutPlanGenerator()
+        result = plan_generator.create_plan(user, user_data)
+        logger.info("🔍 PLAN GENERATION: Plan created successfully, plan ID: %s", result.id)
+        return result
+        
+    except Exception as e:
+        logger.error("🔍 PLAN GENERATION: FAILED for user %s: %s", user.id, str(e))
+        logger.exception("🔍 PLAN GENERATION: Full traceback:")
+        raise
 
 
 class WorkoutPlanGenerator:
