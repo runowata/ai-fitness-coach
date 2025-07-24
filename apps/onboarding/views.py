@@ -4,11 +4,15 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.urls import reverse
 import json
+import logging
 
 from .models import OnboardingQuestion, AnswerOption, UserOnboardingResponse, OnboardingSession, MotivationalCard
 from apps.ai_integration.services import WorkoutPlanGenerator
 from apps.workouts.models import WorkoutPlan
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -197,6 +201,10 @@ def generate_plan(request):
         messages.info(request, 'У вас уже есть активный план тренировок')
         return redirect('users:dashboard')
     
+    # Show loading page for GET request
+    if request.method == 'GET':
+        return render(request, 'onboarding/analysis_loading.html')
+    
     profile = request.user.profile
     
     if not profile.archetype:
@@ -240,6 +248,81 @@ def generate_plan(request):
     except Exception as e:
         messages.error(request, f'Ошибка при генерации плана: {str(e)}')
         return render(request, 'onboarding/error.html', {'error': str(e)})
+
+
+@login_required
+@csrf_exempt
+def generate_plan_ajax(request):
+    """AJAX endpoint for plan generation with progress updates"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+    from apps.workouts.models import WorkoutPlan
+    from apps.ai_integration.services import create_workout_plan_from_onboarding
+    
+    # Check if plan already exists
+    existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
+    if existing_plan:
+        return JsonResponse({
+            'status': 'success',
+            'redirect_url': reverse('users:dashboard')
+        })
+    
+    try:
+        # Generate plan
+        workout_plan = create_workout_plan_from_onboarding(request.user)
+        
+        # Mark onboarding as complete
+        request.user.completed_onboarding = True
+        request.user.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'redirect_url': reverse('onboarding:plan_confirmation'),
+            'plan_id': workout_plan.id
+        })
+        
+    except Exception as e:
+        logger.error(f"Plan generation failed for user {request.user.id}: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'error': str(e)
+        }, status=500)
+
+
+@login_required
+def plan_confirmation(request):
+    """Show plan confirmation page before starting"""
+    latest_plan = request.user.workout_plans.filter(is_active=True).first()
+    
+    if not latest_plan:
+        messages.error(request, 'План тренировок не найден')
+        return redirect('onboarding:generate_plan')
+    
+    if request.method == 'POST':
+        # User confirmed the plan
+        latest_plan.is_confirmed = True
+        latest_plan.save()
+        
+        messages.success(request, 'Отлично! Ваш план активирован. Начнем тренироваться!')
+        return redirect('users:dashboard')
+    
+    # Extract plan summary
+    plan_data = latest_plan.plan_data
+    total_exercises = 0
+    for week in plan_data.get('weeks', []):
+        for day in week.get('days', []):
+            if not day.get('is_rest_day'):
+                total_exercises += len(day.get('exercises', []))
+    
+    context = {
+        'plan': latest_plan,
+        'plan_data': plan_data,
+        'total_exercises': total_exercises,
+        'archetype': request.user.profile.archetype
+    }
+    
+    return render(request, 'onboarding/plan_confirmation.html', context)
 
 
 @login_required

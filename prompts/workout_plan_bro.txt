@@ -65,15 +65,27 @@
           "is_rest_day": false,
           "exercises": [
             {{
-              "exercise_slug": "push-ups",
+              "exercise_slug": "ex001",
               "sets": 3,
               "reps": "8-12",
               "rest_seconds": 60
             }},
             {{
-              "exercise_slug": "squats", 
+              "exercise_slug": "ex002", 
               "sets": 3,
               "reps": "10-15",
+              "rest_seconds": 60
+            }},
+            {{
+              "exercise_slug": "ex005",
+              "sets": 3,
+              "reps": "30-60 сек",
+              "rest_seconds": 45
+            }},
+            {{
+              "exercise_slug": "ex004",
+              "sets": 3,
+              "reps": "10 на каждую ногу",
               "rest_seconds": 60
             }}
           ],
@@ -91,6 +103,18 @@
   ]
 }}
 
-ВАЖНО: Используй ТОЛЬКО эти exercise_slug'и: push-ups, squats, plank, lunges, burpees, bicycle-crunches, mountain-climbers, jumping-jacks, deadlifts, pull-ups
+ВАЖНО: 
+1. Создавай по 4-6 упражнений на каждую тренировку для 45-60 минутной сессии
+2. Используй ТОЛЬКО следующие exercise_slug'и (соответствуют кодам упражнений в системе):
+   - Базовые: ex001 (Push-ups), ex002 (Squats), ex004 (Lunges), ex005 (Plank), ex009 (Burpees), ex010 (Mountain Climbers), ex011 (Jumping Jacks)
+   - Для груди: ex007 (Bench Press), ex026 (Chest Flyes), ex042 (Diamond Push-ups), ex043 (Wide Push-ups), ex045 (Incline Push-ups)
+   - Для спины: ex003 (Pull-ups), ex008 (Rows), ex085 (Lat Pulldowns), ex090 (Bent Over Rows), ex084 (Cable Rows)
+   - Для ног: ex050 (Bulgarian Split Squats), ex051 (Goblet Squats), ex052 (Jump Squats), ex062 (Hip Thrusts), ex064 (Calf Raises), ex067 (Leg Curls)
+   - Для плеч: ex025 (Shoulder Press), ex022 (Lateral Raises), ex038 (Front Raises), ex039 (Rear Delt Flyes), ex036 (Arnold Press)
+   - Для рук: ex023 (Bicep Curls), ex024 (Tricep Extensions), ex031 (Hammer Curls), ex012 (Dips)
+   - Для кора: ex014 (Crunches), ex015 (Russian Twists), ex013 (Leg Raises)
+   - Кардио: ex017 (High Knees), ex018 (Butt Kicks), ex019 (Jump Rope), ex020 (Box Jumps), ex021 (Step-ups)
 
-Создай план с минимум 3 тренировочными днями в неделю и обязательными днями отдыха.
+3. Создай план с минимум 3 тренировочными днями в неделю и обязательными днями отдыха
+4. Балансируй мышечные группы в течение недели (не более 2х тренировок на одну группу)
+5. Прогрессивно увеличивай нагрузку каждую неделю (+10-15%)

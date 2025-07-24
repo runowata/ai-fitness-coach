@@ -994,13 +994,13 @@ function startAIPlanGeneration() {
     generationInProgress = true;
     const startTime = Date.now();
     
-    console.log('Starting AJAX request to /onboarding/generate/');
+    console.log('Starting AJAX request to /onboarding/generate-ajax/');
     console.log('Request headers:', {
         'Content-Type': 'application/json',
         'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || 'NOT_FOUND'
     });
     
-    fetch('/onboarding/generate/', {
+    fetch('/onboarding/generate-ajax/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1026,10 +1026,9 @@ function startAIPlanGeneration() {
         const elapsedTime = (Date.now() - startTime) / 1000;
         console.log(`AJAX JSON parsed after ${elapsedTime}s:`, data);
         
-        if (data.success) {
+        if (data.status === 'success') {
             // AI generation completed - stop animation and redirect
             console.log('✅ AI generation successful! Plan ID:', data.plan_id);
-            console.log('Backend elapsed time:', data.elapsed_time);
             console.log('Frontend elapsed time:', elapsedTime);
             console.log('Redirecting to:', data.redirect_url);
             
@@ -1067,7 +1066,6 @@ function startAIPlanGeneration() {
         } else {
             // Show error after 3 seconds
             console.error('❌ AI generation failed:', data.error);
-            console.error('Backend elapsed time:', data.elapsed_time);
             generationInProgress = false;
             setTimeout(() => {
                 showError(data.error || 'Произошла ошибка при генерации плана');

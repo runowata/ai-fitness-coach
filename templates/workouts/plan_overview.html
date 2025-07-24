@@ -1,0 +1,348 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Мой план тренировок - AI Fitness Coach{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero section with gradient */
+    .plan-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .plan-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            rgba(255,255,255,0.05) 0px,
+            rgba(255,255,255,0.05) 1px,
+            transparent 1px,
+            transparent 10px
+        );
+    }
+    
+    .plan-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        border-radius: 15px;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        opacity: 0.9;
+        font-size: 0.9rem;
+    }
+    
+    /* Progress bar */
+    .progress-container {
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
+        height: 20px;
+        margin-top: 2rem;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        background: linear-gradient(90deg, #4ecdc4 0%, #44a08d 100%);
+        height: 100%;
+        transition: width 1s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+    
+    /* Week cards */
+    .week-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+    
+    .week-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .week-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .week-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .week-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    /* Day items */
+    .day-list {
+        padding: 1.5rem;
+    }
+    
+    .day-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 15px;
+        margin-bottom: 0.75rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .day-item:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+    
+    .day-item.completed {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+    }
+    
+    .day-item.rest-day {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+    }
+    
+    .day-number {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .day-content {
+        flex-grow: 1;
+    }
+    
+    .day-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .day-details {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .day-status {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .status-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .status-icon.completed {
+        background: #28a745;
+        color: white;
+    }
+    
+    .status-icon.pending {
+        background: #ffc107;
+        color: white;
+    }
+    
+    /* Confidence task indicator */
+    .confidence-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        background: rgba(233, 30, 99, 0.1);
+        color: #e91e63;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-left: 0.5rem;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .plan-stats {
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            padding: 0.75rem 1.5rem;
+        }
+        
+        .day-item {
+            padding: 0.75rem;
+        }
+        
+        .day-number {
+            width: 35px;
+            height: 35px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="plan-hero">
+        <div class="container">
+            <h1 class="mb-3">{{ plan.name }}</h1>
+            <p class="lead mb-0">Ваш персональный план на {{ plan.duration_weeks }} недель</p>
+            
+            <div class="plan-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ completed_workouts }}</div>
+                    <div class="stat-label">Завершено</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_workouts }}</div>
+                    <div class="stat-label">Всего тренировок</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">Неделя {{ current_week }}</div>
+                    <div class="stat-label">Текущая</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-fill" style="width: {{ progress_percentage }}%">
+                    {% if progress_percentage > 10 %}
+                        {{ progress_percentage|floatformat:0 }}%
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="text-center mb-4">
+        <a href="{% url 'users:dashboard' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-play-circle"></i> К текущей тренировке
+        </a>
+        <a href="{% url 'workouts:history' %}" class="btn btn-outline-secondary btn-lg ms-2">
+            <i class="fas fa-history"></i> История
+        </a>
+    </div>
+    
+    <!-- Weekly breakdown -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            {% for week_num, workouts in workouts_by_week.items %}
+                <div class="week-card">
+                    <div class="week-header">
+                        <h3 class="week-title">Неделя {{ week_num }}</h3>
+                        <div class="week-badge">
+                            {% with completed=workouts|length %}
+                                {% for workout in workouts %}
+                                    {% if workout.completed_at %}
+                                        {% with completed=forloop.counter %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ workouts|length }} тренировок
+                            {% endwith %}
+                        </div>
+                    </div>
+                    
+                    <div class="day-list">
+                        {% for workout in workouts %}
+                            <a href="{% url 'workouts:daily_workout' workout.id %}" 
+                               class="day-item {% if workout.completed_at %}completed{% endif %} {% if workout.is_rest_day %}rest-day{% endif %}">
+                                <div class="day-number">{{ workout.day_number }}</div>
+                                
+                                <div class="day-content">
+                                    <div class="day-name">
+                                        {{ workout.name }}
+                                        {% if workout.confidence_task %}
+                                            <span class="confidence-indicator">
+                                                <i class="fas fa-heart"></i> Уверенность
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="day-details">
+                                        {% if workout.is_rest_day %}
+                                            <i class="fas fa-bed"></i> День отдыха
+                                        {% else %}
+                                            <i class="fas fa-dumbbell"></i> {{ workout.exercises|length }} упражнений
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="day-status">
+                                    {% if workout.completed_at %}
+                                        <div class="status-icon completed">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <small class="text-muted">Выполнено</small>
+                                    {% else %}
+                                        <div class="status-icon pending">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <small class="text-muted">Ожидает</small>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

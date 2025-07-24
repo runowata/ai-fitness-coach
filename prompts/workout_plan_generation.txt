@@ -106,4 +106,14 @@ Return a JSON object with the following structure:
   }
 }
 
-Available exercise slugs: push-up, squat, plank, dumbbell-curl, pull-up, burpee, lunge, mountain-climber, deadlift, bench-press, shoulder-press, lat-pulldown, leg-press, calf-raise, tricep-dip, bicep-curl, chest-fly, row, hip-thrust
+EXERCISE GUIDELINES:
+1. Create 4-6 exercises per workout for a 45-60 minute session
+2. Use ONLY the following exercise_slug codes:
+   - Basic: ex001 (Push-ups), ex002 (Squats), ex004 (Lunges), ex005 (Plank), ex009 (Burpees), ex010 (Mountain Climbers), ex011 (Jumping Jacks)
+   - Chest: ex007 (Bench Press), ex026 (Chest Flyes), ex042 (Diamond Push-ups), ex043 (Wide Push-ups), ex045 (Incline Push-ups)
+   - Back: ex003 (Pull-ups), ex008 (Rows), ex085 (Lat Pulldowns), ex090 (Bent Over Rows), ex084 (Cable Rows)
+   - Legs: ex050 (Bulgarian Split Squats), ex051 (Goblet Squats), ex052 (Jump Squats), ex062 (Hip Thrusts), ex064 (Calf Raises), ex067 (Leg Curls)
+   - Shoulders: ex025 (Shoulder Press), ex022 (Lateral Raises), ex038 (Front Raises), ex039 (Rear Delt Flyes), ex036 (Arnold Press)
+   - Arms: ex023 (Bicep Curls), ex024 (Tricep Extensions), ex031 (Hammer Curls), ex012 (Dips)
+   - Core: ex014 (Crunches), ex015 (Russian Twists), ex013 (Leg Raises)
+   - Cardio: ex017 (High Knees), ex018 (Butt Kicks), ex019 (Jump Rope), ex020 (Box Jumps), ex021 (Step-ups)

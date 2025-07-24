@@ -37,7 +37,12 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Сегодняшняя тренировка</h5>
-                <span class="badge bg-info">Неделя {{ current_week }}</span>
+                <div>
+                    <a href="{% url 'workouts:plan_overview' %}" class="btn btn-sm btn-outline-primary me-2">
+                        <i class="fas fa-calendar-alt"></i> Весь план
+                    </a>
+                    <span class="badge bg-info">Неделя {{ current_week }}</span>
+                </div>
             </div>
             <div class="card-body">
                 {% if today_workout %}

@@ -168,3 +168,37 @@ def workout_history_view(request):
     }
     
     return render(request, 'workouts/history.html', context)
+
+
+@login_required
+def plan_overview_view(request):
+    """Show full workout plan overview"""
+    # Get active workout plan
+    plan = request.user.workout_plans.filter(is_active=True).first()
+    if not plan:
+        messages.error(request, 'У вас нет активного плана тренировок')
+        return redirect('users:dashboard')
+    
+    # Group workouts by week
+    workouts_by_week = {}
+    for workout in plan.daily_workouts.all().order_by('week_number', 'day_number'):
+        week_num = workout.week_number
+        if week_num not in workouts_by_week:
+            workouts_by_week[week_num] = []
+        workouts_by_week[week_num].append(workout)
+    
+    # Calculate progress
+    total_workouts = plan.daily_workouts.count()
+    completed_workouts = plan.daily_workouts.filter(completed_at__isnull=False).count()
+    progress_percentage = (completed_workouts / total_workouts * 100) if total_workouts > 0 else 0
+    
+    context = {
+        'plan': plan,
+        'workouts_by_week': workouts_by_week,
+        'total_workouts': total_workouts,
+        'completed_workouts': completed_workouts,
+        'progress_percentage': progress_percentage,
+        'current_week': plan.get_current_week()
+    }
+    
+    return render(request, 'workouts/plan_overview.html', context)
