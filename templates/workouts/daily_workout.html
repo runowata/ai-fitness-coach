@@ -444,6 +444,11 @@ function submitFeedback(rating) {
                 alert(`Новые достижения: ${data.new_achievements.map(a => a.name).join(', ')}`);
             }
             
+            // Show AI analysis if available
+            if (data.ai_analysis) {
+                showAIAnalysis(data.ai_analysis);
+            }
+            
             // Show final video if available
             if (data.final_video) {
                 showFinalVideo(data.final_video);
@@ -555,6 +560,74 @@ function closeFinalVideo() {
 
 function completeWorkout() {
     submitFeedback('smile');
+}
+
+function showAIAnalysis(analysis) {
+    // Create modal for AI analysis
+    const modalHtml = `
+        <div class="modal fade" id="aiAnalysisModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-brain me-2"></i>
+                            Анализ тренировки
+                        </h5>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-4">
+                            <h6 class="text-primary">💬 Обратная связь:</h6>
+                            <p class="lead">${analysis.feedback || 'Отличная работа!'}</p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card border-info">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-info">📊 Уровень усталости</h6>
+                                        <div class="display-4 text-info">${analysis.fatigue_score || 5}/10</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-body">
+                                        <h6 class="text-success">🎯 Следующий фокус:</h6>
+                                        <p class="mb-0">${analysis.next_focus || 'Продолжайте в том же духе!'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="closeAIAnalysis()">
+                            <i class="fas fa-check me-2"></i>
+                            Понятно, спасибо!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('aiAnalysisModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('aiAnalysisModal'));
+    modal.show();
+}
+
+function closeAIAnalysis() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('aiAnalysisModal'));
+    modal.hide();
+    location.reload();
 }
 </script>
 {% endblock %}

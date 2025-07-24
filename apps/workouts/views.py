@@ -88,7 +88,8 @@ def complete_workout_view(request, workout_id):
                 }
                 for achievement in result['new_achievements']
             ],
-            'current_streak': result['current_streak']
+            'current_streak': result['current_streak'],
+            'ai_analysis': result.get('ai_analysis')
         })
         
     except Exception as e:
