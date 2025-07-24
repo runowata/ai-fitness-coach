@@ -29,7 +29,7 @@ echo "Skipping fixtures (data comes from bootstrap)..."
 
 # Bootstrap video data on deployment
 echo "Bootstrapping video data..."
-python manage.py bootstrap_from_videos --force || \
+python manage.py bootstrap_from_videos --media-path=/opt/render/project/src/media --force || \
   echo "⚠️  Bootstrap skipped. Media not mounted."
 
 echo "Build completed successfully!"
