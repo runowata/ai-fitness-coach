@@ -31,6 +31,7 @@ python manage.py loaddata fixtures/empty.json
 
 # Bootstrap video data on deployment
 echo "Bootstrapping video data..."
-python manage.py bootstrap_from_videos --force || echo "Bootstrap skipped (no media files)"
+python manage.py bootstrap_from_videos --force || \
+  echo "⚠️  Bootstrap skipped. Media not mounted."
 
 echo "Build completed successfully!"
