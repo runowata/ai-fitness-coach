@@ -22,10 +22,13 @@ class Command(BaseCommand):
                           help='Path to video files')
         parser.add_argument('--dry-run', action='store_true',
                           help='Show what would be created without saving')
+        parser.add_argument('--skip-if-exists', action='store_true',
+                          help='Skip video creation if clips already exist for exercise')
 
     def handle(self, *args, **options):
         media_path = options['media_path']
         dry_run = options['dry_run']
+        skip_if_exists = options['skip_if_exists']
         
         self.stdout.write("🚀 BOOTSTRAPPING AI FITNESS COACH FROM VIDEOS")
         self.stdout.write("=" * 60)
@@ -153,13 +156,23 @@ class Command(BaseCommand):
                 # Fix: Calculate relative path from media root, not src root
                 relative_path = os.path.relpath(video_path, '/opt/render/project/src/media')
                 
+                # Skip if video already exists (and not placeholder)
+                if skip_if_exists and VideoClip.objects.filter(
+                    exercise_id=ex_dir,
+                    type=video_type,
+                    archetype='bro',
+                    is_placeholder=False
+                ).exists():
+                    continue
+                
                 videos_data.append({
                     'exercise_id': ex_dir,
                     'type': video_type,
                     'archetype': 'bro',  # Default
                     'model_name': model_name,
                     'file_url': f'/media/{relative_path}',
-                    'duration_seconds': 30  # Default
+                    'duration_seconds': 30,  # Default
+                    'is_placeholder': False  # Real video from file
                 })
         
         # Process trainer videos
@@ -186,7 +199,8 @@ class Command(BaseCommand):
                                     'archetype': archetype,  
                                     'model_name': 'trainer',
                                     'file_url': f'/media/{relative_path}',
-                                    'duration_seconds': 45  # Default for trainer videos
+                                    'duration_seconds': 45,  # Default for trainer videos
+                                    'is_placeholder': False  # Real trainer video
                                 })
         
         # Show stats
@@ -234,7 +248,8 @@ class Command(BaseCommand):
                     model_name=video_data['model_name'],
                     url=video_data['file_url'],
                     duration_seconds=video_data['duration_seconds'],
-                    is_active=True
+                    is_active=True,
+                    is_placeholder=video_data.get('is_placeholder', False)
                 )
         
         # Final stats

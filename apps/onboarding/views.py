@@ -251,7 +251,6 @@ def generate_plan(request):
 
 
 @login_required
-@csrf_exempt
 def generate_plan_ajax(request):
     """AJAX endpoint for plan generation with progress updates"""
     if request.method != 'POST':

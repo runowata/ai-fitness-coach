@@ -90,6 +90,7 @@ class VideoClip(models.Model):
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    is_placeholder = models.BooleanField(default=False)  # True for dev placeholders
     
     class Meta:
         db_table = 'video_clips'

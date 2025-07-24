@@ -9,7 +9,7 @@ services:
     name: ai-fitness-coach
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    preDeployCommand: "python manage.py migrate --noinput && python manage.py bootstrap_from_videos --media-path=/opt/render/project/src/media/videos"
+    preDeployCommand: "python manage.py migrate --noinput && python manage.py bootstrap_from_videos --media-path=/opt/render/project/src/media/videos --skip-if-exists"
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
     plan: starter
     region: frankfurt

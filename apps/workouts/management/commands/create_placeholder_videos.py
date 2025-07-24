@@ -31,7 +31,8 @@ class Command(BaseCommand):
                         'model_name': 'mod1',
                         'url': '/static/videos/placeholder.mp4',
                         'duration_seconds': 30,
-                        'is_active': True
+                        'is_active': True,
+                        'is_placeholder': True  # Mark as placeholder for filtering
                     })
         
         self.stdout.write(f"📊 Will create {len(videos_to_create)} video clips")

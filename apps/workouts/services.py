@@ -21,13 +21,13 @@ class VideoPlaylistBuilder:
                 playlist.append(rest_day_video)
             return playlist
         
-        # Add intro video at the beginning  
+        # Add intro video at the beginning (prefer non-placeholder)
         intro_video = VideoClip.objects.filter(
             exercise=None,
             type='intro',
             archetype=user_archetype,
             is_active=True
-        ).order_by('?').first()
+        ).order_by('is_placeholder', '?').first()
         
         if intro_video:
             playlist.append({
@@ -64,13 +64,13 @@ class VideoPlaylistBuilder:
         except Exercise.DoesNotExist:
             return playlist
         
-        # 1. Technique video (mod1)
+        # 1. Technique video (mod1) - prefer non-placeholder
         technique_video = VideoClip.objects.filter(
             exercise=exercise,
             type='technique',
             model_name='mod1',
             is_active=True
-        ).first()
+        ).order_by('is_placeholder').first()
         
         if technique_video:
             playlist.append({
@@ -82,13 +82,13 @@ class VideoPlaylistBuilder:
                 'model': 'mod1'
             })
         
-        # 2. Support video (motivation based on archetype)
+        # 2. Support video (motivation based on archetype) - prefer non-placeholder
         support_video = VideoClip.objects.filter(
             exercise=None,  # Trainer videos have no specific exercise
             type='support',
             archetype=archetype,
             is_active=True
-        ).order_by('?').first()  # Random support video
+        ).order_by('is_placeholder', '?').first()  # Prefer real, then random
         
         if support_video:
             playlist.append({
@@ -109,7 +109,7 @@ class VideoPlaylistBuilder:
                 type='support',
                 archetype=archetype, 
                 is_active=True
-            ).exclude(id=support_video.id if support_video else 0).order_by('?').first()
+            ).exclude(id=support_video.id if support_video else 0).order_by('is_placeholder', '?').first()
             
             if extra_support:
                 playlist.append({
@@ -127,7 +127,7 @@ class VideoPlaylistBuilder:
                 type='mistake',
                 model_name='mod1',
                 is_active=True
-            ).first()
+            ).order_by('is_placeholder').first()
             
             if mistake_video:
                 playlist.append({
@@ -142,12 +142,12 @@ class VideoPlaylistBuilder:
         return playlist
     
     def _get_rest_day_video(self, week_number: int, archetype: str) -> Dict:
-        """Get motivational video for rest day"""
+        """Get motivational video for rest day - prefer non-placeholder"""
         video = VideoClip.objects.filter(
             type='support',
             archetype=archetype,
             is_active=True
-        ).order_by('?').first()
+        ).order_by('is_placeholder', '?').first()
         
         if video:
             return {
@@ -159,13 +159,13 @@ class VideoPlaylistBuilder:
         return None
     
     def _get_weekly_motivation_video(self, week_number: int, archetype: str) -> Dict:
-        """Get weekly motivational video"""
+        """Get weekly motivational video - prefer non-placeholder"""
         # Use outro video for weekly completion
         video = VideoClip.objects.filter(
             type='outro',
             archetype=archetype,
             is_active=True
-        ).order_by('?').first()
+        ).order_by('is_placeholder', '?').first()
         
         if video:
             return {

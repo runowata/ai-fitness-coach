@@ -889,11 +889,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, totalDuration);
     }
     
-    // Update progress bar continuously
+    // Update progress bar continuously (limit to 90% until real completion)
     function updateProgress() {
         const interval = setInterval(() => {
             elapsedTime += 100;
-            const progress = Math.min((elapsedTime / totalDuration) * 100, 100);
+            // Limit to 90% until we get actual success response
+            const maxProgress = generationInProgress ? 90 : 100;
+            const progress = Math.min((elapsedTime / totalDuration) * maxProgress, maxProgress);
             const remainingSeconds = Math.max(Math.ceil((totalDuration - elapsedTime) / 1000), 0);
             
             // Update progress bar
@@ -902,8 +904,17 @@ document.addEventListener('DOMContentLoaded', function() {
             progressPercentage.textContent = Math.floor(progress) + '%';
             etaTime.textContent = remainingSeconds;
             
-            if (elapsedTime >= totalDuration) {
+            // Only clear if we reach 90% and generation is still in progress
+            if (progress >= maxProgress && generationInProgress) {
+                // Slow down the updates once we hit the limit
                 clearInterval(interval);
+                
+                // Continue with slower updates until real completion
+                const slowInterval = setInterval(() => {
+                    if (!generationInProgress) {
+                        clearInterval(slowInterval);
+                    }
+                }, 1000);
             }
         }, 100);
     }
@@ -1031,6 +1042,9 @@ function startAIPlanGeneration() {
             console.log('✅ AI generation successful! Plan ID:', data.plan_id);
             console.log('Frontend elapsed time:', elapsedTime);
             console.log('Redirecting to:', data.redirect_url);
+            
+            // Mark generation as complete to allow 100% progress
+            generationInProgress = false;
             
             // Mark all stages as completed
             document.querySelectorAll('.stage').forEach(el => {
