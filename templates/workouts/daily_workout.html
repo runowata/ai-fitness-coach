@@ -231,7 +231,7 @@
                 {% else %}
                     <!-- Video Player -->
                     <div class="video-container mb-4">
-                        <video id="mainVideo" class="video-player" controls poster="{% load static %}{% static 'images/placeholder-trainer.jpg' %}">
+                        <video id="mainVideo" class="video-player" controls>
                             {% if video_playlist %}
                                 <source src="{{ video_playlist.0.url }}" type="video/mp4">
                             {% else %}

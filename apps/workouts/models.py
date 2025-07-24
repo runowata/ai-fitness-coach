@@ -35,8 +35,8 @@ class Exercise(models.Model):
     alternatives = models.ManyToManyField('self', blank=True, symmetrical=True)
     
     # Video references
-    technique_video_url = models.URLField(blank=True)
-    mistake_video_url = models.URLField(blank=True)
+    technique_video_url = models.URLField(blank=True, default='')
+    mistake_video_url = models.URLField(blank=True, default='')
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
