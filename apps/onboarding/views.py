@@ -163,21 +163,21 @@ def select_archetype(request):
             'key': 'bro',
             'name': 'Бро',
             'description': 'Дружелюбный и мотивирующий. Всегда поддержит и подскажет. Говорит простым языком.',
-            'image': '/static/images/avatars/bro_avatar_1.jpg',
+            'image': '/static/images/avatars/bro-avatar.png',
             'style': 'Casual и расслабленный'
         },
         {
             'key': 'sergeant',
             'name': 'Сержант',
             'description': 'Строгий и требовательный. Поможет вам превзойти себя. Четкие команды и дисциплина.',
-            'image': '/static/images/avatars/sergeant_avatar_1.jpg',
+            'image': '/static/images/avatars/sergeant-avatar.png',
             'style': 'Военный стиль'
         },
         {
             'key': 'intellectual',
             'name': 'Интеллектуал',
             'description': 'Научный подход к тренировкам. Детальные объяснения и обоснования.',
-            'image': '/static/images/avatars/intellectual_avatar_1.jpg',
+            'image': '/static/images/avatars/intellectual-avatar.png',
             'style': 'Научный подход'
         }
     ]
@@ -189,6 +189,14 @@ def select_archetype(request):
 @login_required
 def generate_plan(request):
     """Generate AI workout plan"""
+    from apps.workouts.models import WorkoutPlan
+    
+    # ГАРД: если план уже существует, не генерируем повторно
+    existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
+    if existing_plan:
+        messages.info(request, 'У вас уже есть активный план тренировок')
+        return redirect('users:dashboard')
+    
     profile = request.user.profile
     
     if not profile.archetype:

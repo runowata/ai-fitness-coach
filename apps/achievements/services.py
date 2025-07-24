@@ -1,4 +1,5 @@
 import logging
+import json
 from django.db import transaction
 from django.utils import timezone
 from .models import Achievement, UserAchievement, XPTransaction, DailyProgress
@@ -157,9 +158,95 @@ class WorkoutCompletionService:
         checker = AchievementChecker()
         new_achievements = checker.check_user_achievements(user)
         
+        # 🔍 AI ANALYSIS - добавляем анализ тренировки
+        ai_analysis = None
+        try:
+            logger.info("🔍 GPT-analysis started for workout %s user %s", workout.id, user.id)
+            ai_analysis = self._analyze_workout_with_ai(user, workout, feedback_rating, feedback_note)
+            logger.info("🔍 GPT analysis completed for workout %s", workout.id)
+        except Exception as e:
+            logger.error("🔍 GPT analysis failed for workout %s: %s", workout.id, str(e))
+        
         return {
             'execution': execution,
             'xp_earned': base_xp,
             'new_achievements': new_achievements,
-            'current_streak': profile.current_streak
+            'current_streak': profile.current_streak,
+            'ai_analysis': ai_analysis
+        }
+    
+    def _analyze_workout_with_ai(self, user, workout, feedback_rating, feedback_note):
+        """Анализ тренировки с помощью AI"""
+        from apps.ai_integration.ai_client import AIClientFactory
+        
+        # Создаем AI клиент
+        ai_client = AIClientFactory.create_client()
+        
+        # Собираем данные о тренировке
+        workout_data = {
+            'workout_name': workout.name,
+            'is_rest_day': workout.is_rest_day,
+            'exercises': workout.exercises,
+            'feedback_rating': feedback_rating,
+            'feedback_note': feedback_note,
+            'confidence_task': workout.confidence_task
+        }
+        
+        # Создаем промпт для анализа
+        prompt = f"""
+        Analyze this completed workout and provide feedback:
+        
+        WORKOUT DETAILS:
+        - Name: {workout.name}
+        - Rest Day: {workout.is_rest_day}
+        - Exercises: {len(workout.exercises if workout.exercises else [])} exercises
+        - User Rating: {feedback_rating} (fire=great, smile=good, neutral=ok, tired=hard)
+        - User Note: {feedback_note}
+        - Confidence Task: {workout.confidence_task}
+        
+        USER PROFILE:
+        - Total Workouts: {user.profile.total_workouts_completed}
+        - Current Streak: {user.profile.current_streak}
+        - Experience Level: {user.profile.experience_points} XP
+        
+        Please provide:
+        1. Brief motivational feedback (2-3 sentences)
+        2. Fatigue assessment (1-10 scale)
+        3. Suggested focus for next workout
+        
+        Return JSON with keys: feedback, fatigue_score, next_focus
+        """
+        
+        logger.info("🔍 GPT analysis prompt for workout %s: %s", workout.id, prompt[:200])
+        
+        # Вызываем AI
+        response = ai_client.generate_completion(
+            prompt,
+            max_tokens=300,
+            temperature=0.7
+        )
+        
+        logger.info("🔍 GPT response for workout %s: %s", workout.id, str(response)[:400])
+        
+        # Если response это dict, возвращаем как есть
+        if isinstance(response, dict):
+            return response
+        
+        # Если строка, пытаемся парсить JSON
+        if isinstance(response, str):
+            try:
+                return json.loads(response)
+            except json.JSONDecodeError:
+                logger.warning("🔍 Failed to parse AI response as JSON: %s", response[:200])
+                return {
+                    'feedback': response[:200],
+                    'fatigue_score': 5,
+                    'next_focus': 'Continue your great progress!'
+                }
+        
+        # Fallback
+        return {
+            'feedback': 'Great job completing your workout!',
+            'fatigue_score': 5,
+            'next_focus': 'Keep up the momentum!'
         }

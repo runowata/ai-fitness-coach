@@ -27,9 +27,7 @@ ls -la staticfiles/css/ || echo "No CSS files collected"
 # Fixtures loading removed (obsolete)
 echo "Skipping fixtures (data comes from bootstrap)..."
 
-# Bootstrap video data on deployment
-echo "Bootstrapping video data..."
-python manage.py bootstrap_from_videos --media-path=/opt/render/project/src/media --force || \
-  echo "⚠️  Bootstrap skipped. Media not mounted."
+# Bootstrap disabled in build phase (media may not be available)
+echo "Skipping video bootstrap in build phase..."
 
 echo "Build completed successfully!"
