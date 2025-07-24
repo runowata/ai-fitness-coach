@@ -7,9 +7,8 @@ echo "Starting build process..."
 echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Run migrations
-echo "Running database migrations..."
-python manage.py migrate --verbosity=2
+# Migrations moved to Pre-Deploy Command
+echo "Skipping migrations (handled by Pre-Deploy)..."
 
 # Debug: Check static files structure
 echo "Checking static files..."
@@ -25,9 +24,8 @@ echo "Checking collected static files..."
 ls -la staticfiles/ || echo "No staticfiles directory found"
 ls -la staticfiles/css/ || echo "No CSS files collected"
 
-# Load fixtures - Keep only empty.json to prevent build failure
-echo "Loading minimal fixtures..."
-python manage.py loaddata fixtures/empty.json
+# Fixtures loading removed (obsolete)
+echo "Skipping fixtures (data comes from bootstrap)..."
 
 # Bootstrap video data on deployment
 echo "Bootstrapping video data..."
