@@ -59,10 +59,9 @@ class VideoClip(models.Model):
     TYPE_CHOICES = [
         ('technique', 'Technique'),
         ('mistake', 'Common Mistake'),
-        ('instruction', 'Instruction'),
-        ('reminder', 'Reminder'),
-        ('weekly', 'Weekly Motivation'),
-        ('final', 'Final Congratulation'),
+        ('intro', 'Introduction'),
+        ('outro', 'Outro'),
+        ('support', 'Support/Motivation'),
     ]
     
     exercise = models.ForeignKey(

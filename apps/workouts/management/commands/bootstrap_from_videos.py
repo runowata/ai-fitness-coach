@@ -145,16 +145,44 @@ class Command(BaseCommand):
                     
                     if video_type in ['technique', 'mistake']:
                         video_path = os.path.join(exercise_path, video_file)
-                        relative_path = os.path.relpath(video_path, '/opt/render/project/src')
+                        # Fix: Calculate relative path from media root, not src root
+                        relative_path = os.path.relpath(video_path, '/opt/render/project/src/media')
                         
                         videos_data.append({
                             'exercise_id': ex_dir,
                             'type': video_type,
                             'archetype': 'bro',  # Default
                             'model_name': model_name,
-                            'file_url': f'/{relative_path}',
+                            'file_url': f'/media/{relative_path}',
                             'duration_seconds': 30  # Default
                         })
+        
+        # Process trainer videos
+        trainers_dir = '/opt/render/project/src/media/videos/trainers'
+        if os.path.exists(trainers_dir):
+            self.stdout.write(f"\\n👨‍🏫 Processing trainer videos...")
+            
+            for archetype in ['bro', 'sergeant', 'intellectual']:
+                archetype_dir = os.path.join(trainers_dir, archetype)
+                if os.path.exists(archetype_dir):
+                    
+                    for video_type in ['intro', 'outro', 'support']:
+                        type_dir = os.path.join(archetype_dir, video_type)
+                        if os.path.exists(type_dir):
+                            video_files = [f for f in os.listdir(type_dir) if f.endswith('.mp4')]
+                            
+                            for video_file in video_files:
+                                video_path = os.path.join(type_dir, video_file)
+                                relative_path = os.path.relpath(video_path, '/opt/render/project/src/media')
+                                
+                                videos_data.append({
+                                    'exercise_id': None,  # Trainer videos have no specific exercise
+                                    'type': video_type,
+                                    'archetype': archetype,  
+                                    'model_name': 'trainer',
+                                    'file_url': f'/media/{relative_path}',
+                                    'duration_seconds': 45  # Default for trainer videos
+                                })
         
         # Show stats
         self.stdout.write(f"\\n📊 BOOTSTRAP RESULTS:")
@@ -189,7 +217,11 @@ class Command(BaseCommand):
             # Create videos
             self.stdout.write(f"🎬 Creating {len(videos_data)} video clips...")
             for video_data in videos_data:
-                exercise = Exercise.objects.get(id=video_data['exercise_id'])
+                # Handle trainer videos (exercise_id=None) and exercise videos
+                exercise = None
+                if video_data['exercise_id']:
+                    exercise = Exercise.objects.get(id=video_data['exercise_id'])
+                
                 VideoClip.objects.create(
                     exercise=exercise,
                     type=video_data['type'],

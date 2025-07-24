@@ -144,7 +144,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 if DEBUG or os.getenv('RENDER'):
     # Local media serving (development or Render deployment)
     MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
+    # Fix: Use correct path for Render deployment
+    if os.getenv('RENDER'):
+        MEDIA_ROOT = '/opt/render/project/src/media'
+    else:
+        MEDIA_ROOT = BASE_DIR / 'media'
 else:
     # AWS S3 settings (other production deployments)
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')

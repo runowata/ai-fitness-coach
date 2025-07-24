@@ -21,6 +21,22 @@ class VideoPlaylistBuilder:
                 playlist.append(rest_day_video)
             return playlist
         
+        # Add intro video at the beginning  
+        intro_video = VideoClip.objects.filter(
+            exercise=None,
+            type='intro',
+            archetype=user_archetype,
+            is_active=True
+        ).order_by('?').first()
+        
+        if intro_video:
+            playlist.append({
+                'type': 'intro',
+                'url': intro_video.url,
+                'duration': intro_video.duration_seconds,
+                'title': 'Добро пожаловать на тренировку!'
+            })
+        
         # Build playlist for each exercise
         for exercise_data in workout.exercises:
             exercise_slug = exercise_data.get('exercise_slug')
@@ -66,46 +82,43 @@ class VideoPlaylistBuilder:
                 'model': 'mod1'
             })
         
-        # 2. Instruction video (based on archetype)
-        # Randomly select between mod1, mod2, mod3 for variety
-        model_choice = random.choice(['mod1', 'mod2', 'mod3'])
-        instruction_video = VideoClip.objects.filter(
-            exercise=exercise,
-            type='instruction',
+        # 2. Support video (motivation based on archetype)
+        support_video = VideoClip.objects.filter(
+            exercise=None,  # Trainer videos have no specific exercise
+            type='support',
             archetype=archetype,
-            model_name=model_choice,
             is_active=True
-        ).first()
+        ).order_by('?').first()  # Random support video
         
-        if instruction_video:
+        if support_video:
             playlist.append({
-                'type': 'instruction',
-                'url': instruction_video.url,
-                'duration': instruction_video.duration_seconds,
-                'title': f'{exercise.name} - Инструктаж',
+                'type': 'support',
+                'url': support_video.url,
+                'duration': support_video.duration_seconds,
+                'title': f'Мотивация - {exercise.name}',
                 'exercise_name': exercise.name,
-                'model': model_choice,
                 'sets': exercise_data.get('sets'),
                 'reps': exercise_data.get('reps'),
                 'rest': exercise_data.get('rest_seconds')
             })
         
-        # 3. Reminder videos (2-3 random reminders)
-        reminders = VideoClip.objects.filter(
-            exercise=exercise,
-            type='reminder',
-            archetype=archetype,
-            is_active=True
-        ).order_by('?')[:random.randint(2, 3)]
-        
-        for reminder in reminders:
-            playlist.append({
-                'type': 'reminder',
-                'url': reminder.url,
-                'duration': reminder.duration_seconds,
-                'title': reminder.reminder_text or f'{exercise.name} - Напоминание',
-                'exercise_name': exercise.name
-            })
+        # 3. Maybe add another support video (30% chance)
+        if random.random() < 0.3:
+            extra_support = VideoClip.objects.filter(
+                exercise=None,
+                type='support',
+                archetype=archetype, 
+                is_active=True
+            ).exclude(id=support_video.id if support_video else 0).order_by('?').first()
+            
+            if extra_support:
+                playlist.append({
+                    'type': 'support',
+                    'url': extra_support.url,
+                    'duration': extra_support.duration_seconds,
+                    'title': 'Дополнительная мотивация',
+                    'exercise_name': exercise.name
+                })
         
         # 4. Common mistakes video (optional, show occasionally)
         if random.random() < 0.3:  # 30% chance to show mistakes video
@@ -131,7 +144,7 @@ class VideoPlaylistBuilder:
     def _get_rest_day_video(self, week_number: int, archetype: str) -> Dict:
         """Get motivational video for rest day"""
         video = VideoClip.objects.filter(
-            type='weekly',
+            type='support',
             archetype=archetype,
             is_active=True
         ).order_by('?').first()
@@ -147,19 +160,12 @@ class VideoPlaylistBuilder:
     
     def _get_weekly_motivation_video(self, week_number: int, archetype: str) -> Dict:
         """Get weekly motivational video"""
+        # Use outro video for weekly completion
         video = VideoClip.objects.filter(
-            Q(type='weekly') & Q(reminder_text__icontains=f'week{week_number}'),
+            type='outro',
             archetype=archetype,
             is_active=True
-        ).first()
-        
-        # Fallback to any weekly video
-        if not video:
-            video = VideoClip.objects.filter(
-                type='weekly',
-                archetype=archetype,
-                is_active=True
-            ).order_by('?').first()
+        ).order_by('?').first()
         
         if video:
             return {
