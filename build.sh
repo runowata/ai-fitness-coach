@@ -29,4 +29,8 @@ ls -la staticfiles/css/ || echo "No CSS files collected"
 echo "Loading minimal fixtures..."
 python manage.py loaddata fixtures/empty.json
 
+# Bootstrap video data on deployment
+echo "Bootstrapping video data..."
+python manage.py bootstrap_from_videos --force || echo "Bootstrap skipped (no media files)"
+
 echo "Build completed successfully!"

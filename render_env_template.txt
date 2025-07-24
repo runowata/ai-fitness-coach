@@ -1,0 +1,13 @@
+# RENDER ENVIRONMENT VARIABLES TEMPLATE
+# Скопируйте эти переменные в Render Dashboard -> Settings -> Environment
+
+RENDER=true
+DJANGO_SECRET_KEY=your_secret_key_here
+DATABASE_URL=your_postgres_url_here
+OPENAI_API_KEY=your_openai_key_here
+ANTHROPIC_API_KEY=your_anthropic_key_here
+DJANGO_DEBUG=False
+USE_S3=False
+
+# Optional
+REDIS_URL=redis://localhost:6379/0
