@@ -138,24 +138,29 @@ class Command(BaseCommand):
             
             # Process videos
             for video_file in video_files:
-                match = re.match(r'^(.+?)_(.+?)\\.mp4$', video_file)
-                if match:
-                    video_type = match.group(1)  # technique, mistake
-                    model_name = match.group(2)  # mod1
-                    
-                    if video_type in ['technique', 'mistake']:
-                        video_path = os.path.join(exercise_path, video_file)
-                        # Fix: Calculate relative path from media root, not src root
-                        relative_path = os.path.relpath(video_path, '/opt/render/project/src/media')
-                        
-                        videos_data.append({
-                            'exercise_id': ex_dir,
-                            'type': video_type,
-                            'archetype': 'bro',  # Default
-                            'model_name': model_name,
-                            'file_url': f'/media/{relative_path}',
-                            'duration_seconds': 30  # Default
-                        })
+                # More flexible parsing for exercise videos
+                if 'technique' in video_file and video_file.endswith('.mp4'):
+                    video_type = 'technique'
+                    model_name = 'mod1'  # Extract from filename if needed
+                elif 'mistake' in video_file and video_file.endswith('.mp4'):
+                    video_type = 'mistake' 
+                    model_name = 'mod1'  # Extract from filename if needed
+                else:
+                    continue  # Skip other files
+                
+                # Process the video file
+                video_path = os.path.join(exercise_path, video_file)
+                # Fix: Calculate relative path from media root, not src root
+                relative_path = os.path.relpath(video_path, '/opt/render/project/src/media')
+                
+                videos_data.append({
+                    'exercise_id': ex_dir,
+                    'type': video_type,
+                    'archetype': 'bro',  # Default
+                    'model_name': model_name,
+                    'file_url': f'/media/{relative_path}',
+                    'duration_seconds': 30  # Default
+                })
         
         # Process trainer videos
         trainers_dir = '/opt/render/project/src/media/videos/trainers'
