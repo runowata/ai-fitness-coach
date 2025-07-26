@@ -157,8 +157,8 @@ def select_archetype(request):
             profile.archetype = archetype
             profile.save()
             
-            # Redirect to AI analysis first
-            return redirect('onboarding:ai_analysis')
+            # Generate workout plan with real AI analysis
+            return redirect('onboarding:generate_plan')
         else:
             messages.error(request, 'Выберите корректный архетип тренера')
     
@@ -190,31 +190,6 @@ def select_archetype(request):
     return render(request, 'onboarding/select_archetype.html', context)
 
 
-@login_required
-def ai_analysis_view(request):
-    """Show AI analysis of user responses"""
-    profile = request.user.profile
-    
-    if not profile.archetype:
-        messages.error(request, 'Сначала выберите архетип тренера')
-        return redirect('onboarding:select_archetype')
-    
-    # Use existing AI infrastructure to analyze user responses
-    from apps.ai_integration.services import analyze_user_responses
-    
-    try:
-        analysis_data = analyze_user_responses(request.user)
-    except Exception as e:
-        logger.error(f"Failed to analyze user responses for user {request.user.id}: {e}")
-        messages.error(request, 'Ошибка при анализе ваших данных. Попробуйте еще раз.')
-        return redirect('onboarding:select_archetype')
-    
-    context = {
-        'analysis': analysis_data,
-        'archetype': profile.archetype
-    }
-    
-    return render(request, 'onboarding/ai_analysis.html', context)
 
 
 @login_required
@@ -228,13 +203,8 @@ def generate_plan(request):
         messages.info(request, 'У вас уже есть активный план тренировок')
         return redirect('users:dashboard')
     
-    # Check if user confirmed analysis
-    if request.method == 'POST' and not request.POST.get('analysis_confirmed'):
-        messages.error(request, 'Сначала подтвердите анализ')
-        return redirect('onboarding:ai_analysis')
-    
-    # Show loading page for GET request or confirmed analysis
-    if request.method == 'GET' or request.POST.get('analysis_confirmed'):
+    # Show loading page for GET request
+    if request.method == 'GET':
         return render(request, 'onboarding/analysis_loading.html')
     
     profile = request.user.profile
@@ -338,19 +308,52 @@ def plan_confirmation(request):
         messages.success(request, 'Отлично! Ваш план активирован. Начнем тренироваться!')
         return redirect('users:dashboard')
     
-    # Extract plan summary
+    # Extract plan data and analysis
     plan_data = latest_plan.plan_data
+    
+    # Extract analysis data (new structure)
+    analysis_data = plan_data.get('analysis', {})
+    
+    # Extract plan details (new structure with cycles/phases)
+    plan_details = plan_data.get('plan', plan_data.get('protocol', plan_data))
+    
+    # Count total exercises from new structure
     total_exercises = 0
-    for week in plan_data.get('weeks', []):
-        for day in week.get('days', []):
-            if not day.get('is_rest_day'):
-                total_exercises += len(day.get('exercises', []))
+    archetype = request.user.profile.archetype
+    
+    # Handle different archetype structures
+    if archetype == 'bro':
+        # Bro uses cycles with daily_workouts
+        for cycle in plan_details.get('cycles', []):
+            for workout in cycle.get('daily_workouts', []):
+                if not workout.get('is_rest_day'):
+                    total_exercises += len(workout.get('exercises', []))
+    elif archetype == 'sergeant':
+        # Sergeant uses phases with daily_operations
+        for phase in plan_details.get('phases', []):
+            for operation in phase.get('daily_operations', []):
+                if not operation.get('is_rest_day'):
+                    total_exercises += len(operation.get('exercises', []))
+    elif archetype == 'intellectual':
+        # Intellectual uses phases with training_sessions
+        for phase in plan_details.get('phases', []):
+            for session in phase.get('training_sessions', []):
+                if not session.get('is_rest_day'):
+                    total_exercises += len(session.get('exercises', []))
+    else:
+        # Fallback to old weeks structure
+        for week in plan_data.get('weeks', []):
+            for day in week.get('days', []):
+                if not day.get('is_rest_day'):
+                    total_exercises += len(day.get('exercises', []))
     
     context = {
         'plan': latest_plan,
-        'plan_data': plan_data,
+        'plan_data': plan_details,
+        'analysis_data': analysis_data,
         'total_exercises': total_exercises,
-        'archetype': request.user.profile.archetype
+        'archetype': archetype,
+        'duration_days': plan_details.get('duration_days', 90)
     }
     
     return render(request, 'onboarding/plan_confirmation.html', context)

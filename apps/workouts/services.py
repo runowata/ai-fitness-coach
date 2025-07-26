@@ -26,8 +26,9 @@ class VideoPlaylistBuilder:
             exercise=None,
             type='intro',
             archetype=user_archetype,
-            is_active=True
-        ).order_by('is_placeholder', '?').first()
+            is_active=True,
+            is_placeholder=False  # Only real videos
+        ).order_by('?').first()
         
         if intro_video:
             playlist.append({
@@ -64,13 +65,14 @@ class VideoPlaylistBuilder:
         except Exercise.DoesNotExist:
             return playlist
         
-        # 1. Technique video (mod1) - prefer non-placeholder
+        # 1. Technique video (mod1) - only real videos
         technique_video = VideoClip.objects.filter(
             exercise=exercise,
             type='technique',
             model_name='mod1',
-            is_active=True
-        ).order_by('is_placeholder').first()
+            is_active=True,
+            is_placeholder=False  # Only real videos
+        ).first()
         
         if technique_video:
             playlist.append({
@@ -82,13 +84,14 @@ class VideoPlaylistBuilder:
                 'model': 'mod1'
             })
         
-        # 2. Support video (motivation based on archetype) - prefer non-placeholder
+        # 2. Support video (motivation based on archetype) - only real videos
         support_video = VideoClip.objects.filter(
             exercise=None,  # Trainer videos have no specific exercise
             type='support',
             archetype=archetype,
-            is_active=True
-        ).order_by('is_placeholder', '?').first()  # Prefer real, then random
+            is_active=True,
+            is_placeholder=False  # Only real videos
+        ).order_by('?').first()
         
         if support_video:
             playlist.append({
@@ -108,8 +111,9 @@ class VideoPlaylistBuilder:
                 exercise=None,
                 type='support',
                 archetype=archetype, 
-                is_active=True
-            ).exclude(id=support_video.id if support_video else 0).order_by('is_placeholder', '?').first()
+                is_active=True,
+                is_placeholder=False  # Only real videos
+            ).exclude(id=support_video.id if support_video else 0).order_by('?').first()
             
             if extra_support:
                 playlist.append({
@@ -126,8 +130,9 @@ class VideoPlaylistBuilder:
                 exercise=exercise,
                 type='mistake',
                 model_name='mod1',
-                is_active=True
-            ).order_by('is_placeholder').first()
+                is_active=True,
+                is_placeholder=False  # Only real videos
+            ).first()
             
             if mistake_video:
                 playlist.append({
@@ -142,12 +147,13 @@ class VideoPlaylistBuilder:
         return playlist
     
     def _get_rest_day_video(self, week_number: int, archetype: str) -> Dict:
-        """Get motivational video for rest day - prefer non-placeholder"""
+        """Get motivational video for rest day - only real videos"""
         video = VideoClip.objects.filter(
             type='support',
             archetype=archetype,
-            is_active=True
-        ).order_by('is_placeholder', '?').first()
+            is_active=True,
+            is_placeholder=False  # Only real videos
+        ).order_by('?').first()
         
         if video:
             return {
@@ -159,13 +165,14 @@ class VideoPlaylistBuilder:
         return None
     
     def _get_weekly_motivation_video(self, week_number: int, archetype: str) -> Dict:
-        """Get weekly motivational video - prefer non-placeholder"""
+        """Get weekly motivational video - only real videos"""
         # Use outro video for weekly completion
         video = VideoClip.objects.filter(
             type='outro',
             archetype=archetype,
-            is_active=True
-        ).order_by('is_placeholder', '?').first()
+            is_active=True,
+            is_placeholder=False  # Only real videos
+        ).order_by('?').first()
         
         if video:
             return {

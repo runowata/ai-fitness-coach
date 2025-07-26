@@ -10,79 +10,6 @@ from .ai_client import AIClientFactory, AIClientError
 logger = logging.getLogger(__name__)
 
 
-def analyze_user_responses(user) -> Dict:
-    """
-    Analyze user onboarding responses without creating a plan
-    Returns formatted analysis data for display
-    """
-    logger.info("🔍 USER ANALYSIS: Starting for user %s", user.id)
-    
-    try:
-        # Collect user data
-        user_data = OnboardingDataProcessor.collect_user_data(user)
-        logger.info("🔍 USER ANALYSIS: User data collected, keys: %s", list(user_data.keys()))
-        
-        # Format the analysis for display
-        analysis = {
-            'age': user_data.get('age', 25),
-            'height': user_data.get('height', 175),
-            'weight': user_data.get('weight', 70),
-            'experience_level': user_data.get('experience_level', 'beginner'),
-            'primary_goal': user_data.get('primary_goal', 'muscle_gain'),
-            'days_per_week': user_data.get('days_per_week', 3),
-            'workout_duration': user_data.get('workout_duration', 45),
-            'equipment': ', '.join(user_data.get('equipment', ['bodyweight'])),
-            'preferred_time': user_data.get('preferred_workout_time', 'evening'),
-            'health_limitations': user_data.get('health_limitations', 'none'),
-            'archetype': user_data.get('trainer_archetype', user.profile.archetype)
-        }
-        
-        # Map values to readable Russian format
-        goal_mapping = {
-            'weight_loss': 'Снижение веса',
-            'muscle_gain': 'Набор мышечной массы', 
-            'strength': 'Развитие силы',
-            'endurance': 'Выносливость',
-            'general_fitness': 'Общее развитие'
-        }
-        
-        experience_mapping = {
-            'beginner': 'Начинающий',
-            'intermediate': 'Средний уровень',
-            'advanced': 'Продвинутый'
-        }
-        
-        time_mapping = {
-            'morning': 'Утро',
-            'afternoon': 'День', 
-            'evening': 'Вечер',
-            'flexible': 'Гибкий график'
-        }
-        
-        analysis['primary_goal'] = goal_mapping.get(analysis['primary_goal'], 'Общее развитие')
-        analysis['experience_level'] = experience_mapping.get(analysis['experience_level'], 'Начинающий')
-        analysis['preferred_time'] = time_mapping.get(analysis['preferred_time'], 'Вечер')
-        
-        logger.info("🔍 USER ANALYSIS: Analysis completed successfully")
-        return analysis
-        
-    except Exception as e:
-        logger.error("🔍 USER ANALYSIS: FAILED for user %s: %s", user.id, str(e))
-        # Return default analysis on error
-        return {
-            'age': 25,
-            'height': 175,
-            'weight': 70,
-            'experience_level': 'Начинающий',
-            'primary_goal': 'Общее развитие',
-            'days_per_week': 3,
-            'workout_duration': 45,
-            'equipment': 'Вес тела',
-            'preferred_time': 'Вечер',
-            'health_limitations': 'Отсутствуют',
-            'archetype': user.profile.archetype or 'bro'
-        }
-
 
 def create_workout_plan_from_onboarding(user):
     """
@@ -150,13 +77,18 @@ class WorkoutPlanGenerator:
                 raise ValueError(f"Invalid plan data type: {type(plan_data)}")
             
             logger.info(f"Creating WorkoutPlan object...")
+            
+            # Extract analysis and plan from new structure
+            analysis_data = plan_data.get('analysis', {})
+            plan_details = plan_data.get('plan', plan_data)  # Fallback for old structure
+            
             # Create workout plan
             workout_plan = WorkoutPlan.objects.create(
                 user=user,
-                name=plan_data.get('plan_name', 'Персональный план'),
-                duration_weeks=plan_data.get('duration_weeks', 6),
+                name=plan_details.get('plan_name', plan_details.get('operation_name', plan_details.get('study_name', 'Персональный план'))),
+                duration_weeks=12,  # 90 days ≈ 12 weeks  
                 goal=user_data.get('primary_goal', 'general_fitness'),
-                plan_data=plan_data,
+                plan_data=plan_data,  # Store full AI response including analysis
                 started_at=timezone.now()
             )
             logger.info(f"WorkoutPlan created successfully with id: {workout_plan.id}")
@@ -190,36 +122,99 @@ class WorkoutPlanGenerator:
             raise
     
     def _create_daily_workouts(self, workout_plan, plan_data: Dict):
-        """Create daily workout records from plan data"""
+        """Create daily workout records from plan data (supports both old weeks and new cycles/phases)"""
         from apps.workouts.models import DailyWorkout
         
         logger.info(f"_create_daily_workouts called with plan_data type: {type(plan_data)}")
-        weeks_data = plan_data.get('weeks', [])
-        logger.info(f"Found {len(weeks_data)} weeks in plan_data")
+        
+        # Extract plan details (support new structure with analysis)
+        plan_details = plan_data.get('plan', plan_data)
+        
+        # Check for new structure first (cycles/phases), then fall back to old (weeks)
+        cycles_data = plan_details.get('cycles', plan_details.get('phases', []))
+        
+        if cycles_data:
+            logger.info(f"Found {len(cycles_data)} cycles/phases in new format")
+            self._process_cycles_structure(workout_plan, cycles_data)
+        else:
+            # Fallback to old weeks structure
+            weeks_data = plan_details.get('weeks', [])
+            logger.info(f"Found {len(weeks_data)} weeks in old format")
+            self._process_weeks_structure(workout_plan, weeks_data)
+    
+    def _process_cycles_structure(self, workout_plan, cycles_data):
+        """Process new cycles/phases structure for 90-day plans"""
+        from apps.workouts.models import DailyWorkout
+        
+        for cycle in cycles_data:
+            if not isinstance(cycle, dict):
+                logger.error(f"Cycle is not dict: {type(cycle)} = {cycle}")
+                continue
+            
+            # Get daily workouts from cycle (different key names for different archetypes)
+            daily_workouts = cycle.get('daily_workouts', cycle.get('daily_operations', cycle.get('training_sessions', [])))
+            
+            for workout in daily_workouts:
+                if not isinstance(workout, dict):
+                    logger.error(f"Workout is not dict: {type(workout)} = {workout}")
+                    continue
+                
+                day_number = workout.get('day_number')
+                if not day_number:
+                    logger.error(f"No day_number in workout: {workout}")
+                    continue
+                
+                # Calculate week number from day number (day 1-7 = week 1, day 8-14 = week 2, etc.)
+                week_number = ((day_number - 1) // 7) + 1
+                
+                # Get confidence task (different key names for different archetypes)
+                confidence_task = workout.get('confidence_task', 
+                                            workout.get('character_mission', 
+                                                      workout.get('behavioral_intervention', '')))
+                
+                if isinstance(confidence_task, dict):
+                    confidence_task_str = confidence_task.get('description', str(confidence_task))
+                else:
+                    confidence_task_str = str(confidence_task) if confidence_task else ''
+                
+                # Get workout name (different key names for different archetypes)
+                workout_name = workout.get('workout_name', 
+                                         workout.get('operation_name', 
+                                                   workout.get('session_name', f'День {day_number}')))
+                
+                logger.info(f"Creating DailyWorkout for day {day_number} (week {week_number})")
+                DailyWorkout.objects.create(
+                    plan=workout_plan,
+                    day_number=day_number,
+                    week_number=week_number,
+                    name=workout_name,
+                    exercises=workout.get('exercises', []),
+                    is_rest_day=workout.get('is_rest_day', False),
+                    confidence_task=confidence_task_str
+                )
+    
+    def _process_weeks_structure(self, workout_plan, weeks_data):
+        """Process old weeks structure (fallback)"""
+        from apps.workouts.models import DailyWorkout
         
         for week_index, week in enumerate(weeks_data):
-            logger.info(f"Processing week {week_index}: type={type(week)}")
             if not isinstance(week, dict):
                 logger.error(f"Week {week_index} is not dict: {type(week)} = {week}")
                 continue
                 
             days_data = week.get('days', [])
-            logger.info(f"Week {week_index} has {len(days_data)} days")
             
             for day_index, day in enumerate(days_data):
-                logger.info(f"Processing week {week_index} day {day_index}: type={type(day)}")
                 if not isinstance(day, dict):
                     logger.error(f"Day {day_index} is not dict: {type(day)} = {day}")
                     continue
                 
-                # Safe access to confidence_task
                 confidence_task = day.get('confidence_task', '')
                 if isinstance(confidence_task, dict):
                     confidence_task_str = confidence_task.get('description', '')
                 else:
                     confidence_task_str = str(confidence_task)
                 
-                # Use reliable index-based numbers instead of AI-generated values
                 actual_week_number = week_index + 1  
                 actual_day_number = day_index + 1
                 
