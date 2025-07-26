@@ -157,8 +157,8 @@ def select_archetype(request):
             profile.archetype = archetype
             profile.save()
             
-            # Generate workout plan
-            return redirect('onboarding:generate_plan')
+            # Redirect to AI analysis first
+            return redirect('onboarding:ai_analysis')
         else:
             messages.error(request, 'Выберите корректный архетип тренера')
     
@@ -191,6 +191,33 @@ def select_archetype(request):
 
 
 @login_required
+def ai_analysis_view(request):
+    """Show AI analysis of user responses"""
+    profile = request.user.profile
+    
+    if not profile.archetype:
+        messages.error(request, 'Сначала выберите архетип тренера')
+        return redirect('onboarding:select_archetype')
+    
+    # Use existing AI infrastructure to analyze user responses
+    from apps.ai_integration.services import analyze_user_responses
+    
+    try:
+        analysis_data = analyze_user_responses(request.user)
+    except Exception as e:
+        logger.error(f"Failed to analyze user responses for user {request.user.id}: {e}")
+        messages.error(request, 'Ошибка при анализе ваших данных. Попробуйте еще раз.')
+        return redirect('onboarding:select_archetype')
+    
+    context = {
+        'analysis': analysis_data,
+        'archetype': profile.archetype
+    }
+    
+    return render(request, 'onboarding/ai_analysis.html', context)
+
+
+@login_required
 def generate_plan(request):
     """Generate AI workout plan"""
     from apps.workouts.models import WorkoutPlan
@@ -201,8 +228,13 @@ def generate_plan(request):
         messages.info(request, 'У вас уже есть активный план тренировок')
         return redirect('users:dashboard')
     
-    # Show loading page for GET request
-    if request.method == 'GET':
+    # Check if user confirmed analysis
+    if request.method == 'POST' and not request.POST.get('analysis_confirmed'):
+        messages.error(request, 'Сначала подтвердите анализ')
+        return redirect('onboarding:ai_analysis')
+    
+    # Show loading page for GET request or confirmed analysis
+    if request.method == 'GET' or request.POST.get('analysis_confirmed'):
         return render(request, 'onboarding/analysis_loading.html')
     
     profile = request.user.profile

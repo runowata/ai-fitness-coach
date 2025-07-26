@@ -1,0 +1,680 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Анализ вашего профиля - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<!-- AI Analysis Results Page -->
+<div class="analysis-results-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="results-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Gradient overlay -->
+    <div class="results-overlay"></div>
+    
+    <!-- Content -->
+    <div class="results-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-8">
+                    
+                    <!-- AI Analysis Card -->
+                    <div class="analysis-results-card">
+                        <!-- Header with AI badge -->
+                        <div class="results-header">
+                            <div class="ai-header-badge">
+                                <i class="fas fa-brain"></i>
+                                <span>AI Анализ</span>
+                            </div>
+                            <h1 class="results-title">Ваш персональный анализ готов!</h1>
+                            <p class="results-subtitle">На основе ваших ответов, я создал детальный план трансформации</p>
+                        </div>
+                        
+                        <!-- Analysis sections -->
+                        <div class="analysis-sections">
+                            
+                            <!-- Physical Profile Section -->
+                            <div class="analysis-section">
+                                <div class="section-icon">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>Физический профиль</h3>
+                                    <div class="analysis-items">
+                                        <div class="analysis-item">
+                                            <span class="item-label">Возраст:</span>
+                                            <span class="item-value">{{ analysis.age|default:"25" }} лет</span>
+                                        </div>
+                                        <div class="analysis-item">
+                                            <span class="item-label">Рост:</span>
+                                            <span class="item-value">{{ analysis.height|default:"175" }} см</span>
+                                        </div>
+                                        <div class="analysis-item">
+                                            <span class="item-label">Вес:</span>
+                                            <span class="item-value">{{ analysis.weight|default:"70" }} кг</span>
+                                        </div>
+                                        <div class="analysis-item">
+                                            <span class="item-label">Опыт тренировок:</span>
+                                            <span class="item-value highlight">{{ analysis.experience_level|default:"Начинающий" }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Goals Analysis Section -->
+                            <div class="analysis-section">
+                                <div class="section-icon">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>Анализ целей</h3>
+                                    <p class="ai-insight">
+                                        {% if analysis.primary_goal == 'muscle_gain' %}
+                                            <i class="fas fa-quote-left"></i>
+                                            Ваша цель - набор мышечной массы. Я разработаю программу с акцентом на прогрессивную перегрузку,
+                                            оптимальный объем тренировок и правильное восстановление. Особое внимание уделим технике выполнения
+                                            базовых упражнений.
+                                            <i class="fas fa-quote-right"></i>
+                                        {% elif analysis.primary_goal == 'weight_loss' %}
+                                            <i class="fas fa-quote-left"></i>
+                                            Вы хотите снизить вес. Создам сбалансированную программу, сочетающую силовые тренировки
+                                            для сохранения мышц и кардио для эффективного жиросжигания. Фокус на создание устойчивого
+                                            дефицита калорий.
+                                            <i class="fas fa-quote-right"></i>
+                                        {% elif analysis.primary_goal == 'strength' %}
+                                            <i class="fas fa-quote-left"></i>
+                                            Развитие силы - отличная цель! Программа будет включать тяжелые базовые упражнения,
+                                            оптимальные периоды отдыха и систематическое увеличение рабочих весов.
+                                            <i class="fas fa-quote-right"></i>
+                                        {% else %}
+                                            <i class="fas fa-quote-left"></i>
+                                            Ваши цели уникальны, и я создам персонализированную программу, которая поможет
+                                            достичь желаемых результатов с учетом всех ваших особенностей.
+                                            <i class="fas fa-quote-right"></i>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Lifestyle Factors Section -->
+                            <div class="analysis-section">
+                                <div class="section-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>Образ жизни и возможности</h3>
+                                    <div class="lifestyle-grid">
+                                        <div class="lifestyle-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>{{ analysis.days_per_week|default:"3-4" }} тренировок в неделю</span>
+                                        </div>
+                                        <div class="lifestyle-item">
+                                            <i class="fas fa-hourglass-half"></i>
+                                            <span>{{ analysis.workout_duration|default:"45-60" }} минут на тренировку</span>
+                                        </div>
+                                        <div class="lifestyle-item">
+                                            <i class="fas fa-dumbbell"></i>
+                                            <span>Доступное оборудование: {{ analysis.equipment|default:"Вес тела" }}</span>
+                                        </div>
+                                        <div class="lifestyle-item">
+                                            <i class="fas fa-sun"></i>
+                                            <span>Предпочитаемое время: {{ analysis.preferred_time|default:"Вечер" }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Trainer Match Section -->
+                            <div class="analysis-section special">
+                                <div class="section-icon">
+                                    <img src="{% static 'images/avatars/' %}{{ archetype }}-avatar.png" 
+                                         alt="Тренер" 
+                                         class="trainer-avatar-small">
+                                </div>
+                                <div class="section-content">
+                                    <h3>Ваш идеальный тренер</h3>
+                                    <div class="trainer-match">
+                                        <h4 class="trainer-name">
+                                            {% if archetype == 'bro' %}
+                                                Тренер "Бро"
+                                            {% elif archetype == 'sergeant' %}
+                                                Тренер "Сержант"
+                                            {% elif archetype == 'intellectual' %}
+                                                Тренер "Интеллектуал"
+                                            {% endif %}
+                                        </h4>
+                                        <p class="trainer-description">
+                                            {% if archetype == 'bro' %}
+                                                Мотивирующий друг, который поддержит в любой ситуации. 
+                                                Простые объяснения, позитивная энергия и искренняя поддержка - 
+                                                то, что нужно для вашего успеха!
+                                            {% elif archetype == 'sergeant' %}
+                                                Требовательный наставник с военной дисциплиной. 
+                                                Четкие команды, структурированный подход и никаких оправданий - 
+                                                идеально для достижения амбициозных целей!
+                                            {% elif archetype == 'intellectual' %}
+                                                Научный подход и глубокое понимание физиологии. 
+                                                Детальные объяснения, обоснованные методики и внимание к деталям - 
+                                                ваш путь к осознанным тренировкам!
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Recommendations Section -->
+                            <div class="analysis-section">
+                                <div class="section-icon">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>Персональные рекомендации AI</h3>
+                                    <div class="recommendations-list">
+                                        <div class="recommendation">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Начните с освоения базовой техники - это фундамент вашего прогресса</span>
+                                        </div>
+                                        <div class="recommendation">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Уделяйте внимание разминке и заминке для профилактики травм</span>
+                                        </div>
+                                        <div class="recommendation">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Следите за прогрессом и корректируйте нагрузку каждую неделю</span>
+                                        </div>
+                                        <div class="recommendation">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Не забывайте про восстановление - сон и питание критически важны</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <!-- Continue button -->
+                        <div class="analysis-actions">
+                            <form method="post" action="{% url 'onboarding:generate_plan' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="analysis_confirmed" value="true">
+                                <button type="submit" class="btn-continue-analysis">
+                                    <span class="btn-text">
+                                        <i class="fas fa-rocket"></i>
+                                        Создать мой персональный план
+                                    </span>
+                                    <div class="btn-shimmer"></div>
+                                </button>
+                            </form>
+                            
+                            <p class="analysis-note">
+                                <i class="fas fa-info-circle"></i>
+                                На основе этого анализа будет создана ваша уникальная программа тренировок
+                            </p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Full-screen analysis results */
+.analysis-results-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Video background */
+.results-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.15;
+}
+
+/* Gradient overlay */
+.results-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.92) 0%, 
+        rgba(78, 205, 196, 0.88) 50%,
+        rgba(102, 126, 234, 0.92) 100%
+    );
+    z-index: -1;
+}
+
+/* Content container */
+.results-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 2rem 0;
+}
+
+/* Main results card */
+.analysis-results-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 35px;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Results header */
+.results-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem;
+    text-align: center;
+}
+
+.ai-header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.results-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.results-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Analysis sections */
+.analysis-sections {
+    padding: 3rem;
+}
+
+.analysis-section {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    background: rgba(248, 249, 250, 0.8);
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    animation: sectionFade 0.8s ease-out;
+    animation-fill-mode: both;
+}
+
+.analysis-section:nth-child(1) { animation-delay: 0.1s; }
+.analysis-section:nth-child(2) { animation-delay: 0.2s; }
+.analysis-section:nth-child(3) { animation-delay: 0.3s; }
+.analysis-section:nth-child(4) { animation-delay: 0.4s; }
+.analysis-section:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes sectionFade {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.analysis-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-section.special {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(78, 205, 196, 0.05));
+    border: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.section-icon {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.trainer-avatar-small {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.section-content {
+    flex-grow: 1;
+}
+
+.section-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+/* Analysis items */
+.analysis-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.analysis-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.item-label {
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.item-value {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.item-value.highlight {
+    color: #667eea;
+}
+
+/* AI insight */
+.ai-insight {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #5a6c7d;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 20px;
+    border-left: 4px solid #667eea;
+    font-style: italic;
+    position: relative;
+}
+
+.ai-insight i {
+    color: #667eea;
+    margin: 0 0.5rem;
+    opacity: 0.5;
+}
+
+/* Lifestyle grid */
+.lifestyle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.lifestyle-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.lifestyle-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.lifestyle-item i {
+    color: #4ecdc4;
+    font-size: 1.2rem;
+}
+
+/* Trainer match */
+.trainer-match {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.trainer-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.trainer-description {
+    color: #5a6c7d;
+    line-height: 1.6;
+}
+
+/* Recommendations */
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.recommendation {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.recommendation:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.recommendation i {
+    color: #4ecdc4;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* Actions */
+.analysis-actions {
+    padding: 3rem;
+    background: rgba(248, 249, 250, 0.8);
+    text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.btn-continue-analysis {
+    position: relative;
+    padding: 1.5rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+.btn-continue-analysis:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 25px 60px rgba(102, 126, 234, 0.6);
+}
+
+.btn-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    100% { left: 100%; }
+}
+
+.analysis-note {
+    margin-top: 1.5rem;
+    color: #7f8c8d;
+    font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .results-content {
+        padding: 1rem 0;
+    }
+    
+    .analysis-results-card {
+        margin: 1rem;
+        border-radius: 25px;
+    }
+    
+    .results-header {
+        padding: 2rem 1.5rem;
+    }
+    
+    .results-title {
+        font-size: 2rem;
+    }
+    
+    .analysis-sections {
+        padding: 2rem 1.5rem;
+    }
+    
+    .analysis-section {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .analysis-items {
+        grid-template-columns: 1fr;
+    }
+    
+    .lifestyle-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .results-title {
+        font-size: 1.6rem;
+    }
+    
+    .results-subtitle {
+        font-size: 1rem;
+    }
+    
+    .btn-continue-analysis {
+        width: 100%;
+        padding: 1.2rem 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add entrance animations
+    const sections = document.querySelectorAll('.analysis-section');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateX(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+    
+    // Animate numbers
+    const animateValue = (element, start, end, duration) => {
+        const startTime = performance.now();
+        const step = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const value = Math.floor(progress * (end - start) + start);
+            element.textContent = value;
+            
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            }
+        };
+        requestAnimationFrame(step);
+    };
+    
+    // Animate any numeric values
+    document.querySelectorAll('.item-value').forEach(el => {
+        const text = el.textContent;
+        const match = text.match(/(\d+)/);
+        if (match) {
+            const num = parseInt(match[1]);
+            animateValue(el, 0, num, 1000);
+        }
+    });
+});
+</script>
+{% endblock %}

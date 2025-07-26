@@ -10,6 +10,80 @@ from .ai_client import AIClientFactory, AIClientError
 logger = logging.getLogger(__name__)
 
 
+def analyze_user_responses(user) -> Dict:
+    """
+    Analyze user onboarding responses without creating a plan
+    Returns formatted analysis data for display
+    """
+    logger.info("🔍 USER ANALYSIS: Starting for user %s", user.id)
+    
+    try:
+        # Collect user data
+        user_data = OnboardingDataProcessor.collect_user_data(user)
+        logger.info("🔍 USER ANALYSIS: User data collected, keys: %s", list(user_data.keys()))
+        
+        # Format the analysis for display
+        analysis = {
+            'age': user_data.get('age', 25),
+            'height': user_data.get('height', 175),
+            'weight': user_data.get('weight', 70),
+            'experience_level': user_data.get('experience_level', 'beginner'),
+            'primary_goal': user_data.get('primary_goal', 'muscle_gain'),
+            'days_per_week': user_data.get('days_per_week', 3),
+            'workout_duration': user_data.get('workout_duration', 45),
+            'equipment': ', '.join(user_data.get('equipment', ['bodyweight'])),
+            'preferred_time': user_data.get('preferred_workout_time', 'evening'),
+            'health_limitations': user_data.get('health_limitations', 'none'),
+            'archetype': user_data.get('trainer_archetype', user.profile.archetype)
+        }
+        
+        # Map values to readable Russian format
+        goal_mapping = {
+            'weight_loss': 'Снижение веса',
+            'muscle_gain': 'Набор мышечной массы', 
+            'strength': 'Развитие силы',
+            'endurance': 'Выносливость',
+            'general_fitness': 'Общее развитие'
+        }
+        
+        experience_mapping = {
+            'beginner': 'Начинающий',
+            'intermediate': 'Средний уровень',
+            'advanced': 'Продвинутый'
+        }
+        
+        time_mapping = {
+            'morning': 'Утро',
+            'afternoon': 'День', 
+            'evening': 'Вечер',
+            'flexible': 'Гибкий график'
+        }
+        
+        analysis['primary_goal'] = goal_mapping.get(analysis['primary_goal'], 'Общее развитие')
+        analysis['experience_level'] = experience_mapping.get(analysis['experience_level'], 'Начинающий')
+        analysis['preferred_time'] = time_mapping.get(analysis['preferred_time'], 'Вечер')
+        
+        logger.info("🔍 USER ANALYSIS: Analysis completed successfully")
+        return analysis
+        
+    except Exception as e:
+        logger.error("🔍 USER ANALYSIS: FAILED for user %s: %s", user.id, str(e))
+        # Return default analysis on error
+        return {
+            'age': 25,
+            'height': 175,
+            'weight': 70,
+            'experience_level': 'Начинающий',
+            'primary_goal': 'Общее развитие',
+            'days_per_week': 3,
+            'workout_duration': 45,
+            'equipment': 'Вес тела',
+            'preferred_time': 'Вечер',
+            'health_limitations': 'Отсутствуют',
+            'archetype': user.profile.archetype or 'bro'
+        }
+
+
 def create_workout_plan_from_onboarding(user):
     """
     Main function to create workout plan from onboarding data
