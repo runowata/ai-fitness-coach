@@ -381,7 +381,26 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Video Debug Script (remove in production) -->
+<script src="{% static 'js/video-debug.js' %}"></script>
+
 <script>
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 // Video playlist functionality
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('mainVideo');
@@ -427,6 +446,7 @@ function submitFeedback(rating) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify({
             feedback_rating: rating,
@@ -466,6 +486,7 @@ function substituteExercise(originalSlug, substituteSlug) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify({
             original_exercise: originalSlug,
