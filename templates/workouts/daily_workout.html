@@ -232,14 +232,33 @@
                 {% else %}
                     <!-- Video Player -->
                     <div class="video-container mb-4">
-                        <video id="mainVideo" class="video-player" controls>
-                            {% if video_playlist %}
+                        {% if video_playlist and video_playlist.0.url %}
+                            <video id="mainVideo" class="video-player" controls>
                                 <source src="{{ video_playlist.0.url }}" type="video/mp4">
-                            {% else %}
-                                <source src="{% static 'videos/placeholder.mp4' %}" type="video/mp4">
-                            {% endif %}
-                            <p>Ваш браузер не поддерживает видео. <a href="{% static 'videos/placeholder.mp4' %}">Скачать видео</a></p>
-                        </video>
+                                <p>Ваш браузер не поддерживает видео. <a href="{{ video_playlist.0.url }}">Скачать видео</a></p>
+                            </video>
+                        {% else %}
+                            <!-- Fallback when no videos available -->
+                            <div class="video-placeholder p-5 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px;">
+                                <i class="fas fa-video fa-3x mb-3"></i>
+                                <h4>Видео загружается...</h4>
+                                <p>Пока видео недоступно, вы можете выполнить упражнения по описанию ниже.</p>
+                                {% if workout.exercises %}
+                                    <div class="alert alert-light mt-3">
+                                        <strong>Упражнения на сегодня:</strong>
+                                        <ul class="list-unstyled mt-2">
+                                            {% for exercise in workout.exercises %}
+                                                <li class="mb-2">
+                                                    <strong>{{ exercise.exercise_slug|title }}</strong><br>
+                                                    {{ exercise.sets }} подходов × {{ exercise.reps }} повторений
+                                                    {% if exercise.rest_seconds %}• Отдых: {{ exercise.rest_seconds }} сек{% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <!-- Current Exercise Info -->
@@ -381,6 +400,17 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+// Debug: Log playlist data
+console.log('Video playlist data:', {{ video_playlist|default:"[]"|safe }});
+console.log('Workout data:', {
+    id: {{ workout.id }},
+    name: "{{ workout.name }}",
+    exercises: {{ workout.exercises|default:"[]"|safe }},
+    is_rest_day: {{ workout.is_rest_day|yesno:"true,false" }}
+});
+</script>
+
 <!-- Video Debug Script (remove in production) -->
 <script src="{% static 'js/video-debug.js' %}"></script>
 
