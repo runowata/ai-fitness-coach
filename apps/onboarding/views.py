@@ -279,7 +279,7 @@ def generate_plan_ajax(request):
         
         return JsonResponse({
             'status': 'success',
-            'redirect_url': reverse('onboarding:plan_confirmation'),
+            'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
             'plan_id': workout_plan.id
         })
         
@@ -292,9 +292,12 @@ def generate_plan_ajax(request):
 
 
 @login_required
-def plan_confirmation(request):
+def plan_confirmation(request, plan_id=None):
     """Show plan confirmation page before starting"""
-    latest_plan = request.user.workout_plans.filter(is_active=True).first()
+    if plan_id:
+        latest_plan = get_object_or_404(WorkoutPlan, id=plan_id, user=request.user)
+    else:
+        latest_plan = request.user.workout_plans.filter(is_active=True).first()
     
     if not latest_plan:
         messages.error(request, 'План тренировок не найден')
@@ -347,10 +350,14 @@ def plan_confirmation(request):
                 if not day.get('is_rest_day'):
                     total_exercises += len(day.get('exercises', []))
     
+    # Extract AI feedback/analysis from plan data
+    ai_feedback = analysis_data.get('profile_insight') or analysis_data.get('profile_assessment') or analysis_data.get('scientific_assessment') or "Персональный анализ готов!"
+    
     context = {
         'plan': latest_plan,
         'plan_data': plan_details,
         'analysis_data': analysis_data,
+        'ai_feedback': ai_feedback,
         'total_exercises': total_exercises,
         'archetype': archetype,
         'duration_days': plan_details.get('duration_days', 90)

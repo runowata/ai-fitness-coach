@@ -11,5 +11,6 @@ urlpatterns = [
     path('generate/', views.generate_plan, name='generate_plan'),
     path('generate-ajax/', views.generate_plan_ajax, name='generate_plan_ajax'),
     path('plan-confirmation/', views.plan_confirmation, name='plan_confirmation'),
+    path('plan-confirmation/<int:plan_id>/', views.plan_confirmation, name='plan_confirmation'),
     path('preview/', views.plan_preview, name='plan_preview'),
 ]
