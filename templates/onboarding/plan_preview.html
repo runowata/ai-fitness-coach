@@ -25,9 +25,15 @@
                         <div class="trainer-reveal">
                             <div class="trainer-avatar-container">
                                 <div class="success-rays"></div>
-                                <img src="{% static 'images/avatars/' %}{{ archetype }}-avatar.png" 
-                                     alt="Тренер {{ archetype|title }}" 
-                                     class="trainer-avatar-large">
+                                {% if archetype %}
+                                    <img src="{% static 'images/avatars/' %}{{ archetype }}-avatar.png" 
+                                         alt="Тренер {{ archetype|title }}" 
+                                         class="trainer-avatar-large">
+                                {% else %}
+                                    <img src="{% static 'images/avatars/bro-avatar.png' %}" 
+                                         alt="Тренер" 
+                                         class="trainer-avatar-large">
+                                {% endif %}
                                 <div class="trainer-glow"></div>
                             </div>
                             
