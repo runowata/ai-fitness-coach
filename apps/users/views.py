@@ -61,6 +61,11 @@ def dashboard_view(request):
         messages.info(request, 'У вас пока нет активного плана тренировок. Пройдите онбординг!')
         return redirect('onboarding:start')
     
+    # CRITICAL FIX: Set started_at if it's missing (for old plans)
+    if not workout_plan.started_at:
+        workout_plan.started_at = timezone.now()
+        workout_plan.save()
+    
     # Get today's workout
     current_week = workout_plan.get_current_week()
     days_since_start = (timezone.now() - workout_plan.started_at).days if workout_plan.started_at else 0
