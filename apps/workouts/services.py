@@ -26,8 +26,7 @@ class VideoPlaylistBuilder:
             exercise=None,
             type='intro',
             archetype=user_archetype,
-            is_active=True,
-            is_placeholder=False  # Only real videos
+            is_active=True
         ).order_by('?').first()
         
         if intro_video:
@@ -74,13 +73,12 @@ class VideoPlaylistBuilder:
         except Exercise.DoesNotExist:
             return playlist
         
-        # 1. Technique video (mod1) - only real videos
+        # 1. Technique video (mod1)
         technique_video = VideoClip.objects.filter(
             exercise=exercise,
             type='technique',
             model_name='mod1',
-            is_active=True,
-            is_placeholder=False  # Only real videos
+            is_active=True
         ).first()
         
         if technique_video:
@@ -98,8 +96,7 @@ class VideoPlaylistBuilder:
             exercise=None,  # Trainer videos have no specific exercise
             type='support',
             archetype=archetype,
-            is_active=True,
-            is_placeholder=False  # Only real videos
+            is_active=True
         ).order_by('?').first()
         
         if support_video:
@@ -121,7 +118,7 @@ class VideoPlaylistBuilder:
                 type='support',
                 archetype=archetype, 
                 is_active=True,
-                is_placeholder=False  # Only real videos
+                  # Only real videos
             ).exclude(id=support_video.id if support_video else 0).order_by('?').first()
             
             if extra_support:
@@ -140,7 +137,7 @@ class VideoPlaylistBuilder:
                 type='mistake',
                 model_name='mod1',
                 is_active=True,
-                is_placeholder=False  # Only real videos
+                  # Only real videos
             ).first()
             
             if mistake_video:
@@ -160,8 +157,7 @@ class VideoPlaylistBuilder:
         video = VideoClip.objects.filter(
             type='support',
             archetype=archetype,
-            is_active=True,
-            is_placeholder=False  # Only real videos
+            is_active=True
         ).order_by('?').first()
         
         if video:
@@ -179,8 +175,7 @@ class VideoPlaylistBuilder:
         video = VideoClip.objects.filter(
             type='outro',
             archetype=archetype,
-            is_active=True,
-            is_placeholder=False  # Only real videos
+            is_active=True
         ).order_by('?').first()
         
         if video:
