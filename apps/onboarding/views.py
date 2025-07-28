@@ -245,7 +245,7 @@ def generate_plan(request):
         workout_plan = create_workout_plan_from_onboarding(request.user)
         
         messages.success(request, 'Ваш персональный план тренировок готов!')
-        return redirect('users:dashboard')
+        return redirect('onboarding:plan_confirmation', plan_id=workout_plan.id)
         
     except Exception as e:
         messages.error(request, f'Ошибка при генерации плана: {str(e)}')
@@ -279,7 +279,7 @@ def generate_plan_ajax(request):
         
         return JsonResponse({
             'status': 'success',
-            'redirect_url': reverse('users:dashboard'),
+            'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
             'plan_id': workout_plan.id
         })
         
