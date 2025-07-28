@@ -279,7 +279,7 @@ def generate_plan_ajax(request):
         
         return JsonResponse({
             'status': 'success',
-            'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
+            'redirect_url': reverse('users:dashboard'),
             'plan_id': workout_plan.id
         })
         
