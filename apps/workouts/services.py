@@ -73,13 +73,12 @@ class VideoPlaylistBuilder:
         except Exercise.DoesNotExist:
             return playlist
         
-        # 1. Technique video (mod1)
+        # 1. Technique video
         technique_video = VideoClip.objects.filter(
             exercise=exercise,
             type='technique',
-            model_name='mod1',
             is_active=True
-        ).first()
+        ).order_by('id').first()
         
         if technique_video:
             playlist.append({
@@ -135,9 +134,7 @@ class VideoPlaylistBuilder:
             mistake_video = VideoClip.objects.filter(
                 exercise=exercise,
                 type='mistake',
-                model_name='mod1',
-                is_active=True,
-                  # Only real videos
+                is_active=True
             ).first()
             
             if mistake_video:
