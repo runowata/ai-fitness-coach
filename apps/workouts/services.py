@@ -60,8 +60,17 @@ class VideoPlaylistBuilder:
         """Build video sequence for a single exercise"""
         playlist = []
         
+        # Handle both slug formats: 'ex005' (from AI) and 'push-ups' (human readable)
+        slug_or_code = exercise_slug
+        
+        # If this looks like an exercise code (ex###), normalize to uppercase and search by PK
+        if slug_or_code.lower().startswith("ex") and len(slug_or_code) == 5:
+            exercise_lookup = {"pk": slug_or_code.upper()}
+        else:
+            exercise_lookup = {"slug": slug_or_code}
+        
         try:
-            exercise = Exercise.objects.get(slug=exercise_slug)
+            exercise = Exercise.objects.get(**exercise_lookup)
         except Exercise.DoesNotExist:
             return playlist
         
