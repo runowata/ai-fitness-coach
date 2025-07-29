@@ -314,8 +314,8 @@ def plan_confirmation(request, plan_id=None):
     # Extract plan data and analysis
     plan_data = latest_plan.plan_data
     
-    # Extract analysis data (new structure)
-    analysis_data = plan_data.get('analysis', {})
+    # Extract analysis data (prioritize separate ai_analysis field)
+    analysis_data = latest_plan.ai_analysis or plan_data.get('analysis', {})
     
     # Extract plan details (new structure with cycles/phases)
     plan_details = plan_data.get('plan', plan_data.get('protocol', plan_data))

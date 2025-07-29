@@ -89,6 +89,7 @@ class WorkoutPlanGenerator:
                 duration_weeks=12,  # 90 days ≈ 12 weeks  
                 goal=user_data.get('primary_goal', 'general_fitness'),
                 plan_data=plan_data,  # Store full AI response including analysis
+                ai_analysis=analysis_data,  # Store analysis separately for easier access
                 started_at=timezone.now()
             )
             logger.info(f"WorkoutPlan created successfully with id: {workout_plan.id}")

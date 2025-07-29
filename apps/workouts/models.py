@@ -117,6 +117,7 @@ class WorkoutPlan(models.Model):
     
     # AI-generated plan data
     plan_data = models.JSONField()  # Complete plan structure
+    ai_analysis = models.JSONField(blank=True, null=True)  # AI analysis data
     
     # Weekly adaptation
     last_adaptation_date = models.DateTimeField(null=True, blank=True)
