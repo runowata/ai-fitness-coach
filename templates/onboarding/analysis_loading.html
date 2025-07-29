@@ -882,8 +882,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show completion
             setTimeout(() => {
-                // Submit form to proceed
-                document.getElementById('analysis-complete').submit();
+                // Don't auto-submit - let user see the plan confirmation page
+                console.log('Analysis complete - redirecting to plan confirmation');
             }, 2000);
             
         }, totalDuration);

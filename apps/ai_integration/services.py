@@ -262,6 +262,15 @@ class WorkoutPlanGenerator:
                 temperature=0.7
             )
             
+            # TEMPORARY LOG: Check if AI returns analysis section
+            logger.warning(f"AI raw response type: {type(plan_data)}")
+            if isinstance(plan_data, dict):
+                logger.warning(f"AI response keys: {list(plan_data.keys())}")
+                if 'analysis' in plan_data:
+                    logger.warning(f"Analysis keys: {list(plan_data['analysis'].keys())}")
+                else:
+                    logger.warning("NO ANALYSIS SECTION in AI response")
+            
             # LOG AI RESPONSE FOR DEBUGGING
             logger.warning(f"### AI RAW RESPONSE ### Type: {type(plan_data)}")
             logger.warning(f"### AI RESPONSE KEYS ### {list(plan_data.keys()) if isinstance(plan_data, dict) else 'NOT_DICT'}")
