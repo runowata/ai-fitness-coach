@@ -94,6 +94,9 @@ def save_answer(request, question_id):
         question=question
     )
     
+    # Get motivational card for this question
+    motivational_card = None
+    
     # Handle different question types
     if question.question_type == 'single_choice':
         option_id = data.get('answer')
@@ -101,25 +104,42 @@ def save_answer(request, question_id):
             option = get_object_or_404(AnswerOption, id=option_id, question=question)
             response.answer_options.add(option)
             
-            # Get motivational card
-            motivational_card = option.motivational_card
+            # Try to get specific card for this answer option
+            motivational_card = MotivationalCard.objects.filter(
+                question=question,
+                answer_option=option,
+                is_active=True
+            ).first()
             
     elif question.question_type == 'multiple_choice':
         option_ids = data.get('answers', [])
         for option_id in option_ids:
             option = get_object_or_404(AnswerOption, id=option_id, question=question)
             response.answer_options.add(option)
-        motivational_card = None
         
     elif question.question_type == 'number':
         response.answer_number = data.get('answer')
         response.save()
-        motivational_card = None
+        
+    elif question.question_type == 'scale':
+        response.answer_scale = data.get('answer')
+        response.save()
+        
+    elif question.question_type == 'body_map':
+        response.answer_body_map = data.get('answer', {})
+        response.save()
         
     else:  # text
         response.answer_text = data.get('answer', '')
         response.save()
-        motivational_card = None
+    
+    # If no specific card found, get default card for question
+    if not motivational_card:
+        motivational_card = MotivationalCard.objects.filter(
+            question=question,
+            is_default_for_question=True,
+            is_active=True
+        ).first()
     
     # Get next question
     next_question = OnboardingQuestion.objects.filter(
@@ -134,10 +154,25 @@ def save_answer(request, question_id):
     }
     
     if motivational_card:
+        # Replace [Имя] placeholder with actual name
+        message = motivational_card.message
+        if '[Имя]' in message and hasattr(request.user, 'first_name') and request.user.first_name:
+            message = message.replace('[Имя]', request.user.first_name)
+        elif '[Имя]' in message:
+            # Try to get name from first question response
+            name_response = UserOnboardingResponse.objects.filter(
+                user=request.user,
+                question__ai_field_name='user_name'
+            ).first()
+            if name_response:
+                name = name_response.get_answer_value()
+                if name:
+                    message = message.replace('[Имя]', name)
+        
         result['motivational_card'] = {
-            'title': motivational_card.title,
-            'message': motivational_card.message,
-            'image_url': motivational_card.image_url
+            'title': motivational_card.title or '',
+            'message': message,
+            'image_url': motivational_card.image_url or ''
         }
     
     # If last question, generate workout plan

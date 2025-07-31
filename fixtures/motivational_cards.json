@@ -1,0 +1,552 @@
+[
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 1,
+    "fields": {
+      "message": "Приятно познакомиться, [Имя]! Рад, что ты здесь.",
+      "question": 1,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 2,
+    "fields": {
+      "message": "Отлично, возраст — это лишь цифра. Начать работать над собой никогда не поздно и никогда не рано.",
+      "question": 2,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 3,
+    "fields": {
+      "message": "Принято.",
+      "question": 3,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 4,
+    "fields": {
+      "message": "Спасибо. Запомни: эта цифра не определяет твою ценность. Мы будем отслеживать прогресс в самочувствии и силе, а не только в килограммах.",
+      "question": 4,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 5,
+    "fields": {
+      "message": "Твоя безопасность — наш главный приоритет. Следующие вопросы помогут создать программу, которая укрепит твое тело, а не навредит ему.",
+      "question": 5,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 6,
+    "fields": {
+      "message": "Спасибо за откровенность. Мы будем строить твою кардио-нагрузку постепенно и с умом, фокусируясь на упражнениях, которые укрепляют сердце, согласно рекомендациям Американской кардиологической ассоциации.",
+      "question": 6,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 7,
+    "fields": {
+      "message": "Принято. Физическая активность — это мощнейший инструмент для управления уровнем сахара в крови. Твоя программа будет построена с учетом рекомендаций Американской диабетической ассоциации для максимальной пользы и безопасности.",
+      "question": 7,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 8,
+    "fields": {
+      "message": "Понял тебя. Боль — это сигнал, который нельзя игнорировать. Мы включим в программу специальные упражнения для укрепления этих зон и будем избегать движений, которые могут усугубить дискомфорт.",
+      "question": 8,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 9,
+    "fields": {
+      "message": "Это важная информация. Будем работать аккуратно, давая твоему телу время на адаптацию.",
+      "question": 9,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 10,
+    "fields": {
+      "message": "Хорошо, теперь я знаю нашу отправную точку. Гибкость — это то, что мы можем и будем развивать. Это ключ к здоровью суставов и свободе движений.",
+      "question": 10,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 11,
+    "fields": {
+      "message": "Спасибо за доверие. Помни, регулярные физические упражнения — это мощный, научно доказанный инструмент для поддержки иммунитета, улучшения композиции тела и повышения качества жизни при жизни с ВИЧ. Мы сделаем твою программу максимально полезной для твоего здоровья.",
+      "question": 11,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 12,
+    "fields": {
+      "message": "Принято. Я учту это, чтобы избежать чрезмерных нагрузок на сердечно-сосудистую систему.",
+      "question": 12,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 13,
+    "fields": {
+      "message": "Спасибо, это важно знать. Мы начнем с упражнений низкой и средней интенсивности, внимательно следя за твоим самочувствием.",
+      "question": 13,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 14,
+    "fields": {
+      "message": "Благодарю за уточнение. Безопасность прежде всего.",
+      "question": 14,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 15,
+    "fields": {
+      "message": "Спасибо за честность. Кстати, многие отмечают, что регулярные тренировки помогают снизить тягу к курению за счет снятия стресса. Это может стать приятным бонусом.",
+      "question": 15,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 16,
+    "fields": {
+      "message": "Отличный фокус! Каким бы ни был твой главный драйвер, помни — все эти изменения взаимосвязаны. Улучшая одно, ты подтягиваешь и все остальное.",
+      "question": 16,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 17,
+    "fields": {
+      "message": "Это ключевой вопрос. Мы найдем баланс, чтобы ты не только отлично выглядел, но и чувствовал себя полным энергии и сил.",
+      "question": 17,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 18,
+    "fields": {
+      "message": "Понял. Эстетика — мощный мотиватор, и это абсолютно нормально. Мы построим программу так, чтобы она вела тебя к желаемому отражению в зеркале.",
+      "question": 18,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 19,
+    "fields": {
+      "message": "Ясно. Цель поставлена. Теперь у меня есть четкое направление для подбора упражнений и рекомендаций по питанию.",
+      "question": 19,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 20,
+    "fields": {
+      "message": "Это очень знакомо многим в нашем сообществе. Помни, наша цель — построить твою версию силы, а не соответствовать чужим ожиданиям. Здесь мы фокусируемся на твоем личном прогрессе.",
+      "question": 20,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 21,
+    "fields": {
+      "message": "Спасибо. Теперь я лучше понимаю, что может встать на пути. Мы вместе придумаем, как обойти эти препятствия.",
+      "question": 21,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 22,
+    "fields": {
+      "message": "Мне жаль, что так было. Это пространство — безопасное. Здесь нет места осуждению. Только поддержка и работа над собой, в твоем темпе.",
+      "question": 22,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 23,
+    "fields": {
+      "message": "Принято. Мы будем отслеживать еженедельный прогресс, чтобы ты видел свои достижения и сохранял мотивацию. Но помни, самые устойчивые результаты требуют времени.",
+      "question": 23,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 24,
+    "fields": {
+      "message": "Это многое говорит о твоем настрое. Я учту это. В дни, когда энергия на нуле, у нас будут более легкие, восстанавливающие тренировки для снятия стресса.",
+      "question": 24,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 25,
+    "fields": {
+      "message": "Отлично! Мы обязательно включим в твое путешествие больше того, что тебя зажигает.",
+      "question": 25,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 26,
+    "fields": {
+      "message": "Спасибо за откровенность. Наше тело — это наш дом и наш инструмент. Мы будем учиться не только менять его, но и ценить за то, что оно может делать.",
+      "question": 26,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 27,
+    "fields": {
+      "message": "Прекрасный выбор. Это будет нашим маяком на протяжении всего пути.",
+      "question": 27,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 28,
+    "fields": {
+      "message": "Понятно. Если работа сидячая, мы обязательно добавим больше упражнений для осанки и мобильности таза, чтобы компенсировать последствия долгого сидения.",
+      "question": 28,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 29,
+    "fields": {
+      "message": "Принято. Сон — ключевой фактор для восстановления и выработки тестостерона. Даже небольшое улучшение качества сна даст огромный толчок твоему прогрессу.",
+      "question": 29,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 30,
+    "fields": {
+      "message": "Хорошо, теперь я знаю, насколько эффективен твой \"ночной ремонт\". Улучшение сна будет одной из наших фоновых задач.",
+      "question": 30,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 31,
+    "fields": {
+      "message": "Спасибо. Стресс — это не просто эмоция, а физиология. Он повышает уровень кортизола, мешая восстановлению. Поэтому в программе будут специальные техники для расслабления.",
+      "question": 31,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 32,
+    "fields": {
+      "message": "Завтрак задает тон всему дню. Мы еще вернемся к советам по питанию, чтобы оптимизировать твою энергию.",
+      "question": 32,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 33,
+    "fields": {
+      "message": "Регулярное питание помогает поддерживать стабильный уровень энергии и метаболизм. Мы это учтем.",
+      "question": 33,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 34,
+    "fields": {
+      "message": "Все в порядке, без крайностей. Наша цель — не идеальная диета, а сбалансированный рацион, в котором есть место всему.",
+      "question": 34,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 35,
+    "fields": {
+      "message": "Вода — это транспорт для всех питательных веществ в теле. Даже легкое обезвоживание снижает силу и выносливость.",
+      "question": 35,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 36,
+    "fields": {
+      "message": "Принято. Важно помнить, что алкоголь может влиять на качество сна и скорость восстановления.",
+      "question": 36,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 37,
+    "fields": {
+      "message": "Отлично! Если у тебя что-то есть, мы это используем. Если нет — не проблема. Твое собственное тело — самый совершенный тренажер.",
+      "question": 37,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 38,
+    "fields": {
+      "message": "Отличные цели. Сексуальное здоровье — это такая же важная часть благополучия, как и все остальное. Наука подтверждает прямую связь между фитнесом и всеми этими аспектами. Мы обязательно добавим в твой план упражнения для их достижения.",
+      "question": 38,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 39,
+    "fields": {
+      "message": "Понял. Это абсолютно тренируемый параметр. Сочетание кардио и силовых упражнений творит чудеса для выносливости.",
+      "question": 39,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 40,
+    "fields": {
+      "message": "Гибкость — это свобода. Свобода движений, поз и ощущений. Мы уделим ей должное внимание.",
+      "question": 40,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 41,
+    "fields": {
+      "message": "Отличный выбор! Это как силовая тренировка для самой важной мышцы, отвечающей за контроль и качество эрекции. Они будут в твоем плане.",
+      "question": 41,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 42,
+    "fields": {
+      "message": "Это очень распространенная ситуация. Хорошая новость в том, что упражнения — одно из лучших лекарств от стресса. Снижая стресс, мы высвобождаем твою сексуальную энергию.",
+      "question": 42,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 43,
+    "fields": {
+      "message": "Спасибо. Эта информация поможет мне лучше подобрать акценты в рекомендациях по гибкости и силе.",
+      "question": 43,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 44,
+    "fields": {
+      "message": "Уверенность — это мышца, которую мы тоже будем тренировать. Ощущение контроля над своим телом напрямую транслируется в уверенность в спальне.",
+      "question": 44,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 45,
+    "fields": {
+      "message": "Это глубокий ответ. Наша работа над физическим состоянием создаст прочную основу для достижения и того, и другого.",
+      "question": 45,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 46,
+    "fields": {
+      "message": "Принято. Лучшая тренировка — та, которая состоялась. Мы встроим план в твой ритм жизни.",
+      "question": 46,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 47,
+    "fields": {
+      "message": "Ясно. Мы найдем идеальный баланс интенсивности и осознанности, который будет тебя заряжать, а не истощать.",
+      "question": 47,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 48,
+    "fields": {
+      "message": "Ха-ха, понял. У каждого есть свои \"враги\". Постараюсь найти им эффективную и более приятную альтернативу.",
+      "question": 48,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 49,
+    "fields": {
+      "message": "Кардио не должно быть пыткой. Мы найдем тот его вид, который будет приносить тебе удовольствие. Или хотя бы сделаем его максимально эффективным, чтобы не тратить лишнего времени.",
+      "question": 49,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 50,
+    "fields": {
+      "message": "Отлично, теперь я знаю, на чем мне сфокусировать твое внимание.",
+      "question": 50,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 51,
+    "fields": {
+      "message": "Восстановление — это часть тренировки. Мы добавим несколько простых, но эффективных техник, чтобы ты восстанавливался быстрее.",
+      "question": 51,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 52,
+    "fields": {
+      "message": "Готовься, у меня в арсенале много интересного!",
+      "question": 52,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 53,
+    "fields": {
+      "message": "Хороший плейлист — это +10 к силе!",
+      "question": 53,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 54,
+    "fields": {
+      "message": "Мы будем отслеживать все эти параметры. Прогресс многогранен, и важно видеть полную картину.",
+      "question": 54,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 55,
+    "fields": {
+      "message": "Тогда вперед! Я начинаю создавать твой уникальный план. Приготовься удивить самого себя.",
+      "question": 55,
+      "is_default_for_question": true,
+      "category": "response"
+    }
+  }
+]

@@ -90,11 +90,30 @@ class AnswerOption(models.Model):
 
 
 class MotivationalCard(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, blank=True)
     message = models.TextField()
-    image_url = models.URLField()
+    image_url = models.URLField(blank=True)
     
-    # Categorization
+    # Specific linking to questions and answers
+    question = models.ForeignKey(
+        'OnboardingQuestion', 
+        on_delete=models.CASCADE,
+        related_name='motivational_cards',
+        null=True,
+        blank=True
+    )
+    answer_option = models.ForeignKey(
+        'AnswerOption',
+        on_delete=models.CASCADE,
+        related_name='motivational_cards',
+        null=True,
+        blank=True
+    )
+    
+    # For text/number questions without specific answer options
+    is_default_for_question = models.BooleanField(default=False)
+    
+    # Categorization (kept for backward compatibility)
     category = models.CharField(
         max_length=50,
         choices=[
@@ -102,7 +121,9 @@ class MotivationalCard(models.Model):
             ('experience', 'Experience-related'),
             ('limitation', 'Limitation-related'),
             ('general', 'General motivation'),
-        ]
+            ('response', 'Response-specific'),
+        ],
+        default='response'
     )
     
     created_at = models.DateTimeField(auto_now_add=True)
@@ -110,9 +131,15 @@ class MotivationalCard(models.Model):
     
     class Meta:
         db_table = 'motivational_cards'
+        unique_together = [['question', 'answer_option']]
     
     def __str__(self):
-        return self.title
+        if self.question:
+            if self.answer_option:
+                return f"Card for Q{self.question.order}: {self.answer_option.option_text}"
+            elif self.is_default_for_question:
+                return f"Default card for Q{self.question.order}"
+        return self.title or self.message[:50]
 
 
 class UserOnboardingResponse(models.Model):
