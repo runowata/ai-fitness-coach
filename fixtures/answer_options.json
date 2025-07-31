@@ -93,6 +93,106 @@
     "model": "onboarding.answeroption",
     "pk": 10,
     "fields": {
+      "question": 8,
+      "option_text": "Шея",
+      "option_value": "neck",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 11,
+    "fields": {
+      "question": 8,
+      "option_text": "Плечи",
+      "option_value": "shoulders",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 12,
+    "fields": {
+      "question": 8,
+      "option_text": "Спина (верхняя)",
+      "option_value": "upper_back",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 13,
+    "fields": {
+      "question": 8,
+      "option_text": "Спина (нижняя)",
+      "option_value": "lower_back",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 14,
+    "fields": {
+      "question": 8,
+      "option_text": "Колени",
+      "option_value": "knees",
+      "order": 5
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 15,
+    "fields": {
+      "question": 8,
+      "option_text": "Локти",
+      "option_value": "elbows",
+      "order": 6
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 16,
+    "fields": {
+      "question": 8,
+      "option_text": "Запястья",
+      "option_value": "wrists",
+      "order": 7
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 17,
+    "fields": {
+      "question": 8,
+      "option_text": "Бёдра",
+      "option_value": "hips",
+      "order": 8
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 18,
+    "fields": {
+      "question": 8,
+      "option_text": "Лодыжки",
+      "option_value": "ankles",
+      "order": 9
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 19,
+    "fields": {
+      "question": 8,
+      "option_text": "Нет хронической боли",
+      "option_value": "no_pain",
+      "order": 10
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 20,
+    "fields": {
       "question": 11,
       "option_text": "Да, учту это в программе",
       "option_value": "hiv_positive",
@@ -101,7 +201,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 11,
+    "pk": 21,
     "fields": {
       "question": 11,
       "option_text": "Нет / Предпочитаю не отвечать",
@@ -111,7 +211,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 12,
+    "pk": 22,
     "fields": {
       "question": 12,
       "option_text": "Да",
@@ -121,7 +221,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 13,
+    "pk": 23,
     "fields": {
       "question": 12,
       "option_text": "Нет",
@@ -131,7 +231,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 14,
+    "pk": 24,
     "fields": {
       "question": 13,
       "option_text": "Да, часто",
@@ -141,7 +241,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 15,
+    "pk": 25,
     "fields": {
       "question": 13,
       "option_text": "Иногда",
@@ -151,7 +251,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 16,
+    "pk": 26,
     "fields": {
       "question": 13,
       "option_text": "Нет, никогда",
@@ -161,7 +261,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 17,
+    "pk": 27,
     "fields": {
       "question": 15,
       "option_text": "Да, регулярно",
@@ -171,7 +271,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 18,
+    "pk": 28,
     "fields": {
       "question": 15,
       "option_text": "Иногда",
@@ -181,7 +281,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 19,
+    "pk": 29,
     "fields": {
       "question": 15,
       "option_text": "Бросил",
@@ -191,7 +291,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 20,
+    "pk": 30,
     "fields": {
       "question": 15,
       "option_text": "Нет, никогда",
@@ -201,7 +301,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 21,
+    "pk": 31,
     "fields": {
       "question": 17,
       "option_text": "Изменить внешний вид",
@@ -211,7 +311,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 22,
+    "pk": 32,
     "fields": {
       "question": 17,
       "option_text": "Изменить самочувствие",
@@ -221,7 +321,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 23,
+    "pk": 33,
     "fields": {
       "question": 17,
       "option_text": "И то, и другое",
@@ -231,7 +331,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 24,
+    "pk": 34,
     "fields": {
       "question": 19,
       "option_text": "Стать крупнее",
@@ -241,7 +341,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 25,
+    "pk": 35,
     "fields": {
       "question": 19,
       "option_text": "Стать стройнее",
@@ -251,7 +351,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 26,
+    "pk": 36,
     "fields": {
       "question": 19,
       "option_text": "Сохранить вес, улучшить качество",
@@ -261,7 +361,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 27,
+    "pk": 37,
     "fields": {
       "question": 20,
       "option_text": "Да, постоянно",
@@ -271,7 +371,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 28,
+    "pk": 38,
     "fields": {
       "question": 20,
       "option_text": "Иногда",
@@ -281,7 +381,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 29,
+    "pk": 39,
     "fields": {
       "question": 20,
       "option_text": "Редко",
@@ -291,7 +391,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 30,
+    "pk": 40,
     "fields": {
       "question": 20,
       "option_text": "Нет, никогда",
@@ -301,7 +401,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 31,
+    "pk": 41,
     "fields": {
       "question": 21,
       "option_text": "Нехватка времени",
@@ -311,7 +411,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 32,
+    "pk": 42,
     "fields": {
       "question": 21,
       "option_text": "Отсутствие мотивации",
@@ -321,7 +421,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 33,
+    "pk": 43,
     "fields": {
       "question": 21,
       "option_text": "Усталость после работы",
@@ -331,7 +431,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 34,
+    "pk": 44,
     "fields": {
       "question": 21,
       "option_text": "Стеснение в зале",
@@ -341,7 +441,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 35,
+    "pk": 45,
     "fields": {
       "question": 21,
       "option_text": "Не знаю, что делать",
@@ -351,7 +451,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 36,
+    "pk": 46,
     "fields": {
       "question": 21,
       "option_text": "Боюсь травм",
@@ -361,7 +461,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 37,
+    "pk": 47,
     "fields": {
       "question": 22,
       "option_text": "Да, были негативные опыты",
@@ -371,7 +471,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 38,
+    "pk": 48,
     "fields": {
       "question": 22,
       "option_text": "Нет, не было",
@@ -381,7 +481,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 39,
+    "pk": 49,
     "fields": {
       "question": 24,
       "option_text": "Обязанность",
@@ -391,7 +491,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 40,
+    "pk": 50,
     "fields": {
       "question": 24,
       "option_text": "Способ сбросить стресс",
@@ -401,7 +501,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 41,
+    "pk": 51,
     "fields": {
       "question": 25,
       "option_text": "Результаты других людей",
@@ -411,7 +511,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 42,
+    "pk": 52,
     "fields": {
       "question": 25,
       "option_text": "Мои собственные достижения",
@@ -421,7 +521,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 43,
+    "pk": 53,
     "fields": {
       "question": 25,
       "option_text": "Поддержка сообщества",
@@ -431,7 +531,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 44,
+    "pk": 54,
     "fields": {
       "question": 25,
       "option_text": "Мотивационный контент",
@@ -441,7 +541,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 45,
+    "pk": 55,
     "fields": {
       "question": 25,
       "option_text": "Награды и достижения",
@@ -451,7 +551,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 46,
+    "pk": 56,
     "fields": {
       "question": 27,
       "option_text": "Выглядеть потрясающе",
@@ -461,7 +561,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 47,
+    "pk": 57,
     "fields": {
       "question": 27,
       "option_text": "Чувствовать себя потрясающе",
@@ -471,7 +571,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 48,
+    "pk": 58,
     "fields": {
       "question": 27,
       "option_text": "Быть здоровым",
@@ -481,7 +581,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 49,
+    "pk": 59,
     "fields": {
       "question": 27,
       "option_text": "Стать сильнее",
@@ -491,7 +591,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 50,
+    "pk": 60,
     "fields": {
       "question": 28,
       "option_text": "Сидячая",
@@ -501,7 +601,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 51,
+    "pk": 61,
     "fields": {
       "question": 28,
       "option_text": "Умеренно активная",
@@ -511,7 +611,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 52,
+    "pk": 62,
     "fields": {
       "question": 28,
       "option_text": "Физически тяжелая",
@@ -521,7 +621,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 53,
+    "pk": 63,
     "fields": {
       "question": 34,
       "option_text": "Каждый день",
@@ -531,7 +631,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 54,
+    "pk": 64,
     "fields": {
       "question": 34,
       "option_text": "Несколько раз в неделю",
@@ -541,7 +641,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 55,
+    "pk": 65,
     "fields": {
       "question": 34,
       "option_text": "Раз в неделю",
@@ -551,7 +651,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 56,
+    "pk": 66,
     "fields": {
       "question": 34,
       "option_text": "Редко",
@@ -561,7 +661,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 57,
+    "pk": 67,
     "fields": {
       "question": 34,
       "option_text": "Никогда",
@@ -571,7 +671,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 58,
+    "pk": 68,
     "fields": {
       "question": 35,
       "option_text": "Менее 1 литра",
@@ -581,7 +681,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 59,
+    "pk": 69,
     "fields": {
       "question": 35,
       "option_text": "1-2 литра",
@@ -591,7 +691,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 60,
+    "pk": 70,
     "fields": {
       "question": 35,
       "option_text": "2-3 литра",
@@ -601,7 +701,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 61,
+    "pk": 71,
     "fields": {
       "question": 35,
       "option_text": "Более 3 литров",
@@ -611,7 +711,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 62,
+    "pk": 72,
     "fields": {
       "question": 36,
       "option_text": "Не употребляю",
@@ -621,7 +721,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 63,
+    "pk": 73,
     "fields": {
       "question": 36,
       "option_text": "Редко (по праздникам)",
@@ -631,7 +731,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 64,
+    "pk": 74,
     "fields": {
       "question": 36,
       "option_text": "1-2 раза в неделю",
@@ -641,7 +741,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 65,
+    "pk": 75,
     "fields": {
       "question": 36,
       "option_text": "Чаще 2 раз в неделю",
@@ -651,7 +751,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 66,
+    "pk": 76,
     "fields": {
       "question": 37,
       "option_text": "Гантели",
@@ -661,7 +761,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 67,
+    "pk": 77,
     "fields": {
       "question": 37,
       "option_text": "Эспандеры/резинки",
@@ -671,7 +771,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 68,
+    "pk": 78,
     "fields": {
       "question": 37,
       "option_text": "Турник",
@@ -681,7 +781,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 69,
+    "pk": 79,
     "fields": {
       "question": 37,
       "option_text": "Коврик для йоги",
@@ -691,7 +791,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 70,
+    "pk": 80,
     "fields": {
       "question": 37,
       "option_text": "Скакалка",
@@ -701,7 +801,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 71,
+    "pk": 81,
     "fields": {
       "question": 37,
       "option_text": "Ничего из перечисленного",
@@ -711,7 +811,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 72,
+    "pk": 82,
     "fields": {
       "question": 38,
       "option_text": "Повышение либидо",
@@ -721,7 +821,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 73,
+    "pk": 83,
     "fields": {
       "question": 38,
       "option_text": "Улучшение эрекции",
@@ -731,7 +831,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 74,
+    "pk": 84,
     "fields": {
       "question": 38,
       "option_text": "Увеличение выносливости",
@@ -741,7 +841,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 75,
+    "pk": 85,
     "fields": {
       "question": 38,
       "option_text": "Гибкость для новых поз",
@@ -751,7 +851,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 76,
+    "pk": 86,
     "fields": {
       "question": 38,
       "option_text": "Уверенность в себе",
@@ -761,7 +861,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 77,
+    "pk": 87,
     "fields": {
       "question": 41,
       "option_text": "Да, обязательно",
@@ -771,7 +871,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 78,
+    "pk": 88,
     "fields": {
       "question": 41,
       "option_text": "Возможно, попробую",
@@ -781,7 +881,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 79,
+    "pk": 89,
     "fields": {
       "question": 41,
       "option_text": "Нет, не интересно",
@@ -791,7 +891,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 80,
+    "pk": 90,
     "fields": {
       "question": 42,
       "option_text": "Да, сильно влияют",
@@ -801,7 +901,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 81,
+    "pk": 91,
     "fields": {
       "question": 42,
       "option_text": "Иногда влияют",
@@ -811,7 +911,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 82,
+    "pk": 92,
     "fields": {
       "question": 42,
       "option_text": "Нет, не влияют",
@@ -821,7 +921,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 83,
+    "pk": 93,
     "fields": {
       "question": 43,
       "option_text": "Активная",
@@ -831,7 +931,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 84,
+    "pk": 94,
     "fields": {
       "question": 43,
       "option_text": "Пассивная",
@@ -841,7 +941,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 85,
+    "pk": 95,
     "fields": {
       "question": 43,
       "option_text": "Универсал",
@@ -851,7 +951,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 86,
+    "pk": 96,
     "fields": {
       "question": 43,
       "option_text": "Предпочитаю не отвечать",
@@ -861,7 +961,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 87,
+    "pk": 97,
     "fields": {
       "question": 45,
       "option_text": "Физическое удовольствие",
@@ -871,7 +971,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 88,
+    "pk": 98,
     "fields": {
       "question": 45,
       "option_text": "Эмоциональная близость",
@@ -881,7 +981,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 89,
+    "pk": 99,
     "fields": {
       "question": 45,
       "option_text": "И то, и другое",
@@ -891,7 +991,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 90,
+    "pk": 100,
     "fields": {
       "question": 46,
       "option_text": "Утро",
@@ -901,7 +1001,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 91,
+    "pk": 101,
     "fields": {
       "question": 46,
       "option_text": "День",
@@ -911,7 +1011,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 92,
+    "pk": 102,
     "fields": {
       "question": 46,
       "option_text": "Вечер",
@@ -921,7 +1021,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 93,
+    "pk": 103,
     "fields": {
       "question": 46,
       "option_text": "По-разному",
@@ -931,7 +1031,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 94,
+    "pk": 104,
     "fields": {
       "question": 47,
       "option_text": "Интенсивные тренировки",
@@ -941,7 +1041,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 95,
+    "pk": 105,
     "fields": {
       "question": 47,
       "option_text": "Спокойные тренировки",
@@ -951,7 +1051,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 96,
+    "pk": 106,
     "fields": {
       "question": 47,
       "option_text": "Что-то среднее",
@@ -961,7 +1061,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 97,
+    "pk": 107,
     "fields": {
       "question": 49,
       "option_text": "Люблю кардио",
@@ -971,7 +1071,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 98,
+    "pk": 108,
     "fields": {
       "question": 49,
       "option_text": "Нормально отношусь",
@@ -981,7 +1081,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 99,
+    "pk": 109,
     "fields": {
       "question": 49,
       "option_text": "Не люблю, но готов делать",
@@ -991,7 +1091,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 100,
+    "pk": 110,
     "fields": {
       "question": 49,
       "option_text": "Терпеть не могу",
@@ -1001,7 +1101,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 101,
+    "pk": 111,
     "fields": {
       "question": 50,
       "option_text": "Четкий план тренировок",
@@ -1011,7 +1111,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 102,
+    "pk": 112,
     "fields": {
       "question": 50,
       "option_text": "Разнообразие упражнений",
@@ -1021,7 +1121,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 103,
+    "pk": 113,
     "fields": {
       "question": 50,
       "option_text": "Мотивация и поддержка",
@@ -1031,7 +1131,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 104,
+    "pk": 114,
     "fields": {
       "question": 50,
       "option_text": "Отслеживание прогресса",
@@ -1041,7 +1141,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 105,
+    "pk": 115,
     "fields": {
       "question": 52,
       "option_text": "Да, с удовольствием",
@@ -1051,7 +1151,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 106,
+    "pk": 116,
     "fields": {
       "question": 52,
       "option_text": "Возможно, если не слишком сложные",
@@ -1061,7 +1161,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 107,
+    "pk": 117,
     "fields": {
       "question": 52,
       "option_text": "Предпочитаю классику",
@@ -1071,7 +1171,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 108,
+    "pk": 118,
     "fields": {
       "question": 54,
       "option_text": "По весу",
@@ -1081,7 +1181,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 109,
+    "pk": 119,
     "fields": {
       "question": 54,
       "option_text": "По силе",
@@ -1091,7 +1191,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 110,
+    "pk": 120,
     "fields": {
       "question": 54,
       "option_text": "По самочувствию",
@@ -1101,7 +1201,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 111,
+    "pk": 121,
     "fields": {
       "question": 55,
       "option_text": "Да, готов начать!",
@@ -1111,7 +1211,7 @@
   },
   {
     "model": "onboarding.answeroption",
-    "pk": 112,
+    "pk": 122,
     "fields": {
       "question": 55,
       "option_text": "Еще думаю",
