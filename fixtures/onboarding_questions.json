@@ -11,7 +11,9 @@
       "is_block_separator": false,
       "is_required": true,
       "ai_field_name": "user_name",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -27,7 +29,9 @@
       "max_value": 100,
       "is_required": true,
       "ai_field_name": "age",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -43,7 +47,9 @@
       "max_value": 220,
       "is_required": true,
       "ai_field_name": "height",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -59,7 +65,9 @@
       "max_value": 200,
       "is_required": true,
       "ai_field_name": "weight",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -75,7 +83,9 @@
       "separator_text": "Твоя безопасность — наш главный приоритет. Следующие 10 вопросов — самые важные. Пожалуйста, отнесись к ним максимально серьезно и честно. Эта информация позволит мне создать программу, которая укрепит твое тело, а не навредит ему. Все данные строго конфиденциальны.",
       "is_required": false,
       "ai_field_name": "",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -89,7 +99,9 @@
       "block_order": 1,
       "is_required": true,
       "ai_field_name": "cardiovascular_conditions",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -103,7 +115,9 @@
       "block_order": 1,
       "is_required": true,
       "ai_field_name": "diabetes_status",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -117,7 +131,9 @@
       "block_order": 1,
       "is_required": true,
       "ai_field_name": "chronic_pain_areas",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -132,7 +148,9 @@
       "help_text": "Опиши кратко травмы или операции, если были",
       "is_required": false,
       "ai_field_name": "recent_injuries",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -148,7 +166,9 @@
       "scale_max_label": "Очень гибкий",
       "is_required": true,
       "ai_field_name": "flexibility_level",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -162,7 +182,9 @@
       "block_order": 1,
       "is_required": false,
       "ai_field_name": "hiv_status",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -176,7 +198,9 @@
       "block_order": 1,
       "is_required": true,
       "ai_field_name": "heart_medications",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -190,7 +214,9 @@
       "block_order": 1,
       "is_required": true,
       "ai_field_name": "exercise_symptoms",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -204,7 +230,9 @@
       "block_order": 1,
       "is_required": false,
       "ai_field_name": "other_conditions",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -218,7 +246,9 @@
       "block_order": 1,
       "is_required": true,
       "ai_field_name": "smoking_status",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -232,7 +262,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "primary_life_change",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -246,7 +278,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "appearance_vs_feeling",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -262,7 +296,9 @@
       "scale_max_label": "Очень важно",
       "is_required": true,
       "ai_field_name": "muscle_definition_importance",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -276,7 +312,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "size_preference",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -290,7 +328,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "social_pressure",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -304,7 +344,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "workout_barriers",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -318,7 +360,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "negative_pe_experience",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -334,7 +378,9 @@
       "scale_max_label": "Критически важно",
       "is_required": true,
       "ai_field_name": "quick_results_importance",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -348,7 +394,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "workout_as_stress_relief",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -362,7 +410,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "inspiration_sources",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -378,7 +428,9 @@
       "scale_max_label": "Полностью доволен",
       "is_required": true,
       "ai_field_name": "body_satisfaction",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -392,7 +444,9 @@
       "block_order": 2,
       "is_required": true,
       "ai_field_name": "ultimate_goal",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -406,7 +460,9 @@
       "block_order": 3,
       "is_required": true,
       "ai_field_name": "work_activity_level",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -422,7 +478,9 @@
       "max_value": 12,
       "is_required": true,
       "ai_field_name": "sleep_hours",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -438,7 +496,9 @@
       "scale_max_label": "Отличное",
       "is_required": true,
       "ai_field_name": "sleep_quality",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -454,7 +514,9 @@
       "scale_max_label": "Максимальный",
       "is_required": true,
       "ai_field_name": "stress_level",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -468,7 +530,9 @@
       "block_order": 3,
       "is_required": true,
       "ai_field_name": "breakfast_description",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -484,7 +548,9 @@
       "max_value": 6,
       "is_required": true,
       "ai_field_name": "meal_frequency",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -498,7 +564,9 @@
       "block_order": 3,
       "is_required": true,
       "ai_field_name": "fastfood_frequency",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -512,7 +580,9 @@
       "block_order": 3,
       "is_required": true,
       "ai_field_name": "water_intake",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -526,7 +596,9 @@
       "block_order": 3,
       "is_required": true,
       "ai_field_name": "alcohol_consumption",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -540,7 +612,9 @@
       "block_order": 3,
       "is_required": true,
       "ai_field_name": "home_equipment",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -554,7 +628,9 @@
       "block_order": 4,
       "is_required": true,
       "ai_field_name": "sexual_health_goals",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -570,7 +646,9 @@
       "scale_max_label": "Высокая",
       "is_required": true,
       "ai_field_name": "sexual_stamina",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -586,7 +664,9 @@
       "scale_max_label": "Очень важна",
       "is_required": true,
       "ai_field_name": "flexibility_for_sex",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -600,7 +680,9 @@
       "block_order": 4,
       "is_required": true,
       "ai_field_name": "kegel_interest",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -614,7 +696,9 @@
       "block_order": 4,
       "is_required": true,
       "ai_field_name": "stress_affects_libido",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -628,7 +712,9 @@
       "block_order": 4,
       "is_required": false,
       "ai_field_name": "sexual_role",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -644,7 +730,9 @@
       "scale_max_label": "Очень уверенно",
       "is_required": true,
       "ai_field_name": "intimacy_confidence",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -658,7 +746,9 @@
       "block_order": 4,
       "is_required": true,
       "ai_field_name": "sex_goal",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -672,7 +762,9 @@
       "block_order": 5,
       "is_required": true,
       "ai_field_name": "preferred_workout_time",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -686,7 +778,9 @@
       "block_order": 5,
       "is_required": true,
       "ai_field_name": "workout_intensity_preference",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -700,7 +794,9 @@
       "block_order": 5,
       "is_required": false,
       "ai_field_name": "disliked_exercises",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -714,7 +810,9 @@
       "block_order": 5,
       "is_required": true,
       "ai_field_name": "cardio_attitude",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -728,7 +826,9 @@
       "block_order": 5,
       "is_required": true,
       "ai_field_name": "app_features_importance",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -742,7 +842,9 @@
       "block_order": 5,
       "is_required": false,
       "ai_field_name": "recovery_methods",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -756,7 +858,9 @@
       "block_order": 5,
       "is_required": true,
       "ai_field_name": "openness_to_new_exercises",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -772,7 +876,9 @@
       "scale_max_label": "Критически важна",
       "is_required": true,
       "ai_field_name": "music_importance",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -786,7 +892,9 @@
       "block_order": 5,
       "is_required": true,
       "ai_field_name": "progress_tracking_preference",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -800,7 +908,9 @@
       "block_order": 5,
       "is_required": true,
       "ai_field_name": "ready_to_start",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   }
 ]
