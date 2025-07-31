@@ -5,13 +5,30 @@
 
 {% block extra_css %}
 <style>
+    /* Modern glass morphism design */
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    .glass-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
     /* Enhanced video container with modern design */
     .video-container {
         position: relative;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         margin-bottom: 2rem;
     }
     
@@ -111,6 +128,59 @@
         opacity: 0.2;
     }
     
+    /* Start workout button */
+    .start-workout-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        transition: all 0.3s ease;
+    }
+    
+    .start-workout-btn {
+        background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        border: none;
+        color: white;
+        padding: 1.5rem 3rem;
+        border-radius: 50px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 15px 35px rgba(78, 205, 196, 0.4);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .start-workout-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+    
+    .start-workout-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 25px 50px rgba(78, 205, 196, 0.6);
+    }
+    
+    .start-workout-btn:hover::before {
+        left: 100%;
+    }
+
     /* Modern workout card */
     .workout-main-card {
         background: rgba(255, 255, 255, 0.95);
@@ -170,6 +240,26 @@
         overflow: hidden;
     }
     
+    .playlist-item.playing {
+        background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(102, 126, 234, 0.3));
+        border-left: 5px solid #4ecdc4;
+        transform: translateX(5px);
+        box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+        animation: pulse 2s infinite;
+    }
+    
+    .playlist-item.completed {
+        background: rgba(46, 204, 113, 0.1);
+        border-left: 3px solid #2ecc71;
+        opacity: 0.7;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4); }
+        50% { box-shadow: 0 15px 40px rgba(78, 205, 196, 0.6); }
+        100% { box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4); }
+    }
+    
     .playlist-header {
         background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
         color: white;
@@ -199,6 +289,7 @@
 
 {% block content %}
 <div class="container-fluid py-4">
+    <div class="glass-container mx-auto" style="max-width: 1400px;">
     <div class="row">
         <div class="col-lg-8">
             <div class="workout-main-card">
@@ -233,6 +324,14 @@
                     <!-- Video Player -->
                     <div class="video-container mb-4">
                         {% if video_playlist and video_playlist.0.url %}
+                            <!-- Start Workout Overlay -->
+                            <div id="startWorkoutOverlay" class="start-workout-overlay">
+                                <button class="start-workout-btn" onclick="startWorkout()">
+                                    <i class="fas fa-play me-2"></i>
+                                    Начать тренировку
+                                </button>
+                            </div>
+                            
                             <video id="mainVideo" class="video-player" controls>
                                 <source src="{{ video_playlist.0.url }}" type="video/mp4">
                                 <p>Ваш браузер не поддерживает видео. <a href="{{ video_playlist.0.url }}">Скачать видео</a></p>
@@ -342,6 +441,7 @@
             </div>
         {% endif %}
     </div>
+    </div>
 </div>
 
 <!-- Feedback Modal -->
@@ -431,36 +531,132 @@ function getCookie(name) {
     return cookieValue;
 }
 
+let workoutStarted = false;
+let currentVideoIndex = 0;
+
+// Start workout function
+function startWorkout() {
+    const video = document.getElementById('mainVideo');
+    const overlay = document.getElementById('startWorkoutOverlay');
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    
+    workoutStarted = true;
+    
+    // Hide overlay with animation
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 300);
+    
+    // Start first video
+    video.play();
+    
+    // Update playlist state
+    if (playlistItems.length > 0) {
+        playlistItems[0].classList.add('playing');
+        playlistItems[0].classList.remove('active');
+    }
+}
+
+// Auto-play next video function
+function playNextVideo() {
+    const video = document.getElementById('mainVideo');
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    
+    currentVideoIndex++;
+    
+    if (currentVideoIndex < playlistItems.length) {
+        const nextItem = playlistItems[currentVideoIndex];
+        const videoUrl = nextItem.getAttribute('data-video-url');
+        const videoTitle = nextItem.getAttribute('data-video-title');
+        
+        // Update video source
+        video.src = videoUrl;
+        video.load();
+        
+        // Auto-play next video after loading
+        video.addEventListener('loadeddata', function() {
+            video.play();
+        }, { once: true });
+        
+        // Update title
+        if (document.getElementById('currentTitle')) {
+            document.getElementById('currentTitle').textContent = videoTitle;
+        }
+        
+        // Update playlist states
+        playlistItems.forEach((item, index) => {
+            item.classList.remove('active', 'playing');
+            if (index === currentVideoIndex) {
+                item.classList.add('playing');
+            } else if (index < currentVideoIndex) {
+                item.classList.add('completed');
+            }
+        });
+        
+        console.log(`Playing video ${currentVideoIndex + 1} of ${playlistItems.length}: ${videoTitle}`);
+    } else {
+        console.log('All videos completed');
+        // All videos finished - show completion state
+        playlistItems.forEach(item => {
+            item.classList.remove('active', 'playing');
+            item.classList.add('completed');
+        });
+    }
+}
+
 // Video playlist functionality
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('mainVideo');
     const playlistItems = document.querySelectorAll('.playlist-item');
     
-    playlistItems.forEach(item => {
+    // Manual playlist item click
+    playlistItems.forEach((item, index) => {
         item.addEventListener('click', function() {
+            if (!workoutStarted) {
+                alert('Сначала нажмите "Начать тренировку"');
+                return;
+            }
+            
             const videoUrl = this.getAttribute('data-video-url');
             const videoTitle = this.getAttribute('data-video-title');
+            
+            currentVideoIndex = index;
             
             // Update video source
             video.src = videoUrl;
             video.load();
+            video.play();
             
             // Update title
-            document.getElementById('currentTitle').textContent = videoTitle;
+            if (document.getElementById('currentTitle')) {
+                document.getElementById('currentTitle').textContent = videoTitle;
+            }
             
-            // Update active state
-            playlistItems.forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
+            // Update playlist states
+            playlistItems.forEach((pItem, pIndex) => {
+                pItem.classList.remove('active', 'playing');
+                if (pIndex === index) {
+                    pItem.classList.add('playing');
+                } else if (pIndex < index) {
+                    pItem.classList.add('completed');
+                }
+            });
         });
     });
     
     // Auto-play next video when current ends
     video.addEventListener('ended', function() {
-        const activeItem = document.querySelector('.playlist-item.active');
-        const nextItem = activeItem.nextElementSibling;
-        
-        if (nextItem && nextItem.classList.contains('playlist-item')) {
-            nextItem.click();
+        if (workoutStarted) {
+            playNextVideo();
+        }
+    });
+    
+    // Prevent manual play before workout starts
+    video.addEventListener('play', function(e) {
+        if (!workoutStarted) {
+            e.preventDefault();
+            video.pause();
         }
     });
 });
