@@ -60,6 +60,33 @@ class UserProfile(models.Model):
     goals = models.JSONField(default=dict)
     limitations = models.JSONField(default=dict)
     
+    # Health data from onboarding
+    health_conditions = models.JSONField(default=dict)  # Cardiovascular, diabetes, etc.
+    chronic_pain_areas = models.JSONField(default=dict)  # Body map data
+    flexibility_level = models.IntegerField(null=True, blank=True)  # 1-5 scale
+    injuries_surgeries = models.TextField(blank=True)
+    hiv_status_disclosed = models.BooleanField(default=False)
+    medications = models.TextField(blank=True)
+    exercise_limitations = models.JSONField(default=dict)
+    is_smoker = models.BooleanField(default=False)
+    
+    # Lifestyle data
+    work_activity_level = models.CharField(max_length=20, blank=True)  # sedentary/moderate/active
+    sleep_hours = models.IntegerField(null=True, blank=True)
+    sleep_quality = models.IntegerField(null=True, blank=True)  # 1-5 scale
+    stress_level = models.IntegerField(null=True, blank=True)  # 1-5 scale
+    meal_frequency = models.IntegerField(null=True, blank=True)
+    water_intake = models.CharField(max_length=20, blank=True)
+    alcohol_consumption = models.CharField(max_length=20, blank=True)
+    
+    # Sexual health preferences
+    sexual_health_goals = models.JSONField(default=dict)
+    sexual_stamina_rating = models.IntegerField(null=True, blank=True)  # 1-5 scale
+    flexibility_importance = models.IntegerField(null=True, blank=True)  # 1-5 scale
+    kegel_exercises_interest = models.BooleanField(default=False)
+    sexual_role = models.CharField(max_length=20, blank=True)
+    intimacy_confidence = models.IntegerField(null=True, blank=True)  # 1-5 scale
+    
     # XP System
     experience_points = models.PositiveIntegerField(default=0)
     level = models.PositiveIntegerField(default=1)

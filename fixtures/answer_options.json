@@ -1,0 +1,1122 @@
+[
+  {
+    "model": "onboarding.answeroption",
+    "pk": 1,
+    "fields": {
+      "question": 6,
+      "option_text": "Гипертония (высокое давление)",
+      "option_value": "hypertension",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 2,
+    "fields": {
+      "question": 6,
+      "option_text": "Аритмия",
+      "option_value": "arrhythmia",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 3,
+    "fields": {
+      "question": 6,
+      "option_text": "Ишемическая болезнь сердца",
+      "option_value": "ischemic_heart_disease",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 4,
+    "fields": {
+      "question": 6,
+      "option_text": "Перенесенный инфаркт",
+      "option_value": "heart_attack",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 5,
+    "fields": {
+      "question": 6,
+      "option_text": "Другие заболевания сердца",
+      "option_value": "other_heart_conditions",
+      "order": 5
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 6,
+    "fields": {
+      "question": 6,
+      "option_text": "Ничего из перечисленного",
+      "option_value": "none",
+      "order": 6
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 7,
+    "fields": {
+      "question": 7,
+      "option_text": "Да, диабет 2 типа",
+      "option_value": "diabetes_type2",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 8,
+    "fields": {
+      "question": 7,
+      "option_text": "Да, предиабет",
+      "option_value": "prediabetes",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 9,
+    "fields": {
+      "question": 7,
+      "option_text": "Нет",
+      "option_value": "no_diabetes",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 10,
+    "fields": {
+      "question": 11,
+      "option_text": "Да, учту это в программе",
+      "option_value": "hiv_positive",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 11,
+    "fields": {
+      "question": 11,
+      "option_text": "Нет / Предпочитаю не отвечать",
+      "option_value": "hiv_negative_or_undisclosed",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 12,
+    "fields": {
+      "question": 12,
+      "option_text": "Да",
+      "option_value": "yes_medications",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 13,
+    "fields": {
+      "question": 12,
+      "option_text": "Нет",
+      "option_value": "no_medications",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 14,
+    "fields": {
+      "question": 13,
+      "option_text": "Да, часто",
+      "option_value": "symptoms_often",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 15,
+    "fields": {
+      "question": 13,
+      "option_text": "Иногда",
+      "option_value": "symptoms_sometimes",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 16,
+    "fields": {
+      "question": 13,
+      "option_text": "Нет, никогда",
+      "option_value": "symptoms_never",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 17,
+    "fields": {
+      "question": 15,
+      "option_text": "Да, регулярно",
+      "option_value": "smoker_regular",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 18,
+    "fields": {
+      "question": 15,
+      "option_text": "Иногда",
+      "option_value": "smoker_occasional",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 19,
+    "fields": {
+      "question": 15,
+      "option_text": "Бросил",
+      "option_value": "ex_smoker",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 20,
+    "fields": {
+      "question": 15,
+      "option_text": "Нет, никогда",
+      "option_value": "non_smoker",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 21,
+    "fields": {
+      "question": 17,
+      "option_text": "Изменить внешний вид",
+      "option_value": "appearance",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 22,
+    "fields": {
+      "question": 17,
+      "option_text": "Изменить самочувствие",
+      "option_value": "feeling",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 23,
+    "fields": {
+      "question": 17,
+      "option_text": "И то, и другое",
+      "option_value": "both",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 24,
+    "fields": {
+      "question": 19,
+      "option_text": "Стать крупнее",
+      "option_value": "gain_size",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 25,
+    "fields": {
+      "question": 19,
+      "option_text": "Стать стройнее",
+      "option_value": "get_leaner",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 26,
+    "fields": {
+      "question": 19,
+      "option_text": "Сохранить вес, улучшить качество",
+      "option_value": "maintain_improve",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 27,
+    "fields": {
+      "question": 20,
+      "option_text": "Да, постоянно",
+      "option_value": "pressure_constant",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 28,
+    "fields": {
+      "question": 20,
+      "option_text": "Иногда",
+      "option_value": "pressure_sometimes",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 29,
+    "fields": {
+      "question": 20,
+      "option_text": "Редко",
+      "option_value": "pressure_rarely",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 30,
+    "fields": {
+      "question": 20,
+      "option_text": "Нет, никогда",
+      "option_value": "pressure_never",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 31,
+    "fields": {
+      "question": 21,
+      "option_text": "Нехватка времени",
+      "option_value": "lack_of_time",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 32,
+    "fields": {
+      "question": 21,
+      "option_text": "Отсутствие мотивации",
+      "option_value": "lack_of_motivation",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 33,
+    "fields": {
+      "question": 21,
+      "option_text": "Усталость после работы",
+      "option_value": "work_fatigue",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 34,
+    "fields": {
+      "question": 21,
+      "option_text": "Стеснение в зале",
+      "option_value": "gym_anxiety",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 35,
+    "fields": {
+      "question": 21,
+      "option_text": "Не знаю, что делать",
+      "option_value": "lack_of_knowledge",
+      "order": 5
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 36,
+    "fields": {
+      "question": 21,
+      "option_text": "Боюсь травм",
+      "option_value": "fear_of_injury",
+      "order": 6
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 37,
+    "fields": {
+      "question": 22,
+      "option_text": "Да, были негативные опыты",
+      "option_value": "negative_pe_yes",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 38,
+    "fields": {
+      "question": 22,
+      "option_text": "Нет, не было",
+      "option_value": "negative_pe_no",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 39,
+    "fields": {
+      "question": 24,
+      "option_text": "Обязанность",
+      "option_value": "obligation",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 40,
+    "fields": {
+      "question": 24,
+      "option_text": "Способ сбросить стресс",
+      "option_value": "stress_relief",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 41,
+    "fields": {
+      "question": 25,
+      "option_text": "Результаты других людей",
+      "option_value": "others_results",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 42,
+    "fields": {
+      "question": 25,
+      "option_text": "Мои собственные достижения",
+      "option_value": "own_achievements",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 43,
+    "fields": {
+      "question": 25,
+      "option_text": "Поддержка сообщества",
+      "option_value": "community_support",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 44,
+    "fields": {
+      "question": 25,
+      "option_text": "Мотивационный контент",
+      "option_value": "motivational_content",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 45,
+    "fields": {
+      "question": 25,
+      "option_text": "Награды и достижения",
+      "option_value": "rewards_achievements",
+      "order": 5
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 46,
+    "fields": {
+      "question": 27,
+      "option_text": "Выглядеть потрясающе",
+      "option_value": "look_amazing",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 47,
+    "fields": {
+      "question": 27,
+      "option_text": "Чувствовать себя потрясающе",
+      "option_value": "feel_amazing",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 48,
+    "fields": {
+      "question": 27,
+      "option_text": "Быть здоровым",
+      "option_value": "be_healthy",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 49,
+    "fields": {
+      "question": 27,
+      "option_text": "Стать сильнее",
+      "option_value": "get_stronger",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 50,
+    "fields": {
+      "question": 28,
+      "option_text": "Сидячая",
+      "option_value": "sedentary",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 51,
+    "fields": {
+      "question": 28,
+      "option_text": "Умеренно активная",
+      "option_value": "moderate",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 52,
+    "fields": {
+      "question": 28,
+      "option_text": "Физически тяжелая",
+      "option_value": "active",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 53,
+    "fields": {
+      "question": 34,
+      "option_text": "Каждый день",
+      "option_value": "daily",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 54,
+    "fields": {
+      "question": 34,
+      "option_text": "Несколько раз в неделю",
+      "option_value": "few_times_week",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 55,
+    "fields": {
+      "question": 34,
+      "option_text": "Раз в неделю",
+      "option_value": "once_week",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 56,
+    "fields": {
+      "question": 34,
+      "option_text": "Редко",
+      "option_value": "rarely",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 57,
+    "fields": {
+      "question": 34,
+      "option_text": "Никогда",
+      "option_value": "never",
+      "order": 5
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 58,
+    "fields": {
+      "question": 35,
+      "option_text": "Менее 1 литра",
+      "option_value": "less_1l",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 59,
+    "fields": {
+      "question": 35,
+      "option_text": "1-2 литра",
+      "option_value": "1_2l",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 60,
+    "fields": {
+      "question": 35,
+      "option_text": "2-3 литра",
+      "option_value": "2_3l",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 61,
+    "fields": {
+      "question": 35,
+      "option_text": "Более 3 литров",
+      "option_value": "more_3l",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 62,
+    "fields": {
+      "question": 36,
+      "option_text": "Не употребляю",
+      "option_value": "no_alcohol",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 63,
+    "fields": {
+      "question": 36,
+      "option_text": "Редко (по праздникам)",
+      "option_value": "alcohol_rarely",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 64,
+    "fields": {
+      "question": 36,
+      "option_text": "1-2 раза в неделю",
+      "option_value": "alcohol_weekly",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 65,
+    "fields": {
+      "question": 36,
+      "option_text": "Чаще 2 раз в неделю",
+      "option_value": "alcohol_often",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 66,
+    "fields": {
+      "question": 37,
+      "option_text": "Гантели",
+      "option_value": "dumbbells",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 67,
+    "fields": {
+      "question": 37,
+      "option_text": "Эспандеры/резинки",
+      "option_value": "resistance_bands",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 68,
+    "fields": {
+      "question": 37,
+      "option_text": "Турник",
+      "option_value": "pull_up_bar",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 69,
+    "fields": {
+      "question": 37,
+      "option_text": "Коврик для йоги",
+      "option_value": "yoga_mat",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 70,
+    "fields": {
+      "question": 37,
+      "option_text": "Скакалка",
+      "option_value": "jump_rope",
+      "order": 5
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 71,
+    "fields": {
+      "question": 37,
+      "option_text": "Ничего из перечисленного",
+      "option_value": "no_equipment",
+      "order": 6
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 72,
+    "fields": {
+      "question": 38,
+      "option_text": "Повышение либидо",
+      "option_value": "libido",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 73,
+    "fields": {
+      "question": 38,
+      "option_text": "Улучшение эрекции",
+      "option_value": "erection",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 74,
+    "fields": {
+      "question": 38,
+      "option_text": "Увеличение выносливости",
+      "option_value": "stamina",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 75,
+    "fields": {
+      "question": 38,
+      "option_text": "Гибкость для новых поз",
+      "option_value": "flexibility",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 76,
+    "fields": {
+      "question": 38,
+      "option_text": "Уверенность в себе",
+      "option_value": "confidence",
+      "order": 5
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 77,
+    "fields": {
+      "question": 41,
+      "option_text": "Да, обязательно",
+      "option_value": "yes_kegel",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 78,
+    "fields": {
+      "question": 41,
+      "option_text": "Возможно, попробую",
+      "option_value": "maybe_kegel",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 79,
+    "fields": {
+      "question": 41,
+      "option_text": "Нет, не интересно",
+      "option_value": "no_kegel",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 80,
+    "fields": {
+      "question": 42,
+      "option_text": "Да, сильно влияют",
+      "option_value": "stress_affects_much",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 81,
+    "fields": {
+      "question": 42,
+      "option_text": "Иногда влияют",
+      "option_value": "stress_affects_sometimes",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 82,
+    "fields": {
+      "question": 42,
+      "option_text": "Нет, не влияют",
+      "option_value": "stress_no_affect",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 83,
+    "fields": {
+      "question": 43,
+      "option_text": "Активная",
+      "option_value": "top",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 84,
+    "fields": {
+      "question": 43,
+      "option_text": "Пассивная",
+      "option_value": "bottom",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 85,
+    "fields": {
+      "question": 43,
+      "option_text": "Универсал",
+      "option_value": "versatile",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 86,
+    "fields": {
+      "question": 43,
+      "option_text": "Предпочитаю не отвечать",
+      "option_value": "prefer_not_say",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 87,
+    "fields": {
+      "question": 45,
+      "option_text": "Физическое удовольствие",
+      "option_value": "physical_pleasure",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 88,
+    "fields": {
+      "question": 45,
+      "option_text": "Эмоциональная близость",
+      "option_value": "emotional_connection",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 89,
+    "fields": {
+      "question": 45,
+      "option_text": "И то, и другое",
+      "option_value": "both_physical_emotional",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 90,
+    "fields": {
+      "question": 46,
+      "option_text": "Утро",
+      "option_value": "morning",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 91,
+    "fields": {
+      "question": 46,
+      "option_text": "День",
+      "option_value": "afternoon",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 92,
+    "fields": {
+      "question": 46,
+      "option_text": "Вечер",
+      "option_value": "evening",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 93,
+    "fields": {
+      "question": 46,
+      "option_text": "По-разному",
+      "option_value": "varies",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 94,
+    "fields": {
+      "question": 47,
+      "option_text": "Интенсивные тренировки",
+      "option_value": "intense",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 95,
+    "fields": {
+      "question": 47,
+      "option_text": "Спокойные тренировки",
+      "option_value": "calm",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 96,
+    "fields": {
+      "question": 47,
+      "option_text": "Что-то среднее",
+      "option_value": "moderate",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 97,
+    "fields": {
+      "question": 49,
+      "option_text": "Люблю кардио",
+      "option_value": "love_cardio",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 98,
+    "fields": {
+      "question": 49,
+      "option_text": "Нормально отношусь",
+      "option_value": "neutral_cardio",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 99,
+    "fields": {
+      "question": 49,
+      "option_text": "Не люблю, но готов делать",
+      "option_value": "dislike_but_willing",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 100,
+    "fields": {
+      "question": 49,
+      "option_text": "Терпеть не могу",
+      "option_value": "hate_cardio",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 101,
+    "fields": {
+      "question": 50,
+      "option_text": "Четкий план тренировок",
+      "option_value": "clear_plan",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 102,
+    "fields": {
+      "question": 50,
+      "option_text": "Разнообразие упражнений",
+      "option_value": "variety",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 103,
+    "fields": {
+      "question": 50,
+      "option_text": "Мотивация и поддержка",
+      "option_value": "motivation",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 104,
+    "fields": {
+      "question": 50,
+      "option_text": "Отслеживание прогресса",
+      "option_value": "progress_tracking",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 105,
+    "fields": {
+      "question": 52,
+      "option_text": "Да, с удовольствием",
+      "option_value": "yes_new_exercises",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 106,
+    "fields": {
+      "question": 52,
+      "option_text": "Возможно, если не слишком сложные",
+      "option_value": "maybe_if_simple",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 107,
+    "fields": {
+      "question": 52,
+      "option_text": "Предпочитаю классику",
+      "option_value": "prefer_classic",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 108,
+    "fields": {
+      "question": 54,
+      "option_text": "По весу",
+      "option_value": "by_weight",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 109,
+    "fields": {
+      "question": 54,
+      "option_text": "По силе",
+      "option_value": "by_strength",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 110,
+    "fields": {
+      "question": 54,
+      "option_text": "По самочувствию",
+      "option_value": "by_feeling",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 111,
+    "fields": {
+      "question": 55,
+      "option_text": "Да, готов начать!",
+      "option_value": "yes_ready",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 112,
+    "fields": {
+      "question": 55,
+      "option_text": "Еще думаю",
+      "option_value": "still_thinking",
+      "order": 2
+    }
+  }
+]

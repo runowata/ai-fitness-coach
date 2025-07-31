@@ -10,19 +10,41 @@ class OnboardingQuestion(models.Model):
         ('multiple_choice', 'Multiple Choice'),
         ('number', 'Number Input'),
         ('text', 'Text Input'),
+        ('scale', 'Scale (1-5)'),
+        ('body_map', 'Body Map Selection'),
     ]
     
     order = models.PositiveIntegerField(unique=True)
     question_text = models.TextField()
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPE_CHOICES)
     
+    # Question blocks
+    block_name = models.CharField(max_length=100, blank=True)
+    block_order = models.PositiveIntegerField(default=1)
+    is_block_separator = models.BooleanField(default=False)
+    separator_text = models.TextField(blank=True)
+    
     # For number inputs
     min_value = models.IntegerField(null=True, blank=True)
     max_value = models.IntegerField(null=True, blank=True)
     
+    # For scale questions
+    scale_min_label = models.CharField(max_length=50, blank=True)
+    scale_max_label = models.CharField(max_length=50, blank=True)
+    
     # Additional context
     help_text = models.TextField(blank=True)
     is_required = models.BooleanField(default=True)
+    
+    # Conditional logic
+    depends_on_question = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='dependent_questions'
+    )
+    depends_on_answer = models.CharField(max_length=100, blank=True)
     
     # AI prompt component
     ai_field_name = models.CharField(max_length=50)  # Field name for AI prompt
@@ -101,6 +123,8 @@ class UserOnboardingResponse(models.Model):
     answer_text = models.TextField(blank=True)
     answer_options = models.ManyToManyField(AnswerOption, blank=True)
     answer_number = models.IntegerField(null=True, blank=True)
+    answer_scale = models.IntegerField(null=True, blank=True)  # For 1-5 scale questions
+    answer_body_map = models.JSONField(null=True, blank=True)  # For body pain areas
     
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -116,6 +140,10 @@ class UserOnboardingResponse(models.Model):
             return [opt.option_value for opt in self.answer_options.all()]
         elif self.question.question_type == 'number':
             return self.answer_number
+        elif self.question.question_type == 'scale':
+            return self.answer_scale
+        elif self.question.question_type == 'body_map':
+            return self.answer_body_map
         else:
             return self.answer_text
 
