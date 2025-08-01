@@ -729,6 +729,16 @@ function submitFeedback(rating) {
                 `;
             }
             
+            // Add story chapter button (placeholder for now)
+            completionMessage += `
+                <div class="mt-4 text-center">
+                    <button class="btn btn-outline-primary btn-sm" onclick="readNextChapter()">
+                        <i class="fas fa-book me-2"></i>
+                        Прочитать очередную главу
+                    </button>
+                </div>
+            `;
+            
             completionMessage += '</div>';
             
             // Show modal with all information
@@ -770,10 +780,10 @@ function showCompletionModal(content, onClose) {
                     <div class="modal-body p-4">
                         ${content}
                     </div>
-                    <div class="modal-footer border-0">
-                        <button type="button" class="btn btn-success btn-lg w-100" onclick="closeCompletionModal()">
+                    <div class="modal-footer border-0 d-flex gap-2">
+                        <button type="button" class="btn btn-success flex-fill" onclick="closeCompletionModal()">
                             <i class="fas fa-arrow-right me-2"></i>
-                            Продолжить
+                            На дашборд
                         </button>
                     </div>
                 </div>
@@ -806,6 +816,13 @@ function closeCompletionModal() {
     if (window.completionModalCallback) {
         window.completionModalCallback();
     }
+}
+
+// Placeholder function for reading next story chapter
+function readNextChapter() {
+    // TODO: Implement story chapter navigation
+    // For now, redirect to stories page
+    window.location.href = "{% url 'content:stories' %}";
 }
 
 // Show error modal
