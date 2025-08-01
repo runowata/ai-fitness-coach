@@ -118,11 +118,27 @@ def save_answer(request, question_id):
             response.answer_options.add(option)
         
     elif question.question_type == 'number':
-        response.answer_number = data.get('answer')
+        try:
+            number_value = int(data.get('answer'))
+            # Проверяем границы если они заданы
+            if question.min_value is not None and number_value < question.min_value:
+                return JsonResponse({'error': f'Значение должно быть не менее {question.min_value}'}, status=400)
+            if question.max_value is not None and number_value > question.max_value:
+                return JsonResponse({'error': f'Значение должно быть не более {question.max_value}'}, status=400)
+            response.answer_number = number_value
+        except (ValueError, TypeError):
+            return JsonResponse({'error': 'Введите корректное число'}, status=400)
         response.save()
         
     elif question.question_type == 'scale':
-        response.answer_scale = data.get('answer')
+        try:
+            scale_value = int(data.get('answer'))
+            if 1 <= scale_value <= 5:
+                response.answer_scale = scale_value
+            else:
+                return JsonResponse({'error': 'Значение должно быть от 1 до 5'}, status=400)
+        except (ValueError, TypeError):
+            return JsonResponse({'error': 'Введите число от 1 до 5'}, status=400)
         response.save()
         
     elif question.question_type == 'body_map':
