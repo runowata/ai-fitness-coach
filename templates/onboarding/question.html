@@ -1273,7 +1273,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Enhanced form submission with loading states
     const form = document.getElementById('questionForm');
+    if (!form) {
+        console.log('No form found - this is likely a block separator question');
+        return;
+    }
+    
     const submitBtn = form.querySelector('.btn-next');
+    if (!submitBtn) {
+        console.log('No submit button found in form');
+        return;
+    }
+    
     const btnContent = submitBtn.querySelector('.btn-next-content');
     const btnLoading = submitBtn.querySelector('.btn-loading');
 
