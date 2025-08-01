@@ -1,114 +1,605 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}Выбор тренера - AI Fitness Coach{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="text-center mb-5">
-        <h2 class="text-gradient">Выберите своего тренера</h2>
-        <p class="lead text-muted">Каждый тренер имеет уникальный стиль общения и подачи материала</p>
-    </div>
-
-    <form method="post" id="archetypeForm">
-        {% csrf_token %}
-        <div class="row">
-            {% for archetype in archetypes %}
-            <div class="col-md-4 mb-4">
-                <div class="archetype-card" data-archetype="{{ archetype.key }}">
-                    <img src="{{ archetype.image }}" alt="{{ archetype.name }}" 
-                         class="archetype-avatar" 
-                         onerror="this.src='/static/images/avatars/bro-avatar.png'">
-                    
-                    <h4 class="archetype-name">{{ archetype.name }}</h4>
-                    <p class="archetype-description">{{ archetype.description }}</p>
-                    
-                    <div class="mt-3">
-                        <span class="badge bg-primary">{{ archetype.style }}</span>
+<!-- Elegant Trainer Selection -->
+<div class="trainer-selection-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="trainer-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Gradient overlay -->
+    <div class="trainer-overlay"></div>
+    
+    <!-- Content -->
+    <div class="trainer-content">
+        <div class="container-fluid px-4">
+            
+            <!-- Header Section -->
+            <div class="trainer-header">
+                <h1 class="trainer-main-title">Выберите своего тренера</h1>
+                <p class="trainer-subtitle">Каждый тренер имеет уникальный стиль и подход к достижению ваших целей</p>
+            </div>
+            
+            <!-- Trainer Selection Form -->
+            <form method="post" id="archetypeForm">
+                {% csrf_token %}
+                
+                <!-- Trainer Cards -->
+                <div class="trainers-grid">
+                    {% for archetype in archetypes %}
+                    <div class="trainer-card-wrapper" data-archetype="{{ archetype.key }}">
+                        <div class="trainer-card">
+                            <!-- Trainer Image -->
+                            <div class="trainer-image-container">
+                                <div class="trainer-image-overlay"></div>
+                                <img src="{{ archetype.image }}" 
+                                     alt="{{ archetype.name }}" 
+                                     class="trainer-image"
+                                     onerror="this.src='{% static 'images/avatars/bro-avatar.png' %}'">
+                                <div class="trainer-selection-indicator">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Trainer Info -->
+                            <div class="trainer-info">
+                                <div class="trainer-name-section">
+                                    <h2 class="trainer-name">{{ archetype.name }}</h2>
+                                    <div class="trainer-style-badge">{{ archetype.style }}</div>
+                                </div>
+                                
+                                <p class="trainer-description">{{ archetype.description }}</p>
+                                
+                                <!-- Style Preview -->
+                                <div class="trainer-preview">
+                                    {% if archetype.key == 'bro' %}
+                                        <div class="preview-bubble">
+                                            <i class="fas fa-quote-left"></i>
+                                            <p>"Йо, братан! Сегодня качаем грудь и трицепс. Помни - техника прежде всего!"</p>
+                                        </div>
+                                    {% elif archetype.key == 'sergeant' %}
+                                        <div class="preview-bubble">
+                                            <i class="fas fa-quote-left"></i>
+                                            <p>"Внимание! Сегодня 3 подхода по 12 повторений. Никаких поблажек!"</p>
+                                        </div>
+                                    {% elif archetype.key == 'intellectual' %}
+                                        <div class="preview-bubble">
+                                            <i class="fas fa-quote-left"></i>
+                                            <p>"Активируем грудные мышцы через горизонтальную аддукцию плеча."</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <input type="radio" name="archetype" value="{{ archetype.key }}" style="display: none;">
+                        </div>
                     </div>
-                    
-                    <input type="radio" name="archetype" value="{{ archetype.key }}" style="display: none;">
+                    {% endfor %}
                 </div>
-            </div>
-            {% endfor %}
-        </div>
 
-        <div class="text-center mt-5">
-            <button type="submit" class="btn btn-primary btn-lg" disabled id="continueBtn">
-                <i class="fas fa-rocket"></i> Создать план тренировок
-            </button>
-        </div>
-    </form>
-
-    <!-- Preview cards for each archetype -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h5 class="text-center mb-4">Примеры стиля общения:</h5>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">🤙 Стиль "Бро"</h6>
+                <!-- Continue Button -->
+                <div class="continue-section">
+                    <button type="submit" class="btn-continue-trainer" disabled id="continueBtn">
+                        <div class="btn-content">
+                            <i class="fas fa-rocket"></i>
+                            <span>Создать план тренировок</span>
+                        </div>
+                        <div class="btn-glow"></div>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <p class="card-text">"Йо, братан! Сегодня качаем грудь и трицепс. Помни - техника прежде всего! Давай покажем этим весам, кто тут босс! 💪"</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-danger text-white">
-                    <h6 class="mb-0">🎖️ Стиль "Сержант"</h6>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">"Внимание! Сегодня 3 подхода по 12 повторений. Никаких поблажек! Чувствуешь жжение? Отлично! Еще 2 повтора!"</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">🎓 Стиль "Интеллектуал"</h6>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">"Сегодня активируем грудные мышцы через горизонтальную аддукцию плеча. Негативная фаза 2-3 секунды для максимальной эксцентрической нагрузки."</p>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+/* Trainer Selection Fullscreen Layout */
+.trainer-selection-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Video Background */
+.trainer-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.2;
+}
+
+/* Gradient Overlay */
+.trainer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.9) 0%, 
+        rgba(118, 75, 162, 0.9) 50%,
+        rgba(255, 107, 107, 0.85) 100%
+    );
+    z-index: -1;
+}
+
+/* Content Container */
+.trainer-content {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 0;
+    min-height: 100vh;
+}
+
+/* Header Section */
+.trainer-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.trainer-main-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    line-height: 1.2;
+}
+
+.trainer-subtitle {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    line-height: 1.6;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Trainers Grid */
+.trainers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Trainer Card Wrapper */
+.trainer-card-wrapper {
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trainer-card-wrapper:hover {
+    transform: translateY(-8px);
+}
+
+.trainer-card-wrapper.selected {
+    transform: translateY(-12px) scale(1.02);
+}
+
+/* Trainer Card */
+.trainer-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(30px);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trainer-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.6), 
+        transparent
+    );
+}
+
+.trainer-card-wrapper.selected .trainer-card {
+    border-color: rgba(78, 205, 196, 0.6);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(78, 205, 196, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Trainer Image Container */
+.trainer-image-container {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 30px 30px 0 0;
+}
+
+.trainer-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trainer-card-wrapper:hover .trainer-image {
+    transform: scale(1.05);
+}
+
+.trainer-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.1) 50%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    z-index: 1;
+}
+
+/* Selection Indicator */
+.trainer-selection-indicator {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(78, 205, 196, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+    box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
+}
+
+.trainer-card-wrapper.selected .trainer-selection-indicator {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Trainer Info Section */
+.trainer-info {
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.trainer-name-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.trainer-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.trainer-style-badge {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.trainer-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Preview Bubble */
+.trainer-preview {
+    margin-top: 1.5rem;
+}
+
+.preview-bubble {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.preview-bubble i {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.5rem;
+}
+
+.preview-bubble p {
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    margin: 0;
+    line-height: 1.5;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Continue Section */
+.continue-section {
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.btn-continue-trainer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem 3rem;
+    border-radius: 25px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 15px 35px rgba(102, 126, 234, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.btn-continue-trainer:not(:disabled) {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.btn-continue-trainer:not(:disabled):hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+        0 20px 45px rgba(102, 126, 234, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-glow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent
+    );
+    transition: left 0.6s ease;
+}
+
+.btn-continue-trainer:not(:disabled):hover .btn-glow {
+    left: 100%;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading State */
+.btn-continue-trainer.loading {
+    pointer-events: none;
+}
+
+.btn-continue-trainer.loading .btn-content {
+    opacity: 0.7;
+}
+
+.btn-continue-trainer.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .trainers-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .trainer-content {
+        padding: 2rem 0;
+    }
+    
+    .trainer-main-title {
+        font-size: 2.5rem;
+    }
+    
+    .trainer-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .trainers-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .trainer-image-container {
+        height: 300px;
+    }
+    
+    .trainer-info {
+        padding: 1.5rem;
+    }
+    
+    .trainer-name {
+        font-size: 1.6rem;
+    }
+    
+    .trainer-name-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .trainer-main-title {
+        font-size: 2rem;
+    }
+    
+    .btn-continue-trainer {
+        width: 100%;
+        padding: 1.2rem 2rem;
+    }
+}
+
+/* Staggered Animation Delays */
+.trainer-card-wrapper:nth-child(1) .trainer-card { animation-delay: 0.1s; }
+.trainer-card-wrapper:nth-child(2) .trainer-card { animation-delay: 0.2s; }
+.trainer-card-wrapper:nth-child(3) .trainer-card { animation-delay: 0.3s; }
+</style>
+{% endblock %}
+
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const archetypeCards = document.querySelectorAll('.archetype-card');
+    const trainerCards = document.querySelectorAll('.trainer-card-wrapper');
     const continueBtn = document.getElementById('continueBtn');
     
-    archetypeCards.forEach(card => {
+    trainerCards.forEach(card => {
         card.addEventListener('click', function() {
             // Remove selection from all cards
-            archetypeCards.forEach(c => c.classList.remove('selected'));
+            trainerCards.forEach(c => c.classList.remove('selected'));
             
-            // Select this card
+            // Select this card with smooth animation
             this.classList.add('selected');
             
             // Update radio button
             const radio = this.querySelector('input[type="radio"]');
             radio.checked = true;
             
-            // Enable continue button
+            // Enable continue button with animation
             continueBtn.disabled = false;
+            
+            // Add subtle success feedback
+            const indicator = this.querySelector('.trainer-selection-indicator');
+            indicator.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                indicator.style.transform = 'scale(1)';
+            }, 200);
+        });
+        
+        // Add hover sound effect (optional)
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.transform = 'translateY(0)';
+            }
         });
     });
     
-    // Form submission with loading state
-    document.getElementById('archetypeForm').addEventListener('submit', function() {
-        continueBtn.innerHTML = '<span class="loading"></span> Создаем план...';
+    // Form submission with elegant loading state
+    document.getElementById('archetypeForm').addEventListener('submit', function(e) {
+        continueBtn.classList.add('loading');
         continueBtn.disabled = true;
+        
+        // Hide all other content while loading
+        trainerCards.forEach(card => {
+            card.style.opacity = '0.5';
+            card.style.pointerEvents = 'none';
+        });
     });
+    
+    // Add smooth scroll behavior for mobile
+    if (window.innerWidth <= 768) {
+        trainerCards.forEach(card => {
+            card.addEventListener('click', function() {
+                setTimeout(() => {
+                    continueBtn.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                }, 300);
+            });
+        });
+    }
 });
 </script>
 {% endblock %}

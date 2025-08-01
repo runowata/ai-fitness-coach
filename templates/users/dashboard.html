@@ -1,152 +1,687 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}Дашборд - AI Fitness Coach{% endblock %}
 
 {% block content %}
-
-<!-- Program Completion Notification -->
-{% if program_completion_available %}
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" 
-             style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
-            <div class="d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-trophy fa-2x"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <h5 class="alert-heading mb-2">🎉 Программа завершена!</h5>
-                    <p class="mb-2">Поздравляем! Вы успешно завершили 6-недельную программу тренировок. 
-                       Время выбрать новый цикл и продолжить свое развитие!</p>
-                    <a href="{% url 'workouts:program_completion' %}" 
-                       class="btn btn-light btn-sm fw-bold">
-                        <i class="fas fa-rocket me-1"></i>
-                        Выбрать новый цикл
-                    </a>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" 
-                        aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Сегодняшняя тренировка</h5>
-                <div>
-                    <a href="{% url 'workouts:plan_overview' %}" class="btn btn-sm btn-outline-primary me-2">
-                        <i class="fas fa-calendar-alt"></i> Весь план
-                    </a>
-                    <span class="badge bg-info">Неделя {{ current_week }}</span>
-                </div>
-            </div>
-            <div class="card-body">
-                {% if today_workout %}
-                    <h6>{{ today_workout.name }}</h6>
-                    
-                    {% if today_workout.is_rest_day %}
-                        <div class="alert alert-info">
-                            <i class="fas fa-bed"></i> Сегодня день отдыха! Отдохните и восстановитесь.
-                        </div>
-                    {% else %}
-                        <p class="text-muted">{{ today_workout.exercises|length }} упражнений</p>
-                        
-                        {% if today_workout.completed_at %}
-                            <div class="alert alert-success">
-                                <i class="fas fa-check-circle"></i> Тренировка завершена!
-                                {% if today_workout.feedback_rating %}
-                                    <br>Ваша оценка: 
-                                    {% if today_workout.feedback_rating == 'fire' %}🔥 Отлично
-                                    {% elif today_workout.feedback_rating == 'smile' %}🙂 Хорошо
-                                    {% elif today_workout.feedback_rating == 'neutral' %}😐 Нормально
-                                    {% elif today_workout.feedback_rating == 'tired' %}🤕 Тяжело
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                        {% else %}
-                            <a href="{% url 'workouts:daily_workout' today_workout.id %}" 
-                               class="btn btn-primary btn-lg">
-                                <i class="fas fa-play"></i> Начать тренировку
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                    
-                    {% if today_workout.confidence_task %}
-                        <div class="mt-3">
-                            <h6>Задание на уверенность:</h6>
-                            <p class="text-muted">{{ today_workout.confidence_task }}</p>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle"></i> 
-                        Тренировка на сегодня не найдена. Обратитесь к администратору.
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+<!-- Elegant Glassy Dashboard -->
+<div class="dashboard-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="dashboard-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
     
-    <div class="col-md-4">
-        <!-- Progress Stats -->
-        <div class="card mb-3">
-            <div class="card-header">
-                <h6 class="mb-0">Ваш прогресс</h6>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-6">
-                        <div class="h3 text-success">{{ streak }}</div>
-                        <small class="text-muted">Дней подряд</small>
+    <!-- Gradient overlay -->
+    <div class="dashboard-overlay"></div>
+    
+    <!-- Content -->
+    <div class="dashboard-content">
+        <div class="container-fluid px-4">
+            
+            <!-- Program Completion Notification -->
+            {% if program_completion_available %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="glass-card completion-card">
+                        <div class="completion-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="completion-content">
+                            <h4 class="completion-title">🎉 Программа завершена!</h4>
+                            <p class="completion-text">Поздравляем! Вы успешно завершили 6-недельную программу тренировок.</p>
+                            <a href="{% url 'workouts:program_completion' %}" class="btn-glass-primary">
+                                <i class="fas fa-rocket me-2"></i>
+                                Выбрать новый цикл
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <div class="h3 text-primary">{{ profile.total_workouts_completed }}</div>
-                        <small class="text-muted">Тренировок</small>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="row g-4">
+                <!-- Main Workout Card -->
+                <div class="col-lg-8">
+                    <div class="glass-card main-workout-card">
+                        <div class="workout-header">
+                            <div class="workout-title-section">
+                                <h2 class="workout-title">Сегодняшняя тренировка</h2>
+                                <div class="workout-meta">
+                                    <span class="week-badge">Неделя {{ current_week }}</span>
+                                </div>
+                            </div>
+                            <a href="{% url 'workouts:plan_overview' %}" class="btn-glass-outline">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                Весь план
+                            </a>
+                        </div>
+                        
+                        <div class="workout-content">
+                            {% if today_workout %}
+                                <h3 class="workout-name">{{ today_workout.name }}</h3>
+                                
+                                {% if today_workout.is_rest_day %}
+                                    <div class="rest-day-card">
+                                        <div class="rest-icon">
+                                            <i class="fas fa-bed"></i>
+                                        </div>
+                                        <div class="rest-content">
+                                            <h4>День отдыха</h4>
+                                            <p>Отдохните и восстановитесь. Ваше тело заслуживает этого.</p>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="workout-info">
+                                        <div class="exercise-count">
+                                            <span class="count-number">{{ today_workout.exercises|length }}</span>
+                                            <span class="count-label">упражнений</span>
+                                        </div>
+                                        
+                                        {% if today_workout.completed_at %}
+                                            <div class="completed-section">
+                                                <div class="completed-icon">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                                <div class="completed-text">
+                                                    <h4>Тренировка завершена!</h4>
+                                                    {% if today_workout.feedback_rating %}
+                                                        <p class="rating">
+                                                            Ваша оценка: 
+                                                            {% if today_workout.feedback_rating == 'fire' %}🔥 Отлично
+                                                            {% elif today_workout.feedback_rating == 'smile' %}🙂 Хорошо
+                                                            {% elif today_workout.feedback_rating == 'neutral' %}😐 Нормально
+                                                            {% elif today_workout.feedback_rating == 'tired' %}🤕 Тяжело
+                                                            {% endif %}
+                                                        </p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <a href="{% url 'workouts:daily_workout' today_workout.id %}" 
+                                               class="btn-start-workout">
+                                                <div class="btn-content">
+                                                    <i class="fas fa-play"></i>
+                                                    <span>Начать тренировку</span>
+                                                </div>
+                                                <div class="btn-glow"></div>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if today_workout.confidence_task %}
+                                    <div class="confidence-section">
+                                        <div class="confidence-icon">
+                                            <i class="fas fa-heart"></i>
+                                        </div>
+                                        <div class="confidence-content">
+                                            <h4>Задание на уверенность:</h4>
+                                            <p>{{ today_workout.confidence_task }}</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="no-workout-card">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <p>Тренировка на сегодня не найдена. Обратитесь к администратору.</p>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 
-                <!-- XP Progress Bar -->
-                <div class="mt-3">
-                    <div class="d-flex justify-content-between">
-                        <small>Уровень {{ level }}</small>
-                        <small>{{ xp }} XP</small>
-                    </div>
-                    {% with next_level_xp=level|add:1|floatformat:0 %}
-                        {% with xp_needed=next_level_xp|floatformat:0 %}
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" 
-                                     style="width: {{ xp|floatformat:0 }}%" 
-                                     aria-valuenow="{{ xp }}" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100">
-                                </div>
+                <!-- Progress Stats -->
+                <div class="col-lg-4">
+                    <div class="glass-card progress-card">
+                        <h3 class="progress-title">Ваш прогресс</h3>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">{{ streak }}</div>
+                                <div class="stat-label">Дней подряд</div>
                             </div>
-                        {% endwith %}
-                    {% endwith %}
+                            <div class="stat-item">
+                                <div class="stat-number">{{ profile.total_workouts_completed }}</div>
+                                <div class="stat-label">Тренировок</div>
+                            </div>
+                        </div>
+                        
+                        <!-- XP Progress -->
+                        <div class="xp-section">
+                            <div class="xp-header">
+                                <span class="level-text">Уровень {{ level }}</span>
+                                <span class="xp-text">{{ xp }} XP</span>
+                            </div>
+                            <div class="xp-progress">
+                                <div class="xp-bar" style="width: {{ xp|floatformat:0 }}%"></div>
+                                <div class="xp-glow" style="width: {{ xp|floatformat:0 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Achievements -->
+                    {% if new_achievements %}
+                    <div class="glass-card achievements-card">
+                        <h3 class="achievements-title">🏆 Новые достижения!</h3>
+                        <div class="achievements-list">
+                            {% for achievement in new_achievements %}
+                                <div class="achievement-item">
+                                    <div class="achievement-icon">
+                                        <i class="fas fa-medal"></i>
+                                    </div>
+                                    <div class="achievement-content">
+                                        <h4>{{ achievement.achievement.name }}</h4>
+                                        <p>{{ achievement.achievement.description }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        
-        <!-- Recent Achievements -->
-        {% if new_achievements %}
-        <div class="card">
-            <div class="card-header">
-                <h6 class="mb-0">🏆 Новые достижения!</h6>
-            </div>
-            <div class="card-body">
-                {% for achievement in new_achievements %}
-                    <div class="alert alert-warning">
-                        <strong>{{ achievement.achievement.name }}</strong>
-                        <br>{{ achievement.achievement.description }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Dashboard Fullscreen Layout */
+.dashboard-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Video Background */
+.dashboard-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+/* Gradient Overlay */
+.dashboard-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.85) 0%, 
+        rgba(118, 75, 162, 0.85) 50%,
+        rgba(255, 107, 107, 0.8) 100%
+    );
+    z-index: -1;
+}
+
+/* Content Container */
+.dashboard-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 0;
+    min-height: 100vh;
+}
+
+/* Glass Card Base */
+.glass-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(25px);
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.6), 
+        transparent
+    );
+}
+
+/* Main Workout Card */
+.main-workout-card {
+    margin-bottom: 2rem;
+}
+
+.workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.workout-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.week-badge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.workout-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 1.5rem;
+}
+
+.workout-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.exercise-count {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.count-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #4ecdc4;
+    text-shadow: 0 2px 10px rgba(78, 205, 196, 0.5);
+}
+
+.count-label {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: lowercase;
+}
+
+/* Start Workout Button */
+.btn-start-workout {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem 3rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 10px 30px rgba(102, 126, 234, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.btn-start-workout:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 15px 40px rgba(102, 126, 234, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-glow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent
+    );
+    transition: left 0.6s ease;
+}
+
+.btn-start-workout:hover .btn-glow {
+    left: 100%;
+}
+
+/* Glass Buttons */
+.btn-glass-primary, .btn-glass-outline {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-glass-primary:hover, .btn-glass-outline:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-decoration: none;
+}
+
+/* Completed Section */
+.completed-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(32, 201, 151, 0.2));
+    border-radius: 20px;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.completed-icon {
+    font-size: 2rem;
+    color: #28a745;
+}
+
+.completed-text h4 {
+    color: white;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+.completed-text p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+/* Rest Day Card */
+.rest-day-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(32, 201, 151, 0.2), rgba(78, 205, 196, 0.2));
+    border-radius: 20px;
+    border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.rest-icon {
+    font-size: 3rem;
+    color: #4ecdc4;
+}
+
+.rest-content h4 {
+    color: white;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.rest-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+/* Confidence Section */
+.confidence-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.confidence-icon {
+    font-size: 1.5rem;
+    color: #ff6b6b;
+    margin-top: 0.2rem;
+}
+
+.confidence-content h4 {
+    color: white;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.confidence-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Progress Card */
+.progress-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4ecdc4;
+    text-shadow: 0 2px 10px rgba(78, 205, 196, 0.5);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: lowercase;
+}
+
+/* XP Progress */
+.xp-section {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.xp-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.level-text, .xp-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+}
+
+.xp-progress {
+    position: relative;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.xp-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #44a08d);
+    border-radius: 5px;
+    transition: width 0.6s ease;
+}
+
+.xp-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    border-radius: 5px;
+    animation: shimmer 2s infinite linear;
+}
+
+/* Achievements */
+.achievements-title {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 1rem;
+}
+
+.achievement-icon {
+    font-size: 1.5rem;
+    color: #ffd700;
+}
+
+.achievement-content h4 {
+    color: white;
+    margin: 0 0 0.3rem 0;
+    font-size: 1rem;
+}
+
+.achievement-content p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Completion Card */
+.completion-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(32, 201, 151, 0.2));
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.completion-icon {
+    font-size: 3rem;
+    color: #ffd700;
+}
+
+.completion-title {
+    color: white;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.completion-text {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 1rem 0;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 1rem;
+    }
+    
+    .glass-card {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .workout-title {
+        font-size: 1.8rem;
+    }
+    
+    .workout-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}
