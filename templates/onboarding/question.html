@@ -36,12 +36,27 @@
                     
                     <!-- Question card -->
                     <div class="question-card">
-                        <div class="question-header">
-                            <h1 class="question-title">{{ question.question_text }}</h1>
-                            {% if question.help_text %}
-                                <p class="question-subtitle">{{ question.help_text }}</p>
-                            {% endif %}
-                        </div>
+                        {% if question.is_block_separator %}
+                            <div class="block-separator">
+                                <div class="block-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h2 class="block-title">{{ question.question_text }}</h2>
+                                {% if question.separator_text %}
+                                    <p class="block-description">{{ question.separator_text }}</p>
+                                {% endif %}
+                                <button type="button" class="btn-block-continue" onclick="submitForm()">
+                                    <span>Понятно, продолжить</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="question-header">
+                                <h1 class="question-title">{{ question.question_text }}</h1>
+                                {% if question.help_text %}
+                                    <p class="question-subtitle">{{ question.help_text }}</p>
+                                {% endif %}
+                            </div>
                         
                         <form id="questionForm" class="question-form">
                             <div class="answers-container">
@@ -130,6 +145,27 @@
                                         </div>
                                     </div>
                                 
+                                {% elif question.question_type == 'body_map' %}
+                                    <div class="body-map-container">
+                                        <p class="body-map-instruction">Выберите области, где вы испытываете дискомфорт:</p>
+                                        <div class="body-map-options">
+                                            {% for option in question.answer_options.all %}
+                                                <div class="body-area-option" data-area="{{ option.option_value }}">
+                                                    <input type="checkbox" name="answers" value="{{ option.id }}"
+                                                           {% if existing_response and option in existing_response.answer_options.all %}checked{% endif %}
+                                                           style="display: none;">
+                                                    <div class="body-area-box">
+                                                        <i class="fas fa-user-injured"></i>
+                                                        <span>{{ option.option_text }}</span>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <p class="body-map-hint">
+                                            <small class="text-muted">Можете выбрать несколько областей или пропустить, если болей нет</small>
+                                        </p>
+                                    </div>
+                                
                                 {% else %}
                                     <div class="text-input-container">
                                         <div class="text-input-wrapper">
@@ -164,6 +200,7 @@
                                 </button>
                             </div>
                         </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -593,6 +630,124 @@
     .scale-options {
         gap: 0.5rem;
     }
+}
+
+/* Body map styles */
+.body-map-container {
+    margin: 2rem 0;
+}
+
+.body-map-instruction {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.body-map-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.body-area-option {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.body-area-box {
+    background: white;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 15px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.body-area-box i {
+    font-size: 2rem;
+    color: #7f8c8d;
+    margin-bottom: 0.5rem;
+}
+
+.body-area-option:hover .body-area-box {
+    transform: translateY(-2px);
+    border-color: #667eea;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+}
+
+.body-area-option input[type="checkbox"]:checked + .body-area-box {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(252, 165, 165, 0.1));
+    border-color: #ef4444;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+}
+
+.body-area-option input[type="checkbox"]:checked + .body-area-box i {
+    color: #ef4444;
+}
+
+.body-map-hint {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* Block separator styles */
+.block-separator {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.block-icon {
+    font-size: 4rem;
+    color: #667eea;
+    margin-bottom: 2rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.block-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.block-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #5a6c8a;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.btn-block-continue {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-block-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
 }
 
 /* Text input */
@@ -1073,6 +1228,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (radio) radio.checked = true;
         });
     });
+    
+    // Handle body area clicks
+    document.querySelectorAll('.body-area-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const checkbox = this.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+            }
+        });
+    });
 
     // Add ripple animation CSS
     const style = document.createElement('style');
@@ -1137,6 +1302,17 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showError('Пожалуйста, выберите оценку от 1 до 5');
                 return;
+            }
+            
+        } else if (questionType === 'body_map') {
+            const selectedAreas = this.querySelectorAll('input[type="checkbox"]:checked');
+            if (selectedAreas.length > 0) {
+                answerData.answers = Array.from(selectedAreas).map(cb => parseInt(cb.value));
+                isValid = true;
+            } else {
+                // Body map can be empty - no pain areas
+                answerData.answers = [];
+                isValid = true;
             }
             
         } else if (questionType === 'number') {
@@ -1311,6 +1487,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     };
 
+    // Function for block separator
+    window.submitForm = function() {
+        const submitBtn = document.querySelector('.btn-block-continue');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+        
+        fetch(`{% url 'onboarding:save_answer' question.id %}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ answer: '' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.motivational_card && data.motivational_card.message) {
+                showMotivationalCard(data.motivational_card, data);
+            } else {
+                navigateNext(data);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Понятно, продолжить</span><i class="fas fa-arrow-right"></i>';
+        });
+    };
+    
     function navigateNext(data) {
         if (data.redirect_to_archetype) {
             window.location.href = '{% url "onboarding:select_archetype" %}';

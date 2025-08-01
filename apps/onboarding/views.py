@@ -142,7 +142,18 @@ def save_answer(request, question_id):
         response.save()
         
     elif question.question_type == 'body_map':
-        response.answer_body_map = data.get('answer', {})
+        # Body map uses multiple checkbox selections like multiple_choice
+        option_ids = data.get('answers', [])
+        selected_areas = []
+        for option_id in option_ids:
+            try:
+                option = AnswerOption.objects.get(id=option_id, question=question)
+                response.answer_options.add(option)
+                selected_areas.append(option.option_value)
+            except AnswerOption.DoesNotExist:
+                pass
+        # Also save as JSON for easier AI processing
+        response.answer_body_map = {"areas": selected_areas}
         response.save()
         
     else:  # text
