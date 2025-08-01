@@ -180,9 +180,20 @@ class WorkoutCompletionService:
             logger.error(f"Error in workout completion process: {str(e)}")
             raise
         
-        # 🔍 AI ANALYSIS - временно отключен для отладки
+        # 🔍 AI ANALYSIS - добавляем анализ тренировки
         ai_analysis = None
-        logger.info("🔍 AI analysis skipped for debugging")
+        try:
+            logger.info("🔍 GPT-analysis started for workout %s user %s", workout.id, user.id)
+            ai_analysis = self._analyze_workout_with_ai(user, workout, feedback_rating, feedback_note)
+            logger.info("🔍 GPT analysis completed for workout %s", workout.id)
+        except Exception as e:
+            logger.error("🔍 GPT analysis failed for workout %s: %s", workout.id, str(e))
+            # AI анализ не должен ломать весь процесс завершения тренировки
+            ai_analysis = {
+                'feedback': 'Отличная тренировка! Продолжайте в том же духе!',
+                'fatigue_score': 5,
+                'next_focus': 'Продолжайте развивать силу и выносливость!'
+            }
         
         logger.info("=== WORKOUT COMPLETION SUCCESSFUL ===")
         return {
