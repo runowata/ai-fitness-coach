@@ -116,7 +116,10 @@ class WorkoutCompletionService:
             execution, created = WorkoutExecution.objects.get_or_create(
                 user=user,
                 workout=workout,
-                defaults={'started_at': timezone.now()}
+                defaults={
+                    'started_at': timezone.now(),
+                    'exercise_data': {}  # Required field, initialize with empty dict
+                }
             )
             logger.info(f"Workout execution {'created' if created else 'found'}: {execution.id}")
         except Exception as e:
