@@ -415,35 +415,37 @@ def plan_confirmation(request, plan_id=None):
     # Extract plan details (new structure with cycles/phases)
     plan_details = plan_data.get('plan', plan_data.get('protocol', plan_data))
     
-    # Count total exercises from new structure
+    # Count total exercises - check old structure first
     total_exercises = 0
     archetype = request.user.profile.archetype
     
-    # Handle different archetype structures
-    if archetype == 'bro':
-        # Bro uses cycles with daily_workouts
-        for cycle in plan_details.get('cycles', []):
-            for workout in cycle.get('daily_workouts', []):
-                if not workout.get('is_rest_day'):
-                    total_exercises += len(workout.get('exercises', []))
-    elif archetype == 'sergeant':
-        # Sergeant uses phases with daily_operations
-        for phase in plan_details.get('phases', []):
-            for operation in phase.get('daily_operations', []):
-                if not operation.get('is_rest_day'):
-                    total_exercises += len(operation.get('exercises', []))
-    elif archetype == 'intellectual':
-        # Intellectual uses phases with training_sessions
-        for phase in plan_details.get('phases', []):
-            for session in phase.get('training_sessions', []):
-                if not session.get('is_rest_day'):
-                    total_exercises += len(session.get('exercises', []))
-    else:
-        # Fallback to old weeks structure
-        for week in plan_data.get('weeks', []):
+    # First try the old weeks structure (most common case)
+    weeks_data = plan_data.get('weeks', [])
+    if weeks_data:
+        for week in weeks_data:
             for day in week.get('days', []):
                 if not day.get('is_rest_day'):
                     total_exercises += len(day.get('exercises', []))
+    else:
+        # Handle different archetype structures (new structure)
+        if archetype == 'bro':
+            # Bro uses cycles with daily_workouts
+            for cycle in plan_details.get('cycles', []):
+                for workout in cycle.get('daily_workouts', []):
+                    if not workout.get('is_rest_day'):
+                        total_exercises += len(workout.get('exercises', []))
+        elif archetype == 'sergeant':
+            # Sergeant uses phases with daily_operations
+            for phase in plan_details.get('phases', []):
+                for operation in phase.get('daily_operations', []):
+                    if not operation.get('is_rest_day'):
+                        total_exercises += len(operation.get('exercises', []))
+        elif archetype == 'intellectual':
+            # Intellectual uses phases with training_sessions
+            for phase in plan_details.get('phases', []):
+                for session in phase.get('training_sessions', []):
+                    if not session.get('is_rest_day'):
+                        total_exercises += len(session.get('exercises', []))
     
     # Extract AI feedback/analysis from plan data
     ai_feedback = analysis_data.get('profile_insight') or analysis_data.get('profile_assessment') or analysis_data.get('scientific_assessment') or "Персональный анализ готов!"
