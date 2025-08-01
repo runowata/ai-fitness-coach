@@ -1218,5 +1218,35 @@
       "option_value": "still_thinking",
       "order": 2
     }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 123,
+    "fields": {
+      "question": 5,
+      "option_text": "Я понял, теперь я спокоен",
+      "option_value": "understood_calm",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 124,
+    "fields": {
+      "question": 5,
+      "option_text": "Понятно, продолжим",
+      "option_value": "understood_continue",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 125,
+    "fields": {
+      "question": 5,
+      "option_text": "Хорошо, я буду честен",
+      "option_value": "understood_honest",
+      "order": 3
+    }
   }
 ]
