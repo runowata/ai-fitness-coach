@@ -97,8 +97,14 @@ def save_answer(request, question_id):
     # Get motivational card for this question
     motivational_card = None
     
+    # Handle block separators first
+    if question.is_block_separator:
+        # Block separators don't need data, just mark as acknowledged
+        response.answer_text = 'acknowledged'
+        response.save()
+        
     # Handle different question types
-    if question.question_type == 'single_choice':
+    elif question.question_type == 'single_choice':
         option_id = data.get('answer')
         if option_id:
             option = get_object_or_404(AnswerOption, id=option_id, question=question)
