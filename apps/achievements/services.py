@@ -106,67 +106,85 @@ class WorkoutCompletionService:
     @transaction.atomic
     def complete_workout(self, user, workout, feedback_rating=None, feedback_note=''):
         """Mark workout as completed and update all related data"""
-        from apps.workouts.models import WorkoutExecution
+        logger.info(f"=== WORKOUT COMPLETION START === User: {user.id}, Workout: {workout.id}")
         
-        # Create or update workout execution
-        execution, created = WorkoutExecution.objects.get_or_create(
-            user=user,
-            workout=workout,
-            defaults={'started_at': timezone.now()}
-        )
-        
-        execution.completed_at = timezone.now()
-        execution.save()
-        
-        # Update workout with feedback
-        workout.completed_at = timezone.now()
-        workout.feedback_rating = feedback_rating
-        workout.feedback_note = feedback_note
-        workout.save()
-        
-        # Update user profile stats
-        profile = user.profile
-        profile.last_workout_at = timezone.now()
-        profile.total_workouts_completed += 1
-        profile.save()
-        
-        # Calculate and award XP
-        base_xp = 50  # Base XP for completing workout
-        if not workout.is_rest_day:
-            base_xp = 100
-        
-        # Bonus XP for perfect execution
-        if feedback_rating == 'fire':
-            base_xp += 25
-        
-        XPTransaction.objects.create(
-            user=user,
-            amount=base_xp,
-            transaction_type='workout_completed',
-            description=f'Тренировка завершена: {workout.name}',
-            workout_execution=execution
-        )
-        profile.add_xp(base_xp)
-        
-        # Update daily progress
-        progress = DailyProgress.update_for_user(user)
-        progress.workouts_completed += 1
-        progress.xp_earned += base_xp
-        progress.save()
-        
-        # Check achievements
-        checker = AchievementChecker()
-        new_achievements = checker.check_user_achievements(user)
-        
-        # 🔍 AI ANALYSIS - добавляем анализ тренировки
-        ai_analysis = None
         try:
-            logger.info("🔍 GPT-analysis started for workout %s user %s", workout.id, user.id)
-            ai_analysis = self._analyze_workout_with_ai(user, workout, feedback_rating, feedback_note)
-            logger.info("🔍 GPT analysis completed for workout %s", workout.id)
+            from apps.workouts.models import WorkoutExecution
+            
+            # Create or update workout execution
+            logger.info("Creating workout execution...")
+            execution, created = WorkoutExecution.objects.get_or_create(
+                user=user,
+                workout=workout,
+                defaults={'started_at': timezone.now()}
+            )
+            logger.info(f"Workout execution {'created' if created else 'found'}: {execution.id}")
         except Exception as e:
-            logger.error("🔍 GPT analysis failed for workout %s: %s", workout.id, str(e))
+            logger.error(f"Error creating workout execution: {str(e)}")
+            raise
         
+        try:
+            execution.completed_at = timezone.now()
+            execution.save()
+            logger.info("Workout execution updated")
+            
+            # Update workout with feedback
+            logger.info("Updating workout with feedback...")
+            workout.completed_at = timezone.now()
+            workout.feedback_rating = feedback_rating
+            workout.feedback_note = feedback_note
+            workout.save()
+            
+            # Update user profile stats
+            logger.info("Updating user profile stats...")
+            profile = user.profile
+            profile.last_workout_at = timezone.now()
+            profile.total_workouts_completed += 1
+            profile.save()
+            
+            # Calculate and award XP
+            logger.info("Calculating XP...")
+            base_xp = 50  # Base XP for completing workout
+            if not workout.is_rest_day:
+                base_xp = 100
+            
+            # Bonus XP for perfect execution
+            if feedback_rating == 'fire':
+                base_xp += 25
+            
+            logger.info(f"Creating XP transaction: {base_xp} XP")
+            XPTransaction.objects.create(
+                user=user,
+                amount=base_xp,
+                transaction_type='workout_completed',
+                description=f'Тренировка завершена: {workout.name}',
+                workout_execution=execution
+            )
+            
+            logger.info("Adding XP to profile...")
+            profile.add_xp(base_xp)
+            
+            # Update daily progress
+            logger.info("Updating daily progress...")
+            progress = DailyProgress.update_for_user(user)
+            progress.workouts_completed += 1
+            progress.xp_earned += base_xp
+            progress.save()
+            
+            # Check achievements
+            logger.info("Checking achievements...")
+            checker = AchievementChecker()
+            new_achievements = checker.check_user_achievements(user)
+            logger.info(f"Found {len(new_achievements)} new achievements")
+        except Exception as e:
+            logger.error(f"Error in workout completion process: {str(e)}")
+            raise
+        
+        # 🔍 AI ANALYSIS - временно отключен для отладки
+        ai_analysis = None
+        logger.info("🔍 AI analysis skipped for debugging")
+        
+        logger.info("=== WORKOUT COMPLETION SUCCESSFUL ===")
         return {
             'execution': execution,
             'xp_earned': base_xp,
