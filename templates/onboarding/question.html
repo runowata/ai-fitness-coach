@@ -1279,6 +1279,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        console.log('=== FORM SUBMISSION DEBUG ===');
+        console.log('Question ID:', {{ question.id }});
+        console.log('Question Type:', '{{ question.question_type }}');
+        console.log('Question Text:', '{{ question.question_text }}');
+        console.log('Is Block Separator:', {{ question.is_block_separator|yesno:"true,false" }});
+        console.log('Form Element:', this);
         
         // Show loading state
         submitBtn.classList.add('loading');
@@ -1292,10 +1298,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (questionType === 'single_choice') {
             const selectedRadio = this.querySelector('input[type="radio"]:checked');
+            console.log('Selected radio element:', selectedRadio);
             if (selectedRadio) {
+                console.log('Selected radio value:', selectedRadio.value);
                 answerData.answer = parseInt(selectedRadio.value);
                 isValid = true;
             } else {
+                console.log('No radio selected for single_choice question');
                 showError('Пожалуйста, выберите ответ');
                 return;
             }
@@ -1355,16 +1364,35 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isValid) return;
 
         // Submit answer with enhanced error handling
-        fetch(`{% url 'onboarding:save_answer' question.id %}`, {
+        const submitUrl = `{% url 'onboarding:save_answer' question.id %}`;
+        const csrfToken = getCookie('csrftoken');
+        console.log('Submitting to URL:', submitUrl);
+        console.log('CSRF Token:', csrfToken);
+        console.log('Answer data:', answerData);
+        
+        fetch(submitUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
+                'X-CSRFToken': csrfToken,
             },
             body: JSON.stringify(answerData)
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            if (!response.ok) {
+                console.error('HTTP error:', response.status, response.statusText);
+                return response.text().then(text => {
+                    console.error('Error response body:', text);
+                    throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
+                });
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('=== SUCCESS RESPONSE ===');
+            console.log('Response data:', data);
             if (data.success) {
                 // Success animation
                 submitBtn.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
@@ -1383,7 +1411,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('=== FETCH ERROR ===');
+            console.error('Error object:', error);
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
             showError('Произошла ошибка сети. Проверьте соединение и попробуйте снова.');
         });
     });
@@ -1505,11 +1536,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function for block separator
     window.submitForm = function() {
+        console.log('=== BLOCK SEPARATOR DEBUG ===');
+        console.log('submitForm called for block separator');
+        console.log('Question ID:', {{ question.id }});
+        console.log('Is Block Separator:', {{ question.is_block_separator|yesno:"true,false" }});
+        
         const submitBtn = document.querySelector('.btn-block-continue');
+        console.log('Submit button found:', submitBtn);
+        if (!submitBtn) {
+            console.error('Button not found');
+            return;
+        }
+        
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
         
-        fetch(`{% url 'onboarding:save_answer' question.id %}`, {
+        const url = `{% url 'onboarding:save_answer' question.id %}`;
+        console.log('Posting to:', url);
+        
+        fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1517,8 +1562,18 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({ answer: '' })
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Response data:', data);
+            if (data.success === false || data.error) {
+                throw new Error(data.error || 'Unknown error');
+            }
             if (data.motivational_card && data.motivational_card.message) {
                 showMotivationalCard(data.motivational_card, data);
             } else {
@@ -1526,7 +1581,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error in submitForm:', error);
+            alert('Ошибка: ' + error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<span>Понятно, продолжить</span><i class="fas fa-arrow-right"></i>';
         });

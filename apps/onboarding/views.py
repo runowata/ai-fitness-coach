@@ -76,11 +76,31 @@ def question_view(request, question_id):
 @csrf_exempt
 def save_answer(request, question_id):
     """Save answer and show motivational card"""
+    logger.info(f"=== SAVE_ANSWER DEBUG START ===")
+    logger.info(f"Question ID: {question_id}")
+    logger.info(f"User: {request.user}")
+    logger.info(f"Method: {request.method}")
+    logger.info(f"Content-Type: {request.content_type}")
+    logger.info(f"Request body: {request.body}")
+    
     if request.method != 'POST':
+        logger.error(f"Invalid method: {request.method}")
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
-    question = get_object_or_404(OnboardingQuestion, id=question_id, is_active=True)
-    data = json.loads(request.body)
+    try:
+        question = get_object_or_404(OnboardingQuestion, id=question_id, is_active=True)
+        logger.info(f"Question found: {question.question_text}")
+        logger.info(f"Question type: {question.question_type}")
+        logger.info(f"Is block separator: {question.is_block_separator}")
+        
+        data = json.loads(request.body)
+        logger.info(f"Parsed data: {data}")
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {str(e)}")
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        logger.error(f"Error in save_answer: {str(e)}")
+        return JsonResponse({'error': f'Server error: {str(e)}'}, status=500)
     
     # Delete existing response
     UserOnboardingResponse.objects.filter(
@@ -180,11 +200,15 @@ def save_answer(request, question_id):
         is_active=True
     ).first()
     
+    logger.info(f"Next question: {next_question.id if next_question else 'None'}")
+    
     result = {
         'success': True,
         'next_question_url': f'/onboarding/question/{next_question.id}/' if next_question else None,
         'motivational_card': None
     }
+    
+    logger.info(f"Result before motivational card: {result}")
     
     if motivational_card:
         # Replace [Имя] placeholder with actual name
@@ -211,6 +235,9 @@ def save_answer(request, question_id):
     # If last question, generate workout plan
     if not next_question:
         result['redirect_to_archetype'] = True
+    
+    logger.info(f"Final result: {result}")
+    logger.info(f"=== SAVE_ANSWER DEBUG END ===")
     
     return JsonResponse(result)
 
