@@ -665,7 +665,22 @@ function showFeedbackModal() {
     new bootstrap.Modal(document.getElementById('feedbackModal')).show();
 }
 
+// Prevent double submission
+let isSubmitting = false;
+
 function submitFeedback(rating) {
+    // Prevent double submission
+    if (isSubmitting) {
+        return;
+    }
+    isSubmitting = true;
+    
+    // Disable all feedback buttons
+    document.querySelectorAll('.feedback-btn').forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+    });
+    
     const note = document.getElementById('feedbackNote').value;
     
     fetch(`{% url 'workouts:complete_workout' workout.id %}`, {
@@ -682,29 +697,148 @@ function submitFeedback(rating) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Show completion message
-            alert(`Тренировка завершена! Получено ${data.xp_earned} XP`);
+            // Create a single completion modal instead of multiple alerts
+            let completionMessage = `
+                <div class="completion-info">
+                    <h5><i class="fas fa-check-circle text-success me-2"></i>Тренировка завершена!</h5>
+                    <p class="mb-2">Получено <strong>${data.xp_earned} XP</strong></p>
+                    ${data.current_streak > 1 ? `<p class="mb-2">Ваша серия: <strong>${data.current_streak} дней</strong></p>` : ''}
+                `;
             
-            // Show new achievements if any
-            if (data.new_achievements.length > 0) {
-                alert(`Новые достижения: ${data.new_achievements.map(a => a.name).join(', ')}`);
+            // Add achievements if any
+            if (data.new_achievements && data.new_achievements.length > 0) {
+                completionMessage += `
+                    <div class="mt-3">
+                        <h6><i class="fas fa-trophy text-warning me-2"></i>Новые достижения:</h6>
+                        <ul class="list-unstyled">
+                `;
+                data.new_achievements.forEach(achievement => {
+                    completionMessage += `<li><i class="fas fa-medal me-2"></i>${achievement.name}</li>`;
+                });
+                completionMessage += '</ul></div>';
             }
             
-            // Show AI analysis if available
-            if (data.ai_analysis) {
-                showAIAnalysis(data.ai_analysis);
+            // Add AI analysis if available
+            if (data.ai_analysis && data.ai_analysis.feedback) {
+                completionMessage += `
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <h6><i class="fas fa-brain text-primary me-2"></i>Анализ тренера:</h6>
+                        <p class="mb-1">${data.ai_analysis.feedback}</p>
+                        ${data.ai_analysis.next_focus ? `<p class="small text-muted mb-0"><strong>Следующий фокус:</strong> ${data.ai_analysis.next_focus}</p>` : ''}
+                    </div>
+                `;
             }
             
-            // Show final video if available
-            if (data.final_video) {
-                showFinalVideo(data.final_video);
-            } else {
-                location.reload();
-            }
+            completionMessage += '</div>';
+            
+            // Show modal with all information
+            showCompletionModal(completionMessage, () => {
+                // Redirect to dashboard after closing modal
+                window.location.href = "{% url 'users:dashboard' %}";
+            });
+            
         } else {
-            alert('Ошибка: ' + data.error);
+            // Re-enable buttons on error
+            isSubmitting = false;
+            document.querySelectorAll('.feedback-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+            
+            // Show error in a nicer way
+            showErrorModal(data.error || 'Произошла ошибка при сохранении результата');
         }
+    })
+    .catch(error => {
+        // Re-enable buttons on error
+        isSubmitting = false;
+        document.querySelectorAll('.feedback-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        });
+        
+        showErrorModal('Ошибка соединения. Попробуйте еще раз.');
     });
+}
+
+// Show completion modal
+function showCompletionModal(content, onClose) {
+    const modalHtml = `
+        <div class="modal fade" id="completionModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body p-4">
+                        ${content}
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-success btn-lg w-100" onclick="closeCompletionModal()">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Продолжить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('completionModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Store callback
+    window.completionModalCallback = onClose;
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('completionModal'));
+    modal.show();
+}
+
+function closeCompletionModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('completionModal'));
+    modal.hide();
+    
+    // Call callback if exists
+    if (window.completionModalCallback) {
+        window.completionModalCallback();
+    }
+}
+
+// Show error modal
+function showErrorModal(message) {
+    const modalHtml = `
+        <div class="modal fade" id="errorModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center p-4">
+                        <i class="fas fa-exclamation-circle text-danger mb-3" style="font-size: 3rem;"></i>
+                        <h5>Ошибка</h5>
+                        <p>${message}</p>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('errorModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+    modal.show();
 }
 
 function substituteExercise(originalSlug, substituteSlug) {
@@ -722,10 +856,15 @@ function substituteExercise(originalSlug, substituteSlug) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
-            location.reload();
+            // Use completion modal instead of alert
+            showCompletionModal(`
+                <h5><i class="fas fa-exchange-alt text-success me-2"></i>Упражнение заменено</h5>
+                <p>${data.message}</p>
+            `, () => {
+                location.reload();
+            });
         } else {
-            alert('Ошибка: ' + data.error);
+            showErrorModal(data.error || 'Не удалось заменить упражнение');
         }
     });
 }
