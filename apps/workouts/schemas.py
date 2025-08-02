@@ -25,3 +25,10 @@ class WorkoutPlan(BaseModel):
     archetype: str = Field(pattern="^(111|222|333)$")
     day: int = Field(ge=1, le=7)
     items: List[WorkoutPlanItem]
+
+
+class VideoScript(BaseModel):
+    exercise_id: str
+    archetype: str = Field(pattern="^(111|222|333)$")
+    locale: str = Field(default="ru", pattern="^(ru|en)$")
+    script: str

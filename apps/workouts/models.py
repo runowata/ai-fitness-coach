@@ -248,3 +248,12 @@ class ExplainerVideo(models.Model):
 
     def __str__(self):
         return f"{self.exercise_id} – {self.get_archetype_display()}"
+
+    @classmethod
+    def from_row(cls, row: dict, archetype: str, locale: str = "ru"):
+        return cls(
+            exercise_id=row["exercise_id"],
+            archetype=archetype,
+            script=row[f"script_{locale}"],
+            locale=locale,
+        )
