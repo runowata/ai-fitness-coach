@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # AI Fitness Coach - Claude Context
 
 ## Project Overview
@@ -123,14 +127,52 @@ AI Fitness Coach - это веб-приложение для персонали�
 /images/stories/{story_slug}_cover.jpg
 ```
 
-## Deployment Commands
+## Common Development Commands
 
-### Initial Setup
+### Local Development Setup
 ```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate  # Windows
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Database setup
 python manage.py migrate
 python manage.py loaddata fixtures/*.json
 python manage.py createsuperuser
+
+# Run development server
+python manage.py runserver
+```
+
+### Testing
+```bash
+# Run all tests
+pytest
+
+# Run specific test file
+pytest tests/test_models.py
+
+# Run with coverage
+pytest --cov=apps --cov-report=html
+
+# Run only fast tests (skip slow)
+pytest -m "not slow"
+```
+
+### Database Management
+```bash
+# Make migrations
+python manage.py makemigrations
+
+# Apply migrations
+python manage.py migrate
+
+# Reset specific app
+python manage.py migrate <app_name> zero
 ```
 
 ### Media Import
@@ -139,10 +181,26 @@ python manage.py import_media /path/to/media --dry-run
 python manage.py import_media /path/to/media --category exercise_technique
 ```
 
+### Management Commands
+```bash
+# Create basic exercises
+python manage.py create_basic_exercises
+
+# Test AI generation
+python manage.py test_ai_generation
+
+# Bootstrap from videos
+python manage.py bootstrap_from_videos
+
+# Debug video system
+python manage.py debug_workout_video <workout_id>
+```
+
 ## Testing
-- Unit tests in `tests/test_models.py`
+- Unit tests in `tests/` directory
 - Run with: `pytest`
 - Coverage target: ≥80%
+- Test configuration in `pytest.ini`
 
 ## Key URLs
 - `/` - Homepage
@@ -159,9 +217,40 @@ python manage.py import_media /path/to/media --category exercise_technique
 - S3 storage for production media
 - Rate limiting on workout completion
 
-## Future Enhancements
-- Progressive Web App (PWA)
-- Mobile push notifications
-- Advanced analytics dashboard
-- Social features (friends, leaderboards)
-- Wearable device integration
+## Environment Variables
+Key environment variables needed for development:
+- `DJANGO_SETTINGS_MODULE=config.settings`
+- `DATABASE_URL` - PostgreSQL connection string
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` - S3 credentials
+- `OPENAI_API_KEY` or `GEMINI_API_KEY` - AI service credentials
+- `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` - Email settings
+- `SECRET_KEY` - Django secret key (generate with `generate_secret_key.py`)
+
+## Code Architecture Notes
+
+### App Structure
+- **apps/users/** - Custom User model with timezone/measurement preferences, UserProfile with gamification
+- **apps/workouts/** - Exercise database, WorkoutPlan generation, DailyWorkout management
+- **apps/onboarding/** - Multi-step questionnaire flow with motivational cards
+- **apps/content/** - Media assets (S3), Story/Chapter system for rewards
+- **apps/achievements/** - XP transactions, achievement checking, user progress tracking
+- **apps/ai_integration/** - AI service abstraction, prompt management
+
+### Key Design Patterns
+1. **Service Layer Pattern**: Business logic in `services.py` files (e.g., `WorkoutCompletionService`)
+2. **AI Prompt Templates**: Stored in `prompts/` directory, loaded by `PromptManager`
+3. **Async Tasks**: Email notifications via Celery (configured but optional for dev)
+4. **Media Storage**: Abstract storage backend, S3 for production, local for development
+
+### Database Relationships
+- User -> UserProfile (1:1)
+- User -> WorkoutPlan -> DailyWorkout -> WorkoutExercise
+- Exercise <-> Exercise (alternatives, many-to-many)
+- Achievement -> UserAchievement <- User
+- Story -> StoryChapter -> UserStoryAccess
+
+## Debugging Tips
+- Enable Django Debug Toolbar in development (already configured)
+- Check `debug_video_system.py` for video URL debugging
+- Use management commands for data inspection and testing
+- Fixtures in `fixtures/` for initial data setup

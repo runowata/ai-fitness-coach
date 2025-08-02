@@ -88,3 +88,11 @@ media_uploads/
 # Backup files
 *.backup
 fixtures/onboarding_questions_old.json
+
+# Data processing files
+data/raw/
+*.xlsx
+*.xls
+
+# Virtual environments for data processing
+.venv/
