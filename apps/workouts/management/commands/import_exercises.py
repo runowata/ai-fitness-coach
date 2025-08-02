@@ -14,9 +14,19 @@ class Command(BaseCommand):
         if not CSV_PATH.exists():
             raise CommandError(f"{CSV_PATH} not found")
 
-        created, updated = 0, 0
+        created, updated, skipped = 0, 0, 0
         with CSV_PATH.open(encoding="utf-8") as f:
             for row in DictReader(f):
+                # Skip rows with empty id
+                if not row.get("id") or row["id"].strip() == "":
+                    self.stdout.write(f"⏩ Skip blank id at row {created + updated + skipped + 1}")
+                    skipped += 1
+                    continue
+                
+                # Skip duplicate ids
+                if CSVExercise.objects.filter(id=row["id"]).exists():
+                    self.stdout.write(f"⏩ Duplicate id {row['id']} — updating instead")
+                
                 # Парсим AI tags из строки в список
                 ai_tags_str = row.get("ai_tags", "")
                 try:
@@ -46,4 +56,4 @@ class Command(BaseCommand):
                 else:
                     updated += 1
 
-        self.stdout.write(self.style.SUCCESS(f"Created: {created}, Updated: {updated}"))
+        self.stdout.write(self.style.SUCCESS(f"Created: {created}, Updated: {updated}, Skipped: {skipped}"))

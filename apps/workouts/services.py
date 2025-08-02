@@ -7,6 +7,10 @@ from .models import Exercise, VideoClip, DailyWorkout
 class VideoPlaylistBuilder:
     """Service to build video playlist for a workout"""
     
+    def __init__(self, archetype: str = "bro", locale: str = "ru"):
+        self.archetype = archetype
+        self.locale = locale
+    
     def build_workout_playlist(self, workout: DailyWorkout, user_archetype: str) -> List[Dict]:
         """
         Build complete video playlist for a workout

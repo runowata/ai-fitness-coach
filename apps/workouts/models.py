@@ -134,6 +134,9 @@ class WorkoutPlan(models.Model):
     class Meta:
         db_table = 'workout_plans'
         ordering = ['-created_at']
+    
+    def __str__(self):
+        return self.name
         
     def get_current_week(self):
         if not self.started_at:

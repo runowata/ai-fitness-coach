@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from typing import Dict, List, Optional
 
 from django.utils import timezone
@@ -8,6 +9,17 @@ from .prompt_manager import PromptManager, OnboardingDataProcessor
 from .ai_client import AIClientFactory, AIClientError
 
 logger = logging.getLogger(__name__)
+
+# OpenAI stub for tests
+class OpenAIStub:
+    api_key = os.getenv("OPENAI_API_KEY", "test-key")
+    
+    class ChatCompletion:
+        @staticmethod
+        def create(**kwargs):
+            return {"choices": [{"message": {"content": "Test response"}}]}
+
+openai = OpenAIStub()
 
 
 
