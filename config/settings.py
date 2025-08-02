@@ -162,7 +162,7 @@ else:
     AWS_DEFAULT_ACL = 'public-read'
     
     # Media files storage
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'  # Удалено - конфликт с STORAGES в Django 4.2+
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 # Default primary key field type
