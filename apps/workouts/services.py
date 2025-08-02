@@ -7,9 +7,39 @@ from .models import Exercise, VideoClip, DailyWorkout
 class VideoPlaylistBuilder:
     """Service to build video playlist for a workout"""
     
-    def __init__(self, archetype: str = "bro", locale: str = "ru"):
+    def __init__(self, archetype: str, locale: str = "ru"):
         self.archetype = archetype
         self.locale = locale
+    
+    def build_playlist(self, exercises) -> List[Dict]:
+        """Build playlist from ExplainerVideo scripts for given exercises"""
+        from apps.workouts.models import CSVExercise, ExplainerVideo
+        
+        videos = []
+        for ex in exercises:
+            # Get exercise object if we have ID string
+            if isinstance(ex, str):
+                exercise = CSVExercise.objects.filter(id=ex).first()
+            else:
+                exercise = ex
+                
+            if not exercise:
+                continue
+                
+            # Get video script for this exercise/archetype/locale
+            video = ExplainerVideo.objects.filter(
+                exercise=exercise,
+                archetype=self.archetype,
+                locale=self.locale
+            ).order_by("?").first()  # Random if multiple
+            
+            if video:
+                videos.append({
+                    "exercise_id": exercise.id,
+                    "script": video.script
+                })
+        
+        return videos
     
     def build_workout_playlist(self, workout: DailyWorkout, user_archetype: str) -> List[Dict]:
         """
