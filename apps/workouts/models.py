@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
 User = get_user_model()
@@ -197,3 +198,53 @@ class WorkoutExecution(models.Model):
     class Meta:
         db_table = 'workout_executions'
         ordering = ['-started_at']
+
+
+# ===== New CSV-based models =====
+
+class CSVExercise(models.Model):
+    """
+    Базовое упражнение, импортируется из data/clean/exercises.csv
+    """
+    id = models.CharField(primary_key=True, max_length=20)          # EX027_v2
+    name_ru = models.CharField(max_length=120)
+    name_en = models.CharField(max_length=120, blank=True)
+    level = models.CharField(max_length=20)                         # beginner / intermediate / advanced
+    description = models.TextField(blank=True)
+    muscle_group = models.CharField(max_length=50, blank=True)
+    exercise_type = models.CharField(max_length=50, blank=True)     # strength / stretch / cardio
+    ai_tags = models.JSONField(blank=True, default=list)
+
+    class Meta:
+        verbose_name = "Упражнение CSV"
+        verbose_name_plural = "Упражнения CSV"
+        db_table = 'csv_exercises'
+
+    def __str__(self):
+        return f"{self.id} – {self.name_ru}"
+
+
+class ExplainerVideo(models.Model):
+    """
+    Скрипт или ссылка на видео-объяснение; 1:* к упражнению,
+    разделено по архетипу тренера.
+    """
+    ARCHETYPE_CHOICES = [
+        ("111", "Наставник"),
+        ("222", "Профессионал"),
+        ("333", "Ровесник"),
+    ]
+
+    exercise = models.ForeignKey(CSVExercise, on_delete=models.CASCADE, related_name="videos")
+    archetype = models.CharField(max_length=3, choices=ARCHETYPE_CHOICES)
+    script = models.TextField()                      # пока хранит текст; позже можно добавить video_url
+    locale = models.CharField(max_length=5, default="ru")  # ru / en …
+
+    class Meta:
+        unique_together = ("exercise", "archetype", "locale")
+        verbose_name = "Видео-объяснение"
+        verbose_name_plural = "Видео-объяснения"
+        db_table = 'explainer_videos'
+
+    def __str__(self):
+        return f"{self.exercise_id} – {self.get_archetype_display()}"
