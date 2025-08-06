@@ -91,6 +91,37 @@ def health_check(request):
         status['checks']['videos'] = f'error: {str(e)}'
         logger.error(f"Health check videos error: {e}")
     
+    # Check Redis connection (for Celery)
+    try:
+        import redis
+        from django_celery_beat.models import PeriodicTask
+        
+        # Get Redis URL from settings
+        redis_url = getattr(settings, 'CELERY_BROKER_URL', None)
+        if not redis_url:
+            redis_url = getattr(settings, 'REDIS_URL', None)
+            
+        if redis_url:
+            # Try to connect to Redis
+            r = redis.from_url(redis_url)
+            r.ping()  # This will raise exception if Redis is down
+            
+            # Check if we have periodic tasks configured
+            task_count = PeriodicTask.objects.count()
+            status['checks']['redis'] = f'healthy (ping successful, {task_count} scheduled tasks)'
+        else:
+            status['status'] = 'degraded'
+            status['checks']['redis'] = 'warning: no Redis URL configured'
+            
+    except redis.ConnectionError as e:
+        status['status'] = 'unhealthy'
+        status['checks']['redis'] = f'error: Redis connection failed - {str(e)}'
+        logger.error(f"Health check Redis connection error: {e}")
+    except Exception as e:
+        status['status'] = 'degraded'
+        status['checks']['redis'] = f'warning: Redis check failed - {str(e)}'
+        logger.error(f"Health check Redis error: {e}")
+    
     # Check AI integration
     try:
         openai_key = getattr(settings, 'OPENAI_API_KEY', None)
