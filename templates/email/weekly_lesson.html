@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .email-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .week-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 30px;
+        }
+        .content p {
+            margin: 15px 0;
+        }
+        .cta-section {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .cta-text {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #007bff;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .footer {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 30px;
+        }
+        .footer-links {
+            margin: 15px 0;
+        }
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .unsubscribe {
+            font-size: 12px;
+            color: #888;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">💪 AI Fitness Coach</div>
+            <div>Еженедельный урок от твоего персонального тренера</div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="week-title">{{ title }}</h1>
+
+        <!-- Content -->
+        <div class="content">
+            {{ script|linebreaks }}
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <div class="cta-text">Готов к новым тренировкам?</div>
+            <a href="{{ dashboard_url }}" class="cta-button">
+                Перейти к тренировкам →
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-links">
+                <a href="{{ dashboard_url }}">Личный кабинет</a> |
+                <a href="{{ profile_url }}">Настройки</a> |
+                <a href="{{ support_url }}">Поддержка</a>
+            </div>
+            
+            <div>
+                <strong>AI Fitness Coach</strong><br>
+                Твой персональный путь к здоровью и уверенности
+            </div>
+
+            <div class="unsubscribe">
+                Чтобы отписаться от рассылки, 
+                <a href="{{ unsubscribe_url }}" style="color: #888;">нажми здесь</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

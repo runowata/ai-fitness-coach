@@ -22,7 +22,7 @@ class APIEndpointsTestCase(TestCase):
         )
         # UserProfile is created automatically by signals
         self.profile = self.user.profile
-        self.profile.archetype = 'bro'
+        self.profile.archetype = '333'  # Ровесник (was bro)
         self.profile.save()
         
         # Create test exercise and video
@@ -31,7 +31,7 @@ class APIEndpointsTestCase(TestCase):
             name_ru='Тест упражнение',
             level='beginner'
         )
-        # Create video for 'bro' archetype (which maps to '333')
+        # Create video for '333' archetype (Ровесник)
         self.video = ExplainerVideo.objects.create(
             exercise=self.exercise,
             archetype='333',
@@ -42,7 +42,7 @@ class APIEndpointsTestCase(TestCase):
     def test_archetype_api_unauthenticated(self):
         """Test archetype API requires authentication"""
         url = reverse('api_archetype')
-        response = self.client.patch(url, {'archetype': 'sergeant'})
+        response = self.client.patch(url, {'archetype': '222'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
     
     def test_archetype_api_authenticated(self):
@@ -50,12 +50,12 @@ class APIEndpointsTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
         url = reverse('api_archetype')
         
-        response = self.client.patch(url, {'archetype': 'sergeant'})
+        response = self.client.patch(url, {'archetype': '222'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
         # Check that archetype was updated
         self.profile.refresh_from_db()
-        self.assertEqual(self.profile.archetype, 'sergeant')
+        self.assertEqual(self.profile.archetype, '222')
     
     def test_explainer_video_api_unauthenticated(self):
         """Test explainer video API requires authentication"""
@@ -74,7 +74,7 @@ class APIEndpointsTestCase(TestCase):
         # Check response data
         data = response.json()
         self.assertEqual(data['exercise_id'], 'EX001_v1')
-        self.assertEqual(data['archetype'], '333')  # bro maps to 333
+        self.assertEqual(data['archetype'], '333')  # Ровесник archetype
         self.assertEqual(data['script'], 'Тестовый скрипт видео')
         self.assertEqual(data['locale'], 'ru')
     

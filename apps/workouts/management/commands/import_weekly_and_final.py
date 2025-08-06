@@ -1,137 +1,139 @@
+import yaml
 from pathlib import Path
-import docx
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from apps.workouts.models import WeeklyLesson, FinalVideo
-
-DOCS = {
-    "weekly": "Сценарии еженедельных  Видео.docx",
-    "final": "финальные развернутые видео.docx",
-}
-ARCH_MAP = {"Наставник": "111", "Профессионал": "222", "Ровесник": "333"}
 
 
 class Command(BaseCommand):
-    help = "Импортирует weekly-lessons и финальные видео из Word"
+    help = "Импортирует weekly-lessons и финальные видео из YAML файлов"
 
-    def handle(self, *a, **kw):
-        root = Path("data/raw")
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--from-yaml',
+            type=str,
+            default='content',
+            help='Путь к директории с YAML файлами (по умолчанию: content)'
+        )
+        parser.add_argument(
+            '--dry-run',
+            action='store_true',
+            help='Показать что будет импортировано без создания записей'
+        )
+
+    def handle(self, *args, **options):
+        content_dir = Path(options['from_yaml'])
+        dry_run = options['dry_run']
+        
+        if not content_dir.exists():
+            raise CommandError(f"Директория {content_dir} не существует")
+        
+        weekly_dir = content_dir / 'weekly'
+        final_dir = content_dir / 'final'
+        
         created_weekly = 0
         updated_weekly = 0
         created_final = 0
         updated_final = 0
         
-        # --- weekly ---
-        weekly_path = root / DOCS["weekly"]
-        if weekly_path.exists():
-            doc = docx.Document(weekly_path)
-            cur_week = None
-            cur_arch = None
-            script_buffer = []
+        # Import weekly lessons
+        if weekly_dir.exists():
+            weekly_files = sorted(weekly_dir.glob('week*.yaml'))
+            self.stdout.write(f"Найдено {len(weekly_files)} weekly файлов")
             
-            for p in doc.paragraphs:
-                text = p.text.strip()
+            for yaml_file in weekly_files:
+                self.stdout.write(f"Обрабатываем {yaml_file.name}...")
                 
-                # Detect week number
-                if text.lower().startswith("неделя"):
-                    # Save previous buffer if exists
-                    if cur_week and cur_arch and script_buffer:
-                        script = "\n".join(script_buffer)
-                        obj, created = WeeklyLesson.objects.update_or_create(
-                            week=cur_week, archetype=cur_arch, locale="ru",
-                            defaults={"title": f"Неделя {cur_week} - {cur_arch}", "script": script},
-                        )
-                        if created:
-                            created_weekly += 1
-                        else:
-                            updated_weekly += 1
-                        script_buffer = []
+                try:
+                    with open(yaml_file, 'r', encoding='utf-8') as f:
+                        data = yaml.safe_load(f)
                     
-                    # Extract week number
-                    try:
-                        cur_week = int(text.split()[1])
-                    except:
-                        cur_week = None
+                    week_num = data['week']
+                    week_title = data['title']
+                    
+                    for lesson in data['lessons']:
+                        archetype = lesson['archetype']
+                        locale = lesson['locale']
+                        script = lesson['script'].strip()
                         
-                # Detect archetype
-                elif any(key in text for key in ARCH_MAP):
-                    # Save previous buffer if exists
-                    if cur_week and cur_arch and script_buffer:
-                        script = "\n".join(script_buffer)
+                        if dry_run:
+                            self.stdout.write(
+                                f"  [DRY RUN] Week {week_num}, Archetype {archetype}: {len(script)} chars"
+                            )
+                            continue
+                        
                         obj, created = WeeklyLesson.objects.update_or_create(
-                            week=cur_week, archetype=cur_arch, locale="ru",
-                            defaults={"title": f"Неделя {cur_week} - {cur_arch}", "script": script},
+                            week=week_num,
+                            archetype=archetype,
+                            locale=locale,
+                            defaults={
+                                'title': f"{week_title}",
+                                'script': script
+                            }
                         )
+                        
                         if created:
                             created_weekly += 1
+                            self.stdout.write(
+                                f"  ✓ Created Week {week_num} - {archetype}"
+                            )
                         else:
                             updated_weekly += 1
-                        script_buffer = []
-                    
-                    cur_arch = ARCH_MAP[next(k for k in ARCH_MAP if k in text)]
-                    
-                # Collect script text
-                elif text and cur_week and cur_arch:
-                    script_buffer.append(text)
-            
-            # Save last buffer
-            if cur_week and cur_arch and script_buffer:
-                script = "\n".join(script_buffer)
-                obj, created = WeeklyLesson.objects.update_or_create(
-                    week=cur_week, archetype=cur_arch, locale="ru",
-                    defaults={"title": f"Неделя {cur_week} - {cur_arch}", "script": script},
-                )
-                if created:
-                    created_weekly += 1
-                else:
-                    updated_weekly += 1
+                            self.stdout.write(
+                                f"  ↻ Updated Week {week_num} - {archetype}"
+                            )
+                            
+                except Exception as e:
+                    self.stdout.write(
+                        self.style.ERROR(f"Ошибка в {yaml_file.name}: {e}")
+                    )
         
-        # --- final ---
-        final_path = root / DOCS["final"]
-        if final_path.exists():
-            doc = docx.Document(final_path)
-            cur_arch = None
-            script_buffer = []
+        # Import final videos
+        if final_dir.exists():
+            final_files = list(final_dir.glob('*.yaml'))
+            self.stdout.write(f"Найдено {len(final_files)} final файлов")
             
-            for p in doc.paragraphs:
-                text = p.text.strip()
+            for yaml_file in final_files:
+                self.stdout.write(f"Обрабатываем {yaml_file.name}...")
                 
-                # Detect archetype
-                if any(k in text for k in ARCH_MAP):
-                    # Save previous buffer
-                    if cur_arch and script_buffer:
-                        script = "\n".join(script_buffer)
-                        obj, created = FinalVideo.objects.update_or_create(
-                            arch=cur_arch, locale="ru", 
-                            defaults={"script": script}
+                try:
+                    with open(yaml_file, 'r', encoding='utf-8') as f:
+                        data = yaml.safe_load(f)
+                    
+                    archetype = data['archetype']
+                    locale = data['locale']
+                    script = data['script'].strip()
+                    
+                    if dry_run:
+                        self.stdout.write(
+                            f"  [DRY RUN] Final {archetype}: {len(script)} chars"
                         )
-                        if created:
-                            created_final += 1
-                        else:
-                            updated_final += 1
-                        script_buffer = []
+                        continue
                     
-                    cur_arch = ARCH_MAP[next(k for k in ARCH_MAP if k in text)]
+                    obj, created = FinalVideo.objects.update_or_create(
+                        arch=archetype,
+                        locale=locale,
+                        defaults={'script': script}
+                    )
                     
-                # Collect script text
-                elif text and cur_arch:
-                    script_buffer.append(text)
-            
-            # Save last buffer
-            if cur_arch and script_buffer:
-                script = "\n".join(script_buffer)
-                obj, created = FinalVideo.objects.update_or_create(
-                    arch=cur_arch, locale="ru", 
-                    defaults={"script": script}
-                )
-                if created:
-                    created_final += 1
-                else:
-                    updated_final += 1
+                    if created:
+                        created_final += 1
+                        self.stdout.write(f"  ✓ Created Final {archetype}")
+                    else:
+                        updated_final += 1
+                        self.stdout.write(f"  ↻ Updated Final {archetype}")
+                        
+                except Exception as e:
+                    self.stdout.write(
+                        self.style.ERROR(f"Ошибка в {yaml_file.name}: {e}")
+                    )
         
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Import done!\n"
-                f"Weekly: Created {created_weekly}, Updated {updated_weekly}\n"
-                f"Final: Created {created_final}, Updated {updated_final}"
+        if not dry_run:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"\nИмпорт завершен!\n"
+                    f"Weekly: Created {created_weekly}, Updated {updated_weekly}\n"
+                    f"Final: Created {created_final}, Updated {updated_final}"
+                )
             )
-        )
+        else:
+            self.stdout.write(self.style.WARNING("\n[DRY RUN] Никакие данные не были изменены"))
