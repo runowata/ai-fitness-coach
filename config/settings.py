@@ -137,8 +137,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise configuration - moved to STORAGES dict below
 
 # Media files
 if DEBUG or os.getenv('RENDER'):
@@ -253,7 +252,14 @@ LOGGING = {
 }
 
 # ─── Static files via WhiteNoise ────────────────────────────────
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 # Allow Render's dynamic hostname
 RENDER_HOST = os.getenv("RENDER_EXTERNAL_HOSTNAME", "")
 ALLOWED_HOSTS += [RENDER_HOST] if RENDER_HOST else []
