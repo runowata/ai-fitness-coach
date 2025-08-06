@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'apps.content',
     'apps.achievements',
     'apps.ai_integration',
+    'apps.notifications',
+    'apps.analytics',
 ]
 
 MIDDLEWARE = [
@@ -215,6 +217,23 @@ RATELIMIT_VIEW = 'apps.core.views.ratelimit_exceeded'
 # Age verification
 MINIMUM_AGE = 18
 
+# Push Notifications
+ONESIGNAL_APP_ID = os.getenv('ONESIGNAL_APP_ID', '')
+ONESIGNAL_REST_API_KEY = os.getenv('ONESIGNAL_REST_API_KEY', '')
+FCM_SERVER_KEY = os.getenv('FCM_SERVER_KEY', '')
+
+# Analytics
+AMPLITUDE_API_KEY = os.getenv('AMPLITUDE_API_KEY', '')
+AMPLITUDE_BATCH_SIZE = int(os.getenv('AMPLITUDE_BATCH_SIZE', '10'))
+
+# Monitoring & Alerting
+SLACK_WEBHOOK_URL = os.getenv('SLACK_WEBHOOK_URL', '')
+SLACK_ALERT_CHANNEL = os.getenv('SLACK_ALERT_CHANNEL', '#alerts')
+SLACK_BOT_USERNAME = os.getenv('SLACK_BOT_USERNAME', 'AI-Fitness-Monitor')
+REDIS_ALERT_THRESHOLD_MS = float(os.getenv('REDIS_ALERT_THRESHOLD_MS', '100'))
+ALERT_COOLDOWN_SECONDS = int(os.getenv('ALERT_COOLDOWN_SECONDS', '300'))  # 5 minutes
+APP_VERSION = os.getenv('APP_VERSION', '0.9.0-rc1')
+
 # Metrics and monitoring
 PROMETHEUS_METRICS_EXPORT_PORT = 8001
 PROMETHEUS_METRICS_EXPORT_ADDRESS = ''
@@ -288,6 +307,23 @@ from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
     'enqueue-weekly-lesson': {
         'task': 'apps.workouts.tasks.enqueue_weekly_lesson',
-        'schedule': crontab(hour=8, minute=0, day_of_week=1),  # Every Monday at 8:00 AM
+        'schedule': crontab(minute='*/5'),  # TEMP: Every 5 minutes for testing
+        # 'schedule': crontab(hour=8, minute=0, day_of_week=1),  # Production: Every Monday at 8:00 AM
+    },
+    'send-amplitude-events-batch': {
+        'task': 'apps.analytics.tasks.batch_send_events_to_amplitude_task',
+        'schedule': crontab(minute='*/5'),  # Every 5 minutes
+    },
+    'calculate-daily-metrics': {
+        'task': 'apps.analytics.tasks.calculate_daily_metrics_task',
+        'schedule': crontab(hour=1, minute=0),  # Daily at 1:00 AM
+    },
+    'cleanup-old-analytics': {
+        'task': 'apps.analytics.tasks.cleanup_old_analytics_events_task',
+        'schedule': crontab(hour=2, minute=0, day_of_week=0),  # Weekly on Sunday at 2:00 AM
+    },
+    'system-health-monitor': {
+        'task': 'apps.core.tasks.system_health_monitor_task',
+        'schedule': crontab(minute='*/5'),  # Every 5 minutes
     },
 }
