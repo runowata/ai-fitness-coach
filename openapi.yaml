@@ -63,6 +63,7 @@ paths:
                   unread:
                     type: boolean
                     description: True if user has unread lessons
+                    example: true
                 required:
                   - unread
         '403':

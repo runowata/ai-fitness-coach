@@ -81,9 +81,11 @@ GET /healthz/                - System health check (now includes Redis)
 3. Verify health: `curl /healthz/`
 
 #### Breaking Changes
-- Archetype values changed from strings to numeric codes
-- Weekly lesson delivery switched from email to API-based system
-- Old weekly lesson email templates no longer used
+- **BREAKING:** Archetype values changed from strings to numeric codes (`"bro"` → `"333"`, `"sergeant"` → `"222"`, `"intellectual"` → `"111"`)
+- **BREAKING:** Weekly lesson delivery switched from email to API-based system
+- **BREAKING:** Old `/api/weekly/current/` response format changed - now includes `duration_sec` field
+- **BREAKING:** Email-based weekly lesson templates deprecated and removed
+- **BREAKING:** Celery beat schedule format changed - requires Redis and django-celery-beat
 
 ## [Previous Versions]
 

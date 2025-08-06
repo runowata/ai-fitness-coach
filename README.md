@@ -63,6 +63,39 @@ python manage.py import_media  # Реальный импорт
 python manage.py runserver
 ```
 
+### Running Celery locally
+
+Для локальной разработки с Celery и Redis:
+
+```bash
+# 1. Запустить Redis (macOS с Homebrew)
+brew install redis
+brew services start redis
+
+# Или с Docker
+docker run -d -p 6379:6379 redis:alpine
+
+# 2. В отдельных терминалах запустить:
+
+# Celery Worker
+celery -A config worker --loglevel=info
+
+# Celery Beat Scheduler  
+celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+# Django сервер
+python manage.py runserver
+```
+
+Проверка работы:
+```bash
+# Проверить соединение с Redis
+redis-cli ping  # должно вернуть PONG
+
+# Проверить health endpoint
+curl http://localhost:8000/healthz/
+```
+
 ## Структура проекта
 
 ```

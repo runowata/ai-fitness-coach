@@ -288,6 +288,6 @@ from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
     'enqueue-weekly-lesson': {
         'task': 'apps.workouts.tasks.enqueue_weekly_lesson',
-        'schedule': crontab(minute='*/5'),  # TEMPORARY: Every 5 minutes for testing
+        'schedule': crontab(hour=8, minute=0, day_of_week=1),  # Every Monday at 8:00 AM
     },
 }
