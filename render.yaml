@@ -9,7 +9,7 @@ services:
     name: ai-fitness-coach
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    preDeployCommand: "python manage.py migrate --noinput && python manage.py bootstrap_from_videos --media-path=/opt/render/project/src/media/videos --skip-if-exists"
+    preDeployCommand: "python manage.py migrate --noinput && python manage.py bootstrap_from_videos --media-path=/opt/render/project/src/media/videos --skip-if-exists && python manage.py load_weekly_lessons"
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
     plan: starter
     region: frankfurt
@@ -20,6 +20,11 @@ services:
       - key: DATABASE_URL
         fromDatabase:
           name: ai-fitness-coach-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ai-fitness-coach-redis
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
@@ -33,3 +38,66 @@ services:
     scaling:
       minInstances: 1
       maxInstances: 2
+  
+  - type: worker
+    name: ai-fitness-coach-celery
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A config worker -l info"
+    plan: starter
+    region: frankfurt
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ai-fitness-coach-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ai-fitness-coach-redis
+          property: connectionString
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        value: 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
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: RENDER
+        value: "true"
+    autoDeploy: true
+    
+  - type: worker  
+    name: ai-fitness-coach-beat
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    plan: starter
+    region: frankfurt
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ai-fitness-coach-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ai-fitness-coach-redis
+          property: connectionString
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        value: 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
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: RENDER
+        value: "true"
+    autoDeploy: true
+    
+  - type: redis
+    name: ai-fitness-coach-redis
+    plan: free
+    region: frankfurt
