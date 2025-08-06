@@ -7,8 +7,8 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 # API Views
-from apps.users.views import ArchetypeView
-from apps.workouts.views import ExplainerVideoView, WeeklyCurrentView, WeeklyUnreadView, WeeklyLessonView
+from apps.users.views import ArchetypeView, UserProfileView
+from apps.workouts.views import ExplainerVideoView, WeeklyCurrentView, WeeklyUnreadView, WeeklyLessonView, WeeklyLessonHealthView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,13 +18,17 @@ urlpatterns = [
     path('onboarding/', include('apps.onboarding.urls')),
     path('content/', include('apps.content.urls')),
     path('achievements/', include('apps.achievements.urls')),
+    path('', include('apps.notifications.urls')),
+    path('', include('apps.analytics.urls')),
     
     # API endpoints
+    path('api/profile/', UserProfileView.as_view(), name='api_profile'),
     path('api/archetype/', ArchetypeView.as_view(), name='api_archetype'),
     path('api/exercise/<str:exercise_id>/video/', ExplainerVideoView.as_view(), name='api_exercise_video'),
     path('api/weekly/current/', WeeklyCurrentView.as_view(), name='api_weekly_current'),
     path('api/weekly/unread/', WeeklyUnreadView.as_view(), name='api_weekly_unread'),
     path('api/weekly/<int:week>/', WeeklyLessonView.as_view(), name='api_weekly_lesson'),
+    path('api/weekly/health/', WeeklyLessonHealthView.as_view(), name='api_weekly_health'),
     
     # Auth URLs
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # Third party
     'storages',
     'django_extensions',
+    'django_celery_beat',
     
     # Local apps
     'apps.core',

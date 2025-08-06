@@ -235,26 +235,102 @@ class WeeklyCurrentView(generics.RetrieveAPIView):
     """
     GET /api/weekly/current/ 
     Возвращает непрочитанный еженедельный урок для пользователя и помечает его как прочитанный.
+    
+    Optimized for high-load scenarios (1k+ concurrent users):
+    - Redis caching with 5-minute TTL
+    - Database connection pooling with select_for_update
+    - Bulk operations support
+    - Performance monitoring
     """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = WeeklyNotificationSerializer
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from .performance import OptimizedWeeklyCurrentService
+        self.optimized_service = OptimizedWeeklyCurrentService()
+    
     def get(self, request):
-        # Ищем непрочитанное уведомление
-        notification = WeeklyNotification.objects.filter(
-            user=request.user,
-            is_read=False
-        ).first()
+        """
+        Optimized GET handler with caching and performance monitoring
+        """
+        import time
+        start_time = time.time()
         
-        if not notification:
-            return Response({'error': 'No unread weekly lesson found'}, status=404)
-        
-        # Помечаем как прочитанное
-        notification.mark_as_read()
-        
-        # Возвращаем данные
-        serializer = self.serializer_class(notification)
-        return Response(serializer.data)
+        try:
+            # Use optimized service for getting weekly lesson
+            lesson_data = self.optimized_service.get_current_weekly_lesson(request.user)
+            
+            if not lesson_data:
+                # Track analytics for no lesson found
+                try:
+                    from apps.analytics.services import AnalyticsService
+                    analytics = AnalyticsService()
+                    analytics.track_event(
+                        event_type='weekly_lesson_viewed',
+                        user=request.user,
+                        properties={'status': 'no_lesson_found'},
+                        request=request,
+                        send_to_amplitude=False  # Async to avoid blocking
+                    )
+                except ImportError:
+                    pass  # Analytics not available
+                
+                return Response({'error': 'No unread weekly lesson found'}, status=404)
+            
+            # Track successful lesson access
+            try:
+                from apps.analytics.services import AnalyticsService
+                analytics = AnalyticsService()
+                analytics.track_event(
+                    event_type='weekly_lesson_viewed',
+                    user=request.user,
+                    properties={
+                        'status': 'success',
+                        'lesson_week': lesson_data.get('week'),
+                        'archetype': lesson_data.get('archetype'),
+                        'lesson_title': lesson_data.get('lesson_title')
+                    },
+                    request=request,
+                    send_to_amplitude=False  # Async to avoid blocking
+                )
+            except ImportError:
+                pass  # Analytics not available
+            
+            # Add performance metadata to response (for monitoring)
+            response_time_ms = (time.time() - start_time) * 1000
+            lesson_data['_meta'] = {
+                'response_time_ms': round(response_time_ms, 2),
+                'cached': lesson_data.get('_cached', False),
+                'timestamp': timezone.now().isoformat()
+            }
+            
+            return Response(lesson_data)
+            
+        except Exception as e:
+            # Log error and return fallback response
+            logger.error(f"WeeklyCurrentView error for user {request.user.id}: {e}")
+            
+            # Fallback to original implementation
+            try:
+                notification = WeeklyNotification.objects.filter(
+                    user=request.user,
+                    is_read=False
+                ).first()
+                
+                if not notification:
+                    return Response({'error': 'No unread weekly lesson found'}, status=404)
+                
+                notification.mark_as_read()
+                serializer = self.serializer_class(notification)
+                return Response(serializer.data)
+                
+            except Exception as fallback_e:
+                logger.error(f"Fallback failed for user {request.user.id}: {fallback_e}")
+                return Response(
+                    {'error': 'Service temporarily unavailable'}, 
+                    status=503
+                )
 
 
 class WeeklyUnreadView(generics.RetrieveAPIView):
@@ -297,3 +373,78 @@ class WeeklyLessonView(generics.RetrieveAPIView):
             return Response(serializer.data)
         except WeeklyLesson.DoesNotExist:
             return Response({'error': f'Lesson for week {week} not found'}, status=404)
+
+
+class WeeklyLessonHealthView(generics.RetrieveAPIView):
+    """
+    GET /api/weekly/health/ - Health check for weekly lesson system
+    Provides performance metrics and optimization recommendations
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        """
+        Return health metrics for weekly lesson system
+        Includes database performance, cache status, and recommendations
+        """
+        from .performance import WeeklyLessonHealthChecker, OptimizedWeeklyCurrentService
+        
+        try:
+            # Check if user is staff for detailed metrics
+            include_detailed = request.user.is_staff
+            
+            health_checker = WeeklyLessonHealthChecker()
+            service = OptimizedWeeklyCurrentService()
+            
+            # Get health metrics
+            health_data = health_checker.get_system_health()
+            cache_stats = service.get_cache_stats()
+            
+            # Response structure
+            response_data = {
+                'status': health_data['overall_status'],
+                'timestamp': health_data['timestamp'],
+                'cache_enabled': cache_stats.get('cache_enabled', False),
+                'recommendations': health_data['recommendations']
+            }
+            
+            # Add detailed metrics for staff users
+            if include_detailed:
+                response_data['detailed'] = {
+                    'database': health_data['database'],
+                    'cache': health_data['cache'],
+                    'cache_stats': cache_stats
+                }
+            else:
+                # Simplified metrics for regular users
+                db_status = health_data['database'].get('status', 'unknown')
+                cache_status = health_data['cache'].get('status', 'unknown')
+                
+                response_data['performance'] = {
+                    'database_status': db_status,
+                    'cache_status': cache_status,
+                    'response_time_category': self._categorize_performance(
+                        health_data['database'].get('query_time_ms', 0)
+                    )
+                }
+            
+            return Response(response_data)
+            
+        except Exception as e:
+            logger.error(f"WeeklyLessonHealthView error: {e}")
+            return Response({
+                'status': 'error',
+                'error': 'Health check failed',
+                'timestamp': timezone.now().isoformat()
+            }, status=500)
+    
+    def _categorize_performance(self, query_time_ms: float) -> str:
+        """Categorize performance based on query time"""
+        if query_time_ms < 50:
+            return 'excellent'
+        elif query_time_ms < 100:
+            return 'good'
+        elif query_time_ms < 500:
+            return 'acceptable'
+        else:
+            return 'poor'

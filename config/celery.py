@@ -13,6 +13,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
+# Configure django-celery-beat scheduler
+app.conf.beat_scheduler = 'django_celery_beat.schedulers:DatabaseScheduler'
+
 
 @app.task(bind=True)
 def debug_task(self):

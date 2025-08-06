@@ -1,0 +1,417 @@
+openapi: 3.0.3
+info:
+  title: AI Fitness Coach API
+  description: |
+    Backend API for AI Fitness Coach application - Sprint 5 "Client UX & Push" integration.
+    
+    ## Authentication
+    All protected endpoints require authentication via session cookies or API token.
+    
+    ## Base URL
+    - Production: `https://ai-fitness-coach-ttzf.onrender.com`
+    - Development: `http://localhost:8000`
+  version: 0.9.0-rc1
+  contact:
+    name: AI Fitness Coach Team
+    url: https://github.com/runowata/ai-fitness-coach
+
+servers:
+  - url: https://ai-fitness-coach-ttzf.onrender.com
+    description: Production server
+  - url: http://localhost:8000
+    description: Local development
+
+paths:
+  # User Profile API
+  /api/profile/:
+    get:
+      summary: Get user profile data
+      description: Returns complete user profile including archetype, level, XP, etc.
+      tags: [Profile]
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: User profile data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  completed_onboarding:
+                    type: boolean
+                  profile:
+                    type: object
+                    properties:
+                      archetype:
+                        type: string
+                        enum: ['111', '222', '333']
+                      archetype_display:
+                        type: string
+                        enum: ['Наставник', 'Профессионал', 'Ровесник']
+                      age:
+                        type: integer
+                        nullable: true
+                      level:
+                        type: integer
+                      experience_points:
+                        type: integer
+                      current_streak:
+                        type: integer
+              example:
+                id: 123
+                username: "testuser"
+                email: "user@example.com"
+                completed_onboarding: true
+                profile:
+                  archetype: "222"
+                  archetype_display: "Профессионал"
+                  age: 28
+                  level: 5
+                  experience_points: 450
+                  current_streak: 7
+        '403':
+          description: Authentication required
+
+    patch:
+      summary: Update user profile
+      tags: [Profile]
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                timezone:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated successfully
+
+  # Weekly Lessons API
+  /api/weekly/unread/:
+    get:
+      summary: Check for unread weekly lessons
+      description: Returns boolean flag indicating if user has unread weekly lessons
+      tags: [Weekly Lessons]
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Unread status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unread:
+                    type: boolean
+              example:
+                unread: true
+
+  /api/weekly/current/:
+    get:
+      summary: Get current weekly lesson
+      description: |
+        Returns the current unread weekly lesson and marks it as read.
+        Optimized for high-load scenarios with Redis caching.
+      tags: [Weekly Lessons]
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Weekly lesson data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  week:
+                    type: integer
+                  archetype:
+                    type: string
+                  lesson_title:
+                    type: string
+                  lesson_script:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  _meta:
+                    type: object
+                    properties:
+                      response_time_ms:
+                        type: number
+                      cached:
+                        type: boolean
+              example:
+                id: 456
+                week: 3
+                archetype: "222"
+                lesson_title: "Построение мышечной массы"
+                lesson_script: "На этой неделе мы фокусируемся..."
+                created_at: "2025-08-06T10:30:00Z"
+                _meta:
+                  response_time_ms: 45.2
+                  cached: true
+        '404':
+          description: No unread lessons found
+
+  /api/weekly/{week}/:
+    get:
+      summary: Get specific week lesson
+      tags: [Weekly Lessons]
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: week
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 8
+      responses:
+        '200':
+          description: Week lesson data
+        '404':
+          description: Lesson not found for this week
+
+  /api/weekly/health/:
+    get:
+      summary: Weekly lessons system health
+      description: Health check for weekly lesson system performance
+      tags: [Monitoring]
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: details
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, error]
+                  cache_enabled:
+                    type: boolean
+                  recommendations:
+                    type: array
+                    items:
+                      type: string
+
+  # Push Notifications API
+  /api/push/subscribe/:
+    post:
+      summary: Subscribe to push notifications
+      tags: [Push Notifications]
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider:
+                  type: string
+                  enum: [onesignal, fcm]
+                platform:
+                  type: string
+                  enum: [web, ios, android]
+                subscription_id:
+                  type: string
+                  description: OneSignal Player ID or FCM token
+                endpoint:
+                  type: string
+                  description: Web Push endpoint (optional)
+              required: [provider, platform, subscription_id]
+      responses:
+        '201':
+          description: Subscription created successfully
+        '400':
+          description: Invalid subscription data
+
+  /api/push/unsubscribe/:
+    delete:
+      summary: Unsubscribe from push notifications
+      tags: [Push Notifications]
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscription_id:
+                  type: string
+              required: [subscription_id]
+      responses:
+        '200':
+          description: Unsubscribed successfully
+        '404':
+          description: Subscription not found
+
+  # Analytics API
+  /api/analytics/track/:
+    post:
+      summary: Track analytics event
+      tags: [Analytics]
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_type:
+                  type: string
+                  enum: [workout_completed, weekly_lesson_viewed, screen_view, button_click]
+                event_name:
+                  type: string
+                properties:
+                  type: object
+                user_properties:
+                  type: object
+                device_id:
+                  type: string
+              required: [event_type]
+            example:
+              event_type: "weekly_lesson_viewed"
+              event_name: "Weekly Lesson Viewed"
+              properties:
+                week: 3
+                lesson_title: "Построение массы"
+              user_properties:
+                level: 5
+      responses:
+        '201':
+          description: Event tracked successfully
+
+  /api/analytics/screen/:
+    post:
+      summary: Track screen view
+      tags: [Analytics]
+      security:
+        - sessionAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                screen_name:
+                  type: string
+                properties:
+                  type: object
+              required: [screen_name]
+            example:
+              screen_name: "Dashboard"
+              properties:
+                previous_screen: "Onboarding"
+      responses:
+        '201':
+          description: Screen view tracked
+
+  # Health & Monitoring
+  /healthz/:
+    get:
+      summary: System health check
+      description: Enhanced health check with performance monitoring
+      tags: [Monitoring]
+      parameters:
+        - name: details
+          in: query
+          schema:
+            type: boolean
+          description: Include detailed performance metrics (staff only)
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, error]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+                  components:
+                    type: object
+                    properties:
+                      redis:
+                        type: object
+                      database:
+                        type: object
+        '503':
+          description: System is unhealthy
+
+  # Webhooks
+  /webhooks/onesignal/:
+    post:
+      summary: OneSignal webhook for delivery confirmations
+      tags: [Webhooks]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  enum: [notification.delivered, notification.clicked]
+                id:
+                  type: string
+                  description: OneSignal notification ID
+      responses:
+        '200':
+          description: Webhook processed successfully
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    
+tags:
+  - name: Profile
+    description: User profile management
+  - name: Weekly Lessons
+    description: Weekly lesson content and tracking
+  - name: Push Notifications
+    description: Push notification subscription management
+  - name: Analytics
+    description: Event tracking and analytics
+  - name: Monitoring
+    description: System health and performance monitoring
+  - name: Webhooks
+    description: External service webhooks

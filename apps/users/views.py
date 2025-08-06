@@ -8,7 +8,7 @@ from django.utils import timezone
 from rest_framework import generics, permissions
 from .forms import UserRegistrationForm, UserProfileForm
 from .models import User, UserProfile
-from .serializers import ArchetypeSerializer
+from .serializers import ArchetypeSerializer, UserSerializer
 
 
 class RegisterView(CreateView):
@@ -112,6 +112,18 @@ def profile_settings_view(request):
         form = UserProfileForm(instance=profile)
     
     return render(request, 'users/profile_settings.html', {'form': form})
+
+
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    """
+    GET /api/profile/ - Get current user profile
+    PATCH /api/profile/ - Update user profile  
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+    
+    def get_object(self):
+        return self.request.user
 
 
 class ArchetypeView(generics.UpdateAPIView):

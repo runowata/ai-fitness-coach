@@ -111,7 +111,7 @@ def enqueue_weekly_lesson():
             
             if lesson:
                 # Создаем уведомление
-                WeeklyNotification.objects.create(
+                weekly_notification = WeeklyNotification.objects.create(
                     user=user,
                     week=week_number,
                     archetype=archetype,
@@ -119,6 +119,15 @@ def enqueue_weekly_lesson():
                     lesson_script=lesson.script
                 )
                 created_count += 1
+                
+                # Отправляем push-уведомление (если пользователь подписан)
+                try:
+                    from apps.notifications.tasks import send_weekly_lesson_push_task
+                    send_weekly_lesson_push_task.delay(weekly_notification.id)
+                except ImportError:
+                    print(f"Push notification service not available for user {user.email}")
+                except Exception as push_e:
+                    print(f"Error queuing push notification for {user.email}: {push_e}")
             else:
                 print(f"No lesson found for week {week_number}, archetype {archetype}")
                 skipped_count += 1
