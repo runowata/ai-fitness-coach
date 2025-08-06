@@ -1,0 +1,403 @@
+openapi: 3.0.3
+info:
+  title: AI Fitness Coach API
+  description: Backend API for personalized gay men fitness coaching platform
+  version: 0.9.0-rc1
+  contact:
+    name: AI Fitness Coach Team
+    url: https://aifitnesscoach.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://aifitnesscoach.onrender.com
+    description: Production server
+  - url: http://localhost:8000
+    description: Development server
+
+paths:
+  /api/weekly/current/:
+    get:
+      summary: Get current unread weekly lesson
+      description: Returns the current unread weekly lesson for authenticated user and marks it as read
+      tags:
+        - Weekly Lessons
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Current unread lesson found and returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyNotification'
+        '404':
+          description: No unread weekly lesson found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/weekly/unread/:
+    get:
+      summary: Check for unread weekly lessons
+      description: Returns boolean indicating if user has any unread weekly lessons
+      tags:
+        - Weekly Lessons
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Unread status returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unread:
+                    type: boolean
+                    description: True if user has unread lessons
+                required:
+                  - unread
+        '403':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/weekly/{week}/:
+    get:
+      summary: Get weekly lesson by week number
+      description: Returns lesson content for specified week and user's archetype
+      tags:
+        - Weekly Lessons
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: week
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 8
+          description: Week number (1-8)
+      responses:
+        '200':
+          description: Weekly lesson found and returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyLesson'
+        '404':
+          description: Lesson not found for specified week
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: User archetype not set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/archetype/:
+    patch:
+      summary: Update user archetype
+      description: Updates the trainer archetype preference for authenticated user
+      tags:
+        - User Profile
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                archetype:
+                  type: string
+                  enum: ['111', '222', '333']
+                  description: |
+                    Trainer archetype:
+                    - 111: Наставник (Mentor)
+                    - 222: Профессионал (Professional)
+                    - 333: Ровесник (Peer)
+              required:
+                - archetype
+      responses:
+        '200':
+          description: Archetype updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  archetype:
+                    type: string
+                    example: "111"
+        '400':
+          description: Invalid archetype value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/exercise/{exercise_id}/video/:
+    get:
+      summary: Get exercise explainer video
+      description: Returns personalized video instruction for exercise based on user's archetype
+      tags:
+        - Exercises
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: exercise_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Exercise identifier
+      responses:
+        '200':
+          description: Exercise video found and returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplainerVideo'
+        '404':
+          description: Exercise or video not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: User archetype not set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /healthz/:
+    get:
+      summary: System health check
+      description: Returns system status and health of all components
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '206':
+          description: System is degraded (some non-critical issues)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: System is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+      description: Django session authentication
+
+  schemas:
+    WeeklyNotification:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Notification ID
+        week:
+          type: integer
+          minimum: 1
+          maximum: 8
+          description: Week number
+        archetype:
+          type: string
+          enum: ['111', '222', '333']
+          description: User archetype
+        lesson_title:
+          type: string
+          maxLength: 120
+          description: Lesson title
+        lesson_script:
+          type: string
+          description: Lesson content/script
+        created_at:
+          type: string
+          format: date-time
+          description: When notification was created
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When lesson was marked as read
+        is_read:
+          type: boolean
+          description: Whether lesson has been read
+      required:
+        - id
+        - week
+        - archetype
+        - lesson_title
+        - lesson_script
+        - created_at
+        - is_read
+
+    WeeklyLesson:
+      type: object
+      properties:
+        week:
+          type: integer
+          minimum: 1
+          maximum: 8
+          description: Week number
+        archetype:
+          type: string
+          enum: ['111', '222', '333']
+          description: Trainer archetype
+        title:
+          type: string
+          maxLength: 120
+          description: Lesson title
+        script:
+          type: string
+          description: Lesson content
+        locale:
+          type: string
+          default: 'ru'
+          description: Content locale
+        duration_sec:
+          type: integer
+          minimum: 0
+          description: Estimated reading time in seconds
+      required:
+        - week
+        - archetype
+        - title
+        - script
+        - locale
+        - duration_sec
+
+    ExplainerVideo:
+      type: object
+      properties:
+        exercise_id:
+          type: string
+          description: Exercise identifier
+        archetype:
+          type: string
+          enum: ['111', '222', '333']
+          description: Video archetype variant
+        script:
+          type: string
+          description: Video script/content
+        locale:
+          type: string
+          description: Content locale
+      required:
+        - exercise_id
+        - archetype
+        - script
+        - locale
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: ['healthy', 'degraded', 'unhealthy']
+          description: Overall system status
+        timestamp:
+          type: string
+          format: date-time
+          description: Health check timestamp
+        version:
+          type: string
+          description: Application version
+        checks:
+          type: object
+          properties:
+            database:
+              type: string
+              description: Database connectivity status
+            redis:
+              type: string
+              description: Redis connectivity and task status
+            exercises:
+              type: string
+              description: Exercise data availability
+            videos:
+              type: string
+              description: Video content availability
+            ai_integration:
+              type: string
+              description: AI API configuration status
+          additionalProperties:
+            type: string
+      required:
+        - status
+        - timestamp
+        - version
+        - checks
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+      required:
+        - error
+
+tags:
+  - name: Weekly Lessons
+    description: Personalized weekly lesson content
+  - name: User Profile
+    description: User profile and preferences
+  - name: Exercises
+    description: Exercise content and videos
+  - name: Monitoring
+    description: System health and monitoring
