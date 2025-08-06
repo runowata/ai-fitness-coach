@@ -120,6 +120,9 @@ def test_api_endpoints_smoke():
     
     response = client.get('/api/weekly/1/')
     assert response.status_code in [401, 403]  # Not authenticated
+    
+    response = client.get('/api/weekly/unread/')
+    assert response.status_code in [401, 403]  # Not authenticated
 
 
 class WeeklyAPITestCase(TestCase):
@@ -220,3 +223,67 @@ class WeeklyAPITestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.json())
+    
+    def test_weekly_unread_unauthenticated(self):
+        """Test weekly unread API requires authentication"""
+        url = reverse('api_weekly_unread')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    
+    def test_weekly_unread_no_notifications(self):
+        """Test weekly unread API with no notifications"""
+        self.client.force_authenticate(user=self.user)
+        url = reverse('api_weekly_unread')
+        
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {'unread': False})
+    
+    def test_weekly_unread_with_notification(self):
+        """Test weekly unread API with unread notification"""
+        # Create unread notification
+        WeeklyNotification.objects.create(
+            user=self.user,
+            week=1,
+            archetype='111',
+            lesson_title='Test Lesson',
+            lesson_script='Test lesson content'
+        )
+        
+        self.client.force_authenticate(user=self.user)
+        url = reverse('api_weekly_unread')
+        
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {'unread': True})
+    
+    def test_weekly_unread_only_read_notifications(self):
+        """Test weekly unread API with only read notifications"""
+        # Create read notification
+        notification = WeeklyNotification.objects.create(
+            user=self.user,
+            week=1,
+            archetype='111',
+            lesson_title='Test Lesson',
+            lesson_script='Test lesson content'
+        )
+        notification.mark_as_read()
+        
+        self.client.force_authenticate(user=self.user)
+        url = reverse('api_weekly_unread')
+        
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {'unread': False})
+    
+    def test_weekly_lesson_includes_duration_sec(self):
+        """Test that weekly lesson API includes duration_sec field"""
+        self.client.force_authenticate(user=self.user)
+        url = reverse('api_weekly_lesson', kwargs={'week': 1})
+        
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        data = response.json()
+        self.assertIn('duration_sec', data)
+        self.assertEqual(data['duration_sec'], 180)  # Default value

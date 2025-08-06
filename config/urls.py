@@ -8,7 +8,7 @@ from django.contrib.auth import views as auth_views
 
 # API Views
 from apps.users.views import ArchetypeView
-from apps.workouts.views import ExplainerVideoView, WeeklyCurrentView, WeeklyLessonView
+from apps.workouts.views import ExplainerVideoView, WeeklyCurrentView, WeeklyUnreadView, WeeklyLessonView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/archetype/', ArchetypeView.as_view(), name='api_archetype'),
     path('api/exercise/<str:exercise_id>/video/', ExplainerVideoView.as_view(), name='api_exercise_video'),
     path('api/weekly/current/', WeeklyCurrentView.as_view(), name='api_weekly_current'),
+    path('api/weekly/unread/', WeeklyUnreadView.as_view(), name='api_weekly_unread'),
     path('api/weekly/<int:week>/', WeeklyLessonView.as_view(), name='api_weekly_lesson'),
     
     # Auth URLs

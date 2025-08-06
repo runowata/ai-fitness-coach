@@ -270,6 +270,7 @@ class WeeklyLesson(models.Model):
     locale = models.CharField(max_length=5, default="ru")
     title = models.CharField(max_length=120)
     script = models.TextField()
+    duration_sec = models.PositiveIntegerField(default=180, help_text="Estimated reading time in seconds")
 
     class Meta:
         unique_together = ("week", "archetype", "locale")

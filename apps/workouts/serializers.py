@@ -15,5 +15,5 @@ class WeeklyNotificationSerializer(serializers.ModelSerializer):
 class WeeklyLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeeklyLesson
-        fields = ['week', 'archetype', 'title', 'script', 'locale']
-        read_only_fields = ['week', 'archetype', 'title', 'script', 'locale']
+        fields = ['week', 'archetype', 'title', 'script', 'locale', 'duration_sec']
+        read_only_fields = ['week', 'archetype', 'title', 'script', 'locale', 'duration_sec']

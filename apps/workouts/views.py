@@ -257,6 +257,22 @@ class WeeklyCurrentView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
+class WeeklyUnreadView(generics.RetrieveAPIView):
+    """
+    GET /api/weekly/unread/
+    Возвращает {"unread": true/false} - есть ли непрочитанный урок недели.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        unread_exists = WeeklyNotification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).exists()
+        
+        return Response({'unread': unread_exists})
+
+
 class WeeklyLessonView(generics.RetrieveAPIView):
     """
     GET /api/weekly/<int:week>/
