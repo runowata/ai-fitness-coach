@@ -8,11 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 AI Fitness Coach - это веб-приложение для персонализированных тренировок, созданное специально для мужчин-геев. Приложение комбинирует фитнес-тренировки с заданиями на развитие уверенности и наградным эротическим контентом.
 
 ## Architecture
-- **Backend:** Django 5.x + PostgreSQL
+- **Backend:** Django 5.0.8 + PostgreSQL
 - **Frontend:** Server-side rendering + Bootstrap 5
-- **Storage:** AWS S3 для медиа-файлов
-- **AI:** OpenAI GPT-4 или Claude для генерации планов
-- **Deployment:** Render.com
+- **Storage:** AWS S3 для медиа-файлов (CloudFront CDN)
+- **AI:** OpenAI GPT-4 или Claude (multi-provider support)
+- **Task Queue:** Celery 5.4.0 + Redis
+- **Deployment:** Render.com (multi-service setup)
 
 ## Key Features Implemented
 
@@ -95,6 +96,9 @@ AI Fitness Coach - это веб-приложение для персонали�
 
 ## Key Services
 
+### Service Layer Architecture
+Business logic encapsulated in dedicated service classes:
+
 ### `VideoPlaylistBuilder`
 Собирает видео-плейлисты для тренировок:
 1. Техника выполнения (mod1)
@@ -113,6 +117,12 @@ AI Fitness Coach - это веб-приложение для персонали�
 - Начисляет XP (50-125 очков)
 - Проверяет достижения
 - Обновляет стрики
+
+### `WorkoutPlanGenerator`
+AI-powered workout plan creation with archetype-based prompts
+
+### `OnboardingDataProcessor`
+Processes user onboarding data for AI plan generation
 
 ## Media File Structure
 ```
@@ -141,8 +151,12 @@ pip install -r requirements.txt
 
 # Database setup
 python manage.py migrate
-python manage.py loaddata fixtures/*.json
 python manage.py createsuperuser
+
+# Bootstrap initial data
+python manage.py create_basic_exercises
+python manage.py bootstrap_from_videos
+python manage.py load_weekly_lessons
 
 # Run development server
 python manage.py runserver
@@ -183,24 +197,37 @@ python manage.py import_media /path/to/media --category exercise_technique
 
 ### Management Commands
 ```bash
-# Create basic exercises
-python manage.py create_basic_exercises
+# Data initialization
+python manage.py create_basic_exercises     # Create exercise database
+python manage.py bootstrap_from_videos      # Import video content
+python manage.py load_weekly_lessons        # Load weekly lesson content
 
-# Test AI generation
-python manage.py test_ai_generation
+# AI and testing
+python manage.py test_ai_generation        # Test AI plan generation
+python manage.py debug_workout_video <id>  # Debug video system
 
-# Bootstrap from videos
-python manage.py bootstrap_from_videos
+# Media management
+python manage.py import_media /path/to/media --dry-run
+python manage.py import_media /path/to/media --category exercise_technique
 
-# Debug video system
-python manage.py debug_workout_video <workout_id>
+# Analytics
+python manage.py setup_periodic_tasks      # Setup Celery periodic tasks
 ```
 
 ## Testing
 - Unit tests in `tests/` directory
-- Run with: `pytest`
-- Coverage target: ≥80%
 - Test configuration in `pytest.ini`
+- Coverage target: ≥80%
+- Database reuse for faster test runs
+
+### Test Commands
+```bash
+pytest                                  # Run all tests
+pytest --cov=apps --cov-report=html   # With coverage report
+pytest -m "not slow"                   # Skip slow tests
+pytest tests/test_models.py           # Run specific test file
+pytest -k test_workout_completion      # Run tests matching pattern
+```
 
 ## Key URLs
 - `/` - Homepage
@@ -219,12 +246,15 @@ python manage.py debug_workout_video <workout_id>
 
 ## Environment Variables
 Key environment variables needed for development:
-- `DJANGO_SETTINGS_MODULE=config.settings`
+- `SECRET_KEY` - Django secret key (auto-generated in dev if not set)
 - `DATABASE_URL` - PostgreSQL connection string
+- `REDIS_URL` - Redis for caching and Celery (default: redis://localhost:6379)
 - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` - S3 credentials
-- `OPENAI_API_KEY` or `GEMINI_API_KEY` - AI service credentials
+- `OPENAI_API_KEY` - AI service credentials (supports multiple providers)
 - `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` - Email settings
-- `SECRET_KEY` - Django secret key (generate with `generate_secret_key.py`)
+- `DJANGO_SETTINGS_MODULE=config.settings` - Settings module
+- `ALLOWED_HOSTS` - Comma-separated list for production
+- `CLOUDFRONT_DOMAIN` - CDN domain for media files
 
 ## Code Architecture Notes
 
@@ -234,13 +264,17 @@ Key environment variables needed for development:
 - **apps/onboarding/** - Multi-step questionnaire flow with motivational cards
 - **apps/content/** - Media assets (S3), Story/Chapter system for rewards
 - **apps/achievements/** - XP transactions, achievement checking, user progress tracking
-- **apps/ai_integration/** - AI service abstraction, prompt management
+- **apps/ai_integration/** - AI service abstraction, prompt management, multi-provider support
+- **apps/notifications/** - Email/push notifications, Celery task management
+- **apps/analytics/** - User metrics, workout analytics, progress tracking
 
 ### Key Design Patterns
 1. **Service Layer Pattern**: Business logic in `services.py` files (e.g., `WorkoutCompletionService`)
-2. **AI Prompt Templates**: Stored in `prompts/` directory, loaded by `PromptManager`
-3. **Async Tasks**: Email notifications via Celery (configured but optional for dev)
-4. **Media Storage**: Abstract storage backend, S3 for production, local for development
+2. **AI Prompt Templates**: Stored in `prompts/` directory with archetype-specific variations
+3. **Factory Pattern**: `AIClientFactory` for multi-provider AI support
+4. **Async Tasks**: Celery for background jobs (email, analytics, periodic tasks)
+5. **Media Storage**: Abstract storage backend, S3 for production, local for development
+6. **Repository Pattern**: Data access abstraction in model managers
 
 ### Database Relationships
 - User -> UserProfile (1:1)
@@ -250,7 +284,22 @@ Key environment variables needed for development:
 - Story -> StoryChapter -> UserStoryAccess
 
 ## Debugging Tips
-- Enable Django Debug Toolbar in development (already configured)
-- Check `debug_video_system.py` for video URL debugging
-- Use management commands for data inspection and testing
-- Fixtures in `fixtures/` for initial data setup
+- Django Debug Toolbar enabled in DEBUG mode
+- Management command `debug_workout_video` for video system debugging
+- Celery flower for task monitoring: `celery -A config flower`
+- Django shell_plus: `python manage.py shell_plus`
+- SQL query logging enabled in DEBUG mode
+- Test fixtures in `fixtures/` for consistent test data
+
+## Code Quality Tools
+- **Formatting:** Black (line length 100)
+- **Linting:** Flake8 with Django plugin
+- **Import sorting:** isort
+- **Pre-commit hooks:** Automatic formatting on commit
+
+## Production Deployment
+- **Platform:** Render.com
+- **Services:** Web (Django), Worker (Celery), Beat (Scheduler)
+- **Health check:** `/healthz/` endpoint
+- **Static files:** WhiteNoise with compression
+- **Monitoring:** Sentry integration for error tracking
