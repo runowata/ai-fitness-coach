@@ -290,3 +290,39 @@ class FinalVideo(models.Model):
 
     def __str__(self):
         return f"Final - {self.get_arch_display()}"
+
+
+class WeeklyNotification(models.Model):
+    """
+    Персональное уведомление о еженедельном уроке для каждого пользователя.
+    Создается Celery beat task и потребляется фронтендом.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='weekly_notifications')
+    week = models.PositiveSmallIntegerField()
+    archetype = models.CharField(max_length=3, choices=[("111","Н"),("222","П"),("333","Р")])
+    lesson_title = models.CharField(max_length=120)
+    lesson_script = models.TextField()
+    
+    # Status tracking
+    created_at = models.DateTimeField(auto_now_add=True)
+    read_at = models.DateTimeField(null=True, blank=True)
+    is_read = models.BooleanField(default=False)
+    
+    class Meta:
+        db_table = 'weekly_notifications'
+        unique_together = [('user', 'week')]
+        ordering = ['-week', '-created_at']
+        indexes = [
+            models.Index(fields=['user', 'is_read']),
+            models.Index(fields=['week']),
+        ]
+    
+    def __str__(self):
+        return f"Week {self.week} for {self.user.email} ({'read' if self.is_read else 'unread'})"
+    
+    def mark_as_read(self):
+        """Mark notification as read"""
+        if not self.is_read:
+            self.is_read = True
+            self.read_at = timezone.now()
+            self.save(update_fields=['is_read', 'read_at'])

@@ -9,8 +9,9 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 import json
 
-from .models import DailyWorkout, Exercise, ExplainerVideo
+from .models import DailyWorkout, Exercise, ExplainerVideo, WeeklyNotification, WeeklyLesson
 from .services import VideoPlaylistBuilder
+from .serializers import WeeklyNotificationSerializer, WeeklyLessonSerializer
 from apps.achievements.services import WorkoutCompletionService
 from apps.users.models import UserProfile
 
@@ -228,3 +229,55 @@ class ExplainerVideoView(generics.RetrieveAPIView):
             })
         except ExplainerVideo.DoesNotExist:
             return Response({'error': 'Video not found'}, status=404)
+
+
+class WeeklyCurrentView(generics.RetrieveAPIView):
+    """
+    GET /api/weekly/current/ 
+    Возвращает непрочитанный еженедельный урок для пользователя и помечает его как прочитанный.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = WeeklyNotificationSerializer
+    
+    def get(self, request):
+        # Ищем непрочитанное уведомление
+        notification = WeeklyNotification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).first()
+        
+        if not notification:
+            return Response({'error': 'No unread weekly lesson found'}, status=404)
+        
+        # Помечаем как прочитанное
+        notification.mark_as_read()
+        
+        # Возвращаем данные
+        serializer = self.serializer_class(notification)
+        return Response(serializer.data)
+
+
+class WeeklyLessonView(generics.RetrieveAPIView):
+    """
+    GET /api/weekly/<int:week>/
+    Возвращает урок по номеру недели для архетипа текущего пользователя.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = WeeklyLessonSerializer
+    lookup_field = 'week'
+    
+    def get(self, request, week):
+        user_archetype = request.user.profile.archetype
+        if not user_archetype:
+            return Response({'error': 'User archetype not set'}, status=400)
+        
+        try:
+            lesson = WeeklyLesson.objects.get(
+                week=week,
+                archetype=user_archetype,
+                locale='ru'
+            )
+            serializer = self.serializer_class(lesson)
+            return Response(serializer.data)
+        except WeeklyLesson.DoesNotExist:
+            return Response({'error': f'Lesson for week {week} not found'}, status=404)

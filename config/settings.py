@@ -286,8 +286,8 @@ CELERY_TIMEZONE = TIME_ZONE
 from celery.schedules import crontab
 
 CELERY_BEAT_SCHEDULE = {
-    'send-weekly-lesson': {
-        'task': 'apps.workouts.tasks.send_weekly_lesson',
+    'enqueue-weekly-lesson': {
+        'task': 'apps.workouts.tasks.enqueue_weekly_lesson',
         'schedule': crontab(hour=8, minute=0, day_of_week=1),  # Every Monday at 8:00 AM
     },
 }

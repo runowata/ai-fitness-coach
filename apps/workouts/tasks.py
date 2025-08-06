@@ -4,7 +4,9 @@ from django.conf import settings
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.urls import reverse
-from .models import WeeklyLesson
+from datetime import datetime
+import pytz
+from .models import WeeklyLesson, WeeklyNotification
 from apps.users.models import User
 
 
@@ -15,7 +17,7 @@ def send_weekly_lesson():
     Запускается каждый понедельник в 09:00.
     """
     today = timezone.now()
-    week_number = ((today - timezone.datetime(2024, 1, 1, tzinfo=timezone.utc)).days // 7) % 8 + 1
+    week_number = ((today - datetime(2024, 1, 1, tzinfo=pytz.UTC)).days // 7) % 8 + 1
     
     active_users = User.objects.filter(is_active=True, profile__isnull=False)
     
@@ -66,3 +68,65 @@ def send_weekly_lesson():
             continue
     
     return f"Weekly lesson sent to {sent_count} users (week {week_number})"
+
+
+@shared_task
+def enqueue_weekly_lesson():
+    """
+    НОВЫЙ ТАСК: Создает WeeklyNotification записи для всех активных пользователей.
+    Заменяет send_weekly_lesson - теперь не шлем email, а создаем уведомления для фронтенда.
+    Запускается каждый понедельник в 08:00 через Celery Beat.
+    """
+    today = timezone.now()
+    week_number = ((today - datetime(2024, 1, 1, tzinfo=pytz.UTC)).days // 7) % 8 + 1
+    
+    active_users = User.objects.filter(is_active=True, profile__isnull=False)
+    
+    created_count = 0
+    skipped_count = 0
+    
+    for user in active_users:
+        try:
+            archetype = user.profile.archetype
+            if not archetype:
+                skipped_count += 1
+                continue
+                
+            # Проверяем, нет ли уже уведомления для этого пользователя и недели
+            existing = WeeklyNotification.objects.filter(
+                user=user,
+                week=week_number
+            ).exists()
+            
+            if existing:
+                skipped_count += 1
+                continue
+                
+            # Получаем урок для этого архетипа и недели
+            lesson = WeeklyLesson.objects.filter(
+                week=week_number,
+                archetype=archetype,
+                locale='ru'
+            ).first()
+            
+            if lesson:
+                # Создаем уведомление
+                WeeklyNotification.objects.create(
+                    user=user,
+                    week=week_number,
+                    archetype=archetype,
+                    lesson_title=lesson.title,
+                    lesson_script=lesson.script
+                )
+                created_count += 1
+            else:
+                print(f"No lesson found for week {week_number}, archetype {archetype}")
+                skipped_count += 1
+                
+        except Exception as e:
+            # Логируем ошибку, но продолжаем создание для остальных
+            print(f"Error creating weekly notification for {user.email}: {e}")
+            skipped_count += 1
+            continue
+    
+    return f"Weekly notifications: Created {created_count}, Skipped {skipped_count} (week {week_number})"
