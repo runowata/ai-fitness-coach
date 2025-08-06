@@ -6,6 +6,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
+# API Views
+from apps.users.views import ArchetypeView
+from apps.workouts.views import ExplainerVideoView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.core.urls')),
@@ -14,6 +18,10 @@ urlpatterns = [
     path('onboarding/', include('apps.onboarding.urls')),
     path('content/', include('apps.content.urls')),
     path('achievements/', include('apps.achievements.urls')),
+    
+    # API endpoints
+    path('api/archetype/', ArchetypeView.as_view(), name='api_archetype'),
+    path('api/exercise/<str:exercise_id>/video/', ExplainerVideoView.as_view(), name='api_exercise_video'),
     
     # Auth URLs
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),

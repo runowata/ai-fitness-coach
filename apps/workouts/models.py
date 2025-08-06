@@ -259,3 +259,34 @@ class ExplainerVideo(models.Model):
             script=row[f"script_{locale}"],
             locale=locale,
         )
+
+
+class WeeklyLesson(models.Model):
+    """
+    Текст «бонус-урока недели», 1 запись = 1 неделя × архетип × язык
+    """
+    week = models.PositiveSmallIntegerField()
+    archetype = models.CharField(max_length=3, choices=[("111","Н"),("222","П"),("333","Р")])
+    locale = models.CharField(max_length=5, default="ru")
+    title = models.CharField(max_length=120)
+    script = models.TextField()
+
+    class Meta:
+        unique_together = ("week", "archetype", "locale")
+        ordering = ["week"]
+        db_table = 'weekly_lessons'
+
+    def __str__(self):
+        return f"Week {self.week} - {self.get_archetype_display()}"
+
+
+class FinalVideo(models.Model):
+    arch = models.CharField(max_length=3, choices=[("111","Н"),("222","П"),("333","Р")], primary_key=True)
+    locale = models.CharField(max_length=5, default="ru")
+    script = models.TextField()
+
+    class Meta:
+        db_table = 'final_videos'
+
+    def __str__(self):
+        return f"Final - {self.get_arch_display()}"

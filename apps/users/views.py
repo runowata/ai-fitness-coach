@@ -5,8 +5,10 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.utils import timezone
+from rest_framework import generics, permissions
 from .forms import UserRegistrationForm, UserProfileForm
 from .models import User, UserProfile
+from .serializers import ArchetypeSerializer
 
 
 class RegisterView(CreateView):
@@ -110,3 +112,11 @@ def profile_settings_view(request):
         form = UserProfileForm(instance=profile)
     
     return render(request, 'users/profile_settings.html', {'form': form})
+
+
+class ArchetypeView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ArchetypeSerializer
+    
+    def get_object(self):
+        return self.request.user.profile

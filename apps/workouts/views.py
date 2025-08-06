@@ -5,9 +5,11 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
+from rest_framework import generics, permissions
+from rest_framework.response import Response
 import json
 
-from .models import DailyWorkout, Exercise
+from .models import DailyWorkout, Exercise, ExplainerVideo
 from .services import VideoPlaylistBuilder
 from apps.achievements.services import WorkoutCompletionService
 from apps.users.models import UserProfile
@@ -202,3 +204,39 @@ def plan_overview_view(request):
     }
     
     return render(request, 'workouts/plan_overview.html', context)
+
+
+class ExplainerVideoView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    # Map user archetype to video archetype
+    ARCHETYPE_MAP = {
+        'bro': '333',           # Ровесник
+        'sergeant': '222',      # Профессионал
+        'intellectual': '111',  # Наставник
+    }
+    
+    def get(self, request, exercise_id):
+        user_archetype = request.user.profile.archetype
+        if not user_archetype:
+            return Response({'error': 'User archetype not set'}, status=400)
+        
+        # Map user archetype to video archetype
+        video_archetype = self.ARCHETYPE_MAP.get(user_archetype)
+        if not video_archetype:
+            return Response({'error': 'Invalid user archetype'}, status=400)
+        
+        try:
+            video = ExplainerVideo.objects.get(
+                exercise_id=exercise_id,
+                archetype=video_archetype,
+                locale='ru'
+            )
+            return Response({
+                'exercise_id': video.exercise_id,
+                'archetype': video.archetype,
+                'script': video.script,
+                'locale': video.locale
+            })
+        except ExplainerVideo.DoesNotExist:
+            return Response({'error': 'Video not found'}, status=404)
