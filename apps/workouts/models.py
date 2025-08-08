@@ -118,6 +118,7 @@ class VideoClip(models.Model):
     r2_kind = models.CharField(
         max_length=20,
         choices=R2_KIND_CHOICES,
+        default='instruction',
         help_text='Video type for R2 organization'
     )
     r2_archetype = models.CharField(

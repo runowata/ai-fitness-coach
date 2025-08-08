@@ -89,10 +89,10 @@ media_uploads/
 *.backup
 fixtures/onboarding_questions_old.json
 
-# Data processing files
-data/raw/
-*.xlsx
-*.xls
+# Data processing files (allow data/raw/ in repo for production setup)
+# data/raw/ - commented out to include bootstrap data
+# *.xlsx - allow Excel files for bootstrap data
+# *.xls
 
 # Virtual environments for data processing
 .venv/
