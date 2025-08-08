@@ -92,6 +92,22 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                         # Get instruction video for the exercise
                         clip = _resolve_clip(slug, "instruction", archetype)
                         if clip:
+                            # Safe handling of file fields that might be None or invalid
+                            signed_url = ""
+                            poster_cdn = ""
+                            
+                            try:
+                                if clip.r2_file:
+                                    signed_url = MediaService.get_signed_url(clip.r2_file)
+                            except (AttributeError, TypeError) as e:
+                                logger.warning(f"Invalid r2_file for clip {clip.id}: {e}")
+                            
+                            try:
+                                if clip.exercise and clip.exercise.poster_image:
+                                    poster_cdn = MediaService.get_public_cdn_url(clip.exercise.poster_image)
+                            except (AttributeError, TypeError) as e:
+                                logger.warning(f"Invalid poster_image for exercise {clip.exercise}: {e}")
+                            
                             out.append({
                                 "week": w_idx,
                                 "day": d_idx,
@@ -102,10 +118,8 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                                 "reps": ex.get("reps"),
                                 "kind": "instruction",
                                 "clip_id": clip.id,
-                                "signed_url": MediaService.get_signed_url(clip.r2_file),
-                                "poster_cdn": MediaService.get_public_cdn_url(
-                                    clip.exercise.poster_image
-                                ) if clip.exercise and clip.exercise.poster_image else "",
+                                "signed_url": signed_url,
+                                "poster_cdn": poster_cdn,
                                 "archetype": clip.archetype or archetype,
                                 "duration_seconds": clip.duration_seconds,
                             })
@@ -114,6 +128,22 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                         for aux_kind in ("technique", "mistake"):
                             clip = _resolve_clip(slug, aux_kind, archetype)
                             if clip:
+                                # Safe handling of file fields that might be None or invalid
+                                signed_url = ""
+                                poster_cdn = ""
+                                
+                                try:
+                                    if clip.r2_file:
+                                        signed_url = MediaService.get_signed_url(clip.r2_file)
+                                except (AttributeError, TypeError) as e:
+                                    logger.warning(f"Invalid r2_file for {aux_kind} clip {clip.id}: {e}")
+                                
+                                try:
+                                    if clip.exercise and clip.exercise.poster_image:
+                                        poster_cdn = MediaService.get_public_cdn_url(clip.exercise.poster_image)
+                                except (AttributeError, TypeError) as e:
+                                    logger.warning(f"Invalid poster_image for {aux_kind} exercise {clip.exercise}: {e}")
+                                
                                 out.append({
                                     "week": w_idx,
                                     "day": d_idx,
@@ -122,10 +152,8 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                                     "exercise_name": ex.get("name", slug),
                                     "kind": aux_kind,
                                     "clip_id": clip.id,
-                                    "signed_url": MediaService.get_signed_url(clip.r2_file),
-                                    "poster_cdn": MediaService.get_public_cdn_url(
-                                        clip.exercise.poster_image
-                                    ) if clip.exercise and clip.exercise.poster_image else "",
+                                    "signed_url": signed_url,
+                                    "poster_cdn": poster_cdn,
                                     "archetype": clip.archetype or archetype,
                                     "duration_seconds": clip.duration_seconds,
                                 })

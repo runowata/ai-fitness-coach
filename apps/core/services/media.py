@@ -45,6 +45,11 @@ class MediaService:
         if not file_field:
             return ''
             
+        # Handle invalid input types (integers, etc.)
+        if not hasattr(file_field, 'name') and not hasattr(file_field, 'url'):
+            logger.warning(f"get_signed_url received invalid input: {type(file_field)} - {file_field}")
+            return ''
+            
         # Include expiry in cache key to handle different TTLs
         cache_key = f'signed_url:{file_field.name}:{expiry or DEFAULT_EXPIRE}'
         
@@ -97,6 +102,11 @@ class MediaService:
             Public CDN URL string
         """
         if not file_field_or_name:
+            return ''
+        
+        # Handle invalid input types (integers, etc.)
+        if isinstance(file_field_or_name, (int, float)):
+            logger.warning(f"get_public_cdn_url received invalid input: {type(file_field_or_name)} - {file_field_or_name}")
             return ''
         
         # Handle string path
