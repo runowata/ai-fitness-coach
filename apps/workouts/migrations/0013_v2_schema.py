@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                 END IF;
             END $$;
             """,
-            reverse_sql=""
+            reverse_sql=migrations.RunSQL.noop
         ),
 
         # Add v2 fields to videoclip table (safe for clean DB)
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
                 END IF;
             END $$;
             """,
-            reverse_sql=""
+            reverse_sql=migrations.RunSQL.noop
         ),
 
         # Add v2 fields to workoutplan table (safe for clean DB)
@@ -107,7 +107,7 @@ class Migration(migrations.Migration):
                 END IF;
             END $$;
             """,
-            reverse_sql=""
+            reverse_sql=migrations.RunSQL.noop
         ),
 
         # Remove legacy fields if they exist (safe for clean DB)
@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
                 END IF;
             END $$;
             """,
-            reverse_sql=""
+            reverse_sql=migrations.RunSQL.noop
         ),
 
         # Remove legacy fields from videoclip table (safe for clean DB)
@@ -145,28 +145,44 @@ class Migration(migrations.Migration):
                 END IF;
             END $$;
             """,
-            reverse_sql=""
+            reverse_sql=migrations.RunSQL.noop
         ),
 
-        # Create v2 indexes (safe for clean DB)
+        # Create v2 indexes (safe for clean DB - check columns exist)
         migrations.RunSQL(
             sql="""
-            -- Create v2 indexes if table exists and indexes don't exist
+            -- Create v2 indexes if table and columns exist and indexes don't exist
             DO $$
             BEGIN
-                IF to_regclass('public.video_clips') IS NOT NULL THEN
+                -- Index on exercise_id, r2_kind, r2_archetype (not archetype)
+                IF to_regclass('public.video_clips') IS NOT NULL 
+                   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='exercise_id')
+                   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_kind')
+                   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_archetype') THEN
                     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_exercis_1e5613_idx') THEN
-                        CREATE INDEX video_clips_exercis_1e5613_idx ON video_clips(exercise_id, r2_kind, archetype);
+                        CREATE INDEX video_clips_exercis_1e5613_idx ON video_clips(exercise_id, r2_kind, r2_archetype);
                     END IF;
+                END IF;
+                
+                -- Index on r2_kind, r2_archetype
+                IF to_regclass('public.video_clips') IS NOT NULL 
+                   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_kind')
+                   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_archetype') THEN
                     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_r2_kind_d2e4dd_idx') THEN
-                        CREATE INDEX video_clips_r2_kind_d2e4dd_idx ON video_clips(r2_kind, archetype);
+                        CREATE INDEX video_clips_r2_kind_d2e4dd_idx ON video_clips(r2_kind, r2_archetype);
                     END IF;
+                END IF;
+                
+                -- Index on is_active, r2_kind
+                IF to_regclass('public.video_clips') IS NOT NULL 
+                   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='is_active')
+                   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_kind') THEN
                     IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_is_acti_9705f9_idx') THEN
                         CREATE INDEX video_clips_is_acti_9705f9_idx ON video_clips(is_active, r2_kind);
                     END IF;
                 END IF;
             END $$;
             """,
-            reverse_sql=""
+            reverse_sql=migrations.RunSQL.noop
         ),
     ]
