@@ -133,7 +133,7 @@ class Migration(migrations.Migration):
     # This migration replaces all removed conflicting migrations
     replaces = [
         ('workouts', '0013_finalvideo_exercise_equipment_exercise_poster_image_and_more'),
-        ('workouts', '0014_clean_v1_legacy'),
+        ('workouts', '0014_finalvideo_weeklylesson_and_more'),
         ('workouts', '0015_add_v2_indexes'),
         ('workouts', '0016_v2_schema'),
     ]
@@ -151,8 +151,19 @@ class Migration(migrations.Migration):
                 locale varchar(5) DEFAULT 'ru',
                 script text
             );
+            
+            CREATE TABLE IF NOT EXISTS weekly_lessons (
+                id bigint PRIMARY KEY,
+                week smallint NOT NULL,
+                archetype varchar(3) NOT NULL,
+                locale varchar(5) DEFAULT 'ru',
+                title varchar(120) NOT NULL,
+                script text NOT NULL,
+                duration_sec integer DEFAULT 180,
+                CONSTRAINT unique_weekly_lesson UNIQUE (week, archetype, locale)
+            );
             """,
-            reverse_sql="DROP TABLE IF EXISTS final_videos;"
+            reverse_sql="DROP TABLE IF EXISTS final_videos; DROP TABLE IF EXISTS weekly_lessons;"
         ),
         
         # Add columns using Python functions (database-agnostic)

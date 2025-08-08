@@ -13,8 +13,12 @@ class Command(BaseCommand):
         parser.add_argument(
             '--data-dir',
             type=str,
-            default='./data/raw',
-            help='Directory containing Excel files'
+            help='Directory containing Excel files (auto-resolved if not specified)'
+        )
+        parser.add_argument(
+            '--force-download',
+            action='store_true',
+            help='Force download from cloud even if local data exists'
         )
         parser.add_argument(
             '--skip-import',
@@ -27,8 +31,36 @@ class Command(BaseCommand):
             help='Skip test plan generation (recommended for production)'
         )
 
+    def _resolve_data_dir(self, data_dir, force_download):
+        """Resolve data directory: prefer local, fallback to cloud download"""
+        
+        # If explicit data_dir provided, use it
+        if data_dir:
+            return data_dir
+            
+        # Check for local data/raw directory
+        local_data_dir = './data/raw'
+        if Path(local_data_dir).exists() and not force_download:
+            # Check if it has Excel files
+            excel_files = list(Path(local_data_dir).glob('*.xlsx'))
+            if excel_files:
+                self.stdout.write(self.style.SUCCESS(f"  📁 Using local data: {local_data_dir} ({len(excel_files)} Excel files)"))
+                return local_data_dir
+        
+        # Fallback to cloud download
+        self.stdout.write(self.style.WARNING("  ☁️  Local data not found, will use cloud bootstrap"))
+        bootstrap_url = os.environ.get('BOOTSTRAP_DATA_URL')
+        if not bootstrap_url:
+            self.stdout.write(self.style.ERROR("  ❌ BOOTSTRAP_DATA_URL environment variable not set"))
+            self.stdout.write("  💡 Either add data/raw/ directory or set BOOTSTRAP_DATA_URL")
+            return None
+            
+        # Use bootstrap command logic (will download and extract)
+        return 'cloud'
+
     def handle(self, *args, **options):
-        data_dir = options['data_dir']
+        data_dir = options['data_dir'] 
+        force_download = options['force_download']
         skip_import = options['skip_import']
         skip_plans = options['skip_plans']
         
@@ -48,16 +80,18 @@ class Command(BaseCommand):
         if not skip_import:
             self.stdout.write("\n2️⃣ Importing exercises and video clips...")
             
-            # Check if data directory exists
-            if not Path(data_dir).exists():
-                self.stdout.write(self.style.ERROR(f"  ❌ Data directory not found: {data_dir}"))
-                self.stdout.write(self.style.WARNING(
-                    "  💡 Make sure data/raw/ directory is in your repository with Excel files"
-                ))
+            # Resolve data directory (local first, cloud fallback)
+            resolved_data_dir = self._resolve_data_dir(data_dir, force_download)
+            if not resolved_data_dir:
                 return
-            
+                
             try:
-                call_command('import_exercises_v2', data_dir=data_dir, verbosity=1)
+                if resolved_data_dir == 'cloud':
+                    # Use bootstrap command for cloud download + import
+                    call_command('bootstrap_v2_min', verbosity=1)
+                else:
+                    # Use local directory import
+                    call_command('import_exercises_v2', data_dir=resolved_data_dir, verbosity=1)
                 self.stdout.write(self.style.SUCCESS("  ✅ Import completed"))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"  ❌ Import failed: {e}"))
