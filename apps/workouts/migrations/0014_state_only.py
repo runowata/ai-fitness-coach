@@ -2,7 +2,6 @@
 # State-only migration to ensure model state is correct after v2 schema
 
 from django.db import migrations, models
-import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -11,42 +10,42 @@ class Migration(migrations.Migration):
         ('workouts', '0013_v2_schema'),
     ]
 
-    # This is a state-only migration - no actual database changes
-    # It just updates Django's understanding of the model state
     operations = [
-        # FinalVideo model state
-        migrations.CreateModel(
-            name='FinalVideo',
-            fields=[
-                ('arch', models.CharField(max_length=20, primary_key=True, serialize=False)),
-                ('locale', models.CharField(default='ru', max_length=5)),
-                ('script', models.TextField()),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                # No database operations - tables already created by 0013_v2_schema
             ],
-            options={
-                'db_table': 'final_videos',
-            },
-        ),
-        
-        # WeeklyLesson model state  
-        migrations.CreateModel(
-            name='WeeklyLesson',
-            fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('week', models.SmallIntegerField()),
-                ('archetype', models.CharField(max_length=3)),
-                ('locale', models.CharField(default='ru', max_length=5)),
-                ('title', models.CharField(max_length=120)),
-                ('script', models.TextField()),
-                ('duration_sec', models.IntegerField(default=180)),
+            state_operations=[
+                migrations.CreateModel(
+                    name='FinalVideo',
+                    fields=[
+                        ('arch', models.CharField(max_length=20, primary_key=True, serialize=False)),
+                        ('locale', models.CharField(default='ru', max_length=5)),
+                        ('script', models.TextField()),
+                    ],
+                    options={'db_table': 'final_videos'},
+                ),
+                migrations.CreateModel(
+                    name='WeeklyLesson',
+                    fields=[
+                        ('id', models.BigAutoField(primary_key=True, serialize=False)),
+                        ('week', models.SmallIntegerField()),
+                        ('archetype', models.CharField(max_length=3)),
+                        ('locale', models.CharField(default='ru', max_length=5)),
+                        ('title', models.CharField(max_length=120)),
+                        ('script', models.TextField()),
+                        ('duration_sec', models.IntegerField(default=180)),
+                    ],
+                    options={
+                        'db_table': 'weekly_lessons',
+                        'constraints': [
+                            models.UniqueConstraint(
+                                fields=['week', 'archetype', 'locale'],
+                                name='unique_weekly_lesson'
+                            ),
+                        ],
+                    },
+                ),
             ],
-            options={
-                'db_table': 'weekly_lessons',
-                'constraints': [
-                    models.UniqueConstraint(
-                        fields=['week', 'archetype', 'locale'],
-                        name='unique_weekly_lesson'
-                    ),
-                ],
-            },
         ),
     ]
