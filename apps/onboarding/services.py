@@ -23,7 +23,7 @@ class OnboardingDataProcessor:
             Dict containing structured user data for AI prompts
         """
         try:
-            profile = user.userprofile
+            profile = user.profile
             
             # Basic profile data
             user_data = {
