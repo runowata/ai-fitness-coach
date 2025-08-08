@@ -6,8 +6,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    # This migration replaces the problematic 0016 that may exist on production
-    replaces = [('workouts', '0016_v2_schema')]
+    # This migration replaces all removed conflicting migrations
+    replaces = [
+        ('workouts', '0013_finalvideo_exercise_equipment_exercise_poster_image_and_more'),
+        ('workouts', '0014_clean_v1_legacy'),
+        ('workouts', '0015_add_v2_indexes'),
+        ('workouts', '0016_v2_schema'),
+    ]
 
     dependencies = [
         ('workouts', '0012_add_duration_sec_field'),
@@ -42,111 +47,123 @@ class Migration(migrations.Migration):
             reverse_sql="DROP TABLE IF EXISTS weekly_lessons;"
         ),
 
-        # Add missing fields to existing tables
+        # Add missing fields to existing tables (safe for clean DB)
         migrations.RunSQL(
             sql="""
-            -- Add v2 fields to exercises table if they don't exist
+            -- Add v2 fields to exercises table if table and columns don't exist
             DO $$ 
             BEGIN
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='equipment') THEN
-                    ALTER TABLE workouts_exercise ADD COLUMN equipment varchar(50) DEFAULT 'bodyweight';
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='poster_image') THEN
-                    ALTER TABLE workouts_exercise ADD COLUMN poster_image varchar(100);
+                IF to_regclass('public.workouts_exercise') IS NOT NULL THEN
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='equipment') THEN
+                        ALTER TABLE workouts_exercise ADD COLUMN equipment varchar(50) DEFAULT 'bodyweight';
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='poster_image') THEN
+                        ALTER TABLE workouts_exercise ADD COLUMN poster_image varchar(100);
+                    END IF;
                 END IF;
             END $$;
             """,
             reverse_sql=""
         ),
 
-        # Add v2 fields to videoclip table
+        # Add v2 fields to videoclip table (safe for clean DB)
         migrations.RunSQL(
             sql="""
-            -- Add v2 fields to videoclips table if they don't exist
+            -- Add v2 fields to videoclips table if table exists and columns don't exist
             DO $$ 
             BEGIN
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_kind') THEN
-                    ALTER TABLE video_clips ADD COLUMN r2_kind varchar(20) DEFAULT '';
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_file') THEN
-                    ALTER TABLE video_clips ADD COLUMN r2_file varchar(100);
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_archetype') THEN
-                    ALTER TABLE video_clips ADD COLUMN r2_archetype varchar(20);
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='script_text') THEN
-                    ALTER TABLE video_clips ADD COLUMN script_text text;
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='is_placeholder') THEN
-                    ALTER TABLE video_clips ADD COLUMN is_placeholder boolean DEFAULT false;
+                IF to_regclass('public.video_clips') IS NOT NULL THEN
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_kind') THEN
+                        ALTER TABLE video_clips ADD COLUMN r2_kind varchar(20) DEFAULT '';
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_file') THEN
+                        ALTER TABLE video_clips ADD COLUMN r2_file varchar(100);
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='r2_archetype') THEN
+                        ALTER TABLE video_clips ADD COLUMN r2_archetype varchar(20);
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='script_text') THEN
+                        ALTER TABLE video_clips ADD COLUMN script_text text;
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='is_placeholder') THEN
+                        ALTER TABLE video_clips ADD COLUMN is_placeholder boolean DEFAULT false;
+                    END IF;
                 END IF;
             END $$;
             """,
             reverse_sql=""
         ),
 
-        # Add v2 fields to workoutplan table
+        # Add v2 fields to workoutplan table (safe for clean DB)
         migrations.RunSQL(
             sql="""
-            -- Add ai_analysis to workoutplan table if it doesn't exist
+            -- Add ai_analysis to workoutplan table if table exists and column doesn't exist
             DO $$ 
             BEGIN
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workout_plans' AND column_name='ai_analysis') THEN
-                    ALTER TABLE workout_plans ADD COLUMN ai_analysis jsonb;
+                IF to_regclass('public.workout_plans') IS NOT NULL THEN
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workout_plans' AND column_name='ai_analysis') THEN
+                        ALTER TABLE workout_plans ADD COLUMN ai_analysis jsonb;
+                    END IF;
                 END IF;
             END $$;
             """,
             reverse_sql=""
         ),
 
-        # Remove legacy fields if they exist
+        # Remove legacy fields if they exist (safe for clean DB)
         migrations.RunSQL(
             sql="""
-            -- Remove legacy v1 fields from exercises table
+            -- Remove legacy v1 fields from exercises table if table exists
             DO $$ 
             BEGIN
-                IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='technique_video_url') THEN
-                    ALTER TABLE workouts_exercise DROP COLUMN technique_video_url;
-                END IF;
-                IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='mistake_video_url') THEN
-                    ALTER TABLE workouts_exercise DROP COLUMN mistake_video_url;
+                IF to_regclass('public.workouts_exercise') IS NOT NULL THEN
+                    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='technique_video_url') THEN
+                        ALTER TABLE workouts_exercise DROP COLUMN technique_video_url;
+                    END IF;
+                    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='workouts_exercise' AND column_name='mistake_video_url') THEN
+                        ALTER TABLE workouts_exercise DROP COLUMN mistake_video_url;
+                    END IF;
                 END IF;
             END $$;
             """,
             reverse_sql=""
         ),
 
-        # Remove legacy fields from videoclip table
+        # Remove legacy fields from videoclip table (safe for clean DB)
         migrations.RunSQL(
             sql="""
-            -- Remove legacy v1 fields from video_clips table
+            -- Remove legacy v1 fields from video_clips table if table exists
             DO $$ 
             BEGIN
-                IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='type') THEN
-                    ALTER TABLE video_clips DROP COLUMN type;
-                END IF;
-                IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='url') THEN
-                    ALTER TABLE video_clips DROP COLUMN url;
+                IF to_regclass('public.video_clips') IS NOT NULL THEN
+                    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='type') THEN
+                        ALTER TABLE video_clips DROP COLUMN type;
+                    END IF;
+                    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='video_clips' AND column_name='url') THEN
+                        ALTER TABLE video_clips DROP COLUMN url;
+                    END IF;
                 END IF;
             END $$;
             """,
             reverse_sql=""
         ),
 
-        # Create v2 indexes
+        # Create v2 indexes (safe for clean DB)
         migrations.RunSQL(
             sql="""
-            -- Create v2 indexes if they don't exist
+            -- Create v2 indexes if table exists and indexes don't exist
             DO $$
             BEGIN
-                IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_exercis_1e5613_idx') THEN
-                    CREATE INDEX video_clips_exercis_1e5613_idx ON video_clips(exercise_id, r2_kind, archetype);
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_r2_kind_d2e4dd_idx') THEN
-                    CREATE INDEX video_clips_r2_kind_d2e4dd_idx ON video_clips(r2_kind, archetype);
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_is_acti_9705f9_idx') THEN
-                    CREATE INDEX video_clips_is_acti_9705f9_idx ON video_clips(is_active, r2_kind);
+                IF to_regclass('public.video_clips') IS NOT NULL THEN
+                    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_exercis_1e5613_idx') THEN
+                        CREATE INDEX video_clips_exercis_1e5613_idx ON video_clips(exercise_id, r2_kind, archetype);
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_r2_kind_d2e4dd_idx') THEN
+                        CREATE INDEX video_clips_r2_kind_d2e4dd_idx ON video_clips(r2_kind, archetype);
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'video_clips_is_acti_9705f9_idx') THEN
+                        CREATE INDEX video_clips_is_acti_9705f9_idx ON video_clips(is_active, r2_kind);
+                    END IF;
                 END IF;
             END $$;
             """,
