@@ -23,7 +23,7 @@ class ExerciseAdmin(admin.ModelAdmin):
             'description': 'Exercises that can be substituted for this one'
         }),
         ('Media', {
-            'fields': ('technique_video_url', 'mistake_video_url')
+            'fields': ('poster_image',)
         }),
         ('Status', {
             'fields': ('is_active',)
@@ -41,20 +41,23 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 @admin.register(VideoClip)
 class VideoClipAdmin(admin.ModelAdmin):
-    list_display = ('exercise', 'type', 'archetype', 'model_name', 'duration_seconds', 'is_active')
-    list_filter = ('type', 'archetype', 'model_name', 'is_active')
+    list_display = ('exercise', 'r2_kind', 'archetype', 'model_name', 'duration_seconds', 'is_active')
+    list_filter = ('r2_kind', 'archetype', 'model_name', 'is_active')
     search_fields = ('exercise__name', 'reminder_text')
     autocomplete_fields = ['exercise']
     
     fieldsets = (
         ('Video Information', {
-            'fields': ('exercise', 'type', 'archetype', 'model_name')
+            'fields': ('exercise', 'r2_kind', 'archetype', 'model_name')
+        }),
+        ('R2 Storage', {
+            'fields': ('r2_file', 'r2_archetype')
         }),
         ('Content', {
-            'fields': ('url', 'duration_seconds', 'reminder_text')
+            'fields': ('duration_seconds', 'script_text', 'reminder_text')
         }),
         ('Status', {
-            'fields': ('is_active',)
+            'fields': ('is_active', 'is_placeholder')
         })
     )
     

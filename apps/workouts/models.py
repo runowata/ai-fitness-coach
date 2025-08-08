@@ -39,9 +39,15 @@ class Exercise(models.Model):
     # Exercise alternatives (for substitution feature)
     alternatives = models.ManyToManyField('self', blank=True, symmetrical=True)
     
-    # Video references
-    technique_video_url = models.URLField(blank=True, default='')
-    mistake_video_url = models.URLField(blank=True, default='')
+    # Legacy video references removed - use VideoClip.r2_file instead
+    
+    # Media assets
+    poster_image = models.ImageField(
+        upload_to='photos/workout/',
+        blank=True,
+        null=True,
+        help_text='Poster image for video player'
+    )
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -58,15 +64,34 @@ class Exercise(models.Model):
     
     def __str__(self):
         return self.name
+    
+    @property
+    def poster_cdn(self):
+        """Get CDN URL for poster image"""
+        if self.poster_image:
+            from apps.core.services import MediaService
+            return MediaService.get_public_cdn_url(self.poster_image)
+        return ''
 
 
 class VideoClip(models.Model):
-    TYPE_CHOICES = [
+    # Clean v2 type choices for R2
+    R2_KIND_CHOICES = [
         ('technique', 'Technique'),
         ('mistake', 'Common Mistake'),
+        ('instruction', 'Instruction'),
         ('intro', 'Introduction'),
-        ('outro', 'Outro'),
-        ('support', 'Support/Motivation'),
+        ('weekly', 'Weekly Motivation'),
+        ('closing', 'Closing'),
+        ('reminder', 'Reminder'),
+        ('explain', 'Exercise Explanation'),
+    ]
+    
+    # Clean v2 archetype choices only
+    ARCHETYPE_CHOICES = [
+        ('peer', 'Ровесник'),
+        ('professional', 'Успешный профессионал'),
+        ('mentor', 'Мудрый наставник'),
     ]
     
     exercise = models.ForeignKey(
@@ -76,18 +101,34 @@ class VideoClip(models.Model):
         null=True,
         blank=True
     )
-    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     archetype = models.CharField(
         max_length=20, 
-        choices=[
-            ('bro', 'Бро'),
-            ('sergeant', 'Сержант'),
-            ('intellectual', 'Интеллектуал'),
-        ]
+        choices=ARCHETYPE_CHOICES
     )
     model_name = models.CharField(max_length=50)  # mod1, mod2, mod3
-    url = models.URLField()
     duration_seconds = models.PositiveIntegerField()
+    
+    # R2 Storage fields (required in v2)
+    r2_file = models.FileField(
+        upload_to='videos/',
+        blank=True,
+        null=True,
+        help_text='Video file in R2 storage'
+    )
+    r2_kind = models.CharField(
+        max_length=20,
+        choices=R2_KIND_CHOICES,
+        help_text='Video type for R2 organization'
+    )
+    r2_archetype = models.CharField(
+        max_length=20,
+        choices=ARCHETYPE_CHOICES,
+        blank=True,
+        help_text='Archetype for R2 videos'
+    )
+    
+    # Script/content
+    script_text = models.TextField(blank=True, help_text='Video script or content')
     
     # For reminder clips
     reminder_text = models.CharField(max_length=200, blank=True)
@@ -100,11 +141,24 @@ class VideoClip(models.Model):
     class Meta:
         db_table = 'video_clips'
         indexes = [
-            models.Index(fields=['exercise', 'type', 'archetype']),
+            models.Index(fields=['exercise', 'r2_kind', 'archetype']),
+            models.Index(fields=['r2_kind', 'archetype']),  # For playlist queries
+            models.Index(fields=['is_active', 'r2_kind']),  # For filtering active clips
         ]
         unique_together = [
-            ['exercise', 'type', 'archetype', 'model_name', 'reminder_text']
+            ['exercise', 'r2_kind', 'archetype', 'model_name', 'reminder_text']
         ]
+    
+    def __str__(self):
+        return f"{self.exercise.name if self.exercise else 'General'} - {self.r2_kind} - {self.archetype}"
+    
+    @property
+    def signed_url(self):
+        """Get signed URL for video from R2 storage"""
+        if self.r2_file:
+            from apps.core.services.media import MediaService
+            return MediaService.get_signed_url(self.r2_file)
+        return ''
 
 
 class WorkoutPlan(models.Model):

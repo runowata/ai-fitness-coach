@@ -143,7 +143,34 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # WhiteNoise configuration - moved to STORAGES dict below
 
 # Media files
-if DEBUG or os.getenv('RENDER'):
+USE_R2_STORAGE = os.getenv('USE_R2_STORAGE', 'False') == 'True'
+
+if USE_R2_STORAGE:
+    # Cloudflare R2 Storage Configuration
+    AWS_ACCESS_KEY_ID = os.getenv('R2_ACCESS_KEY_ID', os.getenv('AWS_ACCESS_KEY_ID'))
+    AWS_SECRET_ACCESS_KEY = os.getenv('R2_SECRET_ACCESS_KEY', os.getenv('AWS_SECRET_ACCESS_KEY'))
+    AWS_STORAGE_BUCKET_NAME = os.getenv('R2_BUCKET', 'ai-fitness-media')
+    AWS_S3_ENDPOINT_URL = os.getenv('R2_ENDPOINT')
+    AWS_S3_REGION_NAME = 'auto'
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_DEFAULT_ACL = 'private'
+    AWS_QUERYSTRING_AUTH = True
+    AWS_QUERYSTRING_EXPIRE = int(os.getenv('AWS_QUERYSTRING_EXPIRE', '7200'))  # 2 hours for videos
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    
+    # R2 Public URL (if configured)
+    R2_PUBLIC_BASE = os.getenv('R2_PUBLIC_BASE', '')
+    
+    # Update STORAGES for R2
+    STORAGES['default'] = {
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+    }
+    
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+    
+elif DEBUG or os.getenv('RENDER'):
     # Local media serving (development or Render deployment)
     MEDIA_URL = '/media/'
     # Fix: Use correct path for Render deployment
@@ -201,9 +228,19 @@ AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai')  # 'openai' or 'anthropic'
 
 # OpenAI settings
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4-turbo-preview')
+OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4o')  # Updated to latest model
 OPENAI_MAX_TOKENS = int(os.getenv('OPENAI_MAX_TOKENS', '4000'))
 OPENAI_TEMPERATURE = float(os.getenv('OPENAI_TEMPERATURE', '0.7'))
+
+# Prompts configuration - fixed to v2 only
+PROMPTS_PROFILE = 'v2'  # Clean v2 implementation without legacy support
+
+# Archetype mapping for backward compatibility (old -> new only)
+ARCHETYPE_ALIASES = {
+    'bro': 'peer',
+    'sergeant': 'professional', 
+    'intellectual': 'mentor',
+}
 
 # Anthropic Claude settings (alternative)
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')

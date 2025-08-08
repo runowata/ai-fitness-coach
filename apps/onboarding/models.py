@@ -92,7 +92,15 @@ class AnswerOption(models.Model):
 class MotivationalCard(models.Model):
     title = models.CharField(max_length=200, blank=True)
     message = models.TextField()
-    image_url = models.URLField(blank=True)
+    image_url = models.URLField(blank=True)  # Keep for backward compatibility
+    
+    # New image field for R2/S3 storage
+    image = models.ImageField(
+        upload_to='photos/quotes/',
+        blank=True,
+        null=True,
+        help_text='Motivational card image'
+    )
     
     # Specific linking to questions and answers
     question = models.ForeignKey(
@@ -140,6 +148,14 @@ class MotivationalCard(models.Model):
             elif self.is_default_for_question:
                 return f"Default card for Q{self.question.order}"
         return self.title or self.message[:50]
+    
+    @property
+    def cdn_url(self):
+        """Get CDN URL for card image"""
+        if self.image:
+            from apps.core.services import MediaService
+            return MediaService.get_public_cdn_url(self.image)
+        return self.image_url  # Fallback to legacy URL field
 
 
 class UserOnboardingResponse(models.Model):

@@ -71,7 +71,7 @@ class Command(BaseCommand):
         
         # Sample user data for testing
         test_user_data = {
-            'archetype': 'bro',
+            'archetype': 'mentor',
             'age': 25,
             'height': 175,
             'weight': 70,

@@ -43,13 +43,13 @@ class User(AbstractUser):
 
 class UserProfile(models.Model):
     ARCHETYPE_CHOICES = [
-        ('intellectual', 'Наставник'),
-        ('sergeant', 'Профессионал'),
-        ('bro', 'Ровесник'),
+        ('mentor', 'Мудрый наставник'),
+        ('professional', 'Успешный профессионал'),
+        ('peer', 'Ровесник'),
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    archetype = models.CharField(max_length=20, choices=ARCHETYPE_CHOICES, default='intellectual')
+    archetype = models.CharField(max_length=20, choices=ARCHETYPE_CHOICES, default='mentor')
     
     # Physical data
     age = models.PositiveIntegerField(null=True, blank=True)

@@ -6,8 +6,10 @@ from typing import Dict, List, Optional
 from django.utils import timezone
 from openai import OpenAI
 
-from .prompt_manager import PromptManager, OnboardingDataProcessor
+from .prompt_manager_v2 import PromptManagerV2
 from .ai_client import AIClientFactory, AIClientError
+from .validators import WorkoutPlanValidator
+from apps.onboarding.services import OnboardingDataProcessor
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +51,7 @@ class WorkoutPlanGenerator:
     
     def __init__(self):
         self.ai_client = AIClientFactory.create_client()
-        self.prompt_manager = PromptManager()
+        self.prompt_manager = PromptManagerV2()
     
     def create_plan(self, user, user_data: Dict) -> 'WorkoutPlan':
         """Create a complete workout plan for user"""
@@ -80,6 +82,11 @@ class WorkoutPlanGenerator:
             if not isinstance(plan_data, dict):
                 logger.error(f"Expected dict from generate_plan, got {type(plan_data)}: {plan_data}")
                 raise ValueError(f"Invalid plan data type: {type(plan_data)}")
+            
+            # Post-validate and fix the AI plan
+            validator = WorkoutPlanValidator()
+            plan_data, validation_report = validator.validate_and_fix_plan(plan_data)
+            logger.info(f"Plan validation: {validation_report['fixes_applied']} fixes applied, {validation_report['issues_found']} issues found")
             
             logger.info(f"Creating WorkoutPlan object...")
             
@@ -337,22 +344,22 @@ class WorkoutPlanGenerator:
         """Build the prompt for plan generation using archetype-specific template"""
         archetype = user_data.get('archetype', 'bro')
         
-        # Map archetype to specific prompt file
-        prompt_files = {
-            'bro': 'workout_plan_bro',
-            'sergeant': 'workout_plan_sergeant', 
-            'intellectual': 'workout_plan_intellectual'
-        }
-        
-        prompt_name = prompt_files.get(archetype, 'workout_plan_bro')
+        # Normalize archetype from legacy to new naming
+        archetype = self.prompt_manager.normalize_archetype(archetype)
         
         try:
-            prompt_template = self.prompt_manager.get_workout_plan_prompt(archetype)
-            logger.warning(f"### USING PROMPT FILE ### for archetype: {archetype}")
-            return self.prompt_manager.format_prompt(prompt_template, **user_data)
-        except (FileNotFoundError, ValueError) as e:
-            # Fallback to built-in prompt if file has formatting issues
-            logger.warning(f"### USING FALLBACK PROMPT ### Prompt file has formatting issues: {e}")
+            # Get v2 prompts (system + user)
+            system_prompt, user_prompt = self.prompt_manager.get_prompt_pair('master', archetype, with_intro=True)
+            
+            # Format user prompt with user data
+            formatted_user_prompt = user_prompt.format(**user_data)
+            
+            logger.info(f"### USING V2 PROMPTS ### for archetype: {archetype}")
+            return f"{system_prompt}\n\n{formatted_user_prompt}"
+            
+        except Exception as e:
+            # Fallback to built-in prompt if v2 prompts have issues
+            logger.warning(f"### USING FALLBACK PROMPT ### V2 prompt error: {e}")
             return self._build_fallback_prompt(user_data)
     
     def _build_fallback_prompt(self, user_data: Dict) -> str:
