@@ -10,17 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='FinalVideo',
-            fields=[
-                ('arch', models.CharField(choices=[('111', 'Н'), ('222', 'П'), ('333', 'Р')], max_length=3, primary_key=True, serialize=False)),
-                ('locale', models.CharField(default='ru', max_length=5)),
-                ('script', models.TextField()),
-            ],
-            options={
-                'db_table': 'final_videos',
-            },
-        ),
+        # FinalVideo already created in 0013_v2_schema - skip duplicate creation
         migrations.CreateModel(
             name='WeeklyLesson',
             fields=[
