@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkoutPlan",
+  "description": "Schema for AI-generated workout plans",
+  "type": "object",
+  "required": ["meta", "weeks"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["version", "archetype", "goal", "plan_name"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Version of the schema/prompt used"
+        },
+        "archetype": {
+          "type": "string",
+          "enum": ["mentor", "professional", "peer"],
+          "description": "Trainer archetype used for plan generation"
+        },
+        "goal": {
+          "type": "string",
+          "description": "Primary fitness goal"
+        },
+        "plan_name": {
+          "type": "string",
+          "description": "Personalized plan name"
+        },
+        "duration_weeks": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 12,
+          "description": "Total plan duration in weeks"
+        }
+      }
+    },
+    "weeks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": ["week_number", "theme", "days"],
+        "properties": {
+          "week_number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "theme": {
+            "type": "string",
+            "description": "Weekly focus theme"
+          },
+          "description": {
+            "type": "string",
+            "description": "Week overview and goals"
+          },
+          "days": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 7,
+            "items": {
+              "type": "object",
+              "required": ["day_number", "blocks"],
+              "properties": {
+                "day_number": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 7
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Day name (e.g., 'Upper Body Strength')"
+                },
+                "note": {
+                  "type": "string",
+                  "description": "Daily motivation or instruction"
+                },
+                "estimated_duration": {
+                  "type": "integer",
+                  "description": "Estimated workout duration in minutes"
+                },
+                "blocks": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["type"],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["warmup", "main", "cooldown", "confidence_task"],
+                        "description": "Block type"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Block name"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Block instructions"
+                      },
+                      "exercises": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": ["slug", "sets", "reps"],
+                          "properties": {
+                            "slug": {
+                              "type": "string",
+                              "description": "Exercise slug from database"
+                            },
+                            "sets": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10
+                            },
+                            "reps": {
+                              "type": "string",
+                              "description": "Repetitions (e.g., '8-12', '30 сек', 'до отказа')"
+                            },
+                            "weight": {
+                              "type": "string",
+                              "description": "Weight instruction (optional)"
+                            },
+                            "rest_sec": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 300,
+                              "description": "Rest time in seconds"
+                            },
+                            "notes": {
+                              "type": "string",
+                              "description": "Exercise-specific notes"
+                            }
+                          }
+                        }
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "Text content for confidence tasks or general instructions"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "progression_notes": {
+      "type": "string",
+      "description": "Guidelines for progression over weeks"
+    },
+    "safety_reminders": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Important safety reminders"
+    }
+  }
+}

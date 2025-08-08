@@ -1,0 +1,33 @@
+{
+  "CORSRules": [
+    {
+      "AllowedOrigins": [
+        "https://ai-fitness-coach-ttzf.onrender.com",
+        "http://localhost:8000",
+        "http://localhost:3000",
+        "https://localhost:8000"
+      ],
+      "AllowedMethods": [
+        "GET",
+        "HEAD"
+      ],
+      "AllowedHeaders": [
+        "*",
+        "Range",
+        "Origin",
+        "Content-Type",
+        "Accept",
+        "Authorization"
+      ],
+      "ExposeHeaders": [
+        "Accept-Ranges",
+        "Content-Length",
+        "Content-Range",
+        "Content-Type",
+        "ETag",
+        "Last-Modified"
+      ],
+      "MaxAgeSeconds": 86400
+    }
+  ]
+}
