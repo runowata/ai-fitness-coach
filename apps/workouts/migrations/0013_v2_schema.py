@@ -6,6 +6,9 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
+    # This migration replaces the problematic 0016 that may exist on production
+    replaces = [('workouts', '0016_v2_schema')]
+
     dependencies = [
         ('workouts', '0012_add_duration_sec_field'),
     ]
