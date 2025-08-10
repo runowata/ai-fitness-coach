@@ -26,9 +26,14 @@ class Migration(migrations.Migration):
             name='weeklylesson',
             options={'ordering': ['week']},
         ),
-        migrations.RemoveConstraint(
-            model_name='weeklylesson',
-            name='unique_weekly_lesson',
+        # Safe removal of legacy constraint (may not exist in fresh DB)
+        migrations.RunSQL(
+            "ALTER TABLE weekly_lessons DROP CONSTRAINT IF EXISTS unique_weekly_lesson;",
+            reverse_sql=migrations.RunSQL.noop,
+        ),
+        migrations.RunSQL(
+            "ALTER TABLE workouts_weeklylesson DROP CONSTRAINT IF EXISTS unique_weekly_lesson;",
+            reverse_sql=migrations.RunSQL.noop,
         ),
         migrations.RemoveIndex(
             model_name='videoclip',
