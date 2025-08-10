@@ -135,6 +135,59 @@ def safe_add_videoclip_columns(apps, schema_editor):
                 pass
 
 
+def safe_alter_videoclip_unique_together(apps, schema_editor):
+    """Safely alter VideoClip unique_together constraint"""
+    VideoClip = apps.get_model("workouts", "VideoClip")
+    table = VideoClip._meta.db_table
+    vendor = schema_editor.connection.vendor
+    
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            # Check if old constraint exists and drop it
+            cursor.execute("""
+                SELECT COUNT(*)
+                FROM pg_constraint c
+                JOIN pg_class t ON c.conrelid = t.oid
+                WHERE t.relname = %s AND c.contype = 'u'
+                AND pg_get_constraintdef(c.oid) LIKE '%%exercise_id%%type%%archetype%%model_name%%reminder_text%%'
+            """, [table])
+            
+            old_constraint_exists = cursor.fetchone()[0] > 0
+            
+            if old_constraint_exists:
+                try:
+                    cursor.execute(f"""
+                        ALTER TABLE {table}
+                        DROP CONSTRAINT video_clips_exercise_id_type_archetype_model_name_reminder_text_key
+                    """)
+                except Exception:
+                    pass
+            
+            # Check if new constraint already exists
+            cursor.execute("""
+                SELECT COUNT(*)
+                FROM pg_constraint c
+                JOIN pg_class t ON c.conrelid = t.oid
+                WHERE t.relname = %s AND c.contype = 'u'
+                AND pg_get_constraintdef(c.oid) LIKE '%%exercise_id%%r2_kind%%r2_archetype%%model_name%%reminder_text%%'
+            """, [table])
+            
+            new_constraint_exists = cursor.fetchone()[0] > 0
+            
+            if not new_constraint_exists:
+                try:
+                    cursor.execute(f"""
+                        ALTER TABLE {table}
+                        ADD CONSTRAINT video_clips_exercise_id_r2_kind_r2_archetype_model_name_reminder_text_key
+                        UNIQUE (exercise_id, r2_kind, r2_archetype, model_name, reminder_text)
+                    """)
+                except Exception:
+                    pass
+        else:
+            # SQLite - unique_together is handled by Django automatically
+            pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -288,9 +341,20 @@ class Migration(migrations.Migration):
             name='weeklylesson',
             unique_together={('week', 'archetype', 'locale')},
         ),
-        migrations.AlterUniqueTogether(
-            name='videoclip',
-            unique_together={('exercise', 'r2_kind', 'r2_archetype', 'model_name', 'reminder_text')},
+        # Safe alteration of VideoClip unique constraint (may not exist in production)
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.AlterUniqueTogether(
+                    name='videoclip',
+                    unique_together={('exercise', 'r2_kind', 'r2_archetype', 'model_name', 'reminder_text')},
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(
+                    safe_alter_videoclip_unique_together,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
         migrations.AddIndex(
             model_name='videoclip',
