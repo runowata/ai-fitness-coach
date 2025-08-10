@@ -192,7 +192,7 @@ class VideoPlaylistBuilder:
         
         # Build query for all possible combinations
         query = ExerciseValidationService.get_clips_with_video().filter(
-            exercise__slug__in=exercise_ids,
+            exercise__id__in=exercise_ids,
             r2_kind__in=all_kinds,
             r2_archetype__in=archetype_order
         ).select_related('exercise').order_by('id')
@@ -203,7 +203,7 @@ class VideoPlaylistBuilder:
         
         # Group by (exercise_slug, kind, archetype)
         for clip in clips:
-            exercise_slug = clip.exercise.slug if clip.exercise else None
+            exercise_slug = clip.exercise.id if clip.exercise else None
             if exercise_slug:
                 key = (exercise_slug, clip.r2_kind, clip.r2_archetype)
                 
@@ -229,7 +229,7 @@ class VideoPlaylistBuilder:
             return self._get_global_video_legacy(r2_kind, archetype, exclude_id)
         
         # For exercise-specific videos, use prefetch cache and fallback levels
-        exercise_slug = exercise.slug if hasattr(exercise, 'slug') else str(exercise)
+        exercise_slug = exercise.id if hasattr(exercise, 'id') else str(exercise)
         
         # Determine if this is a required or optional video kind
         is_required = r2_kind in REQUIRED_VIDEO_KINDS_PLAYLIST
@@ -362,7 +362,7 @@ class VideoPlaylistBuilder:
         if slug_or_code.lower().startswith("ex") and len(slug_or_code) == 5:
             exercise_lookup = {"pk": slug_or_code.upper()}
         else:
-            exercise_lookup = {"slug": slug_or_code}
+            exercise_lookup = {"id": slug_or_code}
         
         try:
             exercise = CSVExercise.objects.get(**exercise_lookup)
@@ -480,7 +480,7 @@ class VideoPlaylistBuilder:
     def get_substitution_options(self, exercise_slug: str, user_equipment: List[str]) -> List[CSVExercise]:
         """Get possible exercise substitutions based on user's equipment"""
         try:
-            exercise = CSVExercise.objects.get(slug=exercise_slug)
+            exercise = CSVExercise.objects.get(id=exercise_slug)
             
             # Get alternatives that match user's equipment
             alternatives = exercise.alternatives.filter(

@@ -76,7 +76,7 @@ class ExerciseValidationService:
             
             # Find exercises that have all required video types with available content
             slugs_with_coverage = (query
-                .values('exercise__slug')
+                .values('exercise__id')
                 .annotate(
                     kinds_count=Count(
                         'r2_kind', 
@@ -85,7 +85,7 @@ class ExerciseValidationService:
                     )
                 )
                 .filter(kinds_count=len(ExerciseValidationService.REQUIRED_KINDS))
-                .values_list('exercise__slug', flat=True)
+                .values_list('exercise__id', flat=True)
             )
             
             slugs = set(slugs_with_coverage)
@@ -137,8 +137,8 @@ class ExerciseValidationService:
                     status = 'none'
                 
                 exercises_data.append({
-                    'slug': exercise.slug,
-                    'name': exercise.name,
+                    'slug': exercise.id,
+                    'name': exercise.name_ru,
                     'kinds_covered': kinds_covered,
                     'available_kinds': ','.join(available_kinds),
                     'status': status

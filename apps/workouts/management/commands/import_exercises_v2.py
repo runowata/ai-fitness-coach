@@ -174,7 +174,7 @@ class Command(BaseCommand):
                 
                 # Find the exercise
                 try:
-                    exercise = CSVExercise.objects.get(slug=exercise_slug)
+                    exercise = CSVExercise.objects.get(id=exercise_slug)
                 except CSVExercise.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"  ⚠️  Exercise not found: {exercise_slug}"))
                     continue

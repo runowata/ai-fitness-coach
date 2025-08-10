@@ -112,8 +112,8 @@ def substitute_exercise_view(request, workout_id):
         substitute_slug = data.get('substitute_exercise')
         
         # Verify substitute is valid
-        original_exercise = CSVExercise.objects.get(slug=original_slug)
-        substitute_exercise = CSVExercise.objects.get(slug=substitute_slug)
+        original_exercise = CSVExercise.objects.get(id=original_slug)
+        substitute_exercise = CSVExercise.objects.get(id=substitute_slug)
         
         if substitute_exercise not in original_exercise.alternatives.all():
             return JsonResponse({'error': 'Недопустимая замена'}, status=400)
