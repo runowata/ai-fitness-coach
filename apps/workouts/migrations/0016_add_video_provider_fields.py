@@ -233,6 +233,116 @@ def safe_add_videoclip_indexes(apps, schema_editor):
                     pass
 
 
+def safe_remove_legacy_fields(apps, schema_editor):
+    """Safely remove legacy VideoClip fields if they exist"""
+    VideoClip = apps.get_model("workouts", "VideoClip")
+    table = VideoClip._meta.db_table
+    vendor = schema_editor.connection.vendor
+    qn = schema_editor.quote_name
+    
+    # Define legacy fields to remove safely
+    legacy_fields = ['type', 'url']
+    
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            def field_exists(field_name: str) -> bool:
+                cursor.execute("""
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_name = %s AND column_name = %s
+                """, [table.split('.')[-1], field_name])
+                return cursor.fetchone() is not None
+
+            for field_name in legacy_fields:
+                if field_exists(field_name):
+                    try:
+                        cursor.execute(f"""
+                            ALTER TABLE {qn(table)}
+                            DROP COLUMN IF EXISTS {qn(field_name)}
+                        """)
+                    except Exception:
+                        # Field may already be dropped or constraints prevent dropping
+                        pass
+        else:
+            # SQLite doesn't support DROP COLUMN easily
+            # These fields should have been handled during previous migrations
+            pass
+
+
+def safe_remove_legacy_index(apps, schema_editor):
+    """Safely remove legacy VideoClip index if it exists"""
+    VideoClip = apps.get_model("workouts", "VideoClip")
+    table = VideoClip._meta.db_table
+    vendor = schema_editor.connection.vendor
+    
+    legacy_index_name = 'video_clips_exercis_cde9f7_idx'
+    
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            # Check if index exists in PostgreSQL
+            cursor.execute("""
+                SELECT 1
+                FROM pg_indexes
+                WHERE tablename = %s AND indexname = %s
+            """, [table.split('.')[-1], legacy_index_name])
+            
+            if cursor.fetchone():
+                try:
+                    cursor.execute(f'DROP INDEX IF EXISTS {legacy_index_name}')
+                except Exception:
+                    # Index may already be dropped or other issues
+                    pass
+        else:
+            # SQLite - check if index exists  
+            cursor.execute(
+                "SELECT name FROM sqlite_master WHERE type='index' AND name = %s",
+                [legacy_index_name]
+            )
+            
+            if cursor.fetchone():
+                try:
+                    cursor.execute(f'DROP INDEX IF EXISTS "{legacy_index_name}"')
+                except Exception:
+                    # Index may already be dropped or other issues
+                    pass
+
+
+def safe_remove_legacy_exercise_fields(apps, schema_editor):
+    """Safely remove legacy Exercise fields if they exist"""
+    Exercise = apps.get_model("workouts", "Exercise")
+    table = Exercise._meta.db_table
+    vendor = schema_editor.connection.vendor
+    qn = schema_editor.quote_name
+    
+    # Define legacy Exercise fields to remove safely
+    legacy_fields = ['mistake_video_url', 'technique_video_url']
+    
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            def field_exists(field_name: str) -> bool:
+                cursor.execute("""
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_name = %s AND column_name = %s
+                """, [table.split('.')[-1], field_name])
+                return cursor.fetchone() is not None
+
+            for field_name in legacy_fields:
+                if field_exists(field_name):
+                    try:
+                        cursor.execute(f"""
+                            ALTER TABLE {qn(table)}
+                            DROP COLUMN IF EXISTS {qn(field_name)}
+                        """)
+                    except Exception:
+                        # Field may already be dropped or constraints prevent dropping
+                        pass
+        else:
+            # SQLite doesn't support DROP COLUMN easily
+            # These fields should have been handled during previous migrations
+            pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -249,17 +359,39 @@ class Migration(migrations.Migration):
             safe_drop_weekly_lesson_constraint,
             reverse_code=migrations.RunPython.noop,
         ),
-        migrations.RemoveIndex(
-            model_name='videoclip',
-            name='video_clips_exercis_cde9f7_idx',
+        # Safe removal of legacy index (may not exist in all databases)
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveIndex(
+                    model_name='videoclip',
+                    name='video_clips_exercis_cde9f7_idx',
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(
+                    safe_remove_legacy_index,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
-        migrations.RemoveField(
-            model_name='exercise',
-            name='mistake_video_url',
-        ),
-        migrations.RemoveField(
-            model_name='exercise',
-            name='technique_video_url',
+        # Safe removal of legacy Exercise fields (may not exist in production)
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(
+                    model_name='exercise',
+                    name='mistake_video_url',
+                ),
+                migrations.RemoveField(
+                    model_name='exercise',
+                    name='technique_video_url',
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(
+                    safe_remove_legacy_exercise_fields,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
         # Safe addition of exercise fields (may already exist in production DB)
         migrations.SeparateDatabaseAndState(
@@ -424,13 +556,24 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.RemoveField(
-            model_name='videoclip',
-            name='type',
-        ),
-        migrations.RemoveField(
-            model_name='videoclip',
-            name='url',
+        # Safe removal of legacy fields (may not exist in production)
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(
+                    model_name='videoclip',
+                    name='type',
+                ),
+                migrations.RemoveField(
+                    model_name='videoclip',
+                    name='url',
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(
+                    safe_remove_legacy_fields,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
         migrations.RunPython(
             set_provider_for_existing_clips,
