@@ -78,6 +78,11 @@ jobs:
       run: |
         python manage.py migrate --settings=config.settings
     
+    - name: Test fresh database migrations
+      run: |
+        # Test constraint functionality on fresh PostgreSQL database
+        python scripts/test_weekly_lesson_constraints.py
+    
     - name: Run tests with coverage
       run: |
         pytest \

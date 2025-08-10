@@ -1,0 +1,115 @@
+name: Fresh Database Migration Test
+
+on:
+  pull_request:
+    paths:
+      - 'apps/**/migrations/*.py'
+      - '.github/workflows/migration-test.yml'
+  push:
+    paths:
+      - 'apps/**/migrations/*.py'
+    branches: [ main ]
+
+jobs:
+  test-fresh-migrations:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        db-engine: ['postgresql', 'sqlite']
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fresh_migration_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Test PostgreSQL fresh migrations
+      if: matrix.db-engine == 'postgresql'
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/fresh_migration_test
+        SECRET_KEY: test-fresh-migration-key
+        DEBUG: False
+        METRICS_BACKEND: logging
+      run: |
+        echo "🚀 Testing migrations on fresh PostgreSQL database..."
+        
+        # Run all migrations from scratch
+        python manage.py migrate --settings=config.settings --verbosity=2
+        
+        # Test specific model constraints and table structure
+        python scripts/test_weekly_lesson_constraints.py
+        
+        # Test Django checks on fresh DB
+        python manage.py check --settings=config.settings
+        
+        # Test that we can create basic data
+        python manage.py shell --settings=config.settings -c "
+        from apps.workouts.models import WeeklyLesson;
+        wl = WeeklyLesson.objects.create(
+            week=1, archetype='111', locale='ru', 
+            title='Test', script='Test script'
+        );
+        print(f'✅ Created WeeklyLesson: {wl}');
+        wl.delete();
+        print('✅ Cleanup successful');
+        "
+    
+    - name: Test SQLite fresh migrations
+      if: matrix.db-engine == 'sqlite'
+      env:
+        SECRET_KEY: test-fresh-migration-key
+        DEBUG: False
+        METRICS_BACKEND: logging
+      run: |
+        echo "🚀 Testing migrations on fresh SQLite database..."
+        
+        # Use temporary SQLite database
+        export DATABASE_URL="sqlite:///$(mktemp).db"
+        
+        # Run all migrations from scratch
+        python manage.py migrate --settings=config.settings --verbosity=2
+        
+        # Test constraint functionality
+        python scripts/test_weekly_lesson_constraints.py
+        
+        # Test Django checks
+        python manage.py check --settings=config.settings
+    
+    - name: Test migration rollback (PostgreSQL only)
+      if: matrix.db-engine == 'postgresql'
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/fresh_migration_test
+        SECRET_KEY: test-fresh-migration-key
+        DEBUG: False
+        METRICS_BACKEND: logging
+      run: |
+        echo "🔄 Testing migration rollbacks..."
+        
+        # Test rollback to a recent migration and re-apply
+        python manage.py migrate workouts 0015 --settings=config.settings
+        python manage.py migrate --settings=config.settings
+        
+        echo "✅ Migration rollback/re-apply successful"
