@@ -229,7 +229,7 @@ def save_answer(request, question_id):
         result['motivational_card'] = {
             'title': motivational_card.title or '',
             'message': message,
-            'image_url': motivational_card.image_url or ''
+            'image_url': motivational_card.cdn_url or ''
         }
     
     # If last question, generate workout plan

@@ -259,6 +259,7 @@ FALLBACK_TO_LEGACY_FLOW = os.getenv('FALLBACK_TO_LEGACY_FLOW', 'False') == 'True
 
 # Video storage configuration
 R2_CDN_BASE_URL = os.getenv('R2_CDN_BASE_URL', '')
+R2_PUBLIC_BASE = os.getenv('R2_PUBLIC_BASE', '')  # Public base URL for motivational cards
 R2_SIGNED_URLS = os.getenv('R2_SIGNED_URLS', 'False') == 'True'
 R2_SIGNED_URL_TTL = int(os.getenv('R2_SIGNED_URL_TTL', '3600'))
 

@@ -9,7 +9,7 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 import json
 
-from .models import DailyWorkout, Exercise, ExplainerVideo, WeeklyNotification, WeeklyLesson
+from .models import DailyWorkout, CSVExercise, ExplainerVideo, WeeklyNotification, WeeklyLesson
 from .services import VideoPlaylistBuilder
 from .serializers import WeeklyNotificationSerializer, WeeklyLessonSerializer
 from apps.achievements.services import WorkoutCompletionService
@@ -112,8 +112,8 @@ def substitute_exercise_view(request, workout_id):
         substitute_slug = data.get('substitute_exercise')
         
         # Verify substitute is valid
-        original_exercise = Exercise.objects.get(slug=original_slug)
-        substitute_exercise = Exercise.objects.get(slug=substitute_slug)
+        original_exercise = CSVExercise.objects.get(slug=original_slug)
+        substitute_exercise = CSVExercise.objects.get(slug=substitute_slug)
         
         if substitute_exercise not in original_exercise.alternatives.all():
             return JsonResponse({'error': 'Недопустимая замена'}, status=400)

@@ -298,6 +298,7 @@ class CSVExercise(models.Model):
     muscle_group = models.CharField(max_length=50, blank=True)
     exercise_type = models.CharField(max_length=50, blank=True)     # strength / stretch / cardio
     ai_tags = models.JSONField(blank=True, default=list)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Упражнение CSV"

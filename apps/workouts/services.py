@@ -3,7 +3,7 @@ import hashlib
 import time
 from typing import List, Dict, Optional
 from django.db.models import Q
-from .models import Exercise, VideoClip, DailyWorkout
+from .models import CSVExercise, VideoClip, DailyWorkout
 from .video_storage import get_storage
 from .constants import (
     VideoKind, Archetype, ARCHETYPE_FALLBACK_ORDER,
@@ -365,8 +365,8 @@ class VideoPlaylistBuilder:
             exercise_lookup = {"slug": slug_or_code}
         
         try:
-            exercise = Exercise.objects.get(**exercise_lookup)
-        except Exercise.DoesNotExist:
+            exercise = CSVExercise.objects.get(**exercise_lookup)
+        except CSVExercise.DoesNotExist:
             return playlist
         
         # 1. Technique video
@@ -477,10 +477,10 @@ class VideoPlaylistBuilder:
             }
         return None
     
-    def get_substitution_options(self, exercise_slug: str, user_equipment: List[str]) -> List[Exercise]:
+    def get_substitution_options(self, exercise_slug: str, user_equipment: List[str]) -> List[CSVExercise]:
         """Get possible exercise substitutions based on user's equipment"""
         try:
-            exercise = Exercise.objects.get(slug=exercise_slug)
+            exercise = CSVExercise.objects.get(slug=exercise_slug)
             
             # Get alternatives that match user's equipment
             alternatives = exercise.alternatives.filter(

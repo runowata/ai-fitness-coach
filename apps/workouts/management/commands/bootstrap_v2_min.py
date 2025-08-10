@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from apps.workouts.models import Exercise, VideoClip
+from apps.workouts.models import CSVExercise, VideoClip
 from apps.ai_integration.services import WorkoutPlanGenerator
 
 R2_CLIPS = {
@@ -29,7 +29,7 @@ class Command(BaseCommand):
         
         # 1) Create exercises
         for slug, clips in R2_CLIPS.items():
-            exercise, created = Exercise.objects.get_or_create(
+            exercise, created = CSVExercise.objects.get_or_create(
                 slug=slug, 
                 defaults={
                     "name": slug.replace("_", " ").title(),
@@ -102,7 +102,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"⚠️  Could not create plan: {e}"))
         
         # 4) Summary
-        exercises_count = Exercise.objects.filter(is_active=True).count()
+        exercises_count = CSVExercise.objects.filter(is_active=True).count()
         clips_count = VideoClip.objects.filter(is_active=True, r2_file__isnull=False).count()
         
         self.stdout.write(self.style.SUCCESS("\n🎉 Bootstrap complete!"))

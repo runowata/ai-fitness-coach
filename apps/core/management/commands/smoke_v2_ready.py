@@ -3,7 +3,7 @@ Smoke test command to verify v2 readiness
 """
 from django.core.management.base import BaseCommand
 from django.db import connection
-from apps.workouts.models import WorkoutPlan, Exercise, VideoClip
+from apps.workouts.models import WorkoutPlan, CSVExercise, VideoClip
 from apps.workouts.services.playlist_v2 import build_playlist
 from apps.core.services.exercise_validation import ExerciseValidationService
 from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         try:
             service = ExerciseValidationService()
             allowed_slugs = service.get_allowed_exercise_slugs()
-            total_exercises = Exercise.objects.filter(is_active=True).count()
+            total_exercises = CSVExercise.objects.filter(is_active=True).count()
             
             coverage_pct = (len(allowed_slugs) / total_exercises * 100) if total_exercises > 0 else 0
             

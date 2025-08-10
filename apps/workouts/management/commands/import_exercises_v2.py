@@ -6,7 +6,7 @@ import pandas as pd
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from pathlib import Path
-from apps.workouts.models import Exercise, VideoClip
+from apps.workouts.models import CSVExercise, VideoClip
 import json
 
 # New archetype mapping from Excel file names to v2 names
@@ -71,7 +71,7 @@ class Command(BaseCommand):
             
         # Step 3: Summary
         if not dry_run:
-            exercises_count = Exercise.objects.filter(is_active=True).count()
+            exercises_count = CSVExercise.objects.filter(is_active=True).count()
             clips_count = VideoClip.objects.filter(is_active=True, r2_file__isnull=False).count()
             
             self.stdout.write(self.style.SUCCESS(f"\n🎉 Import complete!"))
@@ -115,7 +115,7 @@ class Command(BaseCommand):
                     continue
                     
                 with transaction.atomic():
-                    exercise, created = Exercise.objects.update_or_create(
+                    exercise, created = CSVExercise.objects.update_or_create(
                         slug=slug,
                         defaults=exercise_data
                     )
@@ -178,8 +178,8 @@ class Command(BaseCommand):
                 
                 # Find the exercise
                 try:
-                    exercise = Exercise.objects.get(slug=exercise_slug)
-                except Exercise.DoesNotExist:
+                    exercise = CSVExercise.objects.get(slug=exercise_slug)
+                except CSVExercise.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"  ⚠️  Exercise not found: {exercise_slug}"))
                     continue
                 
