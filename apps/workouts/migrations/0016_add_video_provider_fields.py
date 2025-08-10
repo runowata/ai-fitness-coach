@@ -31,10 +31,6 @@ class Migration(migrations.Migration):
             "ALTER TABLE weekly_lessons DROP CONSTRAINT IF EXISTS unique_weekly_lesson;",
             reverse_sql=migrations.RunSQL.noop,
         ),
-        migrations.RunSQL(
-            "ALTER TABLE workouts_weeklylesson DROP CONSTRAINT IF EXISTS unique_weekly_lesson;",
-            reverse_sql=migrations.RunSQL.noop,
-        ),
         migrations.RemoveIndex(
             model_name='videoclip',
             name='video_clips_exercis_cde9f7_idx',
