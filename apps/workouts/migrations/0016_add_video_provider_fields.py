@@ -193,12 +193,13 @@ def safe_add_videoclip_indexes(apps, schema_editor):
     VideoClip = apps.get_model("workouts", "VideoClip")
     table = VideoClip._meta.db_table
     vendor = schema_editor.connection.vendor
+    qn = schema_editor.quote_name
     
-    # Define indexes to add safely
+    # Define indexes to add safely (name, fields)
     indexes_to_add = [
-        ('video_clips_exercis_1e5613_idx', 'CREATE INDEX IF NOT EXISTS video_clips_exercis_1e5613_idx ON video_clips (exercise_id, r2_kind, r2_archetype)'),
-        ('video_clips_r2_kind_d2e4dd_idx', 'CREATE INDEX IF NOT EXISTS video_clips_r2_kind_d2e4dd_idx ON video_clips (r2_kind, r2_archetype)'),
-        ('video_clips_is_acti_9705f9_idx', 'CREATE INDEX IF NOT EXISTS video_clips_is_acti_9705f9_idx ON video_clips (is_active, r2_kind)'),
+        ('video_clips_exercis_1e5613_idx', ['exercise_id', 'r2_kind', 'r2_archetype']),
+        ('video_clips_r2_kind_d2e4dd_idx', ['r2_kind', 'r2_archetype']), 
+        ('video_clips_is_acti_9705f9_idx', ['is_active', 'r2_kind']),
     ]
     
     with schema_editor.connection.cursor() as cursor:
@@ -211,19 +212,23 @@ def safe_add_videoclip_indexes(apps, schema_editor):
                 """, [table, index_name])
                 return cursor.fetchone() is not None
 
-            for index_name, create_sql in indexes_to_add:
+            for index_name, fields in indexes_to_add:
                 if not index_exists(index_name):
                     try:
-                        cursor.execute(create_sql)
+                        quoted_fields = [qn(field) for field in fields]
+                        fields_str = ', '.join(quoted_fields)
+                        sql = f'CREATE INDEX IF NOT EXISTS {qn(index_name)} ON {qn(table)} ({fields_str})'
+                        cursor.execute(sql)
                     except Exception:
                         pass
         else:
-            # SQLite - indexes are created automatically by Django
-            for index_name, create_sql in indexes_to_add:
+            # SQLite - use simpler approach
+            for index_name, fields in indexes_to_add:
                 try:
-                    # Convert PostgreSQL syntax to SQLite
-                    sqlite_sql = create_sql.replace('IF NOT EXISTS', '').replace('video_clips', table)
-                    cursor.execute(sqlite_sql)
+                    quoted_fields = [qn(field) for field in fields]
+                    fields_str = ', '.join(quoted_fields)
+                    sql = f'CREATE INDEX IF NOT EXISTS {qn(index_name)} ON {qn(table)} ({fields_str})'
+                    cursor.execute(sql)
                 except Exception:
                     pass
 
