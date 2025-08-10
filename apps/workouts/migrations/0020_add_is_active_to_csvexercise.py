@@ -25,16 +25,16 @@ def safe_add_is_active_field(apps, schema_editor):
     """Safely add is_active field to CSVExercise if it doesn't exist"""
     if schema_editor.connection.vendor == 'postgresql':
         with schema_editor.connection.cursor() as cursor:
-            # Check if is_active field exists in workouts_csvexercise
+            # Check if is_active field exists in csv_exercises
             cursor.execute("""
                 SELECT 1 
                 FROM information_schema.columns 
-                WHERE table_name = 'workouts_csvexercise' 
+                WHERE table_name = 'csv_exercises' 
                 AND column_name = 'is_active'
             """)
             if not cursor.fetchone():
                 cursor.execute("""
-                    ALTER TABLE workouts_csvexercise 
+                    ALTER TABLE csv_exercises 
                     ADD COLUMN is_active boolean DEFAULT true NOT NULL
                 """)
 
@@ -44,7 +44,7 @@ def reverse_add_is_active_field(apps, schema_editor):
     if schema_editor.connection.vendor == 'postgresql':
         with schema_editor.connection.cursor() as cursor:
             cursor.execute("""
-                ALTER TABLE workouts_csvexercise 
+                ALTER TABLE csv_exercises 
                 DROP COLUMN IF EXISTS is_active
             """)
 
