@@ -3,6 +3,29 @@
 from django.db import migrations, models
 
 
+def safe_remove_constraint(apps, schema_editor):
+    """Safely remove unique_weekly_lesson constraint if it exists"""
+    if schema_editor.connection.vendor == 'postgresql':
+        with schema_editor.connection.cursor() as cursor:
+            # Check if constraint exists first
+            cursor.execute("""
+                SELECT 1 
+                FROM information_schema.table_constraints 
+                WHERE constraint_name = 'unique_weekly_lesson' 
+                AND table_name = 'weekly_lessons'
+            """)
+            if cursor.fetchone():
+                cursor.execute("""
+                    ALTER TABLE weekly_lessons 
+                    DROP CONSTRAINT IF EXISTS unique_weekly_lesson
+                """)
+
+
+def reverse_remove_constraint(apps, schema_editor):
+    """Reverse operation - this is a no-op since we can't recreate the constraint safely"""
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,9 +33,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveConstraint(
-            model_name='weeklylesson',
-            name='unique_weekly_lesson',
+        migrations.RunPython(
+            safe_remove_constraint,
+            reverse_remove_constraint,
+            atomic=False,
         ),
         migrations.AddField(
             model_name='csvexercise',
