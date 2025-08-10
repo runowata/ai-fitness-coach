@@ -113,13 +113,13 @@ class ExerciseValidationService:
             Dict with coverage statistics and details
         """
         try:
-            from apps.workouts.models import Exercise, VideoClip
+            from apps.workouts.models import CSVExercise, VideoClip
             
             # Use Django ORM instead of raw SQL for better database compatibility
             exercises_data = []
             stats = {'complete': 0, 'partial': 0, 'none': 0}
             
-            for exercise in Exercise.objects.filter(is_active=True):
+            for exercise in CSVExercise.objects.filter(is_active=True):
                 # Get available video kinds for this exercise using provider-aware logic
                 available_clips = ExerciseValidationService.get_clips_with_video().filter(
                     exercise=exercise,
