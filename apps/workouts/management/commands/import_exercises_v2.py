@@ -9,12 +9,8 @@ from pathlib import Path
 from apps.workouts.models import CSVExercise, VideoClip
 import json
 
-# New archetype mapping from Excel file names to v2 names
-ARCHETYPE_MAPPING = {
-    '111_nastavnik': 'mentor',      # Мудрый наставник
-    '222_professional': 'professional',  # Успешный профессионал  
-    '333_rovesnik': 'peer'          # Ровесник
-}
+# Import archetype mapping from core constants
+from apps.core.constants import ARCHETYPE_MAPPING
 
 # R2 video kind mapping
 VIDEO_KIND_MAPPING = {

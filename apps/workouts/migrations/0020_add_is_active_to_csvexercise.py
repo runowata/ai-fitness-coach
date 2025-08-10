@@ -21,6 +21,34 @@ def safe_remove_constraint(apps, schema_editor):
                 """)
 
 
+def safe_add_is_active_field(apps, schema_editor):
+    """Safely add is_active field to CSVExercise if it doesn't exist"""
+    if schema_editor.connection.vendor == 'postgresql':
+        with schema_editor.connection.cursor() as cursor:
+            # Check if is_active field exists in workouts_csvexercise
+            cursor.execute("""
+                SELECT 1 
+                FROM information_schema.columns 
+                WHERE table_name = 'workouts_csvexercise' 
+                AND column_name = 'is_active'
+            """)
+            if not cursor.fetchone():
+                cursor.execute("""
+                    ALTER TABLE workouts_csvexercise 
+                    ADD COLUMN is_active boolean DEFAULT true NOT NULL
+                """)
+
+
+def reverse_add_is_active_field(apps, schema_editor):
+    """Reverse operation for adding is_active field"""
+    if schema_editor.connection.vendor == 'postgresql':
+        with schema_editor.connection.cursor() as cursor:
+            cursor.execute("""
+                ALTER TABLE workouts_csvexercise 
+                DROP COLUMN IF EXISTS is_active
+            """)
+
+
 def reverse_remove_constraint(apps, schema_editor):
     """Reverse operation - this is a no-op since we can't recreate the constraint safely"""
     pass
@@ -38,14 +66,11 @@ class Migration(migrations.Migration):
             reverse_remove_constraint,
             atomic=False,
         ),
-        migrations.AddField(
-            model_name='csvexercise',
-            name='is_active',
-            field=models.BooleanField(default=True),
+        migrations.RunPython(
+            safe_add_is_active_field,
+            reverse_add_is_active_field,
+            atomic=False,
         ),
-        migrations.AddField(
-            model_name='workoutplan',
-            name='ai_analysis',
-            field=models.JSONField(blank=True, null=True),
-        ),
+        # Note: ai_analysis field already exists from migration 0011 and 0013
+        # Skipping AddField operation for workoutplan.ai_analysis
     ]

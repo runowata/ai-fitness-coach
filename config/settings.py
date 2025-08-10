@@ -14,7 +14,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-this-in-production')
+# SECRET_KEY will be set later after validation
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'ai-fitness-coach-ttzf.onrender.com',
@@ -272,11 +272,8 @@ PLAYLIST_STORAGE_RETRY = int(os.getenv('PLAYLIST_STORAGE_RETRY', '2'))
 PROMPTS_PROFILE = 'v2'  # Clean v2 implementation without legacy support
 
 # Archetype mapping for backward compatibility (old -> new only)
-ARCHETYPE_ALIASES = {
-    'bro': 'peer',
-    'sergeant': 'professional', 
-    'intellectual': 'mentor',
-}
+# Import archetype configuration from core constants
+from apps.core.constants import ARCHETYPE_ALIASES
 
 # Anthropic Claude settings (alternative)
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
