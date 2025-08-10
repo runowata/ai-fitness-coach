@@ -44,8 +44,10 @@ class Command(BaseCommand):
         
         self.stdout.write("Adding images to motivational cards...")
         
-        # Base R2 URL for card images
-        base_url = "https://pub-9b30caf23edc4d0b8509a7fb15c2bd5a.r2.dev/photos/progress"
+        # Base R2 URL for card images - use environment variable or fallback
+        import os
+        r2_public_base = os.getenv('R2_PUBLIC_BASE', 'https://pub-9b30caf23edc4d0b8509a7fb15c2bd5a.r2.dev')
+        base_url = f"{r2_public_base.rstrip('/')}/photos/progress"
         
         # Available card images (we know these exist)
         image_numbers = [

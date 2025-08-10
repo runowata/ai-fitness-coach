@@ -155,7 +155,18 @@ class MotivationalCard(models.Model):
         if self.image:
             from apps.core.services import MediaService
             return MediaService.get_public_cdn_url(self.image)
-        return self.image_url  # Fallback to legacy URL field
+        
+        # For legacy image_url fields, check if we need to use public R2 URL
+        if self.image_url:
+            # If it's already a full URL, return as-is (will work when R2 is properly configured)
+            if self.image_url.startswith('http'):
+                return self.image_url
+            
+            # If it's a relative path, try to build public URL
+            from apps.core.services import MediaService
+            return MediaService.get_public_cdn_url(self.image_url)
+        
+        return ''  # No image available
 
 
 class UserOnboardingResponse(models.Model):
