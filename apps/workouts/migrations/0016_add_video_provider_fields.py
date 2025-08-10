@@ -188,6 +188,46 @@ def safe_alter_videoclip_unique_together(apps, schema_editor):
             pass
 
 
+def safe_add_videoclip_indexes(apps, schema_editor):
+    """Safely add VideoClip indexes (may already exist in production)"""
+    VideoClip = apps.get_model("workouts", "VideoClip")
+    table = VideoClip._meta.db_table
+    vendor = schema_editor.connection.vendor
+    
+    # Define indexes to add safely
+    indexes_to_add = [
+        ('video_clips_exercis_1e5613_idx', 'CREATE INDEX IF NOT EXISTS video_clips_exercis_1e5613_idx ON video_clips (exercise_id, r2_kind, r2_archetype)'),
+        ('video_clips_r2_kind_d2e4dd_idx', 'CREATE INDEX IF NOT EXISTS video_clips_r2_kind_d2e4dd_idx ON video_clips (r2_kind, r2_archetype)'),
+        ('video_clips_is_acti_9705f9_idx', 'CREATE INDEX IF NOT EXISTS video_clips_is_acti_9705f9_idx ON video_clips (is_active, r2_kind)'),
+    ]
+    
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            def index_exists(index_name: str) -> bool:
+                cursor.execute("""
+                    SELECT 1
+                    FROM pg_indexes
+                    WHERE tablename = %s AND indexname = %s
+                """, [table, index_name])
+                return cursor.fetchone() is not None
+
+            for index_name, create_sql in indexes_to_add:
+                if not index_exists(index_name):
+                    try:
+                        cursor.execute(create_sql)
+                    except Exception:
+                        pass
+        else:
+            # SQLite - indexes are created automatically by Django
+            for index_name, create_sql in indexes_to_add:
+                try:
+                    # Convert PostgreSQL syntax to SQLite
+                    sqlite_sql = create_sql.replace('IF NOT EXISTS', '').replace('video_clips', table)
+                    cursor.execute(sqlite_sql)
+                except Exception:
+                    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -356,17 +396,28 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.AddIndex(
-            model_name='videoclip',
-            index=models.Index(fields=['exercise', 'r2_kind', 'r2_archetype'], name='video_clips_exercis_1e5613_idx'),
-        ),
-        migrations.AddIndex(
-            model_name='videoclip',
-            index=models.Index(fields=['r2_kind', 'r2_archetype'], name='video_clips_r2_kind_d2e4dd_idx'),
-        ),
-        migrations.AddIndex(
-            model_name='videoclip',
-            index=models.Index(fields=['is_active', 'r2_kind'], name='video_clips_is_acti_9705f9_idx'),
+        # Safe addition of VideoClip indexes (may already exist in production)
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.AddIndex(
+                    model_name='videoclip',
+                    index=models.Index(fields=['exercise', 'r2_kind', 'r2_archetype'], name='video_clips_exercis_1e5613_idx'),
+                ),
+                migrations.AddIndex(
+                    model_name='videoclip',
+                    index=models.Index(fields=['r2_kind', 'r2_archetype'], name='video_clips_r2_kind_d2e4dd_idx'),
+                ),
+                migrations.AddIndex(
+                    model_name='videoclip',
+                    index=models.Index(fields=['is_active', 'r2_kind'], name='video_clips_is_acti_9705f9_idx'),
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(
+                    safe_add_videoclip_indexes,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
         migrations.RemoveField(
             model_name='videoclip',
