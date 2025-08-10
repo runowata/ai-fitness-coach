@@ -28,7 +28,7 @@ def daily_workout_view(request, workout_id):
         return redirect('users:profile_settings')
     
     # Build video playlist
-    playlist_builder = VideoPlaylistBuilder()
+    playlist_builder = VideoPlaylistBuilder(archetype=archetype)
     video_playlist = playlist_builder.build_workout_playlist(workout, archetype)
     
     # Get substitution options for each exercise

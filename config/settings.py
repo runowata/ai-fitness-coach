@@ -173,14 +173,22 @@ if USE_R2_STORAGE:
     # R2 Public URL (if configured)
     R2_PUBLIC_BASE = os.getenv('R2_PUBLIC_BASE', '')
     
+    # R2 CDN and signed URL configuration
+    R2_CDN_BASE_URL = os.getenv('R2_CDN_BASE_URL', '')
+    R2_SIGNED_URLS = os.getenv('R2_SIGNED_URLS', 'False') == 'True'
+    R2_SIGNED_URL_TTL = int(os.getenv('R2_SIGNED_URL_TTL', '3600'))  # 1 hour default
+    
     # Update STORAGES for R2
     STORAGES['default'] = {
         'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
     }
     
     MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
-    
-elif DEBUG or os.getenv('RENDER'):
+
+# Cloudflare Stream settings (for future use)
+CF_STREAM_HLS_TEMPLATE = os.getenv('CF_STREAM_HLS_TEMPLATE', 'https://videodelivery.net/{playback_id}/manifest/video.m3u8')
+
+if DEBUG or os.getenv('RENDER'):
     # Local media serving (development or Render deployment)
     MEDIA_URL = '/media/'
     # Fix: Use correct path for Render deployment
@@ -236,11 +244,28 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@aifitnesscoach.com
 # AI Integration
 AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai')  # 'openai' or 'anthropic'
 
-# OpenAI settings
+# OpenAI settings  
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4o')  # Updated to latest model
 OPENAI_MAX_TOKENS = int(os.getenv('OPENAI_MAX_TOKENS', '4000'))
 OPENAI_TEMPERATURE = float(os.getenv('OPENAI_TEMPERATURE', '0.7'))
+USE_JSON_MODE = os.getenv('USE_JSON_MODE', 'False') == 'True'
+
+# Video generation flags
+STRICT_ALLOWED_ONLY = os.getenv('STRICT_ALLOWED_ONLY', 'False') == 'True'
+SHOW_AI_ANALYSIS = os.getenv('SHOW_AI_ANALYSIS', 'True') == 'True'
+AI_REPROMPT_MAX_ATTEMPTS = int(os.getenv('AI_REPROMPT_MAX_ATTEMPTS', '2'))
+FALLBACK_TO_LEGACY_FLOW = os.getenv('FALLBACK_TO_LEGACY_FLOW', 'False') == 'True'
+
+# Video storage configuration
+R2_CDN_BASE_URL = os.getenv('R2_CDN_BASE_URL', '')
+R2_SIGNED_URLS = os.getenv('R2_SIGNED_URLS', 'False') == 'True'
+R2_SIGNED_URL_TTL = int(os.getenv('R2_SIGNED_URL_TTL', '3600'))
+
+# Playlist generation configuration
+PLAYLIST_MISTAKE_PROB = float(os.getenv('PLAYLIST_MISTAKE_PROB', '0.30'))
+PLAYLIST_FALLBACK_MAX_CANDIDATES = int(os.getenv('PLAYLIST_FALLBACK_MAX_CANDIDATES', '20'))
+PLAYLIST_STORAGE_RETRY = int(os.getenv('PLAYLIST_STORAGE_RETRY', '2'))
 
 # Prompts configuration - fixed to v2 only
 PROMPTS_PROFILE = 'v2'  # Clean v2 implementation without legacy support
@@ -285,6 +310,7 @@ APP_VERSION = os.getenv('APP_VERSION', '0.9.0-rc1')
 # Metrics and monitoring
 PROMETHEUS_METRICS_EXPORT_PORT = 8001
 PROMETHEUS_METRICS_EXPORT_ADDRESS = ''
+METRICS_BACKEND = os.getenv('METRICS_BACKEND', 'logging' if DEBUG else 'noop')  # 'statsd', 'logging', 'noop'
 
 # Debug toolbar
 INTERNAL_IPS = ['127.0.0.1']

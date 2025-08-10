@@ -1,8 +1,9 @@
 import json
 import logging
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set, Tuple
 
+from django.conf import settings
 from django.utils import timezone
 from openai import OpenAI
 
@@ -10,6 +11,10 @@ from .prompt_manager_v2 import PromptManagerV2
 from .ai_client import AIClientFactory, AIClientError
 from .validators import WorkoutPlanValidator
 from apps.onboarding.services import OnboardingDataProcessor
+from apps.core.services.exercise_validation import ExerciseValidationService
+from apps.core.metrics import incr, MetricNames
+from apps.workouts.catalog import get_catalog
+from apps.workouts.constants import EXERCISE_FALLBACK_PRIORITY
 
 logger = logging.getLogger(__name__)
 
@@ -260,62 +265,203 @@ class WorkoutPlanGenerator:
     
     def generate_plan(self, user_data: Dict) -> Dict:
         """Generate a complete workout plan based on user onboarding data"""
+        # Check for legacy flow fallback
+        if settings.FALLBACK_TO_LEGACY_FLOW:
+            logger.warning("Using legacy flow for plan generation")
+            return self._generate_plan_legacy(user_data)
+        
+        archetype = user_data.get('archetype', 'bro')
+        
+        # Get allowed exercises for this archetype
+        allowed_slugs = ExerciseValidationService.get_allowed_exercise_slugs(archetype=archetype)
+        incr(MetricNames.AI_WHITELIST_COUNT, len(allowed_slugs))
+        logger.info(f"Whitelist for {archetype}: {len(allowed_slugs)} exercises")
+        
+        # Build prompt with whitelist
+        prompt = self._build_prompt_with_whitelist(user_data, allowed_slugs)
+        
+        # Reprompt cycle with limits
+        max_attempts = settings.AI_REPROMPT_MAX_ATTEMPTS
+        
+        for attempt in range(max_attempts + 1):
+            try:
+                # Get system prompt for archetype  
+                system_prompt = self._get_system_prompt(archetype)
+                
+                # Use new method with strict validation
+                if hasattr(self.ai_client, 'generate_workout_plan'):
+                    logger.info(f"Attempt {attempt + 1}/{max_attempts + 1}: Using strict validation")
+                    validated_plan = self.ai_client.generate_workout_plan(
+                        f"{system_prompt}\n\n{prompt}",
+                        max_tokens=4096,
+                        temperature=0.7
+                    )
+                    
+                    # Convert Pydantic model to dict for downstream compatibility
+                    plan_data = validated_plan.model_dump()
+                    logger.info(f"Validated plan: {validated_plan.plan_name}, {validated_plan.duration_weeks} weeks")
+                else:
+                    # Fallback to old method
+                    logger.warning("Falling back to old AI client method without validation")
+                    plan_data = self.ai_client.generate_completion(
+                        f"{system_prompt}\n\n{prompt}",
+                        max_tokens=4096,
+                        temperature=0.7
+                    )
+                
+                # Post-process and enforce allowed exercises
+                plan_data, substitutions, unresolved = self._enforce_allowed_exercises(
+                    plan_data, allowed_slugs
+                )
+                
+                # Track metrics
+                if substitutions > 0:
+                    incr(MetricNames.AI_SUBSTITUTIONS, substitutions)
+                    logger.info(f"Made {substitutions} exercise substitutions")
+                
+                # Check if we have unresolved exercises
+                if not unresolved:
+                    # Success - all exercises are valid
+                    return self._validate_and_enhance_plan(plan_data, user_data)
+                
+                # Need to reprompt if we have unresolved and haven't exceeded attempts
+                if attempt < max_attempts:
+                    incr(MetricNames.AI_REPROMPTED)
+                    logger.warning(f"Reprompting due to {len(unresolved)} unresolved exercises")
+                    prompt = self._build_reprompt(prompt, unresolved, allowed_slugs)
+                    continue
+                else:
+                    # Final attempt failed
+                    logger.error(f"Failed to resolve exercises after {max_attempts} attempts")
+                    incr(MetricNames.AI_VALIDATION_FAILED)
+                    raise ValueError(f"Unable to generate valid plan with available exercises")
+            
+            except AIClientError as e:
+                logger.error(f"AI client error on attempt {attempt + 1}: {str(e)}")
+                if attempt == max_attempts:
+                    raise
+                continue
+            except Exception as e:
+                logger.error(f"Error on attempt {attempt + 1}: {str(e)}")
+                if attempt == max_attempts:
+                    raise ValueError(f"Failed to generate workout plan: {str(e)}")
+                continue
+        
+        # Should not reach here
+        raise ValueError("Failed to generate workout plan after all attempts")
+    
+    def _generate_plan_legacy(self, user_data: Dict) -> Dict:
+        """Legacy plan generation without strict validation"""
         prompt = self._build_prompt(user_data)
         archetype = user_data.get('archetype', 'bro')
         
         try:
-            # Get system prompt for archetype
             system_prompt = self._get_system_prompt(archetype)
-            
-            # Use AI client to generate response (returns Dict directly)
             plan_data = self.ai_client.generate_completion(
                 f"{system_prompt}\n\n{prompt}",
                 max_tokens=4096,
                 temperature=0.7
             )
-            
-            # TEMPORARY LOG: Check if AI returns analysis section
-            logger.warning(f"AI raw response type: {type(plan_data)}")
-            if isinstance(plan_data, dict):
-                logger.warning(f"AI response keys: {list(plan_data.keys())}")
-                if 'analysis' in plan_data:
-                    logger.warning(f"Analysis keys: {list(plan_data['analysis'].keys())}")
-                else:
-                    logger.warning("NO ANALYSIS SECTION in AI response")
-            
-            # LOG AI RESPONSE FOR DEBUGGING
-            logger.warning(f"### AI RAW RESPONSE ### Type: {type(plan_data)}")
-            logger.warning(f"### AI RESPONSE KEYS ### {list(plan_data.keys()) if isinstance(plan_data, dict) else 'NOT_DICT'}")
-            if isinstance(plan_data, dict):
-                weeks = plan_data.get('weeks', [])
-                logger.warning(f"### AI WEEKS COUNT ### {len(weeks)}")
-                if weeks and len(weeks) > 0:
-                    first_week = weeks[0]
-                    logger.warning(f"### FIRST WEEK KEYS ### {list(first_week.keys()) if isinstance(first_week, dict) else 'NOT_DICT'}")
-                    if isinstance(first_week, dict):
-                        days = first_week.get('days', [])
-                        logger.warning(f"### FIRST WEEK DAYS COUNT ### {len(days)}")
-                        if days and len(days) > 0:
-                            first_day = days[0]
-                            logger.warning(f"### FIRST DAY KEYS ### {list(first_day.keys()) if isinstance(first_day, dict) else 'NOT_DICT'}")
-                            if isinstance(first_day, dict):
-                                exercises = first_day.get('exercises', [])
-                                logger.warning(f"### FIRST DAY EXERCISES COUNT ### {len(exercises)}")
-            
-            validated_plan = self._validate_and_enhance_plan(plan_data, user_data)
-            
-            # LOG VALIDATION RESULT
-            logger.warning(f"### POST-VALIDATION WEEKS COUNT ### {len(validated_plan.get('weeks', []))}")
-            
-            return validated_plan
-            
-        except AIClientError as e:
-            logger.error(f"AI client error generating workout plan: {str(e)}")
-            raise
+            return self._validate_and_enhance_plan(plan_data, user_data)
         except Exception as e:
-            logger.error(f"Error generating workout plan: {str(e)}")
+            logger.error(f"Legacy plan generation failed: {str(e)}")
             raise
     
+    def _build_prompt_with_whitelist(self, user_data: Dict, allowed_slugs: Set[str]) -> str:
+        """Build prompt with exercise whitelist"""
+        base_prompt = self._build_prompt(user_data)
+        
+        # Add whitelist instruction
+        whitelist_instruction = f"""
+IMPORTANT: You MUST use ONLY exercises from this allowed list:
+{', '.join(sorted(allowed_slugs))}
+
+If you cannot find a suitable exercise from the list, choose the closest alternative based on:
+1. Same muscle group
+2. Similar equipment requirements  
+3. Similar difficulty level
+
+DO NOT use any exercises not in this list.
+"""
+        
+        return f"{base_prompt}\n\n{whitelist_instruction}"
+    
+    def _enforce_allowed_exercises(
+        self, 
+        plan_data: Dict, 
+        allowed_slugs: Set[str]
+    ) -> Tuple[Dict, int, List[str]]:
+        """
+        Enforce that all exercises in plan are from allowed set
+        
+        Returns:
+            (modified_plan, substitution_count, unresolved_exercises)
+        """
+        catalog = get_catalog()
+        substitutions = 0
+        unresolved = []
+        
+        # Process each week and day
+        for week in plan_data.get('weeks', []):
+            for day in week.get('days', []):
+                fixed_exercises = []
+                
+                for exercise in day.get('exercises', []):
+                    exercise_slug = exercise.get('exercise_slug', '')
+                    
+                    if exercise_slug in allowed_slugs:
+                        # Exercise is allowed, keep as-is
+                        fixed_exercises.append(exercise)
+                    else:
+                        # Need to find substitute
+                        substitutes = catalog.find_similar(
+                            exercise_slug,
+                            allowed_slugs,
+                            priority=EXERCISE_FALLBACK_PRIORITY,
+                            max_results=1
+                        )
+                        
+                        if substitutes:
+                            # Found replacement
+                            replacement_slug = substitutes[0]
+                            exercise['exercise_slug'] = replacement_slug
+                            exercise['_substituted'] = True
+                            exercise['_original'] = exercise_slug
+                            fixed_exercises.append(exercise)
+                            substitutions += 1
+                            logger.info(f"Substituted {exercise_slug} -> {replacement_slug}")
+                        else:
+                            # No valid substitute found
+                            exercise['_unresolved'] = True
+                            fixed_exercises.append(exercise)
+                            unresolved.append(exercise_slug)
+                            logger.warning(f"No substitute found for {exercise_slug}")
+                
+                day['exercises'] = fixed_exercises
+        
+        return plan_data, substitutions, unresolved
+    
+    def _build_reprompt(
+        self, 
+        original_prompt: str, 
+        unresolved: List[str], 
+        allowed_slugs: Set[str]
+    ) -> str:
+        """Build reprompt for unresolved exercises"""
+        reprompt = f"""
+{original_prompt}
+
+CORRECTION NEEDED: The following exercises are not available and need replacement:
+{', '.join(unresolved)}
+
+Please regenerate the plan using ONLY exercises from the allowed list.
+Focus especially on finding good substitutes for the exercises listed above.
+Consider muscle groups, equipment, and difficulty when selecting alternatives.
+
+Allowed exercises: {', '.join(sorted(allowed_slugs))}
+"""
+        return reprompt
+
     def adapt_weekly_plan(self, current_plan: Dict, user_feedback: List[Dict], week_number: int, user_archetype: str = 'bro') -> Dict:
         """Adapt the plan for the upcoming week based on user feedback"""
         adaptation_prompt = self._build_adaptation_prompt(current_plan, user_feedback, week_number, user_archetype)

@@ -3,7 +3,15 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
+from .constants import VideoKind, Archetype
+
 User = get_user_model()
+
+
+class VideoProvider(models.TextChoices):
+    R2 = "r2", "Cloudflare R2"
+    STREAM = "stream", "Cloudflare Stream"
+    EXTERNAL = "external", "External URL"
 
 
 class Exercise(models.Model):
@@ -75,24 +83,9 @@ class Exercise(models.Model):
 
 
 class VideoClip(models.Model):
-    # Clean v2 type choices for R2
-    R2_KIND_CHOICES = [
-        ('technique', 'Technique'),
-        ('mistake', 'Common Mistake'),
-        ('instruction', 'Instruction'),
-        ('intro', 'Introduction'),
-        ('weekly', 'Weekly Motivation'),
-        ('closing', 'Closing'),
-        ('reminder', 'Reminder'),
-        ('explain', 'Exercise Explanation'),
-    ]
-    
-    # Clean v2 archetype choices only
-    ARCHETYPE_CHOICES = [
-        ('peer', 'Ровесник'),
-        ('professional', 'Успешный профессионал'),
-        ('mentor', 'Мудрый наставник'),
-    ]
+    # Use centralized constants
+    R2_KIND_CHOICES = VideoKind.choices()
+    ARCHETYPE_CHOICES = Archetype.choices()
     
     exercise = models.ForeignKey(
         Exercise, 
@@ -118,7 +111,7 @@ class VideoClip(models.Model):
     r2_kind = models.CharField(
         max_length=20,
         choices=R2_KIND_CHOICES,
-        default='instruction',
+        default=VideoKind.INSTRUCTION,
         help_text='Video type for R2 organization'
     )
     r2_archetype = models.CharField(
@@ -126,6 +119,28 @@ class VideoClip(models.Model):
         choices=ARCHETYPE_CHOICES,
         blank=True,
         help_text='Archetype for R2 videos'
+    )
+    
+    # Video provider abstraction
+    provider = models.CharField(
+        max_length=16,
+        choices=VideoProvider.choices,
+        default=VideoProvider.R2,
+        help_text='Video storage provider'
+    )
+    
+    # Stream provider fields (for future use)
+    stream_uid = models.CharField(
+        max_length=64, 
+        blank=True, 
+        null=True,
+        help_text='Cloudflare Stream UID'
+    )
+    playback_id = models.CharField(
+        max_length=64, 
+        blank=True, 
+        null=True,
+        help_text='Stream playback ID'
     )
     
     # Script/content
@@ -160,6 +175,18 @@ class VideoClip(models.Model):
             from apps.core.services.media import MediaService
             return MediaService.get_signed_url(self.r2_file)
         return ''
+    
+    @property
+    def has_video(self) -> bool:
+        """Check if video clip has available video content"""
+        if self.provider == VideoProvider.R2:
+            return bool(self.r2_file)
+        if self.provider == VideoProvider.STREAM:
+            return bool(self.stream_uid or self.playback_id)
+        if self.provider == VideoProvider.EXTERNAL:
+            # Future: check external_url field
+            return False
+        return False
 
 
 class WorkoutPlan(models.Model):

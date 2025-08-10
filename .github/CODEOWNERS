@@ -1,0 +1,44 @@
+# Global owners
+* @alexbel
+
+# AI and ML components
+/apps/ai_integration/ @alexbel @ml-team
+/prompts/ @alexbel @ml-team
+
+# Core workout logic
+/apps/workouts/ @alexbel @backend-team
+/apps/core/ @alexbel @backend-team
+
+# Video and media handling
+/apps/workouts/video_storage.py @alexbel @infra-team
+/apps/workouts/services/ @alexbel @backend-team
+
+# User interface and onboarding
+/apps/onboarding/ @alexbel @frontend-team
+/apps/users/ @alexbel @backend-team
+
+# Infrastructure and deployment
+/.github/ @alexbel @devops-team
+/config/ @alexbel @devops-team
+/scripts/ @alexbel @devops-team
+Dockerfile* @alexbel @devops-team
+docker-compose* @alexbel @devops-team
+
+# Testing and QA
+/tests/ @alexbel @qa-team
+pytest.ini @alexbel @qa-team
+.github/workflows/ @alexbel @devops-team
+
+# Database and migrations
+*/migrations/ @alexbel @backend-team @dba-team
+/apps/*/models.py @alexbel @backend-team
+
+# Documentation
+README.md @alexbel @docs-team
+CLAUDE.md @alexbel
+*.md @alexbel @docs-team
+
+# Configuration files
+requirements*.txt @alexbel @backend-team
+pyproject.toml @alexbel @backend-team
+.env* @alexbel @infra-team

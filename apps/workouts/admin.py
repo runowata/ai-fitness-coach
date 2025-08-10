@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Exercise, VideoClip, WorkoutPlan, DailyWorkout
+from .video_storage import get_storage
 
 
 @admin.register(Exercise)
@@ -41,17 +42,29 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 @admin.register(VideoClip)
 class VideoClipAdmin(admin.ModelAdmin):
-    list_display = ('exercise', 'r2_kind', 'archetype', 'model_name', 'duration_seconds', 'is_active')
-    list_filter = ('r2_kind', 'archetype', 'model_name', 'is_active')
-    search_fields = ('exercise__name', 'reminder_text')
+    list_display = ('exercise', 'r2_kind', 'provider', 'storage_status', 'archetype', 'model_name', 'duration_seconds', 'is_active')
+    list_filter = ('r2_kind', 'provider', 'archetype', 'model_name', 'is_active')
+    search_fields = ('exercise__name', 'reminder_text', 'stream_uid', 'playback_id')
     autocomplete_fields = ['exercise']
+    readonly_fields = ('storage_status', 'playback_url_display')
     
     fieldsets = (
         ('Video Information', {
             'fields': ('exercise', 'r2_kind', 'archetype', 'model_name')
         }),
-        ('R2 Storage', {
-            'fields': ('r2_file', 'r2_archetype')
+        ('Storage Provider', {
+            'fields': ('provider', 'storage_status', 'playback_url_display'),
+            'description': 'Video storage configuration and validation status'
+        }),
+        ('R2 Storage (Cloudflare R2)', {
+            'fields': ('r2_file', 'r2_archetype'),
+            'classes': ('collapse',),
+            'description': 'Fields for R2-hosted videos'
+        }),
+        ('Stream Storage (Cloudflare Stream)', {
+            'fields': ('stream_uid', 'playback_id'),
+            'classes': ('collapse',),
+            'description': 'Fields for Stream-hosted videos'
         }),
         ('Content', {
             'fields': ('duration_seconds', 'script_text', 'reminder_text')
@@ -60,6 +73,36 @@ class VideoClipAdmin(admin.ModelAdmin):
             'fields': ('is_active', 'is_placeholder')
         })
     )
+    
+    def storage_status(self, obj):
+        """Display storage status with color coding"""
+        try:
+            storage = get_storage(obj)
+            exists = storage.exists(obj)
+            
+            if exists:
+                return format_html('<span style="color: green; font-weight: bold;">✓ Available</span>')
+            else:
+                return format_html('<span style="color: red; font-weight: bold;">✗ Missing</span>')
+        except Exception as e:
+            return format_html('<span style="color: orange; font-weight: bold;">⚠ Error: {}</span>', str(e))
+    storage_status.short_description = 'Storage Status'
+    
+    def playback_url_display(self, obj):
+        """Display playback URL for testing"""
+        try:
+            storage = get_storage(obj)
+            url = storage.playback_url(obj)
+            
+            if url:
+                # Truncate very long URLs for display
+                display_url = url if len(url) <= 80 else f"{url[:77]}..."
+                return format_html('<a href="{}" target="_blank" title="{}">{}</a>', url, url, display_url)
+            else:
+                return format_html('<span style="color: gray;">No URL</span>')
+        except Exception as e:
+            return format_html('<span style="color: red;">Error: {}</span>', str(e))
+    playback_url_display.short_description = 'Playback URL'
     
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('exercise')

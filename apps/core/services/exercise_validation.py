@@ -6,6 +6,8 @@ from typing import Set, Dict, List, Optional
 from django.core.cache import cache
 from django.db import connection
 from django.db.models import Count, Q
+from apps.workouts.models import VideoProvider
+from apps.workouts.constants import REQUIRED_VIDEO_KINDS
 
 logger = logging.getLogger(__name__)
 
@@ -13,35 +15,67 @@ logger = logging.getLogger(__name__)
 class ExerciseValidationService:
     """Service for validating exercise coverage in workout plans"""
     
-    REQUIRED_KINDS = ["instruction", "technique", "mistake"]
+    REQUIRED_KINDS = REQUIRED_VIDEO_KINDS
     CACHE_TIMEOUT = 300  # 5 minutes
     
     @staticmethod
-    def get_allowed_exercise_slugs() -> Set[str]:
+    def get_clips_with_video():
+        """Get QuerySet of VideoClips that have available video content"""
+        from apps.workouts.models import VideoClip
+        
+        return VideoClip.objects.filter(
+            is_active=True
+        ).filter(
+            Q(provider=VideoProvider.R2, r2_file__isnull=False) |
+            Q(provider=VideoProvider.STREAM, stream_uid__isnull=False) |
+            Q(provider=VideoProvider.STREAM, playback_id__isnull=False)
+        )
+    
+    @staticmethod
+    def get_allowed_exercise_slugs(archetype: Optional[str] = None, locale: Optional[str] = None) -> Set[str]:
         """
         Get set of exercise slugs that have complete video coverage
-        Uses clean ORM queries instead of raw SQL
+        Uses provider-agnostic video availability check
+        
+        Args:
+            archetype: Filter by specific archetype (peer/professional/mentor)
+            locale: Filter by locale (default: all locales)
         
         Returns:
             Set of exercise slugs that can be safely used in workout plans
         """
-        cache_key = 'allowed_exercise_slugs_v2'
+        # Build cache key with parameters
+        cache_parts = ['allowed_exercise_slugs_v4']
+        if archetype:
+            cache_parts.append(f'arch_{archetype}')
+        if locale:
+            cache_parts.append(f'loc_{locale}')
+        
+        cache_key = ':'.join(cache_parts)
         cached_slugs = cache.get(cache_key)
         
         if cached_slugs is not None:
             return cached_slugs
             
         try:
-            from apps.workouts.models import VideoClip
+            from apps.core.metrics import incr, MetricNames
             
-            # Find exercises that have all 3 required video types
-            slugs_with_coverage = (VideoClip.objects
-                .filter(
-                    r2_file__isnull=False,
-                    r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
-                    is_active=True,
-                    exercise__is_active=True
-                )
+            # Build query with optional filters
+            query = ExerciseValidationService.get_clips_with_video().filter(
+                r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
+                exercise__is_active=True
+            )
+            
+            # Apply archetype filter if specified
+            if archetype:
+                query = query.filter(r2_archetype=archetype)
+            
+            # Apply locale filter if specified (future: when locale field exists)
+            # if locale:
+            #     query = query.filter(locale=locale)
+            
+            # Find exercises that have all required video types with available content
+            slugs_with_coverage = (query
                 .values('exercise__slug')
                 .annotate(
                     kinds_count=Count(
@@ -55,6 +89,9 @@ class ExerciseValidationService:
             )
             
             slugs = set(slugs_with_coverage)
+            
+            # Track metrics
+            incr(MetricNames.AI_WHITELIST_COUNT, len(slugs))
                 
             # Cache results
             cache.set(cache_key, slugs, ExerciseValidationService.CACHE_TIMEOUT)
@@ -76,52 +113,47 @@ class ExerciseValidationService:
             Dict with coverage statistics and details
         """
         try:
-            with connection.cursor() as cursor:
-                # Get coverage breakdown using SQLite-compatible syntax
-                cursor.execute("""
-                    SELECT 
-                        e.slug,
-                        e.name,
-                        COUNT(DISTINCT v.r2_kind) as kinds_covered,
-                        GROUP_CONCAT(DISTINCT v.r2_kind) as available_kinds,
-                        CASE 
-                            WHEN COUNT(DISTINCT v.r2_kind) >= 3 THEN 'complete'
-                            WHEN COUNT(DISTINCT v.r2_kind) >= 1 THEN 'partial'
-                            ELSE 'none'
-                        END as coverage_status
-                    FROM exercises e
-                    LEFT JOIN video_clips v ON (
-                        v.exercise_id = e.id 
-                        AND v.r2_file IS NOT NULL 
-                        AND v.r2_file != ''
-                        AND v.r2_kind IN ('instruction', 'technique', 'mistake')
-                        AND v.is_active = TRUE
-                    )
-                    WHERE e.is_active = TRUE
-                    GROUP BY e.slug, e.name
-                    ORDER BY kinds_covered DESC, e.name
-                """)
+            from apps.workouts.models import Exercise, VideoClip
+            
+            # Use Django ORM instead of raw SQL for better database compatibility
+            exercises_data = []
+            stats = {'complete': 0, 'partial': 0, 'none': 0}
+            
+            for exercise in Exercise.objects.filter(is_active=True):
+                # Get available video kinds for this exercise using provider-aware logic
+                available_clips = ExerciseValidationService.get_clips_with_video().filter(
+                    exercise=exercise,
+                    r2_kind__in=ExerciseValidationService.REQUIRED_KINDS
+                )
                 
-                exercises = []
-                stats = {'complete': 0, 'partial': 0, 'none': 0}
+                kinds_covered = available_clips.values_list('r2_kind', flat=True).distinct().count()
+                available_kinds = list(available_clips.values_list('r2_kind', flat=True).distinct())
                 
-                for row in cursor.fetchall():
-                    slug, name, kinds_covered, available_kinds, status = row
-                    exercises.append({
-                        'slug': slug,
-                        'name': name,
-                        'kinds_covered': kinds_covered or 0,
-                        'available_kinds': available_kinds or '',
-                        'status': status
-                    })
-                    stats[status] += 1
+                if kinds_covered >= len(ExerciseValidationService.REQUIRED_KINDS):
+                    status = 'complete'
+                elif kinds_covered >= 1:
+                    status = 'partial'
+                else:
+                    status = 'none'
                 
-                return {
-                    'total_exercises': len(exercises),
-                    'statistics': stats,
-                    'coverage_percentage': round(stats['complete'] / len(exercises) * 100, 1) if exercises else 0,
-                    'exercises': exercises
-                }
+                exercises_data.append({
+                    'slug': exercise.slug,
+                    'name': exercise.name,
+                    'kinds_covered': kinds_covered,
+                    'available_kinds': ','.join(available_kinds),
+                    'status': status
+                })
+                stats[status] += 1
+                
+            # Sort exercises by coverage
+            exercises_data.sort(key=lambda x: (-x['kinds_covered'], x['name']))
+                
+            return {
+                'total_exercises': len(exercises_data),
+                'statistics': stats,
+                'coverage_percentage': round(stats['complete'] / len(exercises_data) * 100, 1) if exercises_data else 0,
+                'exercises': exercises_data
+            }
                 
         except Exception as e:
             logger.error(f"Error generating coverage report: {e}")
@@ -195,4 +227,5 @@ class ExerciseValidationService:
     def invalidate_cache():
         """Invalidate the allowed exercises cache"""
         cache.delete('allowed_exercise_slugs_v2')
+        cache.delete('allowed_exercise_slugs_v3')
         logger.info("Invalidated allowed exercise slugs cache")

@@ -353,8 +353,10 @@ def generate_plan_ajax(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
+    from django.conf import settings
     from apps.workouts.models import WorkoutPlan
-    from apps.ai_integration.services import create_workout_plan_from_onboarding
+    from apps.ai_integration.services import WorkoutPlanGenerator
+    from apps.onboarding.services import OnboardingDataProcessor
     
     # Check if plan already exists
     existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
@@ -365,18 +367,72 @@ def generate_plan_ajax(request):
         })
     
     try:
-        # Generate plan
-        workout_plan = create_workout_plan_from_onboarding(request.user)
+        # Check if we're confirming a previewed plan
+        action = request.POST.get('action', 'generate')
         
-        # Mark onboarding as complete
-        request.user.completed_onboarding = True
-        request.user.save()
+        if action == 'confirm':
+            # User confirmed the plan after preview
+            plan_data = request.session.get('pending_plan_data')
+            if not plan_data:
+                return JsonResponse({
+                    'status': 'error',
+                    'error': 'No pending plan to confirm'
+                }, status=400)
+            
+            # Create the actual workout plan
+            generator = WorkoutPlanGenerator()
+            workout_plan = generator.create_plan(request.user, plan_data)
+            
+            # Clear session data
+            request.session.pop('pending_plan_data', None)
+            
+            # Mark onboarding as complete
+            request.user.completed_onboarding = True
+            request.user.save()
+            
+            return JsonResponse({
+                'status': 'success',
+                'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
+                'plan_id': workout_plan.id
+            })
         
-        return JsonResponse({
-            'status': 'success',
-            'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
-            'plan_id': workout_plan.id
-        })
+        else:
+            # Generate new plan
+            user_data = OnboardingDataProcessor.collect_user_data(request.user)
+            generator = WorkoutPlanGenerator()
+            
+            # Generate plan data (not saved to DB yet)
+            plan_data = generator.generate_plan(user_data)
+            
+            if settings.SHOW_AI_ANALYSIS and 'analysis' in plan_data:
+                # Store plan in session for confirmation
+                request.session['pending_plan_data'] = plan_data
+                
+                # Return analysis for preview
+                return JsonResponse({
+                    'status': 'needs_confirmation',
+                    'analysis': plan_data.get('analysis', {}),
+                    'plan_preview': {
+                        'plan_name': plan_data.get('plan_name', 'Персональный план'),
+                        'duration_weeks': plan_data.get('duration_weeks', 4),
+                        'weekly_frequency': plan_data.get('weekly_frequency', 3),
+                        'session_duration': plan_data.get('session_duration', 45),
+                        'first_week_focus': plan_data.get('weeks', [{}])[0].get('focus', '') if plan_data.get('weeks') else '',
+                    }
+                })
+            else:
+                # Direct creation without preview
+                workout_plan = generator.create_plan(request.user, plan_data)
+                
+                # Mark onboarding as complete
+                request.user.completed_onboarding = True
+                request.user.save()
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
+                    'plan_id': workout_plan.id
+                })
         
     except Exception as e:
         logger.error(f"Plan generation failed for user {request.user.id}: {str(e)}")

@@ -1,0 +1,136 @@
+# GitHub Labels Configuration
+# Use with: gh api repos/:owner/:repo/labels --method POST --input .github/labels.yml
+
+# Type labels
+- name: "type: feature"
+  description: "New feature or enhancement"
+  color: "0e8a16"
+
+- name: "type: bug" 
+  description: "Bug fix"
+  color: "ee0701"
+
+- name: "type: refactor"
+  description: "Code refactoring"
+  color: "fbca04"
+
+- name: "type: docs"
+  description: "Documentation changes"
+  color: "1d76db"
+
+- name: "type: tests"
+  description: "Test additions or changes"
+  color: "0052cc"
+
+- name: "type: performance"
+  description: "Performance improvements"
+  color: "ff9500"
+
+- name: "type: security"
+  description: "Security-related changes"
+  color: "b60205"
+
+# Priority labels
+- name: "priority: critical"
+  description: "Critical priority"
+  color: "b60205"
+
+- name: "priority: high"
+  description: "High priority"
+  color: "ff9500"
+
+- name: "priority: medium"
+  description: "Medium priority"
+  color: "fbca04"
+
+- name: "priority: low"
+  description: "Low priority"
+  color: "0e8a16"
+
+# Size labels
+- name: "size: XS"
+  description: "< 10 lines changed"
+  color: "c2e0c6"
+
+- name: "size: S"
+  description: "10-29 lines changed"
+  color: "7cfc00"
+
+- name: "size: M"
+  description: "30-99 lines changed"
+  color: "bfb930"
+
+- name: "size: L"
+  description: "100-499 lines changed"
+  color: "ff9500"
+
+- name: "size: XL"
+  description: "500+ lines changed"
+  color: "ee0701"
+
+# Component labels
+- name: "component: ai"
+  description: "AI integration components"
+  color: "8b5cf6"
+
+- name: "component: workouts"
+  description: "Workout and exercise components"
+  color: "10b981"
+
+- name: "component: video"
+  description: "Video playback and storage"
+  color: "f59e0b"
+
+- name: "component: auth"
+  description: "Authentication and users"
+  color: "6366f1"
+
+- name: "component: database"
+  description: "Database models and migrations"
+  color: "0891b2"
+
+- name: "component: frontend"
+  description: "Frontend and UI components"
+  color: "ec4899"
+
+- name: "component: infrastructure"
+  description: "CI/CD, deployment, config"
+  color: "6b7280"
+
+# Status labels  
+- name: "status: needs review"
+  description: "Ready for review"
+  color: "fef3c7"
+
+- name: "status: needs tests"
+  description: "Needs test coverage"
+  color: "fdba74"
+
+- name: "status: needs docs"
+  description: "Needs documentation"
+  color: "a78bfa"
+
+- name: "status: breaking change"
+  description: "Contains breaking changes"
+  color: "dc2626"
+
+- name: "status: do not merge"
+  description: "Do not merge this PR"
+  color: "991b1b"
+
+# Special labels
+- name: "good first issue"
+  description: "Good for newcomers"
+  color: "0e8a16"
+
+- name: "help wanted"
+  description: "Extra attention is needed"
+  color: "0052cc"
+
+- name: "dependencies"
+  description: "Dependency updates"
+  color: "0366d6"
+
+- name: "deployment"
+  description: "Deployment-related changes"
+  color: "1f2937"
