@@ -3,6 +3,33 @@
 from django.db import migrations, models
 
 
+def clean_provider_data(apps, schema_editor):
+    """Clean up VideoClip data to ensure it meets constraint requirements"""
+    VideoClip = apps.get_model("workouts", "VideoClip")
+    
+    # Fix clips with provider='r2' but no r2_file
+    VideoClip.objects.filter(provider='r2', r2_file__isnull=True).update(provider='external')
+    
+    # Fix clips with provider='stream' but no identifiers
+    VideoClip.objects.filter(
+        provider='stream',
+        stream_uid__isnull=True,
+        playback_id__isnull=True
+    ).update(provider='external')
+    
+    # Ensure all clips have a provider value (default to 'r2' if they have r2_file)
+    VideoClip.objects.filter(provider__isnull=True, r2_file__isnull=False).update(provider='r2')
+    VideoClip.objects.filter(provider__isnull=True).update(provider='external')
+    
+    # Clean up empty string providers
+    VideoClip.objects.filter(provider='').update(provider='external')
+
+
+def reverse_clean_provider_data(apps, schema_editor):
+    """Reverse migration - no action needed"""
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,6 +37,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # First clean up the data to meet constraint requirements
+        migrations.RunPython(
+            clean_provider_data,
+            reverse_clean_provider_data,
+        ),
+        
         # Add CheckConstraints to ensure provider field consistency with storage fields
         migrations.AddConstraint(
             model_name='videoclip',
