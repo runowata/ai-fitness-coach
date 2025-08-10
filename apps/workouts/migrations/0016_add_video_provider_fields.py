@@ -15,6 +15,76 @@ def reverse_set_provider(apps, schema_editor):
     pass
 
 
+def safe_drop_weekly_lesson_constraint(apps, schema_editor):
+    """Safely drop legacy unique_weekly_lesson constraint if it exists"""
+    vendor = schema_editor.connection.vendor
+    
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            try:
+                cursor.execute("""
+                    ALTER TABLE weekly_lessons 
+                    DROP CONSTRAINT IF EXISTS unique_weekly_lesson
+                """)
+            except Exception:
+                # Constraint doesn't exist or table doesn't exist - ignore
+                pass
+        # SQLite doesn't need this - unique_together handles it
+
+
+def safe_add_exercise_fields(apps, schema_editor):
+    """Safely add equipment and poster_image fields if they don't exist"""
+    Exercise = apps.get_model("workouts", "Exercise")
+    table = Exercise._meta.db_table  # 'exercises'
+    qn = schema_editor.quote_name
+    vendor = schema_editor.connection.vendor
+
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            # Check and add equipment column
+            cursor.execute("""
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name = %s AND column_name = 'equipment'
+            """, [table.split(".")[-1]])
+            equipment_exists = cursor.fetchone() is not None
+            
+            if not equipment_exists:
+                cursor.execute(f"""
+                    ALTER TABLE {qn(table)}
+                    ADD COLUMN equipment varchar(50)
+                    DEFAULT 'bodyweight' NOT NULL
+                """)
+            
+            # Check and add poster_image column  
+            cursor.execute("""
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name = %s AND column_name = 'poster_image'
+            """, [table.split(".")[-1]])
+            poster_exists = cursor.fetchone() is not None
+            
+            if not poster_exists:
+                cursor.execute(f"""
+                    ALTER TABLE {qn(table)}
+                    ADD COLUMN poster_image varchar(100)
+                """)
+        else:
+            # SQLite/dev environment - soft checks
+            try:
+                cursor.execute(f"PRAGMA table_info({table})")
+                cols = [r[1] for r in cursor.fetchall()]
+                
+                if "equipment" not in cols:
+                    cursor.execute(f"ALTER TABLE {qn(table)} ADD COLUMN equipment varchar(50)")
+                    cursor.execute(f"UPDATE {qn(table)} SET equipment = 'bodyweight' WHERE equipment IS NULL")
+                
+                if "poster_image" not in cols:
+                    cursor.execute(f"ALTER TABLE {qn(table)} ADD COLUMN poster_image varchar(100)")
+            except Exception as e:
+                # Skip if columns already exist or other database issues
+                print(f"Warning: Could not add columns safely: {e}")
+                pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -26,10 +96,10 @@ class Migration(migrations.Migration):
             name='weeklylesson',
             options={'ordering': ['week']},
         ),
-        # Safe removal of legacy constraint (may not exist in fresh DB)
-        migrations.RunSQL(
-            "ALTER TABLE weekly_lessons DROP CONSTRAINT IF EXISTS unique_weekly_lesson;",
-            reverse_sql=migrations.RunSQL.noop,
+        # Safe removal of legacy constraint (cross-platform)
+        migrations.RunPython(
+            safe_drop_weekly_lesson_constraint,
+            reverse_code=migrations.RunPython.noop,
         ),
         migrations.RemoveIndex(
             model_name='videoclip',
@@ -43,15 +113,26 @@ class Migration(migrations.Migration):
             model_name='exercise',
             name='technique_video_url',
         ),
-        migrations.AddField(
-            model_name='exercise',
-            name='equipment',
-            field=models.CharField(default='bodyweight', help_text='Основной инвентарь: bodyweight | dumbbell | barbell …', max_length=50),
-        ),
-        migrations.AddField(
-            model_name='exercise',
-            name='poster_image',
-            field=models.ImageField(blank=True, help_text='Poster image for video player', null=True, upload_to='photos/workout/'),
+        # Safe addition of exercise fields (may already exist in production DB)
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.AddField(
+                    model_name='exercise',
+                    name='equipment',
+                    field=models.CharField(default='bodyweight', help_text='Основной инвентарь: bodyweight | dumbbell | barbell …', max_length=50),
+                ),
+                migrations.AddField(
+                    model_name='exercise',
+                    name='poster_image',
+                    field=models.ImageField(blank=True, help_text='Poster image for video player', null=True, upload_to='photos/workout/'),
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(
+                    safe_add_exercise_fields,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
         migrations.AddField(
             model_name='videoclip',
