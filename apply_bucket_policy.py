@@ -9,15 +9,20 @@ import boto3
 from botocore.client import Config
 
 def main():
-    # R2 credentials from environment
-    r2_access_key = os.getenv('R2_ACCESS_KEY_ID')
-    r2_secret_key = os.getenv('R2_SECRET_ACCESS_KEY')
+    # R2/AWS credentials from environment (try both R2_* and AWS_* variants)
+    r2_access_key = os.getenv('R2_ACCESS_KEY_ID') or os.getenv('AWS_ACCESS_KEY_ID')
+    r2_secret_key = os.getenv('R2_SECRET_ACCESS_KEY') or os.getenv('AWS_SECRET_ACCESS_KEY')
     
     if not r2_access_key or not r2_secret_key:
-        print("❌ Ошибка: Нужны переменные окружения R2_ACCESS_KEY_ID и R2_SECRET_ACCESS_KEY")
-        print("Настройте их в Render или локально:")
-        print("export R2_ACCESS_KEY_ID='your-key'")
-        print("export R2_SECRET_ACCESS_KEY='your-secret'")
+        print("❌ Ошибка: Нужны переменные окружения для R2/AWS:")
+        print("  R2_ACCESS_KEY_ID или AWS_ACCESS_KEY_ID")
+        print("  R2_SECRET_ACCESS_KEY или AWS_SECRET_ACCESS_KEY")
+        print()
+        print("Доступные переменные:")
+        aws_key = os.getenv('AWS_ACCESS_KEY_ID')
+        aws_secret = os.getenv('AWS_SECRET_ACCESS_KEY')
+        print(f"  AWS_ACCESS_KEY_ID: {'✓ найден' if aws_key else '✗ не найден'}")
+        print(f"  AWS_SECRET_ACCESS_KEY: {'✓ найден' if aws_secret else '✗ не найден'}")
         sys.exit(1)
     
     # R2 configuration
