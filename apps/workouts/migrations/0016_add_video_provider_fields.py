@@ -75,6 +75,66 @@ def safe_add_exercise_columns(apps, schema_editor):
                 pass
 
 
+def safe_add_videoclip_columns(apps, schema_editor):
+    VideoClip = apps.get_model("workouts", "VideoClip")
+    table = VideoClip._meta.db_table  # обычно 'video_clips'
+    qn = schema_editor.quote_name
+    vendor = schema_editor.connection.vendor
+
+    # Define VideoClip columns to add safely
+    columns_to_add = [
+        ('is_placeholder', 'boolean DEFAULT FALSE'),
+        ('playback_id', 'varchar(64)'),
+        ('provider', "varchar(16) DEFAULT 'r2'"),
+        ('r2_archetype', 'varchar(20)'),
+        ('r2_file', 'varchar(100)'),
+        ('r2_kind', "varchar(20) DEFAULT 'instruction'"),
+        ('script_text', 'text'),
+        ('stream_uid', 'varchar(64)'),
+    ]
+
+    with schema_editor.connection.cursor() as cursor:
+        if vendor == "postgresql":
+            def col_exists(name: str) -> bool:
+                cursor.execute("""
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_name = %s AND column_name = %s
+                """, [table.split(".")[-1], name])
+                return cursor.fetchone() is not None
+
+            for col_name, col_definition in columns_to_add:
+                if not col_exists(col_name):
+                    cursor.execute(f"""
+                        ALTER TABLE {qn(table)}
+                        ADD COLUMN {col_name} {col_definition}
+                    """)
+        else:
+            # dev/SQLite fallback
+            try:
+                cursor.execute(f"PRAGMA table_info({table})")
+                existing_cols = [r[1] for r in cursor.fetchall()]
+                
+                for col_name, col_definition in columns_to_add:
+                    if col_name not in existing_cols:
+                        # Simplify column definitions for SQLite
+                        sqlite_def = col_definition.replace('boolean DEFAULT FALSE', 'boolean')
+                        sqlite_def = sqlite_def.replace("varchar(16) DEFAULT 'r2'", 'varchar(16)')
+                        sqlite_def = sqlite_def.replace("varchar(20) DEFAULT 'instruction'", 'varchar(20)')
+                        
+                        cursor.execute(f"ALTER TABLE {qn(table)} ADD COLUMN {col_name} {sqlite_def}")
+                        
+                        # Set defaults separately for SQLite
+                        if 'DEFAULT FALSE' in col_definition:
+                            cursor.execute(f"UPDATE {qn(table)} SET {col_name} = 0 WHERE {col_name} IS NULL")
+                        elif "DEFAULT 'r2'" in col_definition:
+                            cursor.execute(f"UPDATE {qn(table)} SET {col_name} = 'r2' WHERE {col_name} IS NULL")
+                        elif "DEFAULT 'instruction'" in col_definition:
+                            cursor.execute(f"UPDATE {qn(table)} SET {col_name} = 'instruction' WHERE {col_name} IS NULL")
+            except Exception:
+                pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -133,45 +193,56 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='is_placeholder',
-            field=models.BooleanField(default=False),
-        ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='playback_id',
-            field=models.CharField(blank=True, help_text='Stream playback ID', max_length=64, null=True),
-        ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='provider',
-            field=models.CharField(choices=[('r2', 'Cloudflare R2'), ('stream', 'Cloudflare Stream'), ('external', 'External URL')], default='r2', help_text='Video storage provider', max_length=16),
-        ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='r2_archetype',
-            field=models.CharField(blank=True, choices=[('peer', 'Ровесник'), ('professional', 'Успешный профессионал'), ('mentor', 'Мудрый наставник')], help_text='Archetype for R2 videos', max_length=20),
-        ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='r2_file',
-            field=models.FileField(blank=True, help_text='Video file in R2 storage', null=True, upload_to='videos/'),
-        ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='r2_kind',
-            field=models.CharField(choices=[('technique', 'Technique'), ('mistake', 'Common Mistake'), ('instruction', 'Instruction'), ('intro', 'Introduction'), ('weekly', 'Weekly Motivation'), ('closing', 'Closing'), ('reminder', 'Reminder'), ('explain', 'Exercise Explanation')], default='instruction', help_text='Video type for R2 organization', max_length=20),
-        ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='script_text',
-            field=models.TextField(blank=True, help_text='Video script or content'),
-        ),
-        migrations.AddField(
-            model_name='videoclip',
-            name='stream_uid',
-            field=models.CharField(blank=True, help_text='Cloudflare Stream UID', max_length=64, null=True),
+        # Safe addition of VideoClip fields (may already exist in production DB)
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='is_placeholder',
+                    field=models.BooleanField(default=False),
+                ),
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='playback_id',
+                    field=models.CharField(blank=True, help_text='Stream playback ID', max_length=64, null=True),
+                ),
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='provider',
+                    field=models.CharField(choices=[('r2', 'Cloudflare R2'), ('stream', 'Cloudflare Stream'), ('external', 'External URL')], default='r2', help_text='Video storage provider', max_length=16),
+                ),
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='r2_archetype',
+                    field=models.CharField(blank=True, choices=[('peer', 'Ровесник'), ('professional', 'Успешный профессионал'), ('mentor', 'Мудрый наставник')], help_text='Archetype for R2 videos', max_length=20),
+                ),
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='r2_file',
+                    field=models.FileField(blank=True, help_text='Video file in R2 storage', null=True, upload_to='videos/'),
+                ),
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='r2_kind',
+                    field=models.CharField(choices=[('technique', 'Technique'), ('mistake', 'Common Mistake'), ('instruction', 'Instruction'), ('intro', 'Introduction'), ('weekly', 'Weekly Motivation'), ('closing', 'Closing'), ('reminder', 'Reminder'), ('explain', 'Exercise Explanation')], default='instruction', help_text='Video type for R2 organization', max_length=20),
+                ),
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='script_text',
+                    field=models.TextField(blank=True, help_text='Video script or content'),
+                ),
+                migrations.AddField(
+                    model_name='videoclip',
+                    name='stream_uid',
+                    field=models.CharField(blank=True, help_text='Cloudflare Stream UID', max_length=64, null=True),
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(
+                    safe_add_videoclip_columns,
+                    reverse_code=migrations.RunPython.noop,
+                ),
+            ],
         ),
         migrations.AlterField(
             model_name='exercise',
