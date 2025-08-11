@@ -156,13 +156,30 @@ class MotivationalCard(models.Model):
             from apps.core.services import MediaService
             return MediaService.get_public_cdn_url(self.image)
         
-        # For legacy image_url fields, check if we need to use public R2 URL
+        # For legacy image_url fields, create signed URL since public R2 access not configured
         if self.image_url:
-            # If it's already a full URL, return as-is (will work when R2 is properly configured)
+            # If it's already a full URL with pub-*.r2.dev domain, extract path and create signed URL
             if self.image_url.startswith('http'):
-                return self.image_url
+                # Extract path from public URL (remove https://pub-xxxxx.r2.dev/)
+                import re
+                match = re.search(r'https://pub-[^/]+\.r2\.dev/(.+)', self.image_url)
+                if match:
+                    file_path = match.group(1)  # e.g., "photos/progress/card_progress_0066.jpg"
+                    # Create a mock file field with the path for signed URL generation
+                    from django.core.files.storage import default_storage
+                    try:
+                        # Generate signed URL using the file path
+                        signed_url = default_storage.url(file_path)
+                        return signed_url
+                    except Exception as e:
+                        import logging
+                        logger = logging.getLogger(__name__)
+                        logger.warning(f"Failed to generate signed URL for {file_path}: {e}")
+                        return self.image_url  # Fallback to original URL
+                else:
+                    return self.image_url  # Return original URL if pattern doesn't match
             
-            # If it's a relative path, try to build public URL
+            # If it's a relative path, try to build signed URL
             from apps.core.services import MediaService
             return MediaService.get_public_cdn_url(self.image_url)
         
