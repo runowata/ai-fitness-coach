@@ -62,8 +62,8 @@ pytest -k test_workout_completion      # Pattern matching
 ### Code Quality
 ```bash
 black . --line-length 100             # Format code
-flake8 --max-line-length=100         # Lint
-isort . --profile=black               # Sort imports
+flake8 --max-line-length=100 --ignore=E203,W503  # Lint
+isort . --profile=black --line-length=100  # Sort imports
 pre-commit run --all-files            # Run all pre-commit hooks
 ```
 
@@ -126,13 +126,24 @@ python manage.py migrate <app_name> zero  # Reset app
 SECRET_KEY                  # Django secret (auto-generated in dev)
 DATABASE_URL               # PostgreSQL connection
 REDIS_URL                  # Redis for Celery (default: redis://localhost:6379)
-AWS_ACCESS_KEY_ID          # S3 credentials
-AWS_SECRET_ACCESS_KEY      # S3 credentials
-OPENAI_API_KEY            # AI service key
+
+# AWS S3 / Cloudflare R2
+AWS_ACCESS_KEY_ID          # S3/R2 credentials
+AWS_SECRET_ACCESS_KEY      # S3/R2 credentials
+AWS_STORAGE_BUCKET_NAME    # Bucket name
+AWS_S3_ENDPOINT_URL        # R2 endpoint (for R2)
+R2_PUBLIC_URL              # R2 public URL
+
+# AI Service
+OPENAI_API_KEY            # OpenAI API key
+OPENAI_MODEL              # Model (default: gpt-4)
+
+# Email
 EMAIL_HOST_USER           # Email settings
 EMAIL_HOST_PASSWORD       # Email settings
+
+# Media
 CLOUDFRONT_DOMAIN         # CDN domain
-R2_* variables            # Cloudflare R2 settings (V2)
 BOOTSTRAP_DATA_SHA256     # Bootstrap data integrity check
 ```
 
@@ -187,6 +198,8 @@ python manage.py cleanup_legacy_columns              # Remove deprecated columns
 - Use `pytest.ini` configuration
 - Database reuse enabled for speed (`--reuse-db`)
 - Integration tests marked with `@pytest.mark.integration`
+- Slow tests marked with `@pytest.mark.slow`
+- AI tests marked with `@pytest.mark.ai`
 
 ## Common Debugging Tools
 - Django Debug Toolbar (enabled in DEBUG mode)
@@ -198,9 +211,11 @@ python manage.py cleanup_legacy_columns              # Remove deprecated columns
 
 ## Code Style
 - **Formatter:** Black (line length 100)
-- **Linter:** Flake8 with Django plugin (max line length 100)
-- **Import sorting:** isort (profile=black)
-- **Pre-commit hooks:** Auto-formatting on commit
+- **Linter:** Flake8 (max line length 100, ignore E203,W503)
+- **Import sorting:** isort (profile=black, line length 100)
+- **Security:** Bandit for security issues
+- **Django:** django-upgrade for Django 5.0 compatibility
+- **Pre-commit hooks:** Auto-formatting and tests on commit
 
 ## Production Notes
 - Platform: Render.com with multi-service setup
@@ -210,3 +225,4 @@ python manage.py cleanup_legacy_columns              # Remove deprecated columns
 - Rate limiting: 10 req/min on critical endpoints
 - Error tracking: Sentry integration available
 - Bootstrap data: Downloaded from GitHub releases or R2
+- Data integrity: SHA256 check via BOOTSTRAP_DATA_SHA256 env var

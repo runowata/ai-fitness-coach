@@ -100,24 +100,37 @@ class WorkoutPlanValidator:
                 continue
                 
             for day_idx, day in enumerate(week['days']):
-                if 'blocks' not in day:
-                    continue
-                    
-                for block_idx, block in enumerate(day['blocks']):
-                    if 'exercises' not in block:
-                        continue
-                    
-                    # Validate each exercise
+                # Handle both old (blocks) and new (direct exercises) structure
+                if 'blocks' in day:
+                    # Old structure with blocks
+                    for block_idx, block in enumerate(day['blocks']):
+                        if 'exercises' not in block:
+                            continue
+                        
+                        # Validate each exercise
+                        fixed_exercises = []
+                        for exercise in block['exercises']:
+                            fixed_exercise = self._validate_single_exercise(
+                                exercise, allowed_slugs, week_idx + 1, day_idx + 1
+                            )
+                            if fixed_exercise:
+                                fixed_exercises.append(fixed_exercise)
+                        
+                        # Update block with fixed exercises
+                        block['exercises'] = fixed_exercises
+                
+                elif 'exercises' in day:
+                    # New structure with direct exercises in day
                     fixed_exercises = []
-                    for exercise in block['exercises']:
+                    for exercise in day['exercises']:
                         fixed_exercise = self._validate_single_exercise(
                             exercise, allowed_slugs, week_idx + 1, day_idx + 1
                         )
                         if fixed_exercise:
                             fixed_exercises.append(fixed_exercise)
                     
-                    # Update block with fixed exercises
-                    block['exercises'] = fixed_exercises
+                    # Update day with fixed exercises
+                    day['exercises'] = fixed_exercises
         
         return plan_data
     
@@ -134,11 +147,15 @@ class WorkoutPlanValidator:
         Returns:
             Fixed exercise dict or None if exercise should be removed
         """
-        if 'slug' not in exercise:
+        # Handle both 'slug' and 'exercise_slug' fields
+        slug = exercise.get('slug') or exercise.get('exercise_slug')
+        if not slug:
             self.issues_found.append(f"Exercise missing slug in week {week_num}, day {day_num}")
             return None
         
-        slug = exercise['slug']
+        # Ensure exercise_slug field is present for new schema
+        if 'exercise_slug' not in exercise:
+            exercise['exercise_slug'] = slug
         
         # Check if slug is allowed (has video coverage)
         if slug not in allowed_slugs:
@@ -148,9 +165,12 @@ class WorkoutPlanValidator:
             alternatives = self.validation_service.find_exercise_alternatives(slug)
             if alternatives:
                 new_slug = alternatives[0]  # Take best alternative
-                exercise['slug'] = new_slug
+                exercise['exercise_slug'] = new_slug
+                if 'slug' in exercise:
+                    exercise['slug'] = new_slug
                 self.fixes_applied.append(f"Replaced '{slug}' with '{new_slug}' (week {week_num}, day {day_num})")
                 logger.info(f"Substituted {slug} → {new_slug}")
+                slug = new_slug  # Update slug for further validation
             else:
                 self.issues_found.append(f"No alternatives found for '{slug}' - removing exercise")
                 return None  # Remove exercise if no alternatives
@@ -177,6 +197,46 @@ class WorkoutPlanValidator:
         if not isinstance(exercise.get('reps'), str):
             exercise['reps'] = str(exercise['reps'])
             self.fixes_applied.append(f"Fixed reps format for {slug}")
+        
+        # Fix rest_seconds if invalid
+        rest_seconds = exercise.get('rest_seconds')
+        if rest_seconds is not None:
+            # Ensure it's an integer
+            if not isinstance(rest_seconds, int):
+                try:
+                    rest_seconds = int(rest_seconds)
+                except (ValueError, TypeError):
+                    rest_seconds = None
+            
+            # Ensure minimum value
+            if rest_seconds is not None and rest_seconds < 10:
+                exercise['rest_seconds'] = 30  # Default safe value
+                self.fixes_applied.append(f"Fixed rest_seconds for {slug}: {rest_seconds} → 30")
+            elif rest_seconds is not None and rest_seconds > 600:
+                exercise['rest_seconds'] = 90  # Maximum reasonable value
+                self.fixes_applied.append(f"Fixed rest_seconds for {slug}: {rest_seconds} → 90")
+            elif rest_seconds is not None:
+                exercise['rest_seconds'] = rest_seconds
+        
+        # Fix duration_seconds if invalid
+        duration_seconds = exercise.get('duration_seconds')
+        if duration_seconds is not None:
+            # Ensure it's an integer
+            if not isinstance(duration_seconds, int):
+                try:
+                    duration_seconds = int(duration_seconds)
+                except (ValueError, TypeError):
+                    duration_seconds = None
+            
+            # Ensure minimum value
+            if duration_seconds is not None and duration_seconds < 10:
+                exercise['duration_seconds'] = 30  # Default safe value
+                self.fixes_applied.append(f"Fixed duration_seconds for {slug}: {duration_seconds} → 30")
+            elif duration_seconds is not None and duration_seconds > 1800:
+                exercise['duration_seconds'] = 300  # Maximum reasonable value (5 min)
+                self.fixes_applied.append(f"Fixed duration_seconds for {slug}: {duration_seconds} → 300")
+            elif duration_seconds is not None:
+                exercise['duration_seconds'] = duration_seconds
         
         return exercise
     
