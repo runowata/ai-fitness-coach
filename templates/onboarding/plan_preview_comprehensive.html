@@ -1,0 +1,758 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Ваш comprehensive план готов! - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<!-- Comprehensive plan preview page -->
+<div class="plan-preview-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="plan-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Gradient overlay -->
+    <div class="plan-overlay"></div>
+    
+    <!-- Content -->
+    <div class="plan-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    
+                    <!-- Header with trainer -->
+                    <div class="plan-header">
+                        <div class="trainer-reveal">
+                            <div class="trainer-avatar-container">
+                                <div class="success-rays"></div>
+                                <img src="{% static 'images/avatars/' %}{{ archetype }}-avatar.png" 
+                                     alt="Тренер {{ archetype|title }}" 
+                                     class="trainer-avatar-large">
+                                <div class="trainer-glow"></div>
+                            </div>
+                            
+                            <div class="success-message">
+                                <h1 class="success-title">
+                                    <span class="celebration">🎉</span>
+                                    Ваш comprehensive план готов!
+                                </h1>
+                                
+                                <p class="trainer-message">
+                                    {% if archetype == 'mentor' %}
+                                        Ваш полный план развития создан на основе глубокого понимания ваших потребностей и целей. Готовы начать journey к лучшей версии себя?
+                                    {% elif archetype == 'professional' %}
+                                        Стратегический план вашего success готов к реализации! Комплексный подход обеспечит максимальную эффективность.
+                                    {% elif archetype == 'peer' %}
+                                        Братан, мы создали полный roadmap твоего преображения! Готов к amazing journey?
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main comprehensive plan card -->
+                    <div class="plan-card comprehensive">
+                        <div class="plan-card-header">
+                            <div class="plan-badge comprehensive">
+                                <i class="fas fa-crown"></i>
+                                <span>Comprehensive План</span>
+                            </div>
+                            <h2 class="plan-title">{{ training_program.plan_name }}</h2>
+                            <p class="plan-subtitle">{{ training_program.duration_weeks }} недель • {{ training_program.goal }}</p>
+                        </div>
+                        
+                        <div class="plan-card-body">
+                            
+                            <!-- Comprehensive Overview -->
+                            <div class="comprehensive-overview">
+                                <h3 class="overview-title">
+                                    <i class="fas fa-chart-pie"></i>
+                                    Comprehensive Обзор Плана
+                                </h3>
+                                
+                                <div class="overview-grid">
+                                    <!-- User Analysis Summary -->
+                                    {% if comprehensive_data.user_analysis %}
+                                    <div class="overview-card analysis">
+                                        <div class="card-icon">
+                                            <i class="fas fa-user-chart"></i>
+                                        </div>
+                                        <div class="card-content">
+                                            <h4>Анализ пользователя</h4>
+                                            <p class="card-summary">
+                                                Уровень: {{ user_level|default:"Индивидуальный" }}<br>
+                                                {% if comprehensive_data.user_analysis.archetype_adaptation %}
+                                                    Подход: {{ comprehensive_data.user_analysis.archetype_adaptation|truncatechars:50 }}
+                                                {% else %}
+                                                    Подход: Персонализированный
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- Training Program Summary -->
+                                    <div class="overview-card training">
+                                        <div class="card-icon">
+                                            <i class="fas fa-dumbbell"></i>
+                                        </div>
+                                        <div class="card-content">
+                                            <h4>Программа тренировок</h4>
+                                            <p class="card-summary">
+                                                {{ training_program.duration_weeks|default:"8" }} недель<br>
+                                                {% if training_program.weeks %}{{ training_program.weeks|length }}{% else %}4{% endif %} тренировочных циклов
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Motivation System Summary -->
+                                    {% if comprehensive_data.motivation_system %}
+                                    <div class="overview-card motivation">
+                                        <div class="card-icon">
+                                            <i class="fas fa-heart"></i>
+                                        </div>
+                                        <div class="card-content">
+                                            <h4>Система мотивации</h4>
+                                            <p class="card-summary">
+                                                Psychological support<br>
+                                                Community integration
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- Long-term Strategy Summary -->
+                                    {% if comprehensive_data.long_term_strategy %}
+                                    <div class="overview-card strategy">
+                                        <div class="card-icon">
+                                            <i class="fas fa-route"></i>
+                                        </div>
+                                        <div class="card-content">
+                                            <h4>Долгосрочная стратегия</h4>
+                                            <p class="card-summary">
+                                                3-6 месяцев развития<br>
+                                                Adaptive progression
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Training Program Stats -->
+                            <div class="stats-grid comprehensive">
+                                <div class="stat-card duration">
+                                    <div class="stat-icon duration">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-value">{{ training_program.duration_weeks }}</div>
+                                        <div class="stat-label">недель comprehensive плана</div>
+                                    </div>
+                                    <div class="stat-decoration"></div>
+                                </div>
+                                
+                                <div class="stat-card workouts">
+                                    <div class="stat-icon workouts">
+                                        <i class="fas fa-dumbbell"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-value">{% if training_program.weeks %}{{ training_program.weeks|length }}{% else %}4{% endif %}</div>
+                                        <div class="stat-label">структурированных недель</div>
+                                    </div>
+                                    <div class="stat-decoration"></div>
+                                </div>
+                                
+                                <div class="stat-card comprehensive-features">
+                                    <div class="stat-icon features">
+                                        <i class="fas fa-layers"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-value">4</div>
+                                        <div class="stat-label">блока анализа</div>
+                                    </div>
+                                    <div class="stat-decoration"></div>
+                                </div>
+                                
+                                <div class="stat-card personalization">
+                                    <div class="stat-icon personalization">
+                                        <i class="fas fa-user-cog"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-value">100%</div>
+                                        <div class="stat-label">персонализации</div>
+                                    </div>
+                                    <div class="stat-decoration"></div>
+                                </div>
+                            </div>
+
+                            <!-- Comprehensive Trainer Insight -->
+                            <div class="trainer-insight comprehensive">
+                                <div class="insight-avatar">
+                                    <img src="{% static 'images/avatars/' %}{{ archetype }}-avatar.png" 
+                                         alt="Тренер" 
+                                         class="insight-trainer-img">
+                                </div>
+                                <div class="insight-content">
+                                    <div class="insight-header">
+                                        <h4>Comprehensive Сообщение от тренера</h4>
+                                        <div class="insight-badge comprehensive">{{ archetype|title }} AI</div>
+                                    </div>
+                                    <div class="comprehensive-message">
+                                        {% if comprehensive_data.user_analysis and comprehensive_data.user_analysis.interaction_strategy %}
+                                            <p class="strategy-message">
+                                                <strong>Стратегия взаимодействия:</strong>
+                                                {{ comprehensive_data.user_analysis.interaction_strategy|truncatechars:150 }}
+                                            </p>
+                                        {% endif %}
+                                        
+                                        <p class="motivation-message">
+                                            {% if archetype == 'mentor' %}
+                                                Этот comprehensive план - результат глубокого анализа ваших потребностей. Каждый элемент тщательно подобран для вашего unique journey.
+                                            {% elif archetype == 'professional' %}
+                                                Стратегический comprehensive подход обеспечит максимальную ROI вашего времени и усилий. План оптимизирован для долгосрочного success.
+                                            {% elif archetype == 'peer' %}
+                                                Братан, этот comprehensive план - не просто тренировки, это complete lifestyle transformation! Готов к amazing results?
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sample workout preview with comprehensive context -->
+                            {% if training_program.weeks.0.days.0 %}
+                            <div class="sample-workout comprehensive">
+                                <h3 class="sample-title">
+                                    <i class="fas fa-play-circle"></i>
+                                    Превью первого дня (с comprehensive контекстом)
+                                </h3>
+                                
+                                <div class="workout-preview-card comprehensive">
+                                    <div class="workout-header comprehensive">
+                                        <h4 class="workout-name">{{ training_program.weeks.0.days.0.workout_name }}</h4>
+                                        <div class="workout-badges">
+                                            {% if not training_program.weeks.0.days.0.is_rest_day %}
+                                                <span class="type-badge workout">Тренировка</span>
+                                                <span class="week-badge">Неделя {{ training_program.weeks.0.week_number }}</span>
+                                            {% else %}
+                                                <span class="type-badge rest">Отдых</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    {% if not training_program.weeks.0.days.0.is_rest_day %}
+                                        <div class="exercises-showcase comprehensive">
+                                            {% for exercise in training_program.weeks.0.days.0.exercises|slice:":4" %}
+                                                <div class="exercise-item comprehensive">
+                                                    <div class="exercise-info">
+                                                        <h6 class="exercise-name">
+                                                            {{ exercise.exercise_name|default:exercise.exercise_slug|title }}
+                                                        </h6>
+                                                        <div class="exercise-specs comprehensive">
+                                                            <span class="sets">{{ exercise.sets }} подходов</span>
+                                                            <span class="reps">{{ exercise.reps }} повторений</span>
+                                                            {% if exercise.rest_seconds %}
+                                                                <span class="rest">{{ exercise.rest_seconds }}s отдых</span>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            
+                                            {% if training_program.weeks.0.days.0.exercises and training_program.weeks.0.days.0.exercises|length > 4 %}
+                                                <div class="exercises-more comprehensive">
+                                                    <span class="more-indicator">
+                                                        +{{ training_program.weeks.0.days.0.exercises|length|add:"-4" }} упражнений в полной программе
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <!-- Comprehensive confidence task -->
+                                    {% if training_program.weeks.0.days.0.confidence_task %}
+                                        <div class="confidence-challenge comprehensive">
+                                            <div class="challenge-header">
+                                                <i class="fas fa-star"></i>
+                                                <h6>Daily Confidence Challenge</h6>
+                                            </div>
+                                            <p class="challenge-text">
+                                                {{ training_program.weeks.0.days.0.confidence_task }}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Action buttons -->
+                        <div class="plan-actions comprehensive">
+                            <div class="actions-container">
+                                <form method="post" class="plan-form">
+                                    {% csrf_token %}
+                                    
+                                    <button type="submit" name="action" value="confirm" class="btn-accept comprehensive">
+                                        <div class="btn-content">
+                                            <i class="fas fa-rocket"></i>
+                                            <span class="btn-text">
+                                                {% if archetype == 'mentor' %}
+                                                    Начать comprehensive journey
+                                                {% elif archetype == 'professional' %}
+                                                    Активировать comprehensive план
+                                                {% elif archetype == 'peer' %}
+                                                    Let's go comprehensive!
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="btn-effects">
+                                            <div class="btn-ripple"></div>
+                                            <div class="btn-glow comprehensive"></div>
+                                        </div>
+                                    </button>
+                                    
+                                    <button type="submit" name="action" value="regenerate" class="btn-regenerate comprehensive">
+                                        <div class="btn-content">
+                                            <i class="fas fa-sync-alt"></i>
+                                            <span class="btn-text">Другой comprehensive план</span>
+                                        </div>
+                                    </button>
+                                </form>
+                                
+                                <div class="plan-note comprehensive">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Comprehensive план адаптируется на основе 4-блочного анализа и вашего прогресса</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Comprehensive Plan Preview Styles */
+.plan-badge.comprehensive {
+    background: linear-gradient(45deg, #667eea, #764ba2, #4ecdc4);
+    background-size: 300% 300%;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.comprehensive-overview {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(78, 205, 196, 0.05) 100%);
+    border-radius: 25px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.overview-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.overview-title i {
+    color: #667eea;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.overview-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.overview-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    transition: all 0.3s ease;
+}
+
+.overview-card.analysis::before {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.overview-card.training::before {
+    background: linear-gradient(90deg, #4ecdc4, #44a08d);
+}
+
+.overview-card.motivation::before {
+    background: linear-gradient(90deg, #ff6b6b, #ee5a52);
+}
+
+.overview-card.strategy::before {
+    background: linear-gradient(90deg, #ffd700, #ffa500);
+}
+
+.overview-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.overview-card:hover::before {
+    height: 5px;
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.overview-card.analysis .card-icon {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.overview-card.training .card-icon {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+}
+
+.overview-card.motivation .card-icon {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+}
+
+.overview-card.strategy .card-icon {
+    background: linear-gradient(45deg, #ffd700, #ffa500);
+}
+
+.card-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.card-summary {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.stats-grid.comprehensive {
+    margin-bottom: 3rem;
+}
+
+.stat-icon.features {
+    background: linear-gradient(45deg, #9b59b6, #8e44ad);
+}
+
+.stat-icon.personalization {
+    background: linear-gradient(45deg, #e67e22, #d35400);
+}
+
+.trainer-insight.comprehensive {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(78, 205, 196, 0.08) 50%, rgba(255, 107, 107, 0.05) 100%);
+    border-left: 4px solid #667eea;
+    margin-bottom: 3rem;
+}
+
+.insight-badge.comprehensive {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.comprehensive-message {
+    margin-top: 1rem;
+}
+
+.strategy-message {
+    background: rgba(102, 126, 234, 0.08);
+    padding: 1rem;
+    border-radius: 12px;
+    border-left: 3px solid #667eea;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.motivation-message {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #5a6c7d;
+}
+
+.sample-workout.comprehensive {
+    margin-bottom: 3rem;
+}
+
+.workout-preview-card.comprehensive {
+    border-left: 4px solid #4ecdc4;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%);
+}
+
+.workout-header.comprehensive {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.workout-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.week-badge {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.exercises-showcase.comprehensive {
+    margin-bottom: 1.5rem;
+}
+
+.exercise-item.comprehensive {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(78, 205, 196, 0.03) 100%);
+    border-left: 3px solid #667eea;
+    border-radius: 15px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.exercise-item.comprehensive:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(78, 205, 196, 0.06) 100%);
+    transform: translateX(5px);
+}
+
+.exercise-specs.comprehensive {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.exercise-specs.comprehensive .rest {
+    background: rgba(255, 107, 107, 0.1);
+    color: #e74c3c;
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.exercises-more.comprehensive {
+    text-align: center;
+    padding: 1.5rem;
+    color: #7f8c8d;
+    font-style: italic;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(78, 205, 196, 0.02) 100%);
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+.confidence-challenge.comprehensive {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+    border-left: 3px solid #ffd700;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.plan-actions.comprehensive {
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+    border-top: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.btn-accept.comprehensive {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d, #667eea);
+    background-size: 300% 300%;
+    animation: gradientShift 3s ease-in-out infinite;
+    box-shadow: 0 15px 40px rgba(78, 205, 196, 0.4);
+}
+
+.btn-accept.comprehensive:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 25px 60px rgba(78, 205, 196, 0.6);
+}
+
+.btn-regenerate.comprehensive {
+    border: 2px solid #667eea;
+    background: rgba(255, 255, 255, 0.9);
+    color: #667eea;
+}
+
+.btn-regenerate.comprehensive:hover {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-glow.comprehensive {
+    background: radial-gradient(circle, rgba(78, 205, 196, 0.3) 0%, transparent 70%);
+}
+
+.plan-note.comprehensive {
+    color: #5a6c7d;
+    font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .overview-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .overview-card {
+        padding: 1rem;
+    }
+    
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .comprehensive-overview {
+        padding: 1.5rem;
+    }
+    
+    .workout-header.comprehensive {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .exercise-specs.comprehensive {
+        justify-content: center;
+    }
+}
+</style>
+
+<!-- Include base styles -->
+<link href="{% static 'css/plan-preview.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced animations for comprehensive elements
+    const comprehensiveElements = document.querySelectorAll('.overview-card, .stat-card, .exercise-item.comprehensive');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }, index * 100);
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    comprehensiveElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(30px) scale(0.95)';
+        element.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        observer.observe(element);
+    });
+    
+    // Enhanced button effects
+    const comprehensiveButtons = document.querySelectorAll('.btn-accept.comprehensive, .btn-regenerate.comprehensive');
+    
+    comprehensiveButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.05)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Comprehensive plan celebration effect
+    function createComprehensiveConfetti() {
+        const colors = ['#667eea', '#4ecdc4', '#ff6b6b', '#ffd700', '#764ba2'];
+        
+        for (let i = 0; i < 75; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.width = '8px';
+                confetti.style.height = '8px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.zIndex = '9999';
+                confetti.style.pointerEvents = 'none';
+                confetti.style.borderRadius = '50%';
+                confetti.style.animation = 'comprehensiveConfettiFall 4s linear forwards';
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 4000);
+            }, i * 30);
+        }
+    }
+    
+    // Add comprehensive confetti CSS
+    const confettiStyle = document.createElement('style');
+    confettiStyle.textContent = `
+        @keyframes comprehensiveConfettiFall {
+            to {
+                transform: translateY(100vh) rotate(1080deg);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(confettiStyle);
+    
+    // Trigger comprehensive celebration
+    setTimeout(createComprehensiveConfetti, 1500);
+    
+    // Add comprehensive badge pulse effect
+    const comprehensiveBadges = document.querySelectorAll('.plan-badge.comprehensive');
+    comprehensiveBadges.forEach(badge => {
+        setInterval(() => {
+            badge.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                badge.style.transform = 'scale(1)';
+            }, 200);
+        }, 3000);
+    });
+});
+</script>
+{% endblock %}

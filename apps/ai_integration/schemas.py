@@ -162,6 +162,81 @@ def validate_ai_plan_response(raw_response: str) -> WorkoutPlan:
     return plan
 
 
+# НОВЫЕ СХЕМЫ ДЛЯ 4-БЛОЧНОЙ СТРУКТУРЫ ОТЧЕТА ИИ
+
+class UserAnalysis(BaseModel):
+    """БЛОК 1: Анализ пользователя и адаптация подхода"""
+    fitness_level_assessment: str = Field(..., min_length=50, max_length=800, description="Оценка текущего уровня физической подготовки")
+    psychological_profile: str = Field(..., min_length=50, max_length=600, description="Психологический профиль и мотивационные особенности")
+    limitations_analysis: str = Field(..., max_length=500, description="Анализ ограничений и противопоказаний")
+    interaction_strategy: str = Field(..., min_length=30, max_length=400, description="Выбранная стратегия взаимодействия и коммуникации")
+    archetype_adaptation: str = Field(..., min_length=30, max_length=300, description="Адаптация архетипа тренера под пользователя")
+
+
+class MotivationSystem(BaseModel):
+    """БЛОК 3: Система мотивации и поддержки"""
+    psychological_support: str = Field(..., min_length=100, max_length=800, description="План психологической поддержки")
+    reward_system: str = Field(..., min_length=50, max_length=500, description="Система наград и достижений")
+    confidence_building: str = Field(..., min_length=50, max_length=600, description="Стратегия развития уверенности в себе")
+    community_integration: str = Field(..., max_length=400, description="Интеграция с ЛГБТ+ сообществом")
+
+
+class LongTermStrategy(BaseModel):
+    """БЛОК 4: Долгосрочная стратегия"""
+    progression_plan: str = Field(..., min_length=100, max_length=800, description="План прогрессии на 3-6 месяцев")
+    adaptation_triggers: str = Field(..., min_length=50, max_length=500, description="Триггеры для адаптации программы")
+    lifestyle_integration: str = Field(..., min_length=50, max_length=600, description="Интеграция тренировок в образ жизни")
+    success_metrics: str = Field(..., min_length=30, max_length=400, description="Метрики успеха и контрольные точки")
+
+
+class ComprehensiveAIReport(BaseModel):
+    """ПОЛНАЯ 4-БЛОЧНАЯ СТРУКТУРА ОТЧЕТА ИИ"""
+    model_config = ConfigDict(extra="forbid")
+    
+    # Метаинформация
+    meta: Dict[str, Any] = Field(..., description="Метаданные отчета (версия, архетип, дата)")
+    
+    # 4 основных блока
+    user_analysis: UserAnalysis = Field(..., description="Блок 1: Анализ пользователя")
+    training_program: WorkoutPlan = Field(..., description="Блок 2: Персональная программа тренировок")
+    motivation_system: MotivationSystem = Field(..., description="Блок 3: Система мотивации")
+    long_term_strategy: LongTermStrategy = Field(..., description="Блок 4: Долгосрочная стратегия")
+
+
+def validate_comprehensive_ai_report(raw_response: str) -> ComprehensiveAIReport:
+    """
+    Валидация полного 4-блочного отчета ИИ
+    
+    Args:
+        raw_response: Raw JSON string from AI
+        
+    Returns:
+        Validated ComprehensiveAIReport object
+        
+    Raises:
+        ValidationError: If response doesn't match schema
+    """
+    import json
+    
+    # Parse JSON
+    try:
+        data = json.loads(raw_response)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON from AI: {str(e)}")
+    
+    # Validate with Pydantic
+    try:
+        report = ComprehensiveAIReport.model_validate(data)
+    except ValidationError as e:
+        error_details = []
+        for error in e.errors():
+            loc = " -> ".join(str(x) for x in error['loc'])
+            error_details.append(f"{loc}: {error['msg']}")
+        raise ValueError(f"AI comprehensive report validation failed: {'; '.join(error_details)}")
+    
+    return report
+
+
 # Additional schemas for other AI responses
 
 class WeeklyAdaptation(BaseModel):

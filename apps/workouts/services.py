@@ -8,7 +8,9 @@ from .video_storage import get_storage
 from .constants import (
     VideoKind, Archetype, ARCHETYPE_FALLBACK_ORDER,
     PLAYLIST_FALLBACK_MAX_CANDIDATES, PLAYLIST_STORAGE_RETRY, PLAYLIST_MISTAKE_PROB,
-    REQUIRED_VIDEO_KINDS_PLAYLIST, OPTIONAL_VIDEO_KINDS_PLAYLIST
+    REQUIRED_VIDEO_KINDS_PLAYLIST, OPTIONAL_VIDEO_KINDS_PLAYLIST,
+    CONTEXTUAL_INTRO_SELECTION_FACTORS, MID_WORKOUT_INSERTION_FREQUENCY,
+    WEEKLY_THEME_VIDEO_PRIORITY
 )
 from apps.core.services.exercise_validation import ExerciseValidationService
 from apps.core.metrics import incr, timing, MetricNames
@@ -75,50 +77,13 @@ class VideoPlaylistBuilder:
                 playlist.append(rest_day_video)
             return playlist
         
-        # Add intro video at the beginning
-        intro_video = self._get_video_with_storage(
-            exercise=None,
-            r2_kind=VideoKind.INTRO,
-            archetype=user_archetype
-        )
-        
-        if intro_video:
-            playlist.append({
-                'type': 'intro',
-                'url': intro_video['url'],
-                'duration': intro_video['duration'],
-                'title': 'Добро пожаловать на тренировку!',
-                'clip_id': intro_video['clip_id']
-            })
-            logger.info(f"Added intro video: clip_id={intro_video['clip_id']}")
-        
-        # Build playlist for each exercise
-        for exercise_data in workout.exercises:
-            exercise_slug = exercise_data.get('exercise_slug')
-            exercise_playlist = self._build_exercise_playlist(
-                exercise_slug, 
-                user_archetype,
-                exercise_data
-            )
-            playlist.extend(exercise_playlist)
-        
-        # Add weekly motivational video at the end
-        if workout.day_number == 7:  # Last day of week
-            weekly_video = self._get_weekly_motivation_video(workout.week_number, user_archetype)
-            if weekly_video:
-                playlist.append(weekly_video)
-        
         # Prefetch video candidates for all exercises in this workout
         exercise_ids = [ex.get('exercise_slug') for ex in workout.exercises if ex.get('exercise_slug')]
         if exercise_ids:
             self._prefetch_candidates(exercise_ids, user_archetype)
         
-        # Add intro video at the beginning (if not rest day)
-        intro_video = self._get_video_with_storage(
-            exercise=None,
-            r2_kind=VideoKind.INTRO,
-            archetype=user_archetype
-        )
+        # Add contextual intro video at the beginning (if not rest day)
+        intro_video = self._get_contextual_intro_video(workout, user_archetype)
         
         if intro_video:
             playlist.append({
@@ -130,9 +95,10 @@ class VideoPlaylistBuilder:
                 'provider': intro_video['provider'],
                 'kind': intro_video.get('kind', 'intro')
             })
+            logger.info(f"Added intro video: clip_id={intro_video['clip_id']}")
         
-        # Process each exercise in the workout
-        for exercise_data in workout.exercises:
+        # Process each exercise in the workout with mid-workout motivation
+        for i, exercise_data in enumerate(workout.exercises):
             exercise_slug = exercise_data.get('exercise_slug')
             exercise_playlist = self._build_exercise_playlist(
                 exercise_slug, 
@@ -140,12 +106,23 @@ class VideoPlaylistBuilder:
                 exercise_data
             )
             playlist.extend(exercise_playlist)
+            
+            # Add mid-workout motivation every 3rd exercise
+            if (i + 1) % MID_WORKOUT_INSERTION_FREQUENCY == 0 and (i + 1) < len(workout.exercises):
+                mid_workout_video = self._get_mid_workout_motivation(workout, user_archetype)
+                if mid_workout_video:
+                    playlist.append(mid_workout_video)
         
-        # Add weekly motivational video at the end
+        # Add weekly theme-based video at the end
         if workout.day_number == 7:  # Last day of week
-            weekly_video = self._get_weekly_motivation_video(workout.week_number, user_archetype)
+            weekly_video = self._get_weekly_theme_video(workout.week_number, user_archetype)
             if weekly_video:
                 playlist.append(weekly_video)
+        
+        # Add contextual outro video
+        outro_video = self._get_contextual_outro_video(workout, user_archetype)
+        if outro_video:
+            playlist.append(outro_video)
         
         # Track metrics
         build_time_ms = (time.monotonic() - start_time) * 1000
@@ -501,3 +478,181 @@ class VideoPlaylistBuilder:
             
         except Exercise.DoesNotExist:
             return []
+    
+    # Contextual Video Selection Methods
+    
+    def _get_contextual_intro_video(self, workout: DailyWorkout, archetype: str) -> Optional[Dict]:
+        """Get contextual intro video based on workout context"""
+        from .models import WeeklyTheme
+        
+        # Determine context factors
+        context_factors = {
+            'week_context': workout.week_number,
+            'day_number': workout.day_number
+        }
+        
+        # Try to get contextual intro first
+        contextual_video = self._get_contextual_video_by_factors(
+            VideoKind.CONTEXTUAL_INTRO,
+            archetype,
+            context_factors
+        )
+        
+        if contextual_video:
+            logger.info(f"Selected contextual intro for week {workout.week_number}, day {workout.day_number}")
+            return self._format_video_response(contextual_video, VideoKind.CONTEXTUAL_INTRO)
+        
+        # Fallback to regular intro
+        regular_intro = self._get_video_with_storage(
+            exercise=None,
+            r2_kind=VideoKind.INTRO,
+            archetype=archetype
+        )
+        
+        if regular_intro:
+            logger.debug("Fallback to regular intro video")
+            return regular_intro
+        
+        return None
+    
+    def _get_contextual_outro_video(self, workout: DailyWorkout, archetype: str) -> Optional[Dict]:
+        """Get contextual outro video matching the intro style"""
+        context_factors = {
+            'week_context': workout.week_number,
+            'day_number': workout.day_number
+        }
+        
+        # Try contextual outro first
+        contextual_outro = self._get_contextual_video_by_factors(
+            VideoKind.CONTEXTUAL_OUTRO,
+            archetype,
+            context_factors
+        )
+        
+        if contextual_outro:
+            return self._format_video_response(contextual_outro, VideoKind.CONTEXTUAL_OUTRO)
+        
+        # Fallback to regular closing
+        return self._get_video_with_storage(
+            exercise=None,
+            r2_kind=VideoKind.CLOSING,
+            archetype=archetype
+        )
+    
+    def _get_mid_workout_motivation(self, workout: DailyWorkout, archetype: str) -> Optional[Dict]:
+        """Get mid-workout motivational video"""
+        mid_workout_video = self._get_video_with_storage(
+            exercise=None,
+            r2_kind=VideoKind.MID_WORKOUT,
+            archetype=archetype
+        )
+        
+        if mid_workout_video:
+            logger.info(f"Added mid-workout motivation video: clip_id={mid_workout_video['clip_id']}")
+            return {
+                'type': 'mid_workout_motivation',
+                'url': mid_workout_video['url'],
+                'duration': mid_workout_video['duration'],
+                'title': 'Мотивация посреди тренировки',
+                'clip_id': mid_workout_video['clip_id'],
+                'provider': mid_workout_video['provider'],
+                'kind': mid_workout_video['kind']
+            }
+        
+        return None
+    
+    def _get_weekly_theme_video(self, week_number: int, archetype: str) -> Optional[Dict]:
+        """Get weekly theme-based lesson video"""
+        from .models import WeeklyTheme
+        
+        try:
+            # Get the weekly theme
+            theme = WeeklyTheme.objects.get(week_number=week_number, is_active=True)
+            
+            # Try to get theme-based video first
+            theme_video = self._get_contextual_video_by_factors(
+                VideoKind.THEME_BASED,
+                archetype,
+                {'week_context': week_number}
+            )
+            
+            if theme_video:
+                logger.info(f"Found theme-based video for week {week_number}: {theme.theme_title}")
+                return {
+                    'type': 'weekly_theme',
+                    'url': self._format_video_response(theme_video, VideoKind.THEME_BASED)['url'],
+                    'duration': theme_video.duration_seconds,
+                    'title': f'Урок недели {week_number}: {theme.theme_title}',
+                    'theme_content': theme.get_content_for_archetype(archetype),
+                    'clip_id': theme_video.id,
+                    'provider': theme_video.provider,
+                    'kind': VideoKind.THEME_BASED
+                }
+                
+        except WeeklyTheme.DoesNotExist:
+            logger.warning(f"No weekly theme found for week {week_number}")
+        
+        # Fallback to regular weekly video
+        return self._get_weekly_motivation_video(week_number, archetype)
+    
+    def _get_contextual_video_by_factors(self, video_kind: str, archetype: str, factors: Dict) -> Optional:
+        """
+        Get video based on contextual factors like week, mood, theme
+        
+        Args:
+            video_kind: Type of video (CONTEXTUAL_INTRO, etc.)
+            archetype: User archetype
+            factors: Dict with context factors (week_context, mood_type, etc.)
+        """
+        from django.db.models import Q
+        
+        # Build query with contextual factors
+        query = ExerciseValidationService.get_clips_with_video().filter(
+            r2_kind=video_kind,
+            r2_archetype=archetype,
+            is_active=True
+        )
+        
+        # Apply context filters
+        context_filters = Q()
+        
+        if 'week_context' in factors:
+            context_filters |= Q(week_context=factors['week_context']) | Q(week_context__isnull=True)
+        
+        if 'mood_type' in factors:
+            context_filters |= Q(mood_type=factors['mood_type']) | Q(mood_type='')
+        
+        if 'content_theme' in factors:
+            context_filters |= Q(content_theme=factors['content_theme']) | Q(content_theme='')
+        
+        # Apply filters and get candidates
+        candidates = list(query.filter(context_filters).order_by('id')[:10])
+        
+        if not candidates:
+            # Fallback: get any video of this kind for this archetype
+            candidates = list(query.order_by('id')[:5])
+        
+        if candidates:
+            # Prefer videos with more specific context matches
+            prioritized_candidates = []
+            fallback_candidates = []
+            
+            for candidate in candidates:
+                has_specific_context = any([
+                    candidate.week_context == factors.get('week_context'),
+                    candidate.mood_type == factors.get('mood_type'),
+                    candidate.content_theme == factors.get('content_theme')
+                ])
+                
+                if has_specific_context:
+                    prioritized_candidates.append(candidate)
+                else:
+                    fallback_candidates.append(candidate)
+            
+            # Choose from prioritized first, then fallback
+            final_candidates = prioritized_candidates or fallback_candidates
+            
+            if final_candidates:
+                return self._choose_with_storage_retry(final_candidates)
+        
+        return None

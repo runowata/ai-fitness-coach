@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Exercise, VideoClip, WorkoutPlan, DailyWorkout
+from .models import Exercise, VideoClip, WorkoutPlan, DailyWorkout, CSVExercise
 from .video_storage import get_storage
 
 
@@ -40,11 +40,31 @@ class ExerciseAdmin(admin.ModelAdmin):
     equipment_display.short_description = 'Equipment'
 
 
+@admin.register(CSVExercise)
+class CSVExerciseAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name_ru', 'name_en', 'level', 'muscle_group', 'exercise_type', 'is_active')
+    list_filter = ('level', 'muscle_group', 'exercise_type', 'is_active')
+    search_fields = ('id', 'name_ru', 'name_en', 'description')
+    readonly_fields = ('id',)
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('id', 'name_ru', 'name_en', 'description')
+        }),
+        ('Classification', {
+            'fields': ('level', 'muscle_group', 'exercise_type', 'ai_tags')
+        }),
+        ('Status', {
+            'fields': ('is_active',)
+        })
+    )
+
+
 @admin.register(VideoClip)
 class VideoClipAdmin(admin.ModelAdmin):
     list_display = ('exercise', 'r2_kind', 'provider', 'storage_status', 'archetype', 'model_name', 'duration_seconds', 'is_active')
     list_filter = ('r2_kind', 'provider', 'archetype', 'model_name', 'is_active')
-    search_fields = ('exercise__name', 'reminder_text', 'stream_uid', 'playback_id')
+    search_fields = ('exercise__name_ru', 'exercise__name_en', 'reminder_text', 'stream_uid', 'playback_id')
     autocomplete_fields = ['exercise']
     readonly_fields = ('storage_status', 'playback_url_display')
     

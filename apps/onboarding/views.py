@@ -289,7 +289,7 @@ def select_archetype(request):
 
 @login_required
 def generate_plan(request):
-    """Generate AI workout plan"""
+    """Generate AI workout plan (with comprehensive support)"""
     from apps.workouts.models import WorkoutPlan
     
     # ГАРД: если план уже существует, не генерируем повторно
@@ -333,14 +333,27 @@ def generate_plan(request):
     if 'equipment' not in user_data:
         user_data['equipment'] = ['bodyweight']
     
+    # Check if comprehensive analysis was requested
+    use_comprehensive = request.POST.get('use_comprehensive') == 'true'
+    
     try:
         # Use centralized service for plan creation
         from apps.ai_integration.services import create_workout_plan_from_onboarding
         
+        # Pass comprehensive flag through user_data
+        if use_comprehensive:
+            user_data['use_comprehensive'] = True
+        
         workout_plan = create_workout_plan_from_onboarding(request.user)
         
-        messages.success(request, 'Ваш персональный план тренировок готов!')
-        return redirect('onboarding:plan_confirmation', plan_id=workout_plan.id)
+        # Check if we got comprehensive data
+        if hasattr(workout_plan, 'ai_analysis') and workout_plan.ai_analysis:
+            # We have comprehensive data, show comprehensive preview
+            return redirect('onboarding:ai_analysis_comprehensive')
+        else:
+            # Standard flow
+            messages.success(request, 'Ваш персональный план тренировок готов!')
+            return redirect('onboarding:plan_confirmation', plan_id=workout_plan.id)
         
     except Exception as e:
         messages.error(request, f'Ошибка при генерации плана: {str(e)}')
@@ -534,3 +547,150 @@ def plan_preview(request):
     }
     
     return render(request, 'onboarding/plan_preview.html', context)
+
+
+@login_required
+def ai_analysis_comprehensive(request):
+    """Display comprehensive AI analysis with 4 blocks"""
+    from apps.workouts.models import WorkoutPlan
+    
+    # Get the latest plan with comprehensive analysis
+    latest_plan = request.user.workout_plans.filter(is_active=True).first()
+    
+    if not latest_plan:
+        messages.error(request, 'План не найден')
+        return redirect('onboarding:select_archetype')
+    
+    # Extract comprehensive data from ai_analysis
+    ai_analysis = latest_plan.ai_analysis or {}
+    plan_data = latest_plan.plan_data or {}
+    
+    # Check if we have comprehensive structure
+    has_comprehensive = (
+        'user_analysis' in ai_analysis or
+        'motivation_system' in ai_analysis or
+        'long_term_strategy' in ai_analysis
+    )
+    
+    if not has_comprehensive:
+        # Fallback to regular analysis page
+        return redirect('onboarding:ai_analysis')
+    
+    context = {
+        'plan': latest_plan,
+        'plan_data': plan_data,
+        'comprehensive_data': ai_analysis,
+        'archetype': request.user.profile.archetype,
+        'user_level': 'Персональный'  # Could be determined from analysis
+    }
+    
+    return render(request, 'onboarding/ai_analysis_comprehensive.html', context)
+
+
+@login_required
+def plan_preview_comprehensive(request):
+    """Show comprehensive plan preview with 4-block analysis"""
+    from apps.workouts.models import WorkoutPlan
+    
+    latest_plan = request.user.workout_plans.filter(is_active=True).first()
+    
+    if not latest_plan:
+        messages.error(request, 'План не найден')
+        return redirect('users:dashboard')
+    
+    # Extract data
+    ai_analysis = latest_plan.ai_analysis or {}
+    plan_data = latest_plan.plan_data or {}
+    
+    # Check if we have comprehensive structure
+    has_comprehensive = (
+        'user_analysis' in ai_analysis or
+        'motivation_system' in ai_analysis or
+        'long_term_strategy' in ai_analysis
+    )
+    
+    if not has_comprehensive:
+        # Fallback to regular preview
+        return redirect('onboarding:plan_preview')
+    
+    # Handle form submission
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'confirm':
+            # User confirmed the comprehensive plan
+            latest_plan.is_confirmed = True
+            latest_plan.save()
+            
+            # Mark onboarding as complete
+            request.user.onboarding_completed_at = timezone.now()
+            request.user.completed_onboarding = True
+            request.user.save()
+            
+            messages.success(request, 'Ваш comprehensive план активирован!')
+            return redirect('users:dashboard')
+        
+        elif action == 'regenerate':
+            # Delete current plan and start over
+            latest_plan.delete()
+            messages.info(request, 'Генерируем новый comprehensive план...')
+            return redirect('onboarding:generate_plan')
+    
+    # Extract training program from comprehensive structure
+    training_program = plan_data
+    if 'training_program' in plan_data:
+        training_program = plan_data['training_program']
+    
+    context = {
+        'plan': latest_plan,
+        'plan_data': plan_data,
+        'training_program': training_program,
+        'comprehensive_data': ai_analysis,
+        'archetype': request.user.profile.archetype,
+        'user_level': 'Comprehensive'
+    }
+    
+    return render(request, 'onboarding/plan_preview_comprehensive.html', context)
+
+
+@login_required
+def ai_analysis(request):
+    """Regular AI analysis (fallback for non-comprehensive)"""
+    from apps.workouts.models import WorkoutPlan
+    
+    latest_plan = request.user.workout_plans.filter(is_active=True).first()
+    
+    if not latest_plan:
+        messages.error(request, 'План не найден')
+        return redirect('onboarding:select_archetype')
+    
+    # Extract data for regular analysis template
+    plan_data = latest_plan.plan_data or {}
+    ai_analysis = latest_plan.ai_analysis or {}
+    
+    # Create compatibility data for old template
+    analysis_data = {
+        'age': 25,  # Default values
+        'height': 175,
+        'weight': 70,
+        'primary_goal': 'general_fitness',
+        'experience_level': 'Начинающий',
+        'days_per_week': '3-4',
+        'workout_duration': '45-60',
+        'equipment': 'Вес тела',
+        'preferred_time': 'Вечер'
+    }
+    
+    # Override with actual data if available
+    if 'user_data' in ai_analysis:
+        user_data = ai_analysis['user_data']
+        analysis_data.update(user_data)
+    
+    context = {
+        'plan': latest_plan,
+        'plan_data': plan_data,
+        'analysis': analysis_data,  # For template compatibility
+        'archetype': request.user.profile.archetype
+    }
+    
+    return render(request, 'onboarding/ai_analysis.html', context)

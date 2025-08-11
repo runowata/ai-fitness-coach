@@ -80,14 +80,14 @@ def check_exercises():
     print("\n=== CHECKING EXERCISES ===")
     
     total_exercises = Exercise.objects.count()
-    active_exercises = Exercise.objects.filter(is_active=True).count()
+    active_exercises = CSVExercise.objects.filter(is_active=True).count()
     
     print(f"Total exercises: {total_exercises}")
     print(f"Active exercises: {active_exercises}")
     
     # Check exercises with video clips
     exercises_with_videos = 0
-    for exercise in Exercise.objects.filter(is_active=True):
+    for exercise in CSVExercise.objects.filter(is_active=True):
         if exercise.video_clips.filter(is_active=True).exists():
             exercises_with_videos += 1
     

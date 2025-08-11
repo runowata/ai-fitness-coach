@@ -88,7 +88,7 @@ class VideoClip(models.Model):
     ARCHETYPE_CHOICES = Archetype.choices()
     
     exercise = models.ForeignKey(
-        Exercise, 
+        'CSVExercise', 
         on_delete=models.CASCADE, 
         related_name='video_clips',
         null=True,
@@ -149,6 +149,60 @@ class VideoClip(models.Model):
     # For reminder clips
     reminder_text = models.CharField(max_length=200, blank=True)
     
+    # Rich contextual fields for expanded video system
+    mood_type = models.CharField(
+        max_length=20,
+        choices=[
+            ('energetic', 'Энергичное'),
+            ('philosophical', 'Философское'), 
+            ('business', 'Деловое'),
+            ('encouraging', 'Ободряющее'),
+            ('calm', 'Спокойное')
+        ],
+        blank=True,
+        help_text='Настроение/тон видео'
+    )
+    
+    content_theme = models.CharField(
+        max_length=30, 
+        choices=[
+            ('week_start', 'Начало недели'),
+            ('overcoming', 'Преодоление'),
+            ('gratitude', 'Благодарность'),
+            ('motivation', 'Мотивация'),
+            ('recovery', 'Восстановление'),
+            ('achievement', 'Достижение'),
+            ('consistency', 'Постоянство'),
+            ('challenge', 'Вызов')
+        ],
+        blank=True,
+        help_text='Тематика контента'
+    )
+    
+    position_in_workout = models.CharField(
+        max_length=15,
+        choices=[
+            ('intro', 'Вступление'),
+            ('mid', 'Середина'),
+            ('outro', 'Завершение')
+        ],
+        blank=True,
+        help_text='Позиция в тренировке'
+    )
+    
+    week_context = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(8)],
+        help_text='Номер недели курса (1-8)'
+    )
+    
+    variation_number = models.PositiveIntegerField(
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(99)],
+        help_text='Номер вариации (для множественных intro/outro)'
+    )
+    
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
@@ -187,6 +241,67 @@ class VideoClip(models.Model):
             # Future: check external_url field
             return False
         return False
+
+
+class WeeklyTheme(models.Model):
+    """Weekly themes for structured course progression"""
+    
+    week_number = models.PositiveIntegerField(
+        unique=True,
+        validators=[MinValueValidator(1), MaxValueValidator(8)],
+        help_text='Week number in the course (1-8)'
+    )
+    
+    theme_title = models.CharField(
+        max_length=100,
+        help_text='Title of the weekly theme'
+    )
+    
+    focus_area = models.CharField(
+        max_length=200,
+        help_text='Main focus area for the week'
+    )
+    
+    description = models.TextField(
+        blank=True,
+        help_text='Detailed description of weekly objectives'
+    )
+    
+    # Archetype-specific content variations
+    mentor_content = models.TextField(
+        blank=True,
+        help_text='Content adapted for mentor archetype'
+    )
+    
+    professional_content = models.TextField(
+        blank=True,
+        help_text='Content adapted for professional archetype'
+    )
+    
+    peer_content = models.TextField(
+        blank=True,
+        help_text='Content adapted for peer archetype'
+    )
+    
+    # Metadata
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'weekly_themes'
+        ordering = ['week_number']
+        
+    def __str__(self):
+        return f"Week {self.week_number}: {self.theme_title}"
+    
+    def get_content_for_archetype(self, archetype: str) -> str:
+        """Get content adapted for specific archetype"""
+        content_map = {
+            'mentor': self.mentor_content,
+            'professional': self.professional_content, 
+            'peer': self.peer_content
+        }
+        return content_map.get(archetype, self.description)
 
 
 class WorkoutPlan(models.Model):

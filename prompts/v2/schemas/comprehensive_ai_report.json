@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ComprehensiveAIReport",
+  "description": "Schema for full 4-block AI analysis report according to reference documents",
+  "type": "object",
+  "required": ["meta", "user_analysis", "training_program", "motivation_system", "long_term_strategy"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["version", "archetype", "generation_date", "user_id"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Schema version",
+          "const": "v2_comprehensive"
+        },
+        "archetype": {
+          "type": "string",
+          "enum": ["mentor", "professional", "peer"],
+          "description": "Trainer archetype used for analysis"
+        },
+        "generation_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Report generation timestamp"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "User identifier (anonymized)"
+        }
+      }
+    },
+    "user_analysis": {
+      "type": "object",
+      "description": "БЛОК 1: Анализ пользователя и адаптация подхода",
+      "required": ["fitness_level_assessment", "psychological_profile", "interaction_strategy", "archetype_adaptation"],
+      "properties": {
+        "fitness_level_assessment": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 800,
+          "description": "Оценка текущего уровня физической подготовки на основе ответов онбординга"
+        },
+        "psychological_profile": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 600,
+          "description": "Психологический профиль, мотивационные особенности, отношение к фитнесу"
+        },
+        "limitations_analysis": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Анализ ограничений, травм, противопоказаний"
+        },
+        "interaction_strategy": {
+          "type": "string",
+          "minLength": 30,
+          "maxLength": 400,
+          "description": "Выбранная стратегия взаимодействия и коммуникации с пользователем"
+        },
+        "archetype_adaptation": {
+          "type": "string",
+          "minLength": 30,
+          "maxLength": 300,
+          "description": "Как архетип тренера адаптирован под конкретного пользователя"
+        }
+      }
+    },
+    "training_program": {
+      "type": "object",
+      "description": "БЛОК 2: Персональная программа тренировок",
+      "required": ["plan_name", "duration_weeks", "goal", "weeks"],
+      "properties": {
+        "plan_name": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 200,
+          "description": "Персонализированное название плана"
+        },
+        "duration_weeks": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 12,
+          "description": "Длительность программы в неделях"
+        },
+        "goal": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 300,
+          "description": "Основная цель программы"
+        },
+        "weeks": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "required": ["week_number", "week_focus", "days"],
+            "properties": {
+              "week_number": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 12
+              },
+              "week_focus": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "Фокус недели"
+              },
+              "days": {
+                "type": "array",
+                "minItems": 7,
+                "maxItems": 7,
+                "items": {
+                  "type": "object",
+                  "required": ["day_number", "workout_name", "is_rest_day", "exercises"],
+                  "properties": {
+                    "day_number": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 7
+                    },
+                    "workout_name": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 200
+                    },
+                    "is_rest_day": {
+                      "type": "boolean"
+                    },
+                    "exercises": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["exercise_slug", "sets", "reps"],
+                        "properties": {
+                          "exercise_slug": {
+                            "type": "string",
+                            "description": "Slug упражнения из базы данных"
+                          },
+                          "sets": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10
+                          },
+                          "reps": {
+                            "type": "string",
+                            "description": "Повторения (например '8-12', '30 сек')"
+                          },
+                          "rest_seconds": {
+                            "type": "integer",
+                            "minimum": 10,
+                            "maximum": 600,
+                            "description": "Время отдыха в секундах"
+                          },
+                          "duration_seconds": {
+                            "type": "integer",
+                            "minimum": 10,
+                            "maximum": 1800,
+                            "description": "Длительность упражнения"
+                          }
+                        }
+                      }
+                    },
+                    "confidence_task": {
+                      "type": "string",
+                      "maxLength": 500,
+                      "description": "Ежедневное задание на развитие уверенности"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "motivation_system": {
+      "type": "object",
+      "description": "БЛОК 3: Система мотивации и поддержки",
+      "required": ["psychological_support", "reward_system", "confidence_building"],
+      "properties": {
+        "psychological_support": {
+          "type": "string",
+          "minLength": 100,
+          "maxLength": 800,
+          "description": "План психологической поддержки и ментальной подготовки"
+        },
+        "reward_system": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 500,
+          "description": "Система наград, достижений и поощрений"
+        },
+        "confidence_building": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 600,
+          "description": "Стратегия развития уверенности в себе и самопринятия"
+        },
+        "community_integration": {
+          "type": "string",
+          "maxLength": 400,
+          "description": "План интеграции с ЛГБТ+ сообществом и поддерживающей средой"
+        }
+      }
+    },
+    "long_term_strategy": {
+      "type": "object",
+      "description": "БЛОК 4: Долгосрочная стратегия развития",
+      "required": ["progression_plan", "adaptation_triggers", "lifestyle_integration", "success_metrics"],
+      "properties": {
+        "progression_plan": {
+          "type": "string",
+          "minLength": 100,
+          "maxLength": 800,
+          "description": "План прогрессии и развития на 3-6 месяцев вперед"
+        },
+        "adaptation_triggers": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 500,
+          "description": "Триггеры и индикаторы для адаптации программы"
+        },
+        "lifestyle_integration": {
+          "type": "string",
+          "minLength": 50,
+          "maxLength": 600,
+          "description": "Интеграция тренировок в повседневный образ жизни"
+        },
+        "success_metrics": {
+          "type": "string",
+          "minLength": 30,
+          "maxLength": 400,
+          "description": "Метрики успеха и ключевые контрольные точки"
+        }
+      }
+    }
+  }
+}

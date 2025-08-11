@@ -38,10 +38,13 @@ def create_workout_plan_from_onboarding(user):
         user_data = OnboardingDataProcessor.collect_user_data(user)
         logger.info("🔍 PLAN GENERATION: User data collected, keys: %s", list(user_data.keys()))
         
+        # Check if comprehensive analysis should be used (default to True)
+        use_comprehensive = user_data.get('use_comprehensive', True)
+        
         # Create workout plan using dedicated service
         logger.info("🔍 PLAN GENERATION: Creating plan with WorkoutPlanGenerator...")
         plan_generator = WorkoutPlanGenerator()
-        result = plan_generator.create_plan(user, user_data)
+        result = plan_generator.create_plan(user, user_data, use_comprehensive)
         logger.info("🔍 PLAN GENERATION: Plan created successfully, plan ID: %s", result.id)
         return result
         
@@ -263,7 +266,7 @@ class WorkoutPlanGenerator:
             session.ai_response_data = plan_data
             session.save()
     
-    def generate_plan(self, user_data: Dict) -> Dict:
+    def generate_plan(self, user_data: Dict, use_comprehensive: bool = True) -> Dict:
         """Generate a complete workout plan based on user onboarding data"""
         # Check for legacy flow fallback
         if settings.FALLBACK_TO_LEGACY_FLOW:
@@ -277,7 +280,12 @@ class WorkoutPlanGenerator:
         incr(MetricNames.AI_WHITELIST_COUNT, len(allowed_slugs))
         logger.info(f"Whitelist for {archetype}: {len(allowed_slugs)} exercises")
         
-        # Build prompt with whitelist
+        # Check if we should use comprehensive 4-block structure
+        if use_comprehensive:
+            logger.info(f"Using comprehensive 4-block report generation")
+            return self._generate_comprehensive_plan(user_data, archetype, allowed_slugs)
+        
+        # Build prompt with whitelist (legacy method)
         prompt = self._build_prompt_with_whitelist(user_data, allowed_slugs)
         
         # Reprompt cycle with limits
@@ -349,6 +357,107 @@ class WorkoutPlanGenerator:
         
         # Should not reach here
         raise ValueError("Failed to generate workout plan after all attempts")
+    
+    def _generate_comprehensive_plan(self, user_data: Dict, archetype: str, allowed_slugs: Set[str]) -> Dict:
+        """Generate comprehensive 4-block AI report with full analysis and plan"""
+        try:
+            # Normalize archetype for prompt system
+            normalized_archetype = self.prompt_manager.normalize_archetype(archetype)
+            logger.info(f"Generating comprehensive report for archetype: {normalized_archetype}")
+            
+            # Build comprehensive prompt
+            prompt = self._build_comprehensive_prompt(user_data, allowed_slugs)
+            
+            # Get comprehensive system and user prompts
+            system_prompt, user_prompt = self.prompt_manager.get_prompt_pair(
+                'comprehensive', 
+                normalized_archetype, 
+                with_intro=True
+            )
+            
+            # Render user prompt with data
+            rendered_user_prompt = user_prompt.format(**user_data)
+            full_prompt = f"{system_prompt}\n\n{rendered_user_prompt}\n\n{prompt}"
+            
+            # Generate comprehensive report
+            if hasattr(self.ai_client, 'generate_comprehensive_report'):
+                logger.info("Using comprehensive report generation")
+                validated_report = self.ai_client.generate_comprehensive_report(
+                    full_prompt,
+                    user_id=str(user_data.get('user_id', 'anonymous')),
+                    archetype=normalized_archetype,
+                    max_tokens=12288,
+                    temperature=0.7
+                )
+                
+                # Convert ComprehensiveAIReport to dict format expected by downstream code
+                report_data = validated_report.model_dump()
+                
+                # Extract the training program for legacy compatibility
+                plan_data = report_data.get('training_program', {})
+                
+                # Add the full report as analysis data
+                analysis_data = {
+                    'user_analysis': report_data.get('user_analysis'),
+                    'motivation_system': report_data.get('motivation_system'),
+                    'long_term_strategy': report_data.get('long_term_strategy'),
+                    'meta': report_data.get('meta')
+                }
+                
+                # Post-process and enforce allowed exercises on training program
+                plan_data, substitutions, unresolved = self._enforce_allowed_exercises(
+                    plan_data, allowed_slugs
+                )
+                
+                # Track metrics
+                if substitutions > 0:
+                    incr(MetricNames.AI_SUBSTITUTIONS, substitutions)
+                    logger.info(f"Made {substitutions} exercise substitutions in comprehensive plan")
+                
+                if unresolved:
+                    logger.warning(f"Comprehensive plan has {len(unresolved)} unresolved exercises")
+                    # For comprehensive reports, we'll be more forgiving and allow some unresolved
+                
+                # Enhance and return combined structure
+                enhanced_plan = self._validate_and_enhance_plan(plan_data, user_data)
+                
+                # Add the analysis back to the enhanced plan
+                enhanced_plan['analysis'] = analysis_data
+                enhanced_plan['comprehensive'] = True
+                
+                logger.info(f"Successfully generated comprehensive report with {len(plan_data.get('weeks', []))} weeks")
+                return enhanced_plan
+                
+            else:
+                # Fallback to legacy method if comprehensive not available
+                logger.warning("Comprehensive report method not available, falling back to legacy")
+                return self._generate_plan_legacy(user_data)
+                
+        except Exception as e:
+            logger.error(f"Comprehensive plan generation failed: {str(e)}")
+            # Fallback to legacy method
+            logger.info("Falling back to legacy plan generation")
+            return self._generate_plan_legacy(user_data)
+    
+    def _build_comprehensive_prompt(self, user_data: Dict, allowed_slugs: Set[str]) -> str:
+        """Build comprehensive prompt with exercise whitelist"""
+        # Add whitelist instruction for comprehensive reports
+        whitelist_instruction = f"""
+УПРАЖНЕНИЯ: Используйте ТОЛЬКО упражнения из этого списка в training_program:
+{', '.join(sorted(allowed_slugs))}
+
+ВАЖНО для rest_seconds:
+- Силовые упражнения: 60-90 секунд
+- Кардио упражнения: 30-60 секунд  
+- Упражнения на гибкость: 15-30 секунд
+- Все значения должны быть от 10 до 600 секунд
+
+ТЕХНИЧЕСКАЯ ИНФОРМАЦИЯ:
+- Медиафайлы хранятся в Cloudflare R2 
+- URL генерируются динамически через переменные окружения
+- Используйте только exercise_slug из списка выше
+"""
+        return whitelist_instruction
     
     def _generate_plan_legacy(self, user_data: Dict) -> Dict:
         """Legacy plan generation without strict validation"""

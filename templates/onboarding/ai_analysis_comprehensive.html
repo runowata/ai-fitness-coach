@@ -1,0 +1,619 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Ваш персональный анализ - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<!-- Comprehensive AI Analysis Results Page -->
+<div class="analysis-results-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="results-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Gradient overlay -->
+    <div class="results-overlay"></div>
+    
+    <!-- Content -->
+    <div class="results-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-8">
+                    
+                    <!-- Main Analysis Card -->
+                    <div class="analysis-results-card">
+                        <!-- Header with AI badge -->
+                        <div class="results-header">
+                            <div class="ai-header-badge">
+                                <i class="fas fa-brain"></i>
+                                <span>Comprehensive AI Анализ</span>
+                            </div>
+                            <h1 class="results-title">Ваш полный персональный анализ готов!</h1>
+                            <p class="results-subtitle">
+                                {% if archetype == 'mentor' %}
+                                    На основе глубокого анализа ваших ответов, я создал комплексный план вашего развития
+                                {% elif archetype == 'professional' %}
+                                    Профессиональный анализ завершен. Готов представить стратегический план вашего успеха
+                                {% elif archetype == 'peer' %}
+                                    Братан, мы тщательно проанализировали твои ответы и готовы помочь тебе в твоем journey
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <!-- Comprehensive Analysis sections -->
+                        <div class="analysis-sections">
+                            
+                            <!-- БЛОК 1: Анализ пользователя -->
+                            {% if comprehensive_data.user_analysis %}
+                            <div class="analysis-section comprehensive-block">
+                                <div class="section-icon">
+                                    <i class="fas fa-user-chart"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>
+                                        <span class="block-number">1</span>
+                                        Анализ пользователя и адаптация подхода
+                                    </h3>
+                                    
+                                    <!-- Fitness Level Assessment -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-chart-line"></i>
+                                            <h4>Оценка физической подготовки</h4>
+                                        </div>
+                                        <div class="ai-insight">
+                                            <i class="fas fa-quote-left"></i>
+                                            {{ comprehensive_data.user_analysis.fitness_level_assessment }}
+                                            <i class="fas fa-quote-right"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Psychological Profile -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-brain"></i>
+                                            <h4>Психологический профиль</h4>
+                                        </div>
+                                        <div class="ai-insight">
+                                            <i class="fas fa-quote-left"></i>
+                                            {{ comprehensive_data.user_analysis.psychological_profile }}
+                                            <i class="fas fa-quote-right"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Limitations Analysis -->
+                                    {% if comprehensive_data.user_analysis.limitations_analysis %}
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <h4>Анализ ограничений</h4>
+                                        </div>
+                                        <div class="limitations-info">
+                                            {{ comprehensive_data.user_analysis.limitations_analysis }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- Interaction Strategy -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-handshake"></i>
+                                            <h4>Стратегия взаимодействия</h4>
+                                        </div>
+                                        <div class="strategy-card">
+                                            <div class="trainer-approach">
+                                                <img src="{% static 'images/avatars/' %}{{ archetype }}-avatar.png" 
+                                                     alt="Тренер" class="approach-avatar">
+                                                <div class="approach-text">
+                                                    {{ comprehensive_data.user_analysis.interaction_strategy }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- БЛОК 3: Система мотивации и поддержки -->
+                            {% if comprehensive_data.motivation_system %}
+                            <div class="analysis-section comprehensive-block">
+                                <div class="section-icon motivation">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>
+                                        <span class="block-number">3</span>
+                                        Система мотивации и поддержки
+                                    </h3>
+                                    
+                                    <!-- Psychological Support -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-mind-share"></i>
+                                            <h4>Психологическая поддержка</h4>
+                                        </div>
+                                        <div class="support-plan">
+                                            {{ comprehensive_data.motivation_system.psychological_support }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reward System -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-trophy"></i>
+                                            <h4>Система наград</h4>
+                                        </div>
+                                        <div class="reward-system">
+                                            {{ comprehensive_data.motivation_system.reward_system }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Confidence Building -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-star"></i>
+                                            <h4>Развитие уверенности</h4>
+                                        </div>
+                                        <div class="confidence-strategy">
+                                            {{ comprehensive_data.motivation_system.confidence_building }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Community Integration -->
+                                    {% if comprehensive_data.motivation_system.community_integration %}
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-users"></i>
+                                            <h4>Интеграция с сообществом</h4>
+                                        </div>
+                                        <div class="community-plan">
+                                            {{ comprehensive_data.motivation_system.community_integration }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- БЛОК 4: Долгосрочная стратегия -->
+                            {% if comprehensive_data.long_term_strategy %}
+                            <div class="analysis-section comprehensive-block">
+                                <div class="section-icon strategy">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>
+                                        <span class="block-number">4</span>
+                                        Долгосрочная стратегия развития
+                                    </h3>
+                                    
+                                    <!-- Progression Plan -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-chart-growth"></i>
+                                            <h4>План прогрессии (3-6 месяцев)</h4>
+                                        </div>
+                                        <div class="progression-timeline">
+                                            {{ comprehensive_data.long_term_strategy.progression_plan }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Adaptation Triggers -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-adjust"></i>
+                                            <h4>Триггеры адаптации</h4>
+                                        </div>
+                                        <div class="adaptation-triggers">
+                                            {{ comprehensive_data.long_term_strategy.adaptation_triggers }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Lifestyle Integration -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-life-ring"></i>
+                                            <h4>Интеграция в образ жизни</h4>
+                                        </div>
+                                        <div class="lifestyle-integration">
+                                            {{ comprehensive_data.long_term_strategy.lifestyle_integration }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Success Metrics -->
+                                    <div class="analysis-subsection">
+                                        <div class="subsection-header">
+                                            <i class="fas fa-target"></i>
+                                            <h4>Метрики успеха</h4>
+                                        </div>
+                                        <div class="success-metrics">
+                                            {{ comprehensive_data.long_term_strategy.success_metrics }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Training Program Preview (БЛОК 2 - сокращенный) -->
+                            {% if plan_data %}
+                            <div class="analysis-section training-preview">
+                                <div class="section-icon training">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <div class="section-content">
+                                    <h3>
+                                        <span class="block-number">2</span>
+                                        Персональная программа тренировок
+                                    </h3>
+                                    <div class="program-summary">
+                                        <div class="program-stats">
+                                            <div class="stat-item">
+                                                <span class="stat-number">{{ plan_data.duration_weeks }}</span>
+                                                <span class="stat-label">недель</span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-number">{% if plan_data.weeks %}{{ plan_data.weeks|length }}{% else %}4{% endif %}</span>
+                                                <span class="stat-label">тренировочных недель</span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-number">7</span>
+                                                <span class="stat-label">дней в неделю</span>
+                                            </div>
+                                        </div>
+                                        <div class="program-description">
+                                            <strong>{{ plan_data.plan_name }}</strong><br>
+                                            {{ plan_data.goal }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                        </div>
+                        
+                        <!-- Continue button -->
+                        <div class="analysis-actions">
+                            <form method="post" action="{% url 'onboarding:generate_plan' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="analysis_confirmed" value="true">
+                                <input type="hidden" name="use_comprehensive" value="true">
+                                <button type="submit" class="btn-continue-comprehensive">
+                                    <span class="btn-text">
+                                        <i class="fas fa-rocket"></i>
+                                        {% if archetype == 'mentor' %}
+                                            Создать мой путь к цели
+                                        {% elif archetype == 'professional' %}
+                                            Активировать стратегический план
+                                        {% elif archetype == 'peer' %}
+                                            Погнали к результатам!
+                                        {% endif %}
+                                    </span>
+                                    <div class="btn-shimmer"></div>
+                                </button>
+                            </form>
+                            
+                            <p class="analysis-note">
+                                <i class="fas fa-info-circle"></i>
+                                Полный план тренировок будет создан на основе этого комплексного анализа
+                            </p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Comprehensive Analysis Styles */
+.comprehensive-block {
+    border-left: 5px solid #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(78, 205, 196, 0.05) 100%);
+    position: relative;
+}
+
+.comprehensive-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 0%, rgba(102, 126, 234, 0.03) 50%, transparent 100%);
+    pointer-events: none;
+}
+
+.section-icon.motivation {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+}
+
+.section-icon.strategy {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+}
+
+.section-icon.training {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.block-number {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-right: 0.75rem;
+}
+
+.analysis-subsection {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.analysis-subsection:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.subsection-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+}
+
+.subsection-header i {
+    color: #667eea;
+    font-size: 1.2rem;
+}
+
+.subsection-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.ai-insight {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #5a6c7d;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(78, 205, 196, 0.03) 100%);
+    border-radius: 15px;
+    border-left: 3px solid #667eea;
+    font-style: italic;
+    position: relative;
+}
+
+.limitations-info, .support-plan, .reward-system, .confidence-strategy, 
+.community-plan, .progression-timeline, .adaptation-triggers, 
+.lifestyle-integration, .success-metrics {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #5a6c7d;
+    padding: 1rem;
+    background: rgba(248, 249, 250, 0.8);
+    border-radius: 12px;
+    border-left: 3px solid #4ecdc4;
+}
+
+.strategy-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.trainer-approach {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.approach-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    flex-shrink: 0;
+}
+
+.approach-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #2c3e50;
+    flex-grow: 1;
+}
+
+.training-preview {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.08) 0%, rgba(102, 126, 234, 0.05) 100%);
+    border-left: 5px solid #4ecdc4;
+}
+
+.program-summary {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.program-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4ecdc4;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-top: 0.25rem;
+}
+
+.program-description {
+    font-size: 1rem;
+    color: #2c3e50;
+    line-height: 1.5;
+}
+
+.btn-continue-comprehensive {
+    position: relative;
+    padding: 1.5rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(78, 205, 196, 0.4);
+}
+
+.btn-continue-comprehensive:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 25px 60px rgba(78, 205, 196, 0.6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .analysis-subsection {
+        padding: 1rem;
+    }
+    
+    .subsection-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .trainer-approach {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .program-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .block-number {
+        width: 25px;
+        height: 25px;
+        line-height: 25px;
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
+    }
+}
+</style>
+
+<!-- Include base styles -->
+<link href="{% static 'css/onboarding-analysis.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced animations for comprehensive sections
+    const comprehensiveBlocks = document.querySelectorAll('.comprehensive-block');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }, index * 200);
+            }
+        });
+    }, { threshold: 0.2 });
+    
+    comprehensiveBlocks.forEach((block, index) => {
+        block.style.opacity = '0';
+        block.style.transform = 'translateY(50px) scale(0.95)';
+        block.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+        observer.observe(block);
+    });
+    
+    // Animate subsections
+    const subsections = document.querySelectorAll('.analysis-subsection');
+    subsections.forEach((subsection, index) => {
+        subsection.style.opacity = '0';
+        subsection.style.transform = 'translateX(-30px)';
+        subsection.style.transition = 'all 0.6s ease-out';
+        
+        setTimeout(() => {
+            subsection.style.opacity = '1';
+            subsection.style.transform = 'translateX(0)';
+        }, 500 + (index * 100));
+    });
+    
+    // Add reading progress indicator
+    const blocks = document.querySelectorAll('.comprehensive-block');
+    if (blocks.length > 0) {
+        const progressBar = document.createElement('div');
+        progressBar.className = 'reading-progress';
+        progressBar.innerHTML = '<div class="progress-fill"></div>';
+        document.body.appendChild(progressBar);
+        
+        window.addEventListener('scroll', () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrollTop = window.pageYOffset;
+            const progress = (scrollTop / documentHeight) * 100;
+            
+            document.querySelector('.progress-fill').style.width = progress + '%';
+        });
+    }
+});
+</script>
+
+<style>
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 9999;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #4ecdc4);
+    width: 0%;
+    transition: width 0.1s ease-out;
+}
+</style>
+{% endblock %}

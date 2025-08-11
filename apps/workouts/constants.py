@@ -13,6 +13,13 @@ class VideoKind(StrEnum):
     CLOSING = "closing"
     REMINDER = "reminder"
     EXPLAIN = "explain"
+    
+    # New contextual video types based on reference analysis
+    CONTEXTUAL_INTRO = "contextual_intro"    # Context-aware introductions  
+    CONTEXTUAL_OUTRO = "contextual_outro"    # Context-aware endings
+    MID_WORKOUT = "mid_workout"              # Mid-workout motivational clips
+    THEME_BASED = "theme_based"              # Weekly theme-based lessons
+    MOTIVATIONAL_BREAK = "motivational_break"  # Short motivational breaks
 
     @classmethod
     def choices(cls):
@@ -75,4 +82,18 @@ PLAYLIST_MISTAKE_PROB = 0.30           # Probability to include mistake videos
 
 # Required vs optional video kinds for fallback strategy
 REQUIRED_VIDEO_KINDS_PLAYLIST = [VideoKind.TECHNIQUE, VideoKind.INSTRUCTION]
-OPTIONAL_VIDEO_KINDS_PLAYLIST = [VideoKind.MISTAKE, VideoKind.INTRO, VideoKind.WEEKLY, VideoKind.CLOSING]
+OPTIONAL_VIDEO_KINDS_PLAYLIST = [
+    VideoKind.MISTAKE, VideoKind.INTRO, VideoKind.WEEKLY, VideoKind.CLOSING,
+    VideoKind.CONTEXTUAL_INTRO, VideoKind.CONTEXTUAL_OUTRO, VideoKind.MID_WORKOUT,
+    VideoKind.THEME_BASED, VideoKind.MOTIVATIONAL_BREAK, VideoKind.REMINDER
+]
+
+# Contextual playlist generation settings
+CONTEXTUAL_INTRO_SELECTION_FACTORS = [
+    'week_context',     # Week number in course
+    'mood_type',        # User/system mood
+    'content_theme',    # Thematic context
+]
+
+MID_WORKOUT_INSERTION_FREQUENCY = 3  # Every 3rd exercise gets mid-workout motivation
+WEEKLY_THEME_VIDEO_PRIORITY = 1      # High priority for theme-based videos
