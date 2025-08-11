@@ -161,8 +161,9 @@ if USE_R2_STORAGE:
     AWS_SECRET_ACCESS_KEY = os.getenv('R2_SECRET_ACCESS_KEY', os.getenv('AWS_SECRET_ACCESS_KEY'))
     AWS_STORAGE_BUCKET_NAME = os.getenv('R2_BUCKET', os.getenv('AWS_STORAGE_BUCKET_NAME', 'ai-fitness-media'))
     AWS_S3_ENDPOINT_URL = os.getenv('R2_ENDPOINT', os.getenv('AWS_S3_ENDPOINT_URL'))
-    AWS_S3_REGION_NAME = 'auto'
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_REGION_NAME = 'auto'  # критично для R2
+    AWS_S3_ADDRESSING_STYLE = 'virtual'  # критично для R2
+    AWS_S3_SIGNATURE_VERSION = 's3v4'  # критично для R2
     AWS_DEFAULT_ACL = 'private'
     AWS_QUERYSTRING_AUTH = True
     AWS_QUERYSTRING_EXPIRE = int(os.getenv('AWS_QUERYSTRING_EXPIRE', '7200'))  # 2 hours for videos

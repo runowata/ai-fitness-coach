@@ -88,15 +88,22 @@ class Command(BaseCommand):
 
     def _get_s3_client(self):
         """Create S3 client for R2"""
-        endpoint_url = os.getenv('R2_ENDPOINT') or os.getenv('AWS_S3_ENDPOINT_URL')
+        from django.conf import settings
+        
+        # Use Django settings for consistency
+        config = Config(
+            signature_version='s3v4', 
+            retries={'max_attempts': 3},
+            s3={'addressing_style': 'virtual'}  # критично для R2
+        )
         
         return boto3.client(
             's3',
-            endpoint_url=endpoint_url,
-            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-            config=Config(signature_version='s3v4', retries={'max_attempts': 3}),
-            region_name='auto'
+            endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            config=config,
+            region_name=settings.AWS_S3_REGION_NAME
         )
 
     def _extract_exercise_names(self, s3_client) -> Set[str]:
