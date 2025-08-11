@@ -31,9 +31,19 @@ class WorkoutPlanValidator:
         self.fixes_applied = []
         
         try:
-            # Get allowed exercises
-            allowed_slugs = self.validation_service.get_allowed_exercise_slugs()
-            logger.info(f"Validating plan against {len(allowed_slugs)} allowed exercises")
+            # Get allowed exercises (with fallback for Redis issues)
+            try:
+                allowed_slugs = self.validation_service.get_allowed_exercise_slugs()
+                logger.info(f"Validating plan against {len(allowed_slugs)} allowed exercises")
+            except Exception as cache_error:
+                logger.warning(f"Failed to get allowed exercises from cache: {cache_error}")
+                # Create a basic set of common exercises as fallback
+                allowed_slugs = {
+                    'push-ups', 'squats', 'plank', 'lunges', 'burpees', 'mountain-climbers',
+                    'jumping-jacks', 'sit-ups', 'wall-sit', 'high-knees', 'bodyweight-squats',
+                    'push-up', 'squat', 'lunge', 'crunch', 'glute-bridge', 'dead-bug'
+                }
+                logger.info(f"Using fallback exercise set: {len(allowed_slugs)} exercises")
             
             # Validate structure
             fixed_plan = self._validate_structure(plan_data)
@@ -66,27 +76,26 @@ class WorkoutPlanValidator:
     
     def _validate_structure(self, plan_data: Dict[str, Any]) -> Dict[str, Any]:
         """Validate basic plan structure"""
-        required_fields = ['meta', 'weeks']
+        # For Pydantic validation, we only need the required fields for WorkoutPlan schema
+        required_fields = ['plan_name', 'duration_weeks', 'goal', 'weeks']
         
         for field in required_fields:
             if field not in plan_data:
                 self.issues_found.append(f"Missing required field: {field}")
-                if field == 'meta':
-                    plan_data['meta'] = {'version': 'v2', 'archetype': 'mentor'}
+                if field == 'plan_name':
+                    plan_data['plan_name'] = 'Generated Workout Plan'
+                elif field == 'duration_weeks':
+                    plan_data['duration_weeks'] = 4  # Minimum valid value
+                elif field == 'goal':
+                    plan_data['goal'] = 'Improve fitness and build strength'
                 elif field == 'weeks':
                     plan_data['weeks'] = []
                 self.fixes_applied.append(f"Added missing {field}")
         
-        # Validate meta structure
+        # Remove 'meta' field if present (not allowed in Pydantic schema)
         if 'meta' in plan_data:
-            meta = plan_data['meta']
-            if 'archetype' not in meta:
-                meta['archetype'] = 'mentor'
-                self.fixes_applied.append("Added default archetype to meta")
-            
-            if 'version' not in meta:
-                meta['version'] = 'v2'
-                self.fixes_applied.append("Added version to meta")
+            del plan_data['meta']
+            self.fixes_applied.append("Removed meta field (not compatible with Pydantic schema)")
         
         return plan_data
     

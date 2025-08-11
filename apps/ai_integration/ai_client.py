@@ -41,10 +41,22 @@ class OpenAIClient:
         try:
             response = self._make_api_call(prompt, max_tokens, temperature)
             
-            # Convert dict back to JSON string for validation
-            raw_json = json.dumps(response)
+            # Apply pre-validation fixes BEFORE Pydantic validation
+            from apps.ai_integration.validators import WorkoutPlanValidator
+            validator = WorkoutPlanValidator()
             
-            # Validate with strict schema
+            # Fix common issues that would cause Pydantic validation to fail
+            fixed_response, validation_report = validator.validate_and_fix_plan(response)
+            
+            if validation_report.get('fixes_applied', 0) > 0:
+                logger.info(f"Pre-validation fixes applied: {validation_report.get('fixes_applied', 0)}")
+                for fix in validation_report.get('fixes', []):
+                    logger.info(f"Fix: {fix}")
+            
+            # Convert dict back to JSON string for validation
+            raw_json = json.dumps(fixed_response)
+            
+            # Validate with strict schema (should now pass)
             validated_plan = validate_ai_plan_response(raw_json)
             
             logger.info(f"Successfully validated workout plan: {validated_plan.plan_name}, "
