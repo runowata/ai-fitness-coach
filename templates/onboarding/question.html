@@ -881,13 +881,17 @@
     width: 100vw;
     height: 100vh;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
     background: linear-gradient(135deg, 
-        rgba(102, 126, 234, 0.1) 0%, 
-        rgba(78, 205, 196, 0.1) 50%,
-        rgba(255, 107, 107, 0.1) 100%
+        rgba(102, 126, 234, 0.8) 0%, 
+        rgba(78, 205, 196, 0.8) 50%,
+        rgba(255, 107, 107, 0.8) 100%
     );
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     animation: fadeInScale 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -902,7 +906,110 @@
     }
 }
 
-/* Hero Image */
+/* Gradient overlay for text readability */
+.card-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.3) 0%,
+        rgba(0, 0, 0, 0.1) 50%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    z-index: 1;
+}
+
+/* Content container */
+.card-content-container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+}
+
+.card-content-inner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 3rem 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Title and message styles */
+.motivational-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: titleFloat 3s ease-in-out infinite;
+}
+
+.motivational-message {
+    font-size: 1.3rem;
+    line-height: 1.7;
+    color: #2c3e50;
+    margin-bottom: 2.5rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Continue button */
+.btn-motivational-continue {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-motivational-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.btn-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(0);
+    border-radius: 25px;
+    transition: transform 0.4s ease;
+}
+
+.btn-motivational-continue:active .btn-glow {
+    transform: scale(1);
+}
+
+/* Animation */
+@keyframes titleFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Hero Image (legacy - remove) */
 .card-hero-image {
     position: relative;
     height: 60vh;
@@ -1668,41 +1775,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showMotivationalCard(card, navigationData) {
         const cardHtml = `
-            <div class="motivational-card-fullscreen">
+            <div class="motivational-card-fullscreen" ${card.image_url ? `style="background-image: url('${card.image_url}');"` : ''}>
                 <div class="card-close-btn" onclick="closeMotivationalCard()">
                     <i class="fas fa-times"></i>
                 </div>
                 
-                <!-- Large Hero Image -->
-                <div class="card-hero-image">
-                    ${card.image_url ? `
-                        <img src="${card.image_url}" alt="Motivation" class="hero-img" 
-                             onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(78, 205, 196, 0.3))';">
-                    ` : `
-                        <div class="hero-gradient-bg"></div>
-                    `}
-                    <div class="image-overlay"></div>
-                </div>
+                <!-- Gradient overlay for text readability -->
+                <div class="card-gradient-overlay"></div>
                 
-                <!-- Glass Content Panel -->
-                <div class="card-glass-panel">
-                    <div class="glass-content">
-                        ${card.title ? `<h3 class="glass-title">${card.title}</h3>` : ''}
-                        <p class="glass-message">${card.message}</p>
+                <!-- Content -->
+                <div class="card-content-container">
+                    <div class="card-content-inner">
+                        ${card.title ? `<h3 class="motivational-title">${card.title}</h3>` : ''}
+                        <p class="motivational-message">${card.message}</p>
                         
                         <!-- Continue Button -->
-                        <button class="btn-glass-continue" onclick="continueFromCard()">
+                        <button class="btn-motivational-continue" onclick="continueFromCard()">
                             <span class="btn-text">Продолжить</span>
                             <div class="btn-glow"></div>
                             <i class="fas fa-arrow-right"></i>
                         </button>
-                        
-                        <!-- Decorative Elements -->
-                        <div class="glass-particles">
-                            <div class="particle"></div>
-                            <div class="particle"></div>
-                            <div class="particle"></div>
-                        </div>
                     </div>
                 </div>
             </div>
