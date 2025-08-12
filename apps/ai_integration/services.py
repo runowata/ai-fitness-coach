@@ -499,22 +499,43 @@ class WorkoutPlanGenerator:
                     
             except Exception as e:
                 logger.error(f"Failed to load exercises from database: {e}")
-                # Ultimate fallback - load from CSV manually
-                import pandas as pd
+                # Ultimate fallback - use technical names from R2 Cloudflare
+                import json
                 import os
                 from django.conf import settings
                 try:
-                    csv_path = os.path.join(settings.BASE_DIR, 'data', 'clean', 'exercises.csv')
-                    df = pd.read_csv(csv_path)
-                    csv_codes = set(df['id'].tolist())
-                    allowed_slugs = csv_codes
-                    logger.info(f"Loaded {len(allowed_slugs)} exercise codes from CSV file as ultimate fallback")
-                except Exception as csv_error:
-                    logger.error(f"CSV fallback also failed: {csv_error}")
-                    # Hard-coded codes as last resort
+                    # Load R2 upload state to get real exercise names
+                    r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
+                    if os.path.exists(r2_state_path):
+                        with open(r2_state_path, 'r') as f:
+                            uploaded_files = json.load(f)
+                        
+                        # Extract technical exercise names from video files
+                        exercise_names = set()
+                        for file_path in uploaded_files:
+                            if 'videos/exercises/' in file_path and '_technique_' in file_path:
+                                filename = file_path.split('/')[-1]  # knee-to-elbow_technique_m01.mp4
+                                exercise_name = filename.split('_technique_')[0]  # knee-to-elbow
+                                exercise_names.add(exercise_name)
+                        
+                        allowed_slugs = exercise_names
+                        logger.info(f"Loaded {len(allowed_slugs)} exercise names from R2 upload state")
+                    else:
+                        # Hard-coded R2 exercise names as last resort  
+                        allowed_slugs = {
+                            'push-ups', 'squats', 'planks', 'burpees', 'lunges', 'mountain-climbers',
+                            'crunches', 'wall-sits', 'calf-raises', 'diamond-push-ups', 'jump-squats', 
+                            'bicycle-crunches', 'glute-bridges', 'russian-twists', 'dead-bugs',
+                            'archer-push-ups', 'atlas-stone-lifts', 'barbell-curls', 'battle-ropes',
+                            'bear-crawls', 'bench-press', 'bent-over-rows', 'bicep-curls', 'bird-dogs'
+                        }
+                        logger.info(f"Using hardcoded R2 exercise names: {len(allowed_slugs)} exercises")
+                        
+                except Exception as r2_error:
+                    logger.error(f"R2 fallback also failed: {r2_error}")
+                    # Final emergency fallback
                     allowed_slugs = {
-                        'EX001', 'EX002', 'EX003', 'EX004', 'EX005', 'EX006', 'EX007', 'EX008',
-                        'EX009', 'EX010', 'WZ001', 'WZ002', 'WZ003', 'WZ004', 'WZ005'
+                        'push-ups', 'squats', 'planks', 'burpees', 'lunges', 'crunches'
                     }
         
         # Build comprehensive whitelist instruction  

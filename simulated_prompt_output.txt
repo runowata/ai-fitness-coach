@@ -1,0 +1,112 @@
+СИСТЕМНЫЙ ПРОМПТ:
+# Системная роль: Мудрый Наставник
+
+Вы воплощаете архетип **"Мудрого Наставника"** - спокойного, поддерживающего, авторитетного тренера без давления.
+
+## Ваша личность:
+- **Тон**: Спокойный, мудрый, поддерживающий
+- **Подход**: Долгосрочное мышление, устойчивые привычки
+- **Стиль коммуникации**: Вдумчивый, объясняющий "почему", терпеливый
+- **Мотивация**: Через понимание и личностный рост
+
+## Ваши цели:
+1. Построить реалистичный, устойчивый план тренировок
+2. Выявить истинную мотивацию пользователя  
+3. Поддерживать долгосрочную дисциплину
+4. Обучать принципам здорового образа жизни
+
+## Принципы планирования:
+- Постепенная прогрессия без спешки
+- Адаптация под индивидуальные особенности
+- Баланс нагрузки и восстановления
+- Интеграция тренировок в жизненный ритм
+- Построение уверенности через малые победы
+
+## Особенности работы с ограничениями:
+- Тщательно анализируйте травмы и противопоказания
+- Предлагайте альтернативы для каждого упражнения
+- Объясняйте принципы безопасной техники
+- Рекомендуйте консультацию специалистов при необходимости
+
+ПОЛЬЗОВАТЕЛЬСКИЙ ПРОМПТ:
+# Запрос на создание персонального плана тренировок
+
+## Данные пользователя:
+- **Возраст**: 28 лет
+- **Рост**: 178 см  
+- **Вес**: 82 кг
+- **Основная цель**: muscle_gain
+- **Травмы/ограничения**: lower_back_issues
+- **Доступный инвентарь**: Гантели, Эластичные ленты, Турник
+- **Желаемая длительность программы**: 6 недель
+
+## Детальные ответы онбординга:
+```json
+{
+  "current_fitness_assessment": "can_do_20_pushups",
+  "energy_levels": "moderate_energy",
+  "sleep_quality": "good_7_8_hours",
+  "stress_levels": "moderate_work_stress",
+  "specific_goals": [
+    "build_muscle_mass",
+    "increase_strength",
+    "improve_posture"
+  ],
+  "motivation_sources": [
+    "personal_achievement",
+    "health_benefits",
+    "confidence_boost"
+  ],
+  "success_definition": "visible_muscle_growth_in_6_weeks",
+  "past_workout_experience": "gym_experience_2_years_ago",
+  "time_constraints": "busy_work_schedule_but_committed",
+  "physical_limitations": "occasional_lower_back_pain_from_desk_work",
+  "mental_barriers": "fear_of_not_seeing_results_quickly",
+  "previous_failures": "stopped_gym_after_3_months_lack_of_progress",
+  "workout_environment": "home_with_some_equipment",
+  "music_preferences": "upbeat_electronic_music",
+  "social_aspect": "prefer_solo_workouts",
+  "learning_style": "visual_learner_needs_demonstrations",
+  "body_focus_areas": [
+    "chest",
+    "shoulders",
+    "arms",
+    "core"
+  ],
+  "cardio_preferences": "minimal_cardio_focus_on_strength",
+  "flexibility_interest": "moderate_for_back_health",
+  "nutrition_readiness": "willing_to_make_moderate_changes",
+  "personal_why": "want_to_feel_confident_and_strong_again",
+  "support_system": "supportive_partner_encouraging",
+  "accountability_preference": "self_directed_with_guidance",
+  "reward_motivation": "internal_satisfaction_and_progress_photos"
+}
+```
+
+## Ваша задача:
+
+Создайте персональный план тренировок на 6 недель, учитывая:
+
+1. **Индивидуальные особенности** - возраст, опыт, ограничения
+2. **Доступные ресурсы** - инвентарь, время, место тренировок  
+3. **Progressive overload** - постепенное увеличение нагрузки
+4. **Восстановление** - адекватные дни отдыха
+5. **Разнообразие** - различные типы тренировок и мышечные группы
+6. **Мотивацию** - задания на развитие уверенности
+
+## Требования к ответу:
+
+Верните план **строго в формате JSON** согласно схеме `schemas/workout_plan.json`.
+
+Каждая тренировка должна включать:
+- Разминку (warmup)
+- Основную часть (main) 
+- Заминку (cooldown)
+- Задание на уверенность (confidence_task)
+
+Все упражнения указывайте через `slug` из базы данных упражнений.
+
+**ВАЖНО**: Для каждого упражнения `rest_seconds` должно быть между 10 и 600 секундами. Используйте разумные значения:
+- Силовые упражнения: 60-90 секунд
+- Кардио упражнения: 30-60 секунд
+- Упражнения на гибкость: 15-30 секунд
