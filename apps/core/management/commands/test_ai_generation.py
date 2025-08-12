@@ -28,6 +28,13 @@ class Command(BaseCommand):
         )
     
     def handle(self, *args, **options):
+        # Ensure exercises are imported before testing
+        from django.core.management import call_command
+        try:
+            self.stdout.write("🔄 Ensuring exercises are imported...")
+            call_command("import_exercises_v2", "--data-dir", "./data/raw")
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"⚠️  Exercise import failed: {e}"))
         self.stdout.write("🚀 Testing AI Generation...")
         self.stdout.write("=" * 50)
         

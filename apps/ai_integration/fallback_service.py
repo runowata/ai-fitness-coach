@@ -106,7 +106,7 @@ class FallbackService:
                 return exercise_slug
         
         # Level 4: Ultimate fallback - basic exercises
-        ultimate_fallbacks = ['push_ups', 'squats', 'plank', 'jumping_jacks']
+        ultimate_fallbacks = ['push-ups', 'squats', 'planks', 'jumping-jacks']
         for fallback in ultimate_fallbacks:
             if fallback in self.fallback_exercises:
                 logger.warning(f"Ultimate fallback: {fallback}")
@@ -123,10 +123,10 @@ class FallbackService:
         logger.warning(f"Creating emergency workout for user {user_profile.user.id}")
         
         emergency_exercises = [
-            ('push_ups', 3, '5-10', 45),
+            ('push-ups', 3, '5-10', 45),
             ('squats', 3, '10-15', 45), 
-            ('plank', 3, '20-30 seconds', 45),
-            ('jumping_jacks', 2, '30 seconds', 45),
+            ('planks', 3, '20-30 seconds', 45),
+            ('jumping-jacks', 2, '30 seconds', 45),
         ]
         
         try:
@@ -215,9 +215,9 @@ class FallbackService:
                 'plan_name': 'Beginner 3-Day Foundation',
                 'goal': 'Build basic fitness foundation',
                 'exercises_per_day': [
-                    ['push_ups', 'squats', 'plank'],
-                    ['lunges', 'sit_ups', 'jumping_jacks'], 
-                    ['wall_sit', 'mountain_climbers', 'calf_raises'],
+                    ['push-ups', 'squats', 'planks'],
+                    ['lunges', 'sit-ups', 'jumping-jacks'], 
+                    ['wall-sits', 'mountain-climbers', 'calf-raises'],
                 ],
                 'sets_range': [2, 3],
                 'reps_range': ['5-8', '8-12'],
@@ -227,10 +227,10 @@ class FallbackService:
                 'plan_name': 'Intermediate 4-Day Builder',
                 'goal': 'Increase strength and endurance',
                 'exercises_per_day': [
-                    ['push_ups', 'squats', 'plank', 'lunges'],
-                    ['burpees', 'sit_ups', 'mountain_climbers'],
-                    ['jumping_jacks', 'wall_sit', 'calf_raises'],
-                    ['push_ups', 'squats', 'plank', 'burpees'],
+                    ['push-ups', 'squats', 'planks', 'lunges'],
+                    ['burpees', 'sit-ups', 'mountain-climbers'],
+                    ['jumping-jacks', 'wall-sits', 'calf-raises'],
+                    ['push-ups', 'squats', 'planks', 'burpees'],
                 ],
                 'sets_range': [3, 4],
                 'reps_range': ['8-12', '10-15'],
@@ -305,17 +305,20 @@ class FallbackService:
         return plan_data
     
     def _ensure_exercise_exists(self, exercise_slug: str) -> Optional[str]:
-        """Ensure exercise exists in database, return fallback if not"""
+        """Ensure exercise exists in database, return minimal fallback if not"""
         try:
             CSVExercise.objects.get(id=exercise_slug)
             return exercise_slug
         except CSVExercise.DoesNotExist:
-            logger.warning(f"Exercise {exercise_slug} not found, using fallback")
-            return self.get_fallback_exercise(
-                exercise_slug, 
-                ['general'], 
-                'bodyweight'
-            )
+            logger.warning(f"Exercise {exercise_slug} not found, using minimal fallback")
+            # Return guaranteed minimal exercises when database is empty
+            minimal_map = {
+                'push-ups': 'push-ups',
+                'squats': 'squats', 
+                'planks': 'planks',
+                'jumping-jacks': 'jumping-jacks'
+            }
+            return minimal_map.get(exercise_slug, 'push-ups')  # Always return something
     
     def _generate_minimal_emergency_plan(self, user_data: Dict) -> WorkoutPlanSchema:
         """Last resort - minimal plan that will definitely validate"""
@@ -323,7 +326,7 @@ class FallbackService:
         
         minimal_plan = {
             "plan_name": "Emergency Basic Plan",
-            "duration_weeks": 2,
+            "duration_weeks": 4,
             "goal": "Stay active",
             "weeks": [
                 {
@@ -336,7 +339,7 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "push_ups",
+                                    "exercise_slug": "push-ups",
                                     "sets": 2,
                                     "reps": "5-8",
                                     "rest_seconds": 60
@@ -378,7 +381,7 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "plank",
+                                    "exercise_slug": "planks",
                                     "sets": 2,
                                     "reps": "15-30 seconds",
                                     "rest_seconds": 45
@@ -412,7 +415,7 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "push_ups",
+                                    "exercise_slug": "push-ups",
                                     "sets": 3,
                                     "reps": "8-10",
                                     "rest_seconds": 60
@@ -439,13 +442,13 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "jumping_jacks",
+                                    "exercise_slug": "jumping-jacks",
                                     "sets": 3,
                                     "reps": "30 seconds",
                                     "rest_seconds": 45
                                 },
                                 {
-                                    "exercise_slug": "plank",
+                                    "exercise_slug": "planks",
                                     "sets": 3,
                                     "reps": "20-45 seconds",
                                     "rest_seconds": 45
@@ -466,7 +469,7 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "push_ups",
+                                    "exercise_slug": "push-ups",
                                     "sets": 3,
                                     "reps": "max effort",
                                     "rest_seconds": 90
@@ -478,7 +481,7 @@ class FallbackService:
                                     "rest_seconds": 90
                                 },
                                 {
-                                    "exercise_slug": "plank",
+                                    "exercise_slug": "planks",
                                     "sets": 1,
                                     "reps": "max time",
                                     "rest_seconds": 90
