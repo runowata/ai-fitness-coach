@@ -166,18 +166,26 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
             last_error = None
             response = None
             
+            # Create API parameters - use max_completion_tokens for o1 models
+            api_params = {
+                'model': self.default_model,
+                'messages': [
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": prompt}
+                ],
+                'temperature': temperature,
+                'timeout': 240  # 4 minutes - safe buffer before gunicorn timeout
+            }
+            
+            # o1 models use max_completion_tokens instead of max_tokens
+            if self.default_model.startswith('o1'):
+                api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+            else:
+                api_params['max_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+            
             for attempt in range(3):
                 try:
-                    response = self.client.chat.completions.create(
-                        model=self.default_model,
-                        messages=[
-                            {"role": "system", "content": system_message},
-                            {"role": "user", "content": prompt}
-                        ],
-                        max_tokens=min(max_tokens, settings.OPENAI_MAX_TOKENS),
-                        temperature=temperature,
-                        timeout=240  # 4 minutes - safe buffer before gunicorn timeout
-                    )
+                    response = self.client.chat.completions.create(**api_params)
                     break  # Success, exit retry loop
                 except Exception as e:
                     last_error = e
@@ -292,18 +300,26 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
             last_error = None
             response = None
             
+            # Create API parameters - use max_completion_tokens for o1 models
+            api_params = {
+                'model': self.default_model,
+                'messages': [
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": prompt}
+                ],
+                'temperature': temperature,
+                'timeout': 300  # 5 minutes for comprehensive reports
+            }
+            
+            # o1 models use max_completion_tokens instead of max_tokens
+            if self.default_model.startswith('o1'):
+                api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+            else:
+                api_params['max_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+            
             for attempt in range(3):
                 try:
-                    response = self.client.chat.completions.create(
-                        model=self.default_model,
-                        messages=[
-                            {"role": "system", "content": system_message},
-                            {"role": "user", "content": prompt}
-                        ],
-                        max_tokens=min(max_tokens, settings.OPENAI_MAX_TOKENS),
-                        temperature=temperature,
-                        timeout=300  # 5 minutes for comprehensive reports
-                    )
+                    response = self.client.chat.completions.create(**api_params)
                     break  # Success, exit retry loop
                 except Exception as e:
                     last_error = e
