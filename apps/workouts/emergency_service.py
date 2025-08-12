@@ -71,16 +71,16 @@ class EmergencyWorkoutService:
                 confidence_task="You showed up when it was hard - that's real strength!"
             )
             
-            # Add 3 basic exercises
+            # Add 3 basic exercises using technical names
             emergency_exercises = [
-                ('push_ups', 2, '5-8', 60),
+                ('push-ups', 2, '5-8', 60),
                 ('squats', 2, '8-12', 60),
-                ('plank', 2, '15-30 seconds', 45),
+                ('planks', 2, '15-30 seconds', 45),
             ]
             
             for order, (slug, sets, reps, rest) in enumerate(emergency_exercises, 1):
                 try:
-                    exercise = CSVExercise.objects.get(slug=slug)
+                    exercise = CSVExercise.objects.get(id=slug)
                     WorkoutExecution.objects.create(
                         workout=workout,
                         exercise=exercise,
@@ -96,7 +96,7 @@ class EmergencyWorkoutService:
                     )
                     if fallback_slug:
                         try:
-                            exercise = CSVExercise.objects.get(slug=fallback_slug)
+                            exercise = CSVExercise.objects.get(id=fallback_slug)
                             WorkoutExecution.objects.create(
                                 workout=workout,
                                 exercise=exercise,

@@ -180,29 +180,30 @@ class FallbackService:
         reliable_exercises = {}
         
         try:
-            # Query most common exercises from database
+            # Query most common exercises from database by technical names  
+            # CSVExercise uses 'id' field, not 'slug'
             common_exercises = CSVExercise.objects.filter(
-                slug__in=[
-                    'push_ups', 'squats', 'plank', 'jumping_jacks', 
-                    'lunges', 'mountain_climbers', 'burpees',
-                    'sit_ups', 'calf_raises', 'wall_sit'
+                id__in=[
+                    'push-ups', 'squats', 'planks', 'jumping-jacks', 
+                    'lunges', 'mountain-climbers', 'burpees',
+                    'sit-ups', 'calf-raises', 'wall-sits'
                 ]
-            ).values('slug', 'muscle_groups', 'equipment')
+            ).values('id', 'muscle_group', 'exercise_type')
             
             for exercise in common_exercises:
-                reliable_exercises[exercise['slug']] = {
-                    'muscle_groups': exercise['muscle_groups'] or [],
-                    'equipment': exercise['equipment'] or 'bodyweight'
+                reliable_exercises[exercise['id']] = {
+                    'muscle_groups': [exercise['muscle_group']] if exercise['muscle_group'] else [],
+                    'equipment': 'bodyweight'  # Default for CSVExercise
                 }
                 
         except Exception as e:
             logger.error(f"Failed to load reliable exercises: {e}")
-            # Hardcoded fallback
+            # Hardcoded fallback using technical names from R2
             reliable_exercises = {
-                'push_ups': {'muscle_groups': ['chest', 'triceps'], 'equipment': 'bodyweight'},
+                'push-ups': {'muscle_groups': ['chest', 'triceps'], 'equipment': 'bodyweight'},
                 'squats': {'muscle_groups': ['legs', 'glutes'], 'equipment': 'bodyweight'},
-                'plank': {'muscle_groups': ['core'], 'equipment': 'bodyweight'},
-                'jumping_jacks': {'muscle_groups': ['cardio'], 'equipment': 'bodyweight'},
+                'planks': {'muscle_groups': ['core'], 'equipment': 'bodyweight'},
+                'jumping-jacks': {'muscle_groups': ['cardio'], 'equipment': 'bodyweight'},
             }
         
         return reliable_exercises
@@ -306,7 +307,7 @@ class FallbackService:
     def _ensure_exercise_exists(self, exercise_slug: str) -> Optional[str]:
         """Ensure exercise exists in database, return fallback if not"""
         try:
-            CSVExercise.objects.get(slug=exercise_slug)
+            CSVExercise.objects.get(id=exercise_slug)
             return exercise_slug
         except CSVExercise.DoesNotExist:
             logger.warning(f"Exercise {exercise_slug} not found, using fallback")
