@@ -9,7 +9,7 @@ services:
     name: ai-fitness-coach
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    preDeployCommand: "python manage.py migrate --noinput && python manage.py bootstrap_from_videos --media-path=/opt/render/project/src/media/videos --skip-if-exists && python manage.py load_weekly_lessons && python manage.py setup_periodic_tasks"
+    preDeployCommand: "python manage.py migrate --noinput && python manage.py import_exercises_v2 --data-dir ./data/raw && python manage.py bootstrap_v2_min && python manage.py load_weekly_lessons && python manage.py setup_periodic_tasks"
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
     plan: starter
     region: frankfurt
@@ -29,11 +29,27 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: OPENAI_API_KEY
-        value: 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
+        sync: false
       - key: DJANGO_DEBUG
         value: "False"
       - key: RENDER
         value: "true"
+      - key: USE_R2_STORAGE
+        value: "True"
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_STORAGE_BUCKET_NAME
+        value: "ai-fitness-media"
+      - key: AWS_S3_ENDPOINT_URL
+        value: "https://92568f8b8a15c68a9ece5fe08c66485b.r2.cloudflarestorage.com"
+      - key: R2_PUBLIC_URL
+        value: "https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev"
+      - key: R2_SIGNED_URLS
+        value: "True"
+      - key: R2_SIGNED_URL_TTL
+        value: "3600"
     autoDeploy: true
     scaling:
       minInstances: 1
@@ -61,7 +77,7 @@ services:
       - key: SECRET_KEY
         sync: false
       - key: OPENAI_API_KEY
-        value: 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
+        sync: false
       - key: DJANGO_DEBUG
         value: "False"
       - key: RENDER
@@ -90,7 +106,7 @@ services:
       - key: SECRET_KEY
         sync: false
       - key: OPENAI_API_KEY
-        value: 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
+        sync: false
       - key: DJANGO_DEBUG
         value: "False"
       - key: RENDER

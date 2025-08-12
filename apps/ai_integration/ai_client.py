@@ -25,6 +25,11 @@ class OpenAIClient:
         
         self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
         self.default_model = getattr(settings, 'OPENAI_MODEL', 'o1')
+        
+        # Validate model is supported
+        allowed_models = {"o1", "o1-mini", "o1-preview", "gpt-4o", "gpt-4o-mini"}
+        if self.default_model not in allowed_models:
+            raise AIClientError(f"Unsupported OPENAI_MODEL: {self.default_model}. Allowed: {allowed_models}")
     
     def generate_completion(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> Dict:
         """Generate completion from OpenAI API for o1 model with basic JSON parsing"""
@@ -156,16 +161,32 @@ CRITICAL:
 
 IMPORTANT: The weeks array must contain the full number of weeks specified in duration_weeks."""
 
-            response = self.client.chat.completions.create(
-                model=self.default_model,
-                messages=[
-                    {"role": "system", "content": system_message},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature,
-                timeout=240  # 4 minutes - safe buffer before gunicorn timeout
-            )
+            # Add retry logic with exponential backoff
+            import time
+            last_error = None
+            response = None
+            
+            for attempt in range(3):
+                try:
+                    response = self.client.chat.completions.create(
+                        model=self.default_model,
+                        messages=[
+                            {"role": "system", "content": system_message},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=max_tokens,
+                        temperature=temperature,
+                        timeout=240  # 4 minutes - safe buffer before gunicorn timeout
+                    )
+                    break  # Success, exit retry loop
+                except Exception as e:
+                    last_error = e
+                    logger.warning(f"OpenAI API attempt {attempt + 1} failed: {str(e)}")
+                    if attempt < 2:  # Don't sleep on last attempt
+                        time.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s
+            
+            if response is None:
+                raise AIClientError(f"OpenAI request failed after 3 retries: {last_error}")
             
             # Parse the JSON content directly
             content = response.choices[0].message.content.strip()
@@ -266,16 +287,32 @@ ARCHETYPE SPECIFIC GUIDANCE:
 
 IMPORTANT: Each field must contain meaningful content appropriate to the archetype. The training_program section must follow the same structure as standard workout plans but be embedded within the comprehensive report."""
 
-            response = self.client.chat.completions.create(
-                model=self.default_model,
-                messages=[
-                    {"role": "system", "content": system_message},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature,
-                timeout=300  # 5 minutes for comprehensive reports
-            )
+            # Add retry logic with exponential backoff
+            import time
+            last_error = None
+            response = None
+            
+            for attempt in range(3):
+                try:
+                    response = self.client.chat.completions.create(
+                        model=self.default_model,
+                        messages=[
+                            {"role": "system", "content": system_message},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=max_tokens,
+                        temperature=temperature,
+                        timeout=300  # 5 minutes for comprehensive reports
+                    )
+                    break  # Success, exit retry loop
+                except Exception as e:
+                    last_error = e
+                    logger.warning(f"OpenAI API comprehensive attempt {attempt + 1} failed: {str(e)}")
+                    if attempt < 2:  # Don't sleep on last attempt
+                        time.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s
+            
+            if response is None:
+                raise AIClientError(f"OpenAI comprehensive request failed after 3 retries: {last_error}")
             
             # Parse the JSON content directly
             content = response.choices[0].message.content.strip()

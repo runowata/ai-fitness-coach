@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # AI Fitness Coach
 
-A Django-based web application providing personalized workout programs for gay men, combining fitness training with confidence-building tasks and reward content.
+A Django-based web application providing personalized workout programs for gay men, combining fitness training with confidence-building tasks and reward content. The app features AI-generated workout plans, gamification, and personalized content based on user archetype selection.
 
 ## Tech Stack
 - **Backend:** Django 5.0.8, Python 3.12+
@@ -57,6 +57,12 @@ pytest --cov=apps --cov-report=html   # With coverage
 pytest -m "not slow"                   # Skip slow tests
 pytest tests/test_models.py           # Specific test file
 pytest -k test_workout_completion      # Pattern matching
+
+# Run specific test categories (from pytest.ini markers)
+pytest -m unit                         # Unit tests only
+pytest -m integration                  # Integration tests
+pytest -m ai                          # AI-related tests
+DJANGO_SETTINGS_MODULE=config.test_settings pytest -q -k "unit or catalog or whitelist" --tb=short
 ```
 
 ### Code Quality
@@ -87,6 +93,14 @@ python manage.py migrate <app_name> zero  # Reset app
 - **apps/analytics/** - User metrics, workout analytics
 - **apps/core/** - Core services including exercise validation, system health monitoring
 
+### Data Flow
+1. **User Registration** → Creates User + UserProfile with default settings
+2. **Onboarding Flow** → Collects user data, shows motivational cards, archetype selection
+3. **AI Plan Generation** → OnboardingDataProcessor → WorkoutPlanGenerator → AI (GPT-4/Claude)
+4. **Daily Workouts** → VideoPlaylistBuilder assembles videos based on archetype
+5. **Workout Completion** → WorkoutCompletionService → XP calculation → Achievement checking
+6. **Weekly Adaptation** → Collects feedback → AI adjusts next week's plan
+
 ### Key Models
 - `User` → `UserProfile` (1:1) - Custom user with XP, level, stats
 - `WorkoutPlan` → `DailyWorkout` → `WorkoutExercise` - AI-generated plans
@@ -106,10 +120,17 @@ python manage.py migrate <app_name> zero  # Reset app
 
 ### AI Integration
 - **Prompts:** `prompts/v2/` directory with archetype-specific variations
-- **Archetypes:** mentor (Wise Mentor), professional (Pro Coach), peer (Best Mate)
+  - System prompts: `prompts/v2/system/{archetype}.system.md`
+  - User prompts: `prompts/v2/user/{archetype}.user.md`
+  - Schemas: `prompts/v2/schemas/` for JSON response validation
+- **Archetypes:** 
+  - `mentor` (Wise Mentor) - Supportive, experienced guide
+  - `professional` (Pro Coach) - Direct, no-nonsense trainer
+  - `peer` (Best Mate) - Friendly workout buddy
 - **Plan Generation:** 4-8 week personalized plans based on onboarding
 - **Weekly Adaptation:** Adjusts based on user feedback
 - **Multi-provider:** Supports OpenAI and Claude via AIClientFactory
+- **Comprehensive Analysis:** Deep AI assessment of user profile for better personalization
 
 ## Key URLs & Endpoints
 - `/` - Homepage
@@ -226,3 +247,51 @@ python manage.py cleanup_legacy_columns              # Remove deprecated columns
 - Error tracking: Sentry integration available
 - Bootstrap data: Downloaded from GitHub releases or R2
 - Data integrity: SHA256 check via BOOTSTRAP_DATA_SHA256 env var
+
+## Critical Business Logic
+
+### Exercise Fallback System
+When an exercise is unavailable, the system uses `EXERCISE_FALLBACK_PRIORITY` (apps/workouts/constants.py) to find replacements based on muscle groups and equipment availability.
+
+### Video Playlist Assembly
+The `VideoPlaylistBuilder` (apps/workouts/services/playlist_v2.py) creates personalized video sequences:
+1. Instruction video (archetype-specific)
+2. Technique demonstration
+3. Common mistakes
+4. Contextual reminders
+
+### XP Calculation
+- Base XP per exercise: 10-50 points based on difficulty
+- Multipliers: streak bonus, perfect form, time-based
+- Level thresholds: logarithmic progression
+
+### Archetype Codes
+- `111` = Wise Mentor (mentor)
+- `112` = Pro Coach (professional)  
+- `113` = Best Mate (peer)
+
+## Troubleshooting
+
+### Common Issues
+1. **Media not loading**: Check R2_PUBLIC_URL and AWS credentials
+2. **AI generation failing**: Verify OPENAI_API_KEY and check prompts/v2/ files
+3. **Celery tasks not running**: Ensure Redis is running and REDIS_URL is correct
+4. **Migration issues**: Run `python manage.py migrate --run-syncdb`
+
+### Debug Commands
+```bash
+# Check system health
+python manage.py monitor_system_health
+
+# Debug specific workout video issues
+python manage.py debug_workout_video <workout_id>
+
+# Verify exercise data coverage
+python manage.py preflight_v2_prod
+
+# Test AI generation without creating real data
+python manage.py test_ai_generation
+
+# Analyze video playlist structure
+python manage.py playlist_analysis_deep
+```

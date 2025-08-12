@@ -247,8 +247,8 @@ AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai')  # 'openai' or 'anthropic'
 
 # OpenAI settings  
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4o')  # Updated to latest model
-OPENAI_MAX_TOKENS = int(os.getenv('OPENAI_MAX_TOKENS', '4000'))
+OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'o1')  # o1 model is default
+OPENAI_MAX_TOKENS = max(512, min(8192, int(os.getenv('OPENAI_MAX_TOKENS', '4000'))))
 OPENAI_TEMPERATURE = float(os.getenv('OPENAI_TEMPERATURE', '0.7'))
 USE_JSON_MODE = os.getenv('USE_JSON_MODE', 'False') == 'True'
 
