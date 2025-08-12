@@ -8,7 +8,7 @@ from django.utils import timezone
 from openai import OpenAI
 
 from .prompt_manager_v2 import PromptManagerV2
-from .ai_client_structured import AIClientFactory, AIClientError
+from .ai_client_gpt5 import AIClientFactory, AIClientError
 from .validators import WorkoutPlanValidator
 from apps.onboarding.services import OnboardingDataProcessor
 from apps.core.services.exercise_validation import ExerciseValidationService
