@@ -166,22 +166,23 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
             last_error = None
             response = None
             
-            # Create API parameters - use max_completion_tokens for o1 models
+            # Create API parameters - o1 models have different parameter requirements
             api_params = {
                 'model': self.default_model,
                 'messages': [
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": prompt}
                 ],
-                'temperature': temperature,
                 'timeout': 240  # 4 minutes - safe buffer before gunicorn timeout
             }
             
-            # o1 models use max_completion_tokens instead of max_tokens
+            # o1 models use different parameters
             if self.default_model.startswith('o1'):
                 api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+                # o1 models don't support temperature parameter
             else:
                 api_params['max_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+                api_params['temperature'] = temperature
             
             for attempt in range(3):
                 try:
@@ -300,22 +301,23 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
             last_error = None
             response = None
             
-            # Create API parameters - use max_completion_tokens for o1 models
+            # Create API parameters - o1 models have different parameter requirements
             api_params = {
                 'model': self.default_model,
                 'messages': [
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": prompt}
                 ],
-                'temperature': temperature,
                 'timeout': 300  # 5 minutes for comprehensive reports
             }
             
-            # o1 models use max_completion_tokens instead of max_tokens
+            # o1 models use different parameters
             if self.default_model.startswith('o1'):
                 api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+                # o1 models don't support temperature parameter
             else:
                 api_params['max_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+                api_params['temperature'] = temperature
             
             for attempt in range(3):
                 try:
