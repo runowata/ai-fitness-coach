@@ -93,14 +93,29 @@ class OpenAIClient:
                     },
                     text={
                         'verbosity': 'high',  # Detailed output for comprehensive reports
-                        'format': {'type': 'json_object'}  # JSON mode for now
+                        'format': {
+                            'type': 'json_schema',
+                            'json_schema': {
+                                'name': 'comprehensive_report',
+                                'strict': False,
+                                'schema': {
+                                    "type": "object",
+                                    "properties": {
+                                        "user_analysis": {"type": "string"},
+                                        "training_program": {"type": "string"}, 
+                                        "motivation_system": {"type": "string"},
+                                        "long_term_strategy": {"type": "string"}
+                                    }
+                                }
+                            }
+                        }
                     }
                 )
                 
                 # Extract content
                 content = None
                 for item in response.output:
-                    if hasattr(item, 'content'):
+                    if hasattr(item, 'content') and item.content:
                         for content_item in item.content:
                             if hasattr(content_item, 'text'):
                                 content = content_item.text
@@ -256,7 +271,7 @@ class OpenAIClient:
                 # Responses API format
                 content = None
                 for item in response.output:
-                    if hasattr(item, 'content'):
+                    if hasattr(item, 'content') and item.content:
                         for content_item in item.content:
                             if hasattr(content_item, 'text'):
                                 content = content_item.text
@@ -266,7 +281,7 @@ class OpenAIClient:
                             
                 # Check for refusals in Responses API
                 for item in response.output:
-                    if hasattr(item, 'content'):
+                    if hasattr(item, 'content') and item.content:
                         for content_item in item.content:
                             if hasattr(content_item, 'type') and content_item.type == 'refusal':
                                 logger.error(f"AI model refused request: {content_item.refusal}")

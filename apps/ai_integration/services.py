@@ -9,6 +9,7 @@ from openai import OpenAI
 
 from .prompt_manager_v2 import PromptManagerV2
 from .ai_client_gpt5 import AIClientFactory, AIClientError
+from .fallback_service import FallbackService
 from .validators import WorkoutPlanValidator
 from apps.onboarding.services import OnboardingDataProcessor
 from apps.core.services.exercise_validation import ExerciseValidationService
@@ -347,16 +348,34 @@ class WorkoutPlanGenerator:
             except AIClientError as e:
                 logger.error(f"AI client error on attempt {attempt + 1}: {str(e)}")
                 if attempt == max_attempts:
-                    raise
+                    logger.warning("AI generation failed completely, using fallback service")
+                    fallback_service = FallbackService()
+                    fallback_plan = fallback_service.generate_default_workout_plan(
+                        user_data, 
+                        f"AI_CLIENT_ERROR: {str(e)}"
+                    )
+                    return fallback_plan.dict()
                 continue
             except Exception as e:
                 logger.error(f"Error on attempt {attempt + 1}: {str(e)}")
                 if attempt == max_attempts:
-                    raise ValueError(f"Failed to generate workout plan: {str(e)}")
+                    logger.warning("All attempts failed, using fallback service")
+                    fallback_service = FallbackService()
+                    fallback_plan = fallback_service.generate_default_workout_plan(
+                        user_data,
+                        f"GENERAL_ERROR: {str(e)}"
+                    )
+                    return fallback_plan.dict()
                 continue
         
-        # Should not reach here
-        raise ValueError("Failed to generate workout plan after all attempts")
+        # Should not reach here, but provide fallback just in case
+        logger.error("Unexpected fallthrough in generate_plan")
+        fallback_service = FallbackService()
+        fallback_plan = fallback_service.generate_default_workout_plan(
+            user_data,
+            "UNEXPECTED_FALLTHROUGH"
+        )
+        return fallback_plan.dict()
     
     def _generate_comprehensive_plan(self, user_data: Dict, archetype: str, allowed_slugs: Set[str]) -> Dict:
         """Generate comprehensive 4-block AI report with full analysis and plan"""
@@ -435,9 +454,20 @@ class WorkoutPlanGenerator:
                 
         except Exception as e:
             logger.error(f"Comprehensive plan generation failed: {str(e)}")
-            # Fallback to legacy method
-            logger.info("Falling back to legacy plan generation")
-            return self._generate_plan_legacy(user_data)
+            # Try legacy method first
+            try:
+                logger.info("Falling back to legacy plan generation")
+                return self._generate_plan_legacy(user_data)
+            except Exception as legacy_error:
+                logger.error(f"Legacy plan generation also failed: {legacy_error}")
+                # Ultimate fallback to FallbackService
+                logger.warning("Using fallback service for comprehensive plan failure")
+                fallback_service = FallbackService()
+                fallback_plan = fallback_service.generate_default_workout_plan(
+                    user_data,
+                    f"COMPREHENSIVE_AND_LEGACY_FAILED: {str(e)}, {str(legacy_error)}"
+                )
+                return fallback_plan.dict()
     
     def _build_comprehensive_prompt(self, user_data: Dict, allowed_slugs: Set[str]) -> str:
         """Build comprehensive prompt with exercise whitelist"""
