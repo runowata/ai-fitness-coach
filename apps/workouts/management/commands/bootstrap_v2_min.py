@@ -29,19 +29,20 @@ class Command(BaseCommand):
         
         # 1) Create exercises
         for slug, clips in R2_CLIPS.items():
+            # CSVExercise uses 'id' field, not 'slug'
             exercise, created = CSVExercise.objects.get_or_create(
-                slug=slug, 
+                id=slug, 
                 defaults={
-                    "name": slug.replace("_", " ").title(),
-                    "muscle_groups": ["core", "upper_body"] if slug == "pushup" else ["legs"] if "squat" in slug else ["core"],
-                    "equipment_needed": [],
-                    "difficulty": 2,
-                    "duration_seconds": 30,
+                    "name_ru": slug.replace("_", " ").title(),
+                    "name_en": slug.replace("_", " ").title(),
+                    "level": "beginner",
+                    "muscle_group": "core" if slug == "plank" else "chest" if slug == "pushup" else "legs",
+                    "exercise_type": "strength",
                     "is_active": True
                 }
             )
             if created:
-                self.stdout.write(f"  ✅ Created exercise: {exercise.name}")
+                self.stdout.write(f"  ✅ Created exercise: {exercise.name_ru}")
             
             # 2) Create video clips for each exercise
             for kind, r2_path in clips.items():
@@ -61,7 +62,7 @@ class Command(BaseCommand):
                 clip.save()
                 
                 if created:
-                    self.stdout.write(f"    ✅ Created clip: {exercise.slug} - {kind}")
+                    self.stdout.write(f"    ✅ Created clip: {exercise.id} - {kind}")
 
         # 3) Create test user and plan (optional)
         User = get_user_model()
