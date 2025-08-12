@@ -8,7 +8,7 @@ from typing import Dict, Optional, List
 from django.conf import settings
 from django.utils import timezone
 
-from apps.workouts.models import CSVExercise, WorkoutPlan, DailyWorkout, WorkoutExercise
+from apps.workouts.models import CSVExercise, WorkoutPlan, DailyWorkout, WorkoutExecution
 from apps.users.models import UserProfile
 from .schemas import WorkoutPlan as WorkoutPlanSchema
 
@@ -156,7 +156,7 @@ class FallbackService:
             for order, (slug, sets, reps, rest) in enumerate(emergency_exercises, 1):
                 try:
                     exercise = CSVExercise.objects.get(slug=slug)
-                    WorkoutExercise.objects.create(
+                    WorkoutExecution.objects.create(
                         workout=workout,
                         exercise=exercise,
                         sets=sets,

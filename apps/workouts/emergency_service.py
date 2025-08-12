@@ -7,7 +7,7 @@ from typing import Optional
 from django.utils import timezone
 
 from apps.users.models import UserProfile
-from apps.workouts.models import WorkoutPlan, DailyWorkout, WorkoutExercise, CSVExercise
+from apps.workouts.models import WorkoutPlan, DailyWorkout, WorkoutExecution, CSVExercise
 from apps.ai_integration.fallback_service import FallbackService
 
 logger = logging.getLogger(__name__)
@@ -81,7 +81,7 @@ class EmergencyWorkoutService:
             for order, (slug, sets, reps, rest) in enumerate(emergency_exercises, 1):
                 try:
                     exercise = CSVExercise.objects.get(slug=slug)
-                    WorkoutExercise.objects.create(
+                    WorkoutExecution.objects.create(
                         workout=workout,
                         exercise=exercise,
                         sets=sets,
@@ -97,7 +97,7 @@ class EmergencyWorkoutService:
                     if fallback_slug:
                         try:
                             exercise = CSVExercise.objects.get(slug=fallback_slug)
-                            WorkoutExercise.objects.create(
+                            WorkoutExecution.objects.create(
                                 workout=workout,
                                 exercise=exercise,
                                 sets=sets,
