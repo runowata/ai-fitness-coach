@@ -884,14 +884,7 @@
     align-items: flex-end;
     padding-bottom: 4rem;
     overflow: hidden;
-    background: linear-gradient(135deg, 
-        rgba(102, 126, 234, 0.9) 0%, 
-        rgba(78, 205, 196, 0.9) 50%,
-        rgba(255, 107, 107, 0.9) 100%
-    );
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /* Background will be set by JavaScript inline styles */
     animation: fadeInScale 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1856,9 +1849,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showMotivationalCard(card, navigationData) {
         console.log('Card data:', card); // Debug
+        console.log('Image URL:', card.image_url); // Debug image URL
+        
+        // Use image if available, otherwise fallback to gradient
         const backgroundStyle = card.image_url ? 
-            `background-image: url('${card.image_url}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : 
-            '';
+            `background-image: url('${card.image_url}'); background: url('${card.image_url}') center/cover no-repeat;` : 
+            `background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(78, 205, 196, 0.9) 50%, rgba(255, 107, 107, 0.9) 100%);`;
         
         const cardHtml = `
             <div class="motivational-fullscreen-card" style="${backgroundStyle}">
@@ -1887,6 +1883,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Store navigation data for later use
         window.motivationalCardNavigation = navigationData;
+        
+        // Test if image loads (for debugging)
+        if (card.image_url) {
+            const testImg = new Image();
+            testImg.onload = () => console.log('✅ Image loaded successfully:', card.image_url);
+            testImg.onerror = () => console.error('❌ Image failed to load:', card.image_url);
+            testImg.src = card.image_url;
+        }
         
         // Show modal with animation
         const modal = new bootstrap.Modal(document.getElementById('motivationalModal'), {
