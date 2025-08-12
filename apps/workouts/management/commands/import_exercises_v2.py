@@ -1,6 +1,7 @@
 """
 V2 Import command for exercises and video clips from Excel files
 Supports new archetype naming: peer/professional/mentor
+Maps Excel exercise IDs to R2 technical names
 """
 import pandas as pd
 from django.core.management.base import BaseCommand
@@ -8,6 +9,7 @@ from django.db import transaction
 from pathlib import Path
 from apps.workouts.models import CSVExercise, VideoClip
 import json
+import os
 
 # Import archetype mapping from core constants
 from apps.core.constants import ARCHETYPE_MAPPING
@@ -23,6 +25,18 @@ VIDEO_KIND_MAPPING = {
 
 class Command(BaseCommand):
     help = "Import exercises and video clips from Excel files (v2 compatible)"
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.excel_r2_mapping = self._load_excel_r2_mapping()
+    
+    def _load_excel_r2_mapping(self):
+        """Load mapping between Excel IDs and R2 technical names"""
+        mapping_path = os.path.join(os.path.dirname(__file__), '../../../../excel_r2_mapping.json')
+        if os.path.exists(mapping_path):
+            with open(mapping_path, 'r') as f:
+                return json.load(f)
+        return {}
     
     def add_arguments(self, parser):
         parser.add_argument(
@@ -65,6 +79,10 @@ class Command(BaseCommand):
         for video_file in video_files:
             self.import_video_clips(video_file, dry_run, force)
             
+        # Step 2.5: Create placeholder clips for R2 exercises with mapping
+        if not dry_run:
+            self.create_r2_placeholder_clips(force)
+            
         # Step 3: Summary
         if not dry_run:
             exercises_count = CSVExercise.objects.filter(is_active=True).count()
@@ -81,50 +99,66 @@ class Command(BaseCommand):
         try:
             df = pd.read_excel(file_path)
             
-            # Expected columns (adjust based on your actual Excel structure)
-            required_cols = ['slug', 'name']
-            missing_cols = [col for col in required_cols if col not in df.columns]
+            # Map actual Excel columns to our expected fields
+            required_excel_cols = ['ID', 'Название (RU)', 'Название (EN)']
+            missing_cols = [col for col in required_excel_cols if col not in df.columns]
             if missing_cols:
-                self.stdout.write(self.style.ERROR(f"Missing columns: {missing_cols}"))
+                self.stdout.write(self.style.ERROR(f"Missing columns: {missing_cols}. Available: {list(df.columns)}"))
                 return
                 
             created_count = 0
             updated_count = 0
             
             for _, row in df.iterrows():
-                if pd.isna(row['slug']) or pd.isna(row['name']):
+                if pd.isna(row['ID']) or pd.isna(row['Название (RU)']):
                     continue
                     
+                # Map difficulty level from Russian to English
+                difficulty_map = {
+                    'Начальный': 'beginner',
+                    'Средний': 'intermediate', 
+                    'Продвинутый': 'advanced'
+                }
+                
+                level = str(row.get('Сложность', 'Начальный')).strip()
+                level_en = difficulty_map.get(level, 'beginner')
+                
+                exercise_id = str(row['ID']).strip()
+                
+                # Get R2 technical name if mapping exists
+                r2_technical_name = self.excel_r2_mapping.get(exercise_id, '')
+                
                 exercise_data = {
-                    'name': str(row['name']).strip(),
-                    'muscle_groups': self._parse_muscle_groups(row.get('muscle_groups', '')),
-                    'equipment_needed': self._parse_equipment(row.get('equipment', '')),
-                    'difficulty': int(row.get('difficulty', 2)),
-                    'duration_seconds': int(row.get('duration_seconds', 30)),
+                    'name_ru': str(row['Название (RU)']).strip(),
+                    'name_en': str(row['Название (EN)']).strip(),
+                    'muscle_group': str(row.get('Основная мышечная группа', '')).strip(),
+                    'exercise_type': str(row.get('Тип упражнения', '')).strip(),
+                    'level': level_en,
+                    'duration_seconds': 30,  # Default duration
                     'is_active': True
                 }
                 
-                slug = str(row['slug']).strip()
-                
                 if dry_run:
-                    self.stdout.write(f"  Would create/update: {slug} - {exercise_data['name']}")
+                    r2_info = f" -> R2: {r2_technical_name}" if r2_technical_name else " (no R2 mapping)"
+                    self.stdout.write(f"  Would create/update: {exercise_id} - {exercise_data['name_ru']}{r2_info}")
                     continue
                     
                 with transaction.atomic():
                     exercise, created = CSVExercise.objects.update_or_create(
-                        slug=slug,
+                        id=exercise_id,
                         defaults=exercise_data
                     )
                     
                     if created:
                         created_count += 1
-                        self.stdout.write(f"  ✅ Created: {slug}")
+                        r2_info = f" -> R2: {r2_technical_name}" if r2_technical_name else " (no R2 mapping)"
+                        self.stdout.write(f"  ✅ Created: {exercise_id} - {exercise_data['name_ru']}{r2_info}")
                     else:
                         updated_count += 1
                         if force:
-                            self.stdout.write(f"  🔄 Updated: {slug}")
+                            self.stdout.write(f"  🔄 Updated: {exercise_id}")
                         else:
-                            self.stdout.write(f"  ⏭️  Skipped existing: {slug}")
+                            self.stdout.write(f"  ⏭️  Skipped existing: {exercise_id}")
                             
             if not dry_run:
                 self.stdout.write(self.style.SUCCESS(f"Exercises: {created_count} created, {updated_count} updated"))
@@ -221,6 +255,53 @@ class Command(BaseCommand):
                 
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error importing video clips: {e}"))
+
+    def create_r2_placeholder_clips(self, force):
+        """Create placeholder video clips for exercises with R2 mapping"""
+        self.stdout.write(f"\n🎥 Creating R2 placeholder clips...")
+        
+        created_count = 0
+        
+        # For each exercise with R2 mapping, create basic video clips
+        for excel_id, r2_name in self.excel_r2_mapping.items():
+            try:
+                exercise = CSVExercise.objects.get(id=excel_id)
+            except CSVExercise.DoesNotExist:
+                continue
+                
+            # Create technique and instruction clips for each archetype
+            archetypes = ['mentor', 'professional', 'peer']
+            video_kinds = ['technique', 'instruction']
+            
+            for archetype in archetypes:
+                for video_kind in video_kinds:
+                    clip_data = {
+                        'archetype': archetype,
+                        'r2_kind': video_kind,
+                        'model_name': 'default',
+                        'reminder_text': f'{video_kind} for {exercise.name_en}',
+                        'duration_seconds': 60,
+                        'is_active': True,
+                        'is_placeholder': True
+                    }
+                    
+                    with transaction.atomic():
+                        clip, created = VideoClip.objects.update_or_create(
+                            exercise=exercise,
+                            r2_kind=video_kind,
+                            archetype=archetype,
+                            model_name='default',
+                            defaults=clip_data
+                        )
+                        
+                        if created:
+                            created_count += 1
+                            # Construct R2 path based on mapping and pattern
+                            r2_path = f"videos/exercises/{r2_name}_{video_kind}_m01.mp4"
+                            clip.r2_file.name = r2_path
+                            clip.save()
+        
+        self.stdout.write(self.style.SUCCESS(f"Created {created_count} R2 placeholder clips"))
 
     def _parse_muscle_groups(self, muscle_groups_str):
         """Parse muscle groups from string to JSON array"""
