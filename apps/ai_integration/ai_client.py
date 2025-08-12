@@ -174,7 +174,7 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
                             {"role": "system", "content": system_message},
                             {"role": "user", "content": prompt}
                         ],
-                        max_tokens=max_tokens,
+                        max_tokens=min(max_tokens, settings.OPENAI_MAX_TOKENS),
                         temperature=temperature,
                         timeout=240  # 4 minutes - safe buffer before gunicorn timeout
                     )
@@ -300,7 +300,7 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
                             {"role": "system", "content": system_message},
                             {"role": "user", "content": prompt}
                         ],
-                        max_tokens=max_tokens,
+                        max_tokens=min(max_tokens, settings.OPENAI_MAX_TOKENS),
                         temperature=temperature,
                         timeout=300  # 5 minutes for comprehensive reports
                     )

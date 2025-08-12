@@ -1,0 +1,52 @@
+# Правила категоризации медиафайлов
+# keyword: category
+
+# Упражнения
+pushup: chest
+push-up: chest
+press: chest
+bench: chest
+
+squat: legs
+leg: legs
+quad: legs
+
+plank: core
+abs: core
+core: core
+
+cardio: cardio
+running: cardio
+bike: cardio
+
+stretch: flexibility
+yoga: flexibility
+flexibility: flexibility
+
+# Модели и персоны
+alex: models
+konobeevskikh: models
+model: models
+nude: models
+
+# Прогресс и селфи
+selfie: progress
+progress: progress
+before: progress
+after: progress
+
+# Мотивация
+motivation: quotes
+quote: quotes
+inspire: quotes
+
+# Общие тренировки
+workout: general
+training: general
+exercise: general
+fitness: general
+
+# Позы и движения
+animal: movements
+kingdom: movements
+pose: movements

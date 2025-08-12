@@ -41,9 +41,8 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 
-# Media files serving
-# Serve media files in DEBUG mode or when RENDER variable is set (production deployment on Render)
-if settings.DEBUG or os.getenv('RENDER'):
+# Media files: в проде (R2/S3 storage) медиа не раздаём через Django
+if settings.DEBUG and getattr(settings, 'MEDIA_ROOT', None):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

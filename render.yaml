@@ -9,7 +9,7 @@ services:
     name: ai-fitness-coach
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    preDeployCommand: "python manage.py migrate --noinput && python manage.py import_exercises_v2 --data-dir ./data/raw && python manage.py bootstrap_v2_min && python manage.py load_weekly_lessons && python manage.py setup_periodic_tasks"
+    preDeployCommand: "python manage.py migrate --noinput && python manage.py import_exercises_v2 --data-dir ./data/raw --safe && python manage.py bootstrap_v2_min && python manage.py load_weekly_lessons && python manage.py setup_periodic_tasks"
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
     plan: starter
     region: frankfurt
@@ -59,7 +59,7 @@ services:
     name: ai-fitness-coach-celery
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery -A config worker -l info"
+    startCommand: "celery -A config.celery app worker -l info"
     plan: starter
     region: frankfurt
     envVars:
@@ -88,7 +88,7 @@ services:
     name: ai-fitness-coach-beat
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    startCommand: "celery -A config.celery app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     plan: starter
     region: frankfurt
     envVars:
