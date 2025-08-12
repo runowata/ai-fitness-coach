@@ -21,6 +21,8 @@ logger = logging.getLogger(__name__)
 def _get_random_motivational_background():
     """Get random motivational background image from R2"""
     try:
+        from apps.core.services.media import MediaService
+        
         # Read available photos from R2
         r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
         if os.path.exists(r2_state_path):
@@ -37,9 +39,8 @@ def _get_random_motivational_background():
                 # Select random photo
                 random_photo = random.choice(quotes_photos)
                 
-                # Return R2 public URL
-                r2_public_url = getattr(settings, 'R2_PUBLIC_URL', 'https://pub-e28e83bda3474a0ba78d81f79e6d87e3.r2.dev')
-                return f"{r2_public_url}/{random_photo}"
+                # Use MediaService to get proper CDN URL
+                return MediaService.get_public_cdn_url(random_photo)
         
         # Fallback: return empty to use gradient background
         return ''
@@ -270,9 +271,13 @@ def save_answer(request, question_id):
             if name:
                 message = message.replace('[Имя]', name)
     
-    # Get random background if no specific image
-    if not image_url:
-        image_url = _get_random_motivational_background()
+    # Always use random quotes background for motivational cards
+    # Override any existing image with quotes photos
+    image_url = _get_random_motivational_background()
+    
+    # Fallback to original if quotes function fails
+    if not image_url and motivational_card:
+        image_url = motivational_card.cdn_url
     
     result['motivational_card'] = {
         'title': title,
