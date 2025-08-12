@@ -7,12 +7,46 @@ from django.utils import timezone
 from django.urls import reverse
 import json
 import logging
+import random
+import os
+from django.conf import settings
 
 from .models import OnboardingQuestion, AnswerOption, UserOnboardingResponse, OnboardingSession, MotivationalCard
 from apps.ai_integration.services import WorkoutPlanGenerator
 from apps.workouts.models import WorkoutPlan
 
 logger = logging.getLogger(__name__)
+
+
+def _get_random_motivational_background():
+    """Get random motivational background image from R2"""
+    try:
+        # Read available photos from R2
+        r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
+        if os.path.exists(r2_state_path):
+            with open(r2_state_path, 'r') as f:
+                r2_files = json.load(f)
+            
+            # Filter quotes photos
+            quotes_photos = [
+                f for f in r2_files 
+                if 'photos/quotes/' in f and f.endswith('.jpg')
+            ]
+            
+            if quotes_photos:
+                # Select random photo
+                random_photo = random.choice(quotes_photos)
+                
+                # Return R2 public URL
+                r2_public_url = getattr(settings, 'R2_PUBLIC_URL', 'https://pub-e28e83bda3474a0ba78d81f79e6d87e3.r2.dev')
+                return f"{r2_public_url}/{random_photo}"
+        
+        # Fallback: return empty to use gradient background
+        return ''
+        
+    except Exception as e:
+        logger.error(f"Error getting random motivational background: {e}")
+        return ''
 
 
 @login_required
@@ -210,27 +244,41 @@ def save_answer(request, question_id):
     
     logger.info(f"Result before motivational card: {result}")
     
+    # Always show motivational card (either specific or default)
     if motivational_card:
         # Replace [Имя] placeholder with actual name
         message = motivational_card.message
-        if '[Имя]' in message and hasattr(request.user, 'first_name') and request.user.first_name:
-            message = message.replace('[Имя]', request.user.first_name)
-        elif '[Имя]' in message:
-            # Try to get name from first question response
-            name_response = UserOnboardingResponse.objects.filter(
-                user=request.user,
-                question__ai_field_name='user_name'
-            ).first()
-            if name_response:
-                name = name_response.get_answer_value()
-                if name:
-                    message = message.replace('[Имя]', name)
-        
-        result['motivational_card'] = {
-            'title': motivational_card.title or '',
-            'message': message,
-            'image_url': motivational_card.cdn_url or ''
-        }
+        title = motivational_card.title or ''
+        image_url = motivational_card.cdn_url
+    else:
+        # Default motivational message
+        title = "Отлично! 🎯"
+        message = "Ваш ответ сохранен. Каждый шаг приближает нас к созданию идеальной программы специально для вас!"
+        image_url = ''
+    
+    # Replace name placeholder
+    if '[Имя]' in message and hasattr(request.user, 'first_name') and request.user.first_name:
+        message = message.replace('[Имя]', request.user.first_name)
+    elif '[Имя]' in message:
+        # Try to get name from first question response
+        name_response = UserOnboardingResponse.objects.filter(
+            user=request.user,
+            question__ai_field_name='user_name'
+        ).first()
+        if name_response:
+            name = name_response.get_answer_value()
+            if name:
+                message = message.replace('[Имя]', name)
+    
+    # Get random background if no specific image
+    if not image_url:
+        image_url = _get_random_motivational_background()
+    
+    result['motivational_card'] = {
+        'title': title,
+        'message': message,
+        'image_url': image_url
+    }
     
     # If last question, generate workout plan
     if not next_question:

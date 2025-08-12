@@ -934,6 +934,19 @@
     pointer-events: none;
 }
 
+.hero-gradient-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.4) 0%, 
+        rgba(78, 205, 196, 0.4) 50%,
+        rgba(255, 107, 107, 0.4) 100%
+    );
+}
+
 /* Glass Content Panel */
 .card-glass-panel {
     position: relative;
@@ -966,7 +979,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(255, 255, 255, 0.8);
     animation: titleFloat 3s ease-in-out infinite;
 }
 
@@ -978,10 +991,13 @@
 .glass-message {
     font-size: 1.3rem;
     line-height: 1.7;
-    color: #34495e;
+    color: #2c3e50;
     margin-bottom: 3rem;
-    font-weight: 500;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 1px 2px rgba(255, 255, 255, 0.9),
+        0 0 10px rgba(255, 255, 255, 0.5);
     animation: messageSlide 0.8s ease-out 0.3s both;
 }
 
@@ -1658,11 +1674,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 
                 <!-- Large Hero Image -->
-                ${card.image_url ? `
                 <div class="card-hero-image">
-                    <img src="${card.image_url}" alt="Motivation" class="hero-img" onerror="this.parentElement.style.display='none'">
+                    ${card.image_url ? `
+                        <img src="${card.image_url}" alt="Motivation" class="hero-img" 
+                             onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(78, 205, 196, 0.3))';">
+                    ` : `
+                        <div class="hero-gradient-bg"></div>
+                    `}
                     <div class="image-overlay"></div>
-                </div>` : ''}
+                </div>
                 
                 <!-- Glass Content Panel -->
                 <div class="card-glass-panel">
