@@ -162,61 +162,59 @@ class Command(BaseCommand):
             updated_count = 0
             
             for _, row in df.iterrows():
-                if pd.isna(row['exercise_slug']) or pd.isna(row['video_kind']):
+                if pd.isna(row['ID']):
                     continue
                     
-                exercise_slug = str(row['exercise_slug']).strip()
-                video_kind = str(row['video_kind']).strip().lower()
-                r2_path = str(row.get('r2_path', '')).strip()
+                exercise_id = str(row['ID']).strip()
                 
-                # Map video kind to v2 format
-                r2_kind = VIDEO_KIND_MAPPING.get(video_kind, video_kind)
+                # For instruction videos, we create instruction type clips
+                video_kind = 'instruction'
                 
                 # Find the exercise
                 try:
-                    exercise = CSVExercise.objects.get(id=exercise_slug)
+                    exercise = CSVExercise.objects.get(id=exercise_id)
                 except CSVExercise.DoesNotExist:
-                    self.stdout.write(self.style.WARNING(f"  ⚠️  Exercise not found: {exercise_slug}"))
+                    self.stdout.write(self.style.WARNING(f"  ⚠️  Exercise not found: {exercise_id}"))
                     continue
+                
+                # Get instruction script from Excel
+                script_column = [col for col in df.columns if 'Скрипт' in col]
+                instruction_script = ''
+                if script_column:
+                    instruction_script = str(row.get(script_column[0], '')).strip()
                 
                 clip_data = {
                     'archetype': archetype,
-                    'r2_kind': r2_kind,
-                    'model_name': str(row.get('model_name', 'default')).strip(),
-                    'reminder_text': str(row.get('reminder_text', '')).strip(),
-                    'duration_seconds': int(row.get('duration_seconds', 60)),
+                    'r2_kind': video_kind,
+                    'model_name': 'default',
+                    'reminder_text': instruction_script[:500],  # Limit text length
+                    'duration_seconds': 60,
                     'is_active': True,
-                    'is_placeholder': False
+                    'is_placeholder': True  # Mark as placeholder since no R2 files yet
                 }
                 
                 if dry_run:
-                    self.stdout.write(f"  Would create: {exercise_slug} - {r2_kind} - {archetype}")
+                    self.stdout.write(f"  Would create: {exercise_id} - {video_kind} - {archetype}")
                     continue
                     
                 with transaction.atomic():
                     clip, created = VideoClip.objects.update_or_create(
                         exercise=exercise,
-                        r2_kind=r2_kind,
+                        r2_kind=video_kind,
                         archetype=archetype,
                         model_name=clip_data['model_name'],
-                        reminder_text=clip_data['reminder_text'],
                         defaults=clip_data
                     )
                     
-                    # Set R2 file path if provided
-                    if r2_path and r2_path != 'nan':
-                        clip.r2_file.name = r2_path
-                        clip.save()
-                    
                     if created:
                         created_count += 1
-                        self.stdout.write(f"  ✅ Created: {exercise_slug} - {r2_kind}")
+                        self.stdout.write(f"  ✅ Created: {exercise_id} - {video_kind} - {archetype}")
                     else:
                         updated_count += 1
                         if force:
-                            self.stdout.write(f"  🔄 Updated: {exercise_slug} - {r2_kind}")
+                            self.stdout.write(f"  🔄 Updated: {exercise_id} - {video_kind}")
                         else:
-                            self.stdout.write(f"  ⏭️  Skipped existing: {exercise_slug} - {r2_kind}")
+                            self.stdout.write(f"  ⏭️  Skipped existing: {exercise_id} - {video_kind}")
                             
             if not dry_run:
                 self.stdout.write(self.style.SUCCESS(f"Video clips ({archetype}): {created_count} created, {updated_count} updated"))
