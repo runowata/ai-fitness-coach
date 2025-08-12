@@ -208,6 +208,43 @@ class FallbackService:
         
         return reliable_exercises
     
+    def _get_r2_exercise_fallback(self, exercise_slug: str) -> str:
+        """Get real R2 exercise name as fallback"""
+        import json
+        import os
+        from django.conf import settings
+        
+        try:
+            # Load real exercise names from R2 upload state
+            r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
+            if os.path.exists(r2_state_path):
+                with open(r2_state_path, 'r') as f:
+                    uploaded_files = json.load(f)
+                
+                # Extract all exercise names from R2
+                r2_exercises = []
+                for file_path in uploaded_files:
+                    if 'videos/exercises/' in file_path and '_technique_' in file_path:
+                        filename = file_path.split('/')[-1]
+                        exercise_name = filename.split('_technique_')[0]
+                        r2_exercises.append(exercise_name)
+                
+                # Try to find the exact exercise
+                if exercise_slug in r2_exercises:
+                    return exercise_slug
+                
+                # Return first available R2 exercise as fallback
+                if r2_exercises:
+                    logger.info(f"Using R2 fallback: {r2_exercises[0]} for {exercise_slug}")
+                    return r2_exercises[0]
+                    
+        except Exception as e:
+            logger.error(f"Failed to load R2 exercises: {e}")
+        
+        # Ultimate fallback - use common R2 exercises
+        r2_common = ['push-ups', 'squats', 'planks', 'jumping-jacks']
+        return r2_common[0]  # Return first common exercise
+    
     def _load_default_templates(self) -> Dict:
         """Load hardcoded workout templates for different experience levels"""
         return {
@@ -216,7 +253,7 @@ class FallbackService:
                 'goal': 'Build basic fitness foundation',
                 'exercises_per_day': [
                     ['push-ups', 'squats', 'planks'],
-                    ['lunges', 'sit-ups', 'jumping-jacks'], 
+                    ['lunges', 'crunches', 'jumping-jacks'], 
                     ['wall-sits', 'mountain-climbers', 'calf-raises'],
                 ],
                 'sets_range': [2, 3],
@@ -228,7 +265,7 @@ class FallbackService:
                 'goal': 'Increase strength and endurance',
                 'exercises_per_day': [
                     ['push-ups', 'squats', 'planks', 'lunges'],
-                    ['burpees', 'sit-ups', 'mountain-climbers'],
+                    ['burpees', 'crunches', 'mountain-climbers'],
                     ['jumping-jacks', 'wall-sits', 'calf-raises'],
                     ['push-ups', 'squats', 'planks', 'burpees'],
                 ],
@@ -305,20 +342,14 @@ class FallbackService:
         return plan_data
     
     def _ensure_exercise_exists(self, exercise_slug: str) -> Optional[str]:
-        """Ensure exercise exists in database, return minimal fallback if not"""
+        """Ensure exercise exists in database, return R2 fallback if not"""
         try:
             CSVExercise.objects.get(id=exercise_slug)
             return exercise_slug
         except CSVExercise.DoesNotExist:
-            logger.warning(f"Exercise {exercise_slug} not found, using minimal fallback")
-            # Return guaranteed minimal exercises when database is empty
-            minimal_map = {
-                'push-ups': 'push-ups',
-                'squats': 'squats', 
-                'planks': 'planks',
-                'jumping-jacks': 'jumping-jacks'
-            }
-            return minimal_map.get(exercise_slug, 'push-ups')  # Always return something
+            logger.warning(f"Exercise {exercise_slug} not found, using R2 fallback")
+            # Use real R2 exercise names when database is empty
+            return self._get_r2_exercise_fallback(exercise_slug)
     
     def _generate_minimal_emergency_plan(self, user_data: Dict) -> WorkoutPlanSchema:
         """Last resort - minimal plan that will definitely validate"""
