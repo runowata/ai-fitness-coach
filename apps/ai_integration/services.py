@@ -471,22 +471,86 @@ class WorkoutPlanGenerator:
     
     def _build_comprehensive_prompt(self, user_data: Dict, allowed_slugs: Set[str]) -> str:
         """Build comprehensive prompt with exercise whitelist"""
-        # Add whitelist instruction for comprehensive reports
+        
+        # Fallback to real exercises from CSV/Cloudflare if allowed_slugs is empty
+        if not allowed_slugs:
+            logger.warning("No allowed exercises found, loading from CSV and Cloudflare")
+            # Get exercises that have video coverage from database
+            from apps.workouts.models import CSVExercise
+            try:
+                # Get all exercises with video clips (using proper codes from CSV)
+                video_exercises = set(
+                    CSVExercise.objects.filter(video_clips__isnull=False)
+                    .distinct()
+                    .values_list('id', flat=True)
+                )
+                
+                if video_exercises:
+                    logger.info(f"Loaded {len(video_exercises)} exercises with video coverage from database")
+                    allowed_slugs = video_exercises
+                else:
+                    # Fallback to CSV exercises if no video links found
+                    logger.warning("No video exercises found, using all CSV exercises")
+                    all_csv_exercises = set(
+                        CSVExercise.objects.values_list('id', flat=True)
+                    )
+                    allowed_slugs = all_csv_exercises
+                    logger.info(f"Using {len(allowed_slugs)} exercises from CSV")
+                    
+            except Exception as e:
+                logger.error(f"Failed to load exercises from database: {e}")
+                # Ultimate fallback - load from CSV manually
+                import pandas as pd
+                import os
+                from django.conf import settings
+                try:
+                    csv_path = os.path.join(settings.BASE_DIR, 'data', 'clean', 'exercises.csv')
+                    df = pd.read_csv(csv_path)
+                    csv_codes = set(df['id'].tolist())
+                    allowed_slugs = csv_codes
+                    logger.info(f"Loaded {len(allowed_slugs)} exercise codes from CSV file as ultimate fallback")
+                except Exception as csv_error:
+                    logger.error(f"CSV fallback also failed: {csv_error}")
+                    # Hard-coded codes as last resort
+                    allowed_slugs = {
+                        'EX001', 'EX002', 'EX003', 'EX004', 'EX005', 'EX006', 'EX007', 'EX008',
+                        'EX009', 'EX010', 'WZ001', 'WZ002', 'WZ003', 'WZ004', 'WZ005'
+                    }
+        
+        # Build comprehensive whitelist instruction  
         whitelist_instruction = f"""
-УПРАЖНЕНИЯ: Используйте ТОЛЬКО упражнения из этого списка в training_program:
+КРИТИЧЕСКИ ВАЖНО - УПРАЖНЕНИЯ:
+Используйте ТОЛЬКО упражнения из этого списка в тренировочных планах:
 {', '.join(sorted(allowed_slugs))}
 
-ВАЖНО для rest_seconds:
+ОБЯЗАТЕЛЬНЫЕ ТРЕБОВАНИЯ:
+1. Каждое упражнение ДОЛЖНО быть из списка выше
+2. Используйте точное название (exercise_slug)
+3. НЕ изобретайте новые упражнения
+4. Если нужно упражнение не из списка - выберите похожее из списка
+
+ПАРАМЕТРЫ rest_seconds (СТРОГО):
 - Силовые упражнения: 60-90 секунд
 - Кардио упражнения: 30-60 секунд  
 - Упражнения на гибкость: 15-30 секунд
 - Все значения должны быть от 10 до 600 секунд
 
-ТЕХНИЧЕСКАЯ ИНФОРМАЦИЯ:
-- Медиафайлы хранятся в Cloudflare R2 
-- URL генерируются динамически через переменные окружения
-- Используйте только exercise_slug из списка выше
+ВИДЕО-СИСТЕМА:
+- Каждое упражнение имеет предзаписанные видео
+- Включает: технику, типичные ошибки, инструкции по архетипам
+- Система автоматически генерирует плейлисты с мотивационными вставками
+- Используются только упражнения с полным видео-покрытием
+
+СТРУКТУРА ПЛЕЙЛИСТА (автоматически создается):
+- Вводное мотивационное видео
+- Инструкции по технике для каждого упражнения  
+- Видео разборов типичных ошибок
+- Промежуточная мотивация между упражнениями
+- Заключительное мотивационное видео
+
+ЗАДАЧА: Создать план используя ТОЛЬКО упражнения из whitelist выше!
 """
+
         return whitelist_instruction
     
     def _generate_plan_legacy(self, user_data: Dict) -> Dict:
