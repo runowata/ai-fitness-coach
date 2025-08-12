@@ -876,18 +876,18 @@
 }
 
 /* Full-screen Motivational Card */
-.motivational-card-fullscreen {
+.motivational-fullscreen-card {
     position: relative;
     width: 100vw;
     height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 4rem;
     overflow: hidden;
     background: linear-gradient(135deg, 
-        rgba(102, 126, 234, 0.8) 0%, 
-        rgba(78, 205, 196, 0.8) 50%,
-        rgba(255, 107, 107, 0.8) 100%
+        rgba(102, 126, 234, 0.9) 0%, 
+        rgba(78, 205, 196, 0.9) 50%,
+        rgba(255, 107, 107, 0.9) 100%
     );
     background-size: cover;
     background-position: center;
@@ -906,38 +906,119 @@
     }
 }
 
-/* Gradient overlay for text readability */
-.card-gradient-overlay {
+/* Bottom gradient overlay for text readability */
+.bottom-gradient-overlay {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 60%;
     background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.3) 0%,
-        rgba(0, 0, 0, 0.1) 50%,
-        rgba(0, 0, 0, 0.4) 100%
+        to top,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.4) 50%,
+        rgba(0, 0, 0, 0) 100%
     );
     z-index: 1;
 }
 
-/* Content container */
-.card-content-container {
+/* Content directly on image */
+.motivational-content {
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 2rem;
-    max-width: 600px;
+    padding: 0 2rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.card-content-inner {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+/* White text styles for image overlay */
+.motivational-title-white {
+    font-size: 3rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 1.5rem;
+    text-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.6);
+    animation: titleFloat 3s ease-in-out infinite;
+    line-height: 1.2;
+}
+
+.motivational-message-white {
+    font-size: 1.4rem;
+    line-height: 1.6;
+    color: white;
+    margin-bottom: 2.5rem;
+    font-weight: 500;
+    text-shadow: 
+        0 3px 8px rgba(0, 0, 0, 0.8),
+        0 1px 3px rgba(0, 0, 0, 0.6);
+    animation: messageSlide 0.8s ease-out 0.3s both;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* White continue button */
+.btn-continue-white {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    padding: 1.2rem 2.5rem;
     border-radius: 25px;
-    padding: 3rem 2rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(20px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.btn-continue-white:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .motivational-title-white {
+        font-size: 2.2rem;
+    }
+    
+    .motivational-message-white {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .motivational-content {
+        padding: 0 1.5rem;
+    }
+    
+    .btn-continue-white {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .motivational-title-white {
+        font-size: 1.8rem;
+    }
+    
+    .motivational-message-white {
+        font-size: 1.1rem;
+    }
+    
+    .motivational-content {
+        padding: 0 1rem;
+    }
 }
 
 /* Title and message styles */
@@ -1774,28 +1855,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showMotivationalCard(card, navigationData) {
+        console.log('Card data:', card); // Debug
+        const backgroundStyle = card.image_url ? 
+            `background-image: url('${card.image_url}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : 
+            '';
+        
         const cardHtml = `
-            <div class="motivational-card-fullscreen" ${card.image_url ? `style="background-image: url('${card.image_url}');"` : ''}>
+            <div class="motivational-fullscreen-card" style="${backgroundStyle}">
                 <div class="card-close-btn" onclick="closeMotivationalCard()">
                     <i class="fas fa-times"></i>
                 </div>
                 
-                <!-- Gradient overlay for text readability -->
-                <div class="card-gradient-overlay"></div>
+                <!-- Bottom gradient overlay -->
+                <div class="bottom-gradient-overlay"></div>
                 
-                <!-- Content -->
-                <div class="card-content-container">
-                    <div class="card-content-inner">
-                        ${card.title ? `<h3 class="motivational-title">${card.title}</h3>` : ''}
-                        <p class="motivational-message">${card.message}</p>
-                        
-                        <!-- Continue Button -->
-                        <button class="btn-motivational-continue" onclick="continueFromCard()">
-                            <span class="btn-text">Продолжить</span>
-                            <div class="btn-glow"></div>
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
+                <!-- Content directly on image -->
+                <div class="motivational-content">
+                    ${card.title ? `<h2 class="motivational-title-white">${card.title}</h2>` : ''}
+                    <p class="motivational-message-white">${card.message}</p>
+                    
+                    <!-- Continue Button -->
+                    <button class="btn-continue-white" onclick="continueFromCard()">
+                        <span>Продолжить</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
                 </div>
             </div>
         `;
