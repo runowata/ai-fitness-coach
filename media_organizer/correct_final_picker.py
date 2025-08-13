@@ -3,11 +3,11 @@
 ИСПРАВЛЕННЫЙ скрипт с ПРАВИЛЬНЫМИ количествами
 """
 
-import os
-import sys
 import csv
+import os
 import random
 import shutil
+import sys
 from pathlib import Path
 
 # ПРАВИЛЬНЫЕ ЦЕЛЕВЫЕ КОЛИЧЕСТВА

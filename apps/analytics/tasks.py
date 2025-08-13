@@ -1,9 +1,10 @@
 """Celery tasks for analytics processing"""
+import logging
+
 from celery import shared_task
-from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q
-import logging
+from django.utils import timezone
 
 from .models import AnalyticsEvent, AnalyticsMetrics
 from .services import AmplitudeService

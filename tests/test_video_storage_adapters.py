@@ -2,12 +2,13 @@
 Test video storage adapters (R2, Stream, External)
 """
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 from django.test import TestCase, override_settings
 
 from apps.workouts.models import VideoClip, VideoProvider
-from apps.workouts.video_storage import R2Adapter, StreamAdapter, ExternalAdapter, get_storage
+from apps.workouts.video_storage import ExternalAdapter, R2Adapter, StreamAdapter, get_storage
 
 
 class TestR2Adapter(TestCase):
@@ -198,7 +199,7 @@ class TestStorageIntegration(TestCase):
     
     def setUp(self):
         from apps.workouts.models import CSVExercise
-        
+
         # Create test exercise
         self.exercise = CSVExercise.objects.create(
             slug='test-exercise',

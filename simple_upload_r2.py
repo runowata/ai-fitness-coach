@@ -5,6 +5,7 @@ Simple R2 upload script for bootstrap archive
 import os
 import sys
 
+
 def upload_to_r2():
     """Simple R2 upload with minimal setup"""
     

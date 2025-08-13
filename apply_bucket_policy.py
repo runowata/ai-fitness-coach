@@ -5,8 +5,10 @@ Script to apply R2 bucket policy for public access to motivational images
 import json
 import os
 import sys
+
 import boto3
 from botocore.client import Config
+
 
 def main():
     # R2/AWS credentials from environment (try both R2_* and AWS_* variants)

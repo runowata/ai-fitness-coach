@@ -1,8 +1,9 @@
 from django.contrib import admin
-from django.utils.html import format_html
 from django.db.models import Count
 from django.urls import reverse
-from .models import AnalyticsEvent, UserSession, AnalyticsMetrics
+from django.utils.html import format_html
+
+from .models import AnalyticsEvent, AnalyticsMetrics, UserSession
 
 
 @admin.register(AnalyticsEvent)

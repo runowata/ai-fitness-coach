@@ -2,6 +2,7 @@
 Management command to fix motivational card URLs from old to new R2 domain
 """
 from django.core.management.base import BaseCommand
+
 from apps.onboarding.models import MotivationalCard
 
 

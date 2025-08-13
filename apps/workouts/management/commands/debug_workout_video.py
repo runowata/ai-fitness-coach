@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from apps.workouts.models import DailyWorkout, VideoClip, Exercise
+
+from apps.workouts.models import DailyWorkout, Exercise, VideoClip
 from apps.workouts.services import VideoPlaylistBuilder
 
 

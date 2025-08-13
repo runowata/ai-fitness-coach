@@ -2,14 +2,16 @@
 Comprehensive Fallback Service for AI Fitness Coach
 Handles all failure scenarios with graceful degradation
 """
-import logging
 import json
-from typing import Dict, Optional, List
+import logging
+from typing import Dict, List, Optional
+
 from django.conf import settings
 from django.utils import timezone
 
-from apps.workouts.models import CSVExercise, WorkoutPlan, DailyWorkout, WorkoutExecution
 from apps.users.models import UserProfile
+from apps.workouts.models import CSVExercise, DailyWorkout, WorkoutExecution, WorkoutPlan
+
 from .schemas import WorkoutPlan as WorkoutPlanSchema
 
 logger = logging.getLogger(__name__)
@@ -212,6 +214,7 @@ class FallbackService:
         """Get real R2 exercise name as fallback"""
         import json
         import os
+
         from django.conf import settings
         
         try:

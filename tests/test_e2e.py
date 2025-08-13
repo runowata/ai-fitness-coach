@@ -1,15 +1,16 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
-from unittest.mock import patch, MagicMock
 
-from apps.users.models import UserProfile
-from apps.onboarding.models import OnboardingQuestion, AnswerOption, UserOnboardingResponse
-from apps.workouts.models import WorkoutPlan, DailyWorkout, Exercise
 from apps.achievements.models import Achievement, UserAchievement
 from apps.content.models import Story, StoryChapter, UserStoryAccess
+from apps.onboarding.models import AnswerOption, OnboardingQuestion, UserOnboardingResponse
+from apps.users.models import UserProfile
+from apps.workouts.models import DailyWorkout, Exercise, WorkoutPlan
 
 User = get_user_model()
 
@@ -346,7 +347,7 @@ class EndToEndUserFlowTest(TestCase):
 def test_achievement_checking_service():
     """Test achievement checking service in isolation"""
     from apps.achievements.services import AchievementChecker
-    
+
     # Create user
     user = User.objects.create_user(
         username='testuser3',

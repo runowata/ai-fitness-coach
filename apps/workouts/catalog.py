@@ -3,13 +3,14 @@ Exercise catalog service for fast lookups and similarity matching
 """
 
 import logging
-from typing import Dict, List, Optional, Set, Tuple
 from dataclasses import dataclass
+from typing import Dict, List, Optional, Set, Tuple
+
 from django.core.cache import cache
 from django.db.models import Q
 
-from .models import CSVExercise
 from .constants import EXERCISE_FALLBACK_PRIORITY
+from .models import CSVExercise
 
 logger = logging.getLogger(__name__)
 

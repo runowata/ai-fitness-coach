@@ -4,16 +4,16 @@
 Создает временные заглушки с правильными названиями для корректной работы системы.
 """
 
-import os
 import csv
-import shutil
 import hashlib
+import os
 import random
+import re
+import shutil
 import subprocess
 import time
-from pathlib import Path
 from collections import defaultdict
-import re
+from pathlib import Path
 
 random.seed(42)
 

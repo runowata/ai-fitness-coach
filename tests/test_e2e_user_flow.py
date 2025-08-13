@@ -1,16 +1,17 @@
 """End-to-end tests for complete user flow"""
 
-import pytest
 import json
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory
 from django.urls import reverse
 
-from apps.onboarding.views import generate_plan_ajax
-from apps.workouts.models import WorkoutPlan, DailyWorkout
-from apps.users.models import UserProfile
 from apps.ai_integration.schemas import WorkoutPlan as WorkoutPlanSchema
+from apps.onboarding.views import generate_plan_ajax
+from apps.users.models import UserProfile
+from apps.workouts.models import DailyWorkout, WorkoutPlan
 
 User = get_user_model()
 
@@ -185,7 +186,7 @@ class TestWorkoutPlanCreation:
         }
         mock_api_call.return_value = invalid_data
         
-        from apps.ai_integration.ai_client import OpenAIClient, AIClientError
+        from apps.ai_integration.ai_client import AIClientError, OpenAIClient
         
         client = OpenAIClient()
         
@@ -200,7 +201,7 @@ class TestVideoPlaylistGeneration:
     def test_playlist_generation_success(self, mock_get_video):
         """Test successful playlist generation"""
         from apps.workouts.services import VideoPlaylistBuilder
-        
+
         # Mock video responses
         mock_get_video.side_effect = [
             {'url': 'intro.mp4', 'duration': 30, 'clip_id': 1},  # intro
@@ -266,7 +267,7 @@ class TestExerciseValidationIntegration:
     def test_exercise_validation_with_provider_abstraction(self, mock_get_clips):
         """Test exercise validation uses provider abstraction"""
         from apps.core.services.exercise_validation import ExerciseValidationService
-        
+
         # Mock queryset
         mock_queryset = Mock()
         mock_queryset.filter.return_value = mock_queryset
@@ -291,7 +292,7 @@ class TestExerciseValidationIntegration:
     def test_video_storage_integration(self, mock_get_clips, mock_get_storage):
         """Test video storage integration in validation"""
         from apps.workouts.services import VideoPlaylistBuilder
-        
+
         # Mock clip
         mock_clip = Mock()
         mock_clip.id = 1
@@ -322,9 +323,9 @@ class TestFullIntegrationFlow:
     
     def test_user_flow_constants(self):
         """Test that required constants are properly defined"""
-        from apps.workouts.models import VideoProvider
         from apps.core.services.exercise_validation import ExerciseValidationService
-        
+        from apps.workouts.models import VideoProvider
+
         # VideoProvider choices
         assert VideoProvider.R2 == "r2"
         assert VideoProvider.STREAM == "stream"
@@ -337,7 +338,7 @@ class TestFullIntegrationFlow:
     def test_pydantic_schema_validation(self, valid_ai_plan_data):
         """Test Pydantic schema validation works correctly"""
         from apps.ai_integration.schemas import WorkoutPlan, validate_ai_plan_response
-        
+
         # Test direct validation
         plan = WorkoutPlan.model_validate(valid_ai_plan_data)
         plan.validate_structure()
@@ -357,7 +358,7 @@ class TestErrorHandling:
     def test_ai_client_error_handling(self):
         """Test AI client error handling"""
         from apps.ai_integration.ai_client import AIClientError
-        
+
         # Test custom exception
         error = AIClientError("Test error")
         assert str(error) == "Test error"
@@ -394,7 +395,7 @@ class TestPerformanceAndEdgeCases:
     def test_large_playlist_generation(self):
         """Test playlist generation with many exercises"""
         from apps.workouts.services import VideoPlaylistBuilder
-        
+
         # Create workout with many exercises
         workout = Mock()
         workout.is_rest_day = False

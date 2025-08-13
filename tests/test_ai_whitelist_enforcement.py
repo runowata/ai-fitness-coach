@@ -2,12 +2,13 @@
 Test AI whitelist enforcement and exercise substitutions
 """
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 from django.test import TestCase, override_settings
 
 from apps.ai_integration.services import WorkoutPlanGenerator
-from apps.workouts.catalog import ExerciseCatalog, ExerciseAttributes
+from apps.workouts.catalog import ExerciseAttributes, ExerciseCatalog
 from apps.workouts.constants import EXERCISE_FALLBACK_PRIORITY
 
 
@@ -16,7 +17,7 @@ class TestExerciseCatalog(TestCase):
     
     def setUp(self):
         from apps.workouts.models import CSVExercise
-        
+
         # Create test exercises
         self.exercises = [
             CSVExercise.objects.create(

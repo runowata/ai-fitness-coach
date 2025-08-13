@@ -4,14 +4,14 @@
 и загрузки на Google Drive.
 """
 
-import os
-import sys
-import csv
-import shutil
 import argparse
+import csv
 import mimetypes
-from pathlib import Path
+import os
+import shutil
+import sys
 from collections import defaultdict
+from pathlib import Path
 from typing import Dict, List, Tuple
 
 try:

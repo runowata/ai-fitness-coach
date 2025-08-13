@@ -1,9 +1,12 @@
 """Signal handlers for core app"""
 
 import logging
-from django.db.models.signals import post_save, post_delete
+
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from apps.workouts.models import VideoClip, Exercise
+
+from apps.workouts.models import Exercise, VideoClip
+
 from .services.exercise_validation import ExerciseValidationService
 
 logger = logging.getLogger(__name__)

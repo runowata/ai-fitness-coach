@@ -1,14 +1,21 @@
 """URL Configuration for AI Fitness Coach"""
 import os
-from django.contrib import admin
-from django.urls import path, include
+
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.urls import include, path
 
 # API Views
 from apps.users.views import ArchetypeView, UserProfileView
-from apps.workouts.views import ExplainerVideoView, WeeklyCurrentView, WeeklyUnreadView, WeeklyLessonView, WeeklyLessonHealthView
+from apps.workouts.views import (
+    ExplainerVideoView,
+    WeeklyCurrentView,
+    WeeklyLessonHealthView,
+    WeeklyLessonView,
+    WeeklyUnreadView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

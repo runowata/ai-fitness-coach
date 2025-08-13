@@ -4,6 +4,7 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
+
 def clear_orphaned_exercise_ids(apps, schema_editor):
     """Clear exercise_id from VideoClips that would violate the new FK constraint"""
     VideoClip = apps.get_model('workouts', 'VideoClip')

@@ -1,19 +1,27 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
-from django.urls import reverse
 import json
 import logging
-import random
 import os
-from django.conf import settings
+import random
 
-from .models import OnboardingQuestion, AnswerOption, UserOnboardingResponse, OnboardingSession, MotivationalCard
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+
 from apps.ai_integration.services import WorkoutPlanGenerator
 from apps.workouts.models import WorkoutPlan
+
+from .models import (
+    AnswerOption,
+    MotivationalCard,
+    OnboardingQuestion,
+    OnboardingSession,
+    UserOnboardingResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +30,7 @@ def _get_random_motivational_background():
     """Get random motivational background image from R2"""
     try:
         from apps.core.services.media import MediaService
-        
+
         # Read available photos from R2
         r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
         if os.path.exists(r2_state_path):
@@ -344,7 +352,7 @@ def select_archetype(request):
 def generate_plan(request):
     """Generate AI workout plan (with comprehensive support)"""
     from apps.workouts.models import WorkoutPlan
-    
+
     # ГАРД: если план уже существует, не генерируем повторно
     existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
     if existing_plan:
@@ -392,7 +400,7 @@ def generate_plan(request):
     try:
         # Use centralized service for plan creation
         from apps.ai_integration.services import create_workout_plan_from_onboarding
-        
+
         # Pass comprehensive flag through user_data
         if use_comprehensive:
             user_data['use_comprehensive'] = True
@@ -420,10 +428,11 @@ def generate_plan_ajax(request):
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
     from django.conf import settings
-    from apps.workouts.models import WorkoutPlan
+
     from apps.ai_integration.services import WorkoutPlanGenerator
     from apps.onboarding.services import OnboardingDataProcessor
-    
+    from apps.workouts.models import WorkoutPlan
+
     # Check if plan already exists
     existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
     if existing_plan:
@@ -606,7 +615,7 @@ def plan_preview(request):
 def ai_analysis_comprehensive(request):
     """Display comprehensive AI analysis with 4 blocks"""
     from apps.workouts.models import WorkoutPlan
-    
+
     # Get the latest plan with comprehensive analysis
     latest_plan = request.user.workout_plans.filter(is_active=True).first()
     

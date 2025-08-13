@@ -6,6 +6,7 @@
 import json
 from pathlib import Path
 
+
 def show_gpt5_api_structure():
     """Показывает структуру API вызова к GPT-5"""
     

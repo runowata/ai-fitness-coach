@@ -7,8 +7,8 @@ Provides simple interface for collecting metrics that can be sent to:
 - No-op (silent mode for development)
 """
 
-import time
 import logging
+import time
 from functools import wraps
 from typing import Any, Dict, Optional
 

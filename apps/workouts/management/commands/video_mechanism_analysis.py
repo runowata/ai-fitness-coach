@@ -1,6 +1,8 @@
-from django.core.management.base import BaseCommand
-from apps.workouts.constants import VideoKind, ARCHETYPE_FALLBACK_ORDER, PLAYLIST_MISTAKE_PROB
 import json
+
+from django.core.management.base import BaseCommand
+
+from apps.workouts.constants import ARCHETYPE_FALLBACK_ORDER, PLAYLIST_MISTAKE_PROB, VideoKind
 
 
 class Command(BaseCommand):

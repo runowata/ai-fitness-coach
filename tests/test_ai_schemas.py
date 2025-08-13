@@ -1,11 +1,16 @@
 """Tests for AI response validation schemas"""
 
-import pytest
 import json
+
+import pytest
 from pydantic import ValidationError
+
 from apps.ai_integration.schemas import (
-    ExerciseItem, WorkoutDay, WorkoutWeek, WorkoutPlan, 
-    validate_ai_plan_response
+    ExerciseItem,
+    WorkoutDay,
+    WorkoutPlan,
+    WorkoutWeek,
+    validate_ai_plan_response,
 )
 
 

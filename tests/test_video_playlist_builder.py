@@ -1,10 +1,12 @@
 """Tests for VideoPlaylistBuilder service"""
 
-import pytest
 import random
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
+from apps.workouts.models import DailyWorkout, Exercise, VideoClip
 from apps.workouts.services import VideoPlaylistBuilder
-from apps.workouts.models import Exercise, DailyWorkout, VideoClip
 
 
 @pytest.fixture

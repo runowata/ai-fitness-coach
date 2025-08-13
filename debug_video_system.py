@@ -6,6 +6,7 @@ Run with: python debug_video_system.py
 
 import os
 import sys
+
 import django
 
 # Setup Django
@@ -13,11 +14,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from django.conf import settings
-from apps.workouts.models import VideoClip, Exercise, DailyWorkout, WorkoutPlan
-from apps.workouts.services import VideoPlaylistBuilder
-from apps.users.models import User
 import json
+
+from django.conf import settings
+
+from apps.users.models import User
+from apps.workouts.models import DailyWorkout, Exercise, VideoClip, WorkoutPlan
+from apps.workouts.services import VideoPlaylistBuilder
 
 
 def check_video_files():

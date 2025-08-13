@@ -3,11 +3,11 @@
 ПРОДОЛЖЕНИЕ копирования медиафайлов с места остановки
 """
 
-import os
-import sys
 import csv
+import os
 import random
 import shutil
+import sys
 from pathlib import Path
 
 # Параметры

@@ -1,18 +1,20 @@
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.utils import timezone
 
 from apps.users.models import UserProfile
-from apps.workouts.models import Exercise, WorkoutPlan, DailyWorkout, VideoClip
+from apps.workouts.models import DailyWorkout, Exercise, VideoClip, WorkoutPlan
 from apps.workouts.services import VideoPlaylistBuilder
+
 try:
     from apps.workouts.services import WorkoutCompletionService
 except ImportError:
     WorkoutCompletionService = None
 from apps.ai_integration.services import WorkoutPlanGenerator
-from apps.onboarding.models import OnboardingQuestion, AnswerOption, UserOnboardingResponse
+from apps.onboarding.models import AnswerOption, OnboardingQuestion, UserOnboardingResponse
 
 User = get_user_model()
 

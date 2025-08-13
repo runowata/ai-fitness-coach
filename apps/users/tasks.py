@@ -1,10 +1,11 @@
-from celery import shared_task
-from django.core.mail import send_mail
-from django.conf import settings
-from django.utils import timezone
-from django.template.loader import render_to_string
-import pytz
 from datetime import timedelta
+
+import pytz
+from celery import shared_task
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils import timezone
 
 from .models import UserProfile
 
@@ -109,6 +110,7 @@ def send_workout_reminder_email(user):
 def send_achievement_notification(user_id, achievement_id):
     """Send achievement unlock notification"""
     from django.contrib.auth import get_user_model
+
     from apps.achievements.models import Achievement
     
     User = get_user_model()
@@ -151,7 +153,7 @@ def send_weekly_progress_summary():
     """Send weekly progress summary to active users"""
     
     from apps.achievements.models import DailyProgress
-    
+
     # Get users with activity in the last week
     week_ago = timezone.now() - timedelta(days=7)
     

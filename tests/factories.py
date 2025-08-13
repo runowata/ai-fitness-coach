@@ -2,13 +2,14 @@
 Test factories using factory_boy for consistent test data generation
 """
 
-import factory
 import random
+
+import factory
 from factory.django import DjangoModelFactory
 
 from apps.users.models import User
-from apps.workouts.models import CSVExercise, VideoClip, VideoProvider, DailyWorkout, WorkoutPlan
-from apps.workouts.constants import VideoKind, Archetype
+from apps.workouts.constants import Archetype, VideoKind
+from apps.workouts.models import CSVExercise, DailyWorkout, VideoClip, VideoProvider, WorkoutPlan
 
 
 class UserFactory(DjangoModelFactory):

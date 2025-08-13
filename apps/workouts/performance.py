@@ -1,13 +1,14 @@
 """Performance optimizations for workout endpoints"""
 import logging
-from typing import Dict, Optional, List
+from datetime import timedelta
+from typing import Dict, List, Optional
+
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db import transaction
-from django.contrib.auth import get_user_model
 from django.utils import timezone
-from datetime import timedelta
 
-from .models import WeeklyNotification, WeeklyLesson
+from .models import WeeklyLesson, WeeklyNotification
 from .serializers import WeeklyNotificationSerializer
 
 logger = logging.getLogger(__name__)
@@ -247,7 +248,7 @@ class WeeklyLessonHealthChecker:
         """Check database performance metrics"""
         try:
             from django.db import connection
-            
+
             # Test query performance
             start_time = timezone.now()
             

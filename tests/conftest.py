@@ -2,10 +2,10 @@
 Pytest configuration and shared fixtures
 """
 
-import pytest
 import random
 from unittest.mock import Mock, patch
 
+import pytest
 from django.core.cache import cache
 from django.test import override_settings
 

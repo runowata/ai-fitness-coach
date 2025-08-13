@@ -1,9 +1,11 @@
 """Tests for video storage adapters"""
 
-import pytest
 from unittest.mock import Mock, patch
-from apps.workouts.models import VideoClip, VideoProvider, Exercise
-from apps.workouts.video_storage import R2Adapter, StreamAdapter, ExternalAdapter, get_storage
+
+import pytest
+
+from apps.workouts.models import Exercise, VideoClip, VideoProvider
+from apps.workouts.video_storage import ExternalAdapter, R2Adapter, StreamAdapter, get_storage
 
 
 @pytest.fixture

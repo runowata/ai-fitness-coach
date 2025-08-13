@@ -2,14 +2,15 @@
 Unit tests for exercise catalog and whitelist functionality
 """
 
-import pytest
-from unittest.mock import patch, Mock
-from django.test import TestCase
-from django.core.cache import cache
+from unittest.mock import Mock, patch
 
+import pytest
+from django.core.cache import cache
+from django.test import TestCase
+
+from apps.core.services.exercise_validation import ExerciseValidationService
 from apps.workouts.catalog import ExerciseCatalog, get_catalog
 from apps.workouts.constants import EXERCISE_FALLBACK_PRIORITY
-from apps.core.services.exercise_validation import ExerciseValidationService
 from tests.factories import CSVExerciseFactory, VideoClipFactory
 
 

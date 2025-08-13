@@ -6,6 +6,7 @@
 import json
 import os
 
+
 def get_r2_exercise_names():
     """Get real exercise names from R2 upload state"""
     r2_state_path = '/Users/alexbel/Desktop/Проекты/AI Fitness Coach/r2_upload_state.json'

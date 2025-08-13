@@ -1,8 +1,9 @@
 """Pydantic schemas for strict AI response validation"""
 
-from pydantic import BaseModel, Field, ValidationError, ConfigDict, field_validator
-from typing import List, Optional, Dict, Any
 import re
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 
 class ExerciseItem(BaseModel):
@@ -136,7 +137,7 @@ def validate_ai_plan_response(raw_response: str) -> WorkoutPlan:
         JSONDecodeError: If JSON is malformed
     """
     import json
-    
+
     # Parse JSON
     try:
         data = json.loads(raw_response)
@@ -217,7 +218,7 @@ def validate_comprehensive_ai_report(raw_response: str) -> ComprehensiveAIReport
         ValidationError: If response doesn't match schema
     """
     import json
-    
+
     # Parse JSON
     try:
         data = json.loads(raw_response)

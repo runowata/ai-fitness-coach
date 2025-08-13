@@ -1,19 +1,21 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.utils import timezone
-from rest_framework import generics, permissions
-from rest_framework.response import Response
 import json
 
-from .models import DailyWorkout, CSVExercise, ExplainerVideo, WeeklyNotification, WeeklyLesson
-from .services import VideoPlaylistBuilder
-from .serializers import WeeklyNotificationSerializer, WeeklyLessonSerializer
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+
 from apps.achievements.services import WorkoutCompletionService
 from apps.users.models import UserProfile
+
+from .models import CSVExercise, DailyWorkout, ExplainerVideo, WeeklyLesson, WeeklyNotification
+from .serializers import WeeklyLessonSerializer, WeeklyNotificationSerializer
+from .services import VideoPlaylistBuilder
 
 
 @login_required
@@ -387,7 +389,7 @@ class WeeklyLessonHealthView(generics.RetrieveAPIView):
         Return health metrics for weekly lesson system
         Includes database performance, cache status, and recommendations
         """
-        from .performance import WeeklyLessonHealthChecker, OptimizedWeeklyCurrentService
+        from .performance import OptimizedWeeklyCurrentService, WeeklyLessonHealthChecker
         
         try:
             # Check if user is staff for detailed metrics

@@ -1,9 +1,11 @@
 """
 Создание маппинга между Excel ID и R2 названиями упражнений
 """
-import pandas as pd
 import json
 import re
+
+import pandas as pd
+
 
 def normalize_name(name):
     """Нормализация названий для сопоставления"""

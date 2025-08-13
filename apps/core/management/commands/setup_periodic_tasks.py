@@ -1,9 +1,10 @@
 """
 Management command to setup periodic tasks in django-celery-beat
 """
-from django.core.management.base import BaseCommand
-from django_celery_beat.models import PeriodicTask, CrontabSchedule
 import json
+
+from django.core.management.base import BaseCommand
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
 class Command(BaseCommand):

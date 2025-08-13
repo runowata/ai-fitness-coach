@@ -2,10 +2,11 @@
 """
 Upload bootstrap archive to GitHub Releases (easier than R2)
 """
-import os
-import sys
-import subprocess
 import json
+import os
+import subprocess
+import sys
+
 
 def create_github_release():
     """Create GitHub release with bootstrap archive"""

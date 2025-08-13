@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from apps.onboarding.models import OnboardingQuestion, AnswerOption
+
+from apps.onboarding.models import AnswerOption, OnboardingQuestion
 
 
 class Command(BaseCommand):

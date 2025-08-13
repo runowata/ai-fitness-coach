@@ -2,12 +2,14 @@
 Exercise validation and coverage services for v2 clean implementation
 """
 import logging
-from typing import Set, Dict, List, Optional
+from typing import Dict, List, Optional, Set
+
 from django.core.cache import cache
 from django.db import connection
 from django.db.models import Count, Q
-from apps.workouts.models import VideoProvider
+
 from apps.workouts.constants import REQUIRED_VIDEO_KINDS
+from apps.workouts.models import VideoProvider
 
 logger = logging.getLogger(__name__)
 
@@ -58,8 +60,8 @@ class ExerciseValidationService:
             return cached_slugs
             
         try:
-            from apps.core.metrics import incr, MetricNames
-            
+            from apps.core.metrics import MetricNames, incr
+
             # Build query with optional filters
             query = ExerciseValidationService.get_clips_with_video().filter(
                 r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
@@ -114,7 +116,7 @@ class ExerciseValidationService:
         """
         try:
             from apps.workouts.models import CSVExercise, VideoClip
-            
+
             # Use Django ORM instead of raw SQL for better database compatibility
             exercises_data = []
             stats = {'complete': 0, 'partial': 0, 'none': 0}

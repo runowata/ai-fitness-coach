@@ -7,11 +7,12 @@ Creates rich contextual video content structure from trainer scripts
 import os
 import random
 from typing import Dict, List
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from apps.workouts.models import VideoClip, CSVExercise, VideoProvider
-from apps.workouts.constants import VideoKind, Archetype
+from apps.workouts.constants import Archetype, VideoKind
+from apps.workouts.models import CSVExercise, VideoClip, VideoProvider
 
 
 class Command(BaseCommand):

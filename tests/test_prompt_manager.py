@@ -1,9 +1,11 @@
 """
 Tests for PromptManagerV2 critical functionality
 """
-import pytest
 import json
 from pathlib import Path
+
+import pytest
+
 from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
 
 

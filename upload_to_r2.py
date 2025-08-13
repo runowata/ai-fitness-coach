@@ -6,17 +6,18 @@ upload_to_r2.py
 Использует boto3 для S3-совместимого API.
 """
 
+import hashlib
+import json
 import os
 import sys
 import time
-import hashlib
-import json
-from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+from pathlib import Path
+
 import boto3
 from botocore.config import Config
-from botocore.exceptions import NoCredentialsError, ClientError
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from botocore.exceptions import ClientError, NoCredentialsError
 from tqdm import tqdm
 
 # Конфигурация R2

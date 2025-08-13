@@ -1,8 +1,9 @@
-import os
 import logging
+import os
+
+from django.conf import settings
 from django.core.management import call_command
 from django.db import connection
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 

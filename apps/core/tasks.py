@@ -1,6 +1,7 @@
 """Celery tasks for core system functionality"""
-from celery import shared_task
 import logging
+
+from celery import shared_task
 
 from .monitoring import PerformanceMonitor
 
@@ -171,9 +172,10 @@ def system_stats_collection_task():
     Runs periodically to gather metrics for analysis.
     """
     try:
+        from datetime import timedelta
+
         from django.contrib.auth import get_user_model
         from django.utils import timezone
-        from datetime import timedelta
         
         User = get_user_model()
         

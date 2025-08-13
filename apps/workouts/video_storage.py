@@ -1,6 +1,7 @@
 """Video storage abstraction layer for multiple providers"""
 
 from typing import Protocol
+
 from django.conf import settings
 from django.core.files.storage import default_storage
 

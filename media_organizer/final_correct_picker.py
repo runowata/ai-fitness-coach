@@ -4,13 +4,13 @@
 Отбирает ТОЧНО нужные количества согласно техзаданию
 """
 
-import os
-import sys
 import csv
+import os
 import random
 import shutil
-from pathlib import Path
+import sys
 from collections import defaultdict
+from pathlib import Path
 
 # ТОЧНЫЕ ЦЕЛИ из техзадания
 VIDEO_TARGETS = {

@@ -4,15 +4,15 @@ AI-Fitness Media Picker & Uploader v2
 Случайно выбирает нужное количество медиафайлов с диска и загружает в Google Drive
 """
 
-import os
-import sys
-import csv
-import random
 import argparse
+import csv
 import mimetypes
-from pathlib import Path
+import os
+import random
+import sys
 from collections import defaultdict
-from typing import Dict, List, Tuple, Set
+from pathlib import Path
+from typing import Dict, List, Set, Tuple
 
 # Импорты для Google API
 try:

@@ -1,9 +1,11 @@
+import json
+
 from django.core.management.base import BaseCommand
 from django.db import connection
-from apps.workouts.models import CSVExercise, VideoClip, DailyWorkout, WorkoutPlan
-from apps.workouts.constants import VideoKind, Archetype
+
 from apps.users.models import User
-import json
+from apps.workouts.constants import Archetype, VideoKind
+from apps.workouts.models import CSVExercise, DailyWorkout, VideoClip, WorkoutPlan
 
 
 class Command(BaseCommand):
@@ -160,9 +162,10 @@ class Command(BaseCommand):
         self.stdout.write("-" * 30)
         
         try:
-            from apps.workouts.video_storage import R2Adapter
             from django.conf import settings
-            
+
+            from apps.workouts.video_storage import R2Adapter
+
             # Проверка настроек R2
             r2_settings = [
                 'R2_ACCOUNT_ID', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 

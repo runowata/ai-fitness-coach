@@ -1,12 +1,13 @@
 from django.urls import path
+
 from .views import (
     TrackEventView,
     TrackScreenView,
+    analytics_health_view,
+    analytics_stats_view,
     track_anonymous_event,
     user_events_view,
     user_session_view,
-    analytics_health_view,
-    analytics_stats_view
 )
 
 app_name = 'analytics'

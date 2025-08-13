@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Story, StoryChapter, MediaAsset
+
+from .models import MediaAsset, Story, StoryChapter
 
 
 @admin.register(MediaAsset)

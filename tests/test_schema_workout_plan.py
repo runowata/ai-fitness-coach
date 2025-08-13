@@ -2,10 +2,11 @@
 Tests for v2 workout plan JSON schema validation
 """
 import json
-import pytest
 from pathlib import Path
-from jsonschema import validate, ValidationError
+
+import pytest
 from django.conf import settings
+from jsonschema import ValidationError, validate
 
 
 @pytest.fixture

@@ -3,18 +3,19 @@
 """
 import json
 import logging
-from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+
+from apps.core.services.exercise_validation import ExerciseValidationService
 
 from .schemas import (
     ComprehensiveAIReport,
-    UserAnalysis,
-    MotivationSystem, 
     LongTermStrategy,
-    WorkoutPlan
+    MotivationSystem,
+    UserAnalysis,
+    WorkoutPlan,
 )
 from .validators import WorkoutPlanValidator
-from apps.core.services.exercise_validation import ExerciseValidationService
 
 logger = logging.getLogger(__name__)
 

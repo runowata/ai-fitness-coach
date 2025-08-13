@@ -5,6 +5,7 @@ Fix video URLs to ensure they work with WhiteNoise static file serving
 
 import os
 import sys
+
 import django
 
 # Setup Django
@@ -13,6 +14,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
 from django.conf import settings
+
 from apps.workouts.models import VideoClip
 
 

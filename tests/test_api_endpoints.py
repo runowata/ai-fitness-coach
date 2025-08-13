@@ -1,11 +1,12 @@
 import pytest
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
+
 from apps.users.models import UserProfile
-from apps.workouts.models import CSVExercise, ExplainerVideo, WeeklyNotification, WeeklyLesson
+from apps.workouts.models import CSVExercise, ExplainerVideo, WeeklyLesson, WeeklyNotification
 
 User = get_user_model()
 
@@ -104,7 +105,7 @@ class APIEndpointsTestCase(TestCase):
 def test_api_endpoints_smoke():
     """Pytest smoke test to ensure endpoints are accessible"""
     from django.test import Client
-    
+
     # Test that URLs resolve without 500 errors
     client = Client()
     

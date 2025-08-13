@@ -7,15 +7,16 @@ from django.conf import settings
 from django.utils import timezone
 from openai import OpenAI
 
-from .prompt_manager_v2 import PromptManagerV2
-from .ai_client_gpt5 import AIClientFactory, AIClientError
-from .fallback_service import FallbackService
-from .validators import WorkoutPlanValidator
-from apps.onboarding.services import OnboardingDataProcessor
+from apps.core.metrics import MetricNames, incr
 from apps.core.services.exercise_validation import ExerciseValidationService
-from apps.core.metrics import incr, MetricNames
+from apps.onboarding.services import OnboardingDataProcessor
 from apps.workouts.catalog import get_catalog
 from apps.workouts.constants import EXERCISE_FALLBACK_PRIORITY
+
+from .ai_client_gpt5 import AIClientError, AIClientFactory
+from .fallback_service import FallbackService
+from .prompt_manager_v2 import PromptManagerV2
+from .validators import WorkoutPlanValidator
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ def create_workout_plan_from_onboarding(user):
     Main function to create workout plan from onboarding data
     Called from onboarding views
     """
-    from apps.workouts.models import WorkoutPlan, DailyWorkout
+    from apps.workouts.models import DailyWorkout, WorkoutPlan
     
     logger.info("🔍 PLAN GENERATION: Starting for user %s", user.id)
     
@@ -64,10 +65,11 @@ class WorkoutPlanGenerator:
     
     def create_plan(self, user, user_data: Dict) -> 'WorkoutPlan':
         """Create a complete workout plan for user"""
-        from apps.workouts.models import WorkoutPlan, DailyWorkout
-        from apps.onboarding.models import OnboardingSession
         from django.db import transaction
-        
+
+        from apps.onboarding.models import OnboardingSession
+        from apps.workouts.models import DailyWorkout, WorkoutPlan
+
         # Prevent race condition - check if plan generation is already in progress
         existing_active_plan = WorkoutPlan.objects.filter(
             user=user, 
@@ -502,6 +504,7 @@ class WorkoutPlanGenerator:
                 # Ultimate fallback - use technical names from R2 Cloudflare
                 import json
                 import os
+
                 from django.conf import settings
                 try:
                     # Load R2 upload state to get real exercise names
@@ -1297,7 +1300,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
     def _mark_onboarding_complete(self, user):
         """Окончательно помечает онбординг как завершённый"""
         from apps.onboarding.models import OnboardingSession
-        
+
         # 1) пользовательский флаг
         # Mark onboarding as completed in User model (critical for dashboard redirect)
         user.completed_onboarding = True

@@ -1,11 +1,12 @@
-import pytest
 import json
 from unittest.mock import patch
-from django.test import TestCase, Client
+
+import pytest
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
 
 from apps.analytics.models import AnalyticsEvent, UserSession
 from apps.analytics.services import AnalyticsService

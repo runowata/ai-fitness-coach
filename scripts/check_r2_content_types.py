@@ -4,8 +4,9 @@ Script to check and fix Content-Type metadata for R2 objects
 """
 import os
 import sys
-import boto3
 from pathlib import Path
+
+import boto3
 
 # Add Django project to path
 project_root = Path(__file__).resolve().parent.parent
@@ -14,6 +15,7 @@ sys.path.append(str(project_root))
 # Setup Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 import django
+
 django.setup()
 
 from django.conf import settings

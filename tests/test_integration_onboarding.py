@@ -2,17 +2,17 @@
 Integration tests for onboarding flow with analysis preview
 """
 
-import pytest
 import json
 from unittest.mock import Mock, patch
-from django.test import TestCase, Client, override_settings
-from django.urls import reverse
+
+import pytest
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase, override_settings
+from django.urls import reverse
 
 from apps.onboarding.models import OnboardingSession
 from apps.workouts.models import WorkoutPlan
 from tests.factories import UserFactory
-
 
 User = get_user_model()
 

@@ -6,19 +6,20 @@ Run: python scripts/production_health_check.py
 
 import os
 import sys
+from time import time
+
 import django
 import requests
-from time import time
 
 # Setup Django
 sys.path.append('.')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
+from apps.ai_integration.services import WorkoutPlanGenerator
+from apps.core.services.exercise_validation import ExerciseValidationService
 from apps.workouts.models import VideoClip
 from apps.workouts.video_storage import get_storage
-from apps.core.services.exercise_validation import ExerciseValidationService
-from apps.ai_integration.services import WorkoutPlanGenerator
 
 
 def check_database():

@@ -1,8 +1,10 @@
+import ast
 from csv import DictReader
 from pathlib import Path
+
 from django.core.management.base import BaseCommand, CommandError
+
 from apps.workouts.models import CSVExercise
-import ast
 
 CSV_PATH = Path("data/clean/exercises.csv")
 

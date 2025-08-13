@@ -5,14 +5,14 @@ Management command to analyze R2 video structure and categorize all videos
 
 import os
 import re
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from typing import Dict, List, Tuple
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
 
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):

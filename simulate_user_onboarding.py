@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 
+
 # Симулируем ответы типичного пользователя
 def create_simulated_user_data():
     """Создаем данные пользователя, который прошел полный онбординг"""

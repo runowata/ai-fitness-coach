@@ -3,8 +3,9 @@ Quick data check command for deployment verification
 """
 from django.core.management.base import BaseCommand
 from django.db.models import Count
-from apps.workouts.models import CSVExercise, VideoClip
+
 from apps.users.models import User
+from apps.workouts.models import CSVExercise, VideoClip
 
 
 class Command(BaseCommand):

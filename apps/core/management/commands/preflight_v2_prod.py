@@ -1,7 +1,8 @@
+import os
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
-from django.conf import settings
-import os
 
 LEGACY_COLUMNS = {
     "video_clips": {"type", "url"},

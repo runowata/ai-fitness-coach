@@ -1,6 +1,7 @@
+from pathlib import Path
+
 import pandas as pd
 from slugify import slugify
-from pathlib import Path
 
 RAW_DIR = Path("data/raw")
 OUT_DIR = Path("data/clean")

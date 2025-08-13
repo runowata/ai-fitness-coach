@@ -1,10 +1,12 @@
 """
 Generate a test workout plan using v2 system after import
 """
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
+
 from apps.ai_integration.services import WorkoutPlanGenerator
 from apps.onboarding.services import OnboardingDataProcessor
+
 
 class Command(BaseCommand):
     help = "Generate a test workout plan using imported exercises (v2)"

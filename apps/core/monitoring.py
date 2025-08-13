@@ -1,15 +1,15 @@
 """System monitoring and alerting for AI Fitness Coach"""
-import time
 import json
 import logging
-from typing import Dict, List, Optional
+import time
 from datetime import datetime, timedelta
+from typing import Dict, List, Optional
 
 import requests
-from django.core.cache import cache
-from django.utils import timezone
 from django.conf import settings
+from django.core.cache import cache
 from django.db import connection
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 

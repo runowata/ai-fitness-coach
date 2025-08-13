@@ -3,10 +3,15 @@ import json
 import logging
 from typing import Dict, Optional
 
-from .schemas import validate_ai_plan_response, WorkoutPlan, validate_comprehensive_ai_report, ComprehensiveAIReport
-
-from openai import OpenAI
 from django.conf import settings
+from openai import OpenAI
+
+from .schemas import (
+    ComprehensiveAIReport,
+    WorkoutPlan,
+    validate_ai_plan_response,
+    validate_comprehensive_ai_report,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -2,10 +2,12 @@
 Django settings for AI Fitness Coach project.
 """
 
+import os
+import secrets
 from pathlib import Path
-import os, secrets
-from dotenv import load_dotenv
+
 import dj_database_url
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()

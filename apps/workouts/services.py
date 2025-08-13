@@ -1,20 +1,29 @@
-import random
 import hashlib
-import time
-from typing import List, Dict, Optional
-from django.db.models import Q
-from .models import CSVExercise, VideoClip, DailyWorkout
-from .video_storage import get_storage
-from .constants import (
-    VideoKind, Archetype, ARCHETYPE_FALLBACK_ORDER,
-    PLAYLIST_FALLBACK_MAX_CANDIDATES, PLAYLIST_STORAGE_RETRY, PLAYLIST_MISTAKE_PROB,
-    REQUIRED_VIDEO_KINDS_PLAYLIST, OPTIONAL_VIDEO_KINDS_PLAYLIST,
-    CONTEXTUAL_INTRO_SELECTION_FACTORS, MID_WORKOUT_INSERTION_FREQUENCY,
-    WEEKLY_THEME_VIDEO_PRIORITY
-)
-from apps.core.services.exercise_validation import ExerciseValidationService
-from apps.core.metrics import incr, timing, MetricNames
 import logging
+import random
+import time
+from typing import Dict, List, Optional
+
+from django.db.models import Q
+
+from apps.core.metrics import MetricNames, incr, timing
+from apps.core.services.exercise_validation import ExerciseValidationService
+
+from .constants import (
+    ARCHETYPE_FALLBACK_ORDER,
+    CONTEXTUAL_INTRO_SELECTION_FACTORS,
+    MID_WORKOUT_INSERTION_FREQUENCY,
+    OPTIONAL_VIDEO_KINDS_PLAYLIST,
+    PLAYLIST_FALLBACK_MAX_CANDIDATES,
+    PLAYLIST_MISTAKE_PROB,
+    PLAYLIST_STORAGE_RETRY,
+    REQUIRED_VIDEO_KINDS_PLAYLIST,
+    WEEKLY_THEME_VIDEO_PRIORITY,
+    Archetype,
+    VideoKind,
+)
+from .models import CSVExercise, DailyWorkout, VideoClip
+from .video_storage import get_storage
 
 logger = logging.getLogger(__name__)
 
@@ -157,7 +166,7 @@ class VideoPlaylistBuilder:
             archetype: Primary archetype for this workout
         """
         from django.conf import settings
-        
+
         # Clear existing cache
         self._candidates.clear()
         
@@ -200,7 +209,7 @@ class VideoPlaylistBuilder:
         Uses multi-level fallback strategy for better reliability
         """
         from django.conf import settings
-        
+
         # For global videos (intro, closing, weekly) use legacy logic
         if exercise is None:
             return self._get_global_video_legacy(r2_kind, archetype, exclude_id)
@@ -484,7 +493,7 @@ class VideoPlaylistBuilder:
     def _get_contextual_intro_video(self, workout: DailyWorkout, archetype: str) -> Optional[Dict]:
         """Get contextual intro video based on workout context"""
         from .models import WeeklyTheme
-        
+
         # Determine context factors
         context_factors = {
             'week_context': workout.week_number,
@@ -605,7 +614,7 @@ class VideoPlaylistBuilder:
             factors: Dict with context factors (week_context, mood_type, etc.)
         """
         from django.db.models import Q
-        
+
         # Build query with contextual factors
         query = ExerciseValidationService.get_clips_with_video().filter(
             r2_kind=video_kind,

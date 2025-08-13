@@ -4,17 +4,20 @@ Diagnostic script to understand migration loading issues
 """
 import os
 import sys
-import django
 from pathlib import Path
+
+import django
 
 # Setup Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
+import importlib
+
 from django.apps import apps
 from django.db import migrations
 from django.db.migrations.loader import MigrationLoader
-import importlib
+
 
 def diagnose_migrations():
     print("=== MIGRATION DIAGNOSTICS ===")

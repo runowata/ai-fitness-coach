@@ -1,7 +1,7 @@
 # Fixed v2 schema migration - works on both PostgreSQL and SQLite
 # This migration ensures all v2 models and fields exist properly
 
-from django.db import migrations, models, connection
+from django.db import connection, migrations, models
 
 
 def add_column_if_not_exists(apps, schema_editor):

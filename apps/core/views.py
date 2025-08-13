@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.db import connection
-from django.conf import settings
 import logging
+
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.db import connection
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +96,7 @@ def health_check(request):
     try:
         import redis
         from django_celery_beat.models import PeriodicTask
-        
+
         # Get Redis URL from settings
         redis_url = getattr(settings, 'CELERY_BROKER_URL', None)
         if not redis_url:
@@ -158,7 +159,7 @@ def healthz_view(request):
     - details=true : Include detailed performance metrics
     """
     from .monitoring import HealthEndpoint
-    
+
     # Check if detailed health check is requested
     include_details = request.GET.get('details', '').lower() in ['true', '1', 'yes']
     

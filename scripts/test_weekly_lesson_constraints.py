@@ -6,8 +6,9 @@ Run: python scripts/test_weekly_lesson_constraints.py
 
 import os
 import sys
+
 import django
-from django.db import connection, IntegrityError
+from django.db import IntegrityError, connection
 
 # Setup Django
 sys.path.append('.')

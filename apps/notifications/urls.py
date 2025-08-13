@@ -1,10 +1,6 @@
 from django.urls import path
-from .views import (
-    PushSubscriptionView, 
-    OneSignalWebhookView, 
-    FCMWebhookView,
-    push_stats_view
-)
+
+from .views import FCMWebhookView, OneSignalWebhookView, PushSubscriptionView, push_stats_view
 
 app_name = 'notifications'
 

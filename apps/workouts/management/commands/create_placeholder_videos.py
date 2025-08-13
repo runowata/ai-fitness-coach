@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
+
 from apps.workouts.models import Exercise, VideoClip
+
 
 class Command(BaseCommand):
     help = 'Create placeholder video clips for all exercises'

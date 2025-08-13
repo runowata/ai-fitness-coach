@@ -8,9 +8,11 @@ Since R2 doesn't support bucket policies, we need to:
 import json
 import os
 import sys
+
 import boto3
-from botocore.client import Config
 import requests
+from botocore.client import Config
+
 
 def main():
     print("🔍 Cloudflare R2 Public Access Setup")

@@ -6,12 +6,13 @@ Copies and organizes media files from source to local destination folder.
 
 import argparse
 import csv
-import shutil
-import yaml
-from pathlib import Path
-from collections import defaultdict
-from typing import Set, Dict, Tuple, List
 import os
+import shutil
+from collections import defaultdict
+from pathlib import Path
+from typing import Dict, List, Set, Tuple
+
+import yaml
 
 # File extensions
 VIDEO_EXTS = {'.mp4', '.mov', '.avi', '.mkv', '.webm', '.m4v', '.mpg', '.mpeg', '.wmv', '.flv'}

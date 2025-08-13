@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Exercise, VideoClip, WorkoutPlan, DailyWorkout, CSVExercise
+
+from .models import CSVExercise, DailyWorkout, Exercise, VideoClip, WorkoutPlan
 from .video_storage import get_storage
 
 

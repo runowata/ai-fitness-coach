@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
-from apps.workouts.models import CSVExercise, VideoClip
+
 from apps.core.services.exercise_validation import ExerciseValidationService
+from apps.workouts.models import CSVExercise, VideoClip
 
 
 class Command(BaseCommand):

@@ -1,15 +1,15 @@
 """Management command for monitoring weekly lesson endpoint performance"""
-import time
 import json
+import time
 from datetime import datetime, timedelta
 
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from django.core.cache import cache
-from django.contrib.auth import get_user_model
 
 from apps.workouts.models import WeeklyNotification
-from apps.workouts.performance import WeeklyLessonHealthChecker, OptimizedWeeklyCurrentService
+from apps.workouts.performance import OptimizedWeeklyCurrentService, WeeklyLessonHealthChecker
 
 User = get_user_model()
 

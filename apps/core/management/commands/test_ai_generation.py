@@ -3,9 +3,11 @@ Management command to test AI generation directly
 Usage: python manage.py test_ai_generation
 """
 import json
-from django.core.management.base import BaseCommand
+
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from apps.ai_integration.services import WorkoutPlanGenerator
 
 User = get_user_model()

@@ -2,22 +2,23 @@
 End-to-end tests with comprehensive metrics verification
 """
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
+from django.db import connection
 from django.test import TestCase, override_settings
 from django.test.utils import override_settings
-from django.db import connection
 
-from apps.workouts.services import VideoPlaylistBuilder
-from apps.workouts.models import DailyWorkout, WorkoutPlan
-from apps.workouts.constants import VideoKind, REQUIRED_VIDEO_KINDS_PLAYLIST
 from apps.core.metrics import MetricNames
+from apps.workouts.constants import REQUIRED_VIDEO_KINDS_PLAYLIST, VideoKind
+from apps.workouts.models import DailyWorkout, WorkoutPlan
+from apps.workouts.services import VideoPlaylistBuilder
 from tests.factories import (
-    UserFactory, 
-    DailyWorkoutFactory, 
+    CSVExerciseFactory,
+    DailyWorkoutFactory,
     SeededExerciseSetFactory,
+    UserFactory,
     VideoClipFactory,
-    CSVExerciseFactory
 )
 
 

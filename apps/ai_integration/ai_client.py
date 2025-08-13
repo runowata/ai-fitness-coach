@@ -3,10 +3,15 @@ import json
 import logging
 from typing import Dict, Optional
 
-from .schemas import validate_ai_plan_response, WorkoutPlan, validate_comprehensive_ai_report, ComprehensiveAIReport
-
-from openai import OpenAI
 from django.conf import settings
+from openai import OpenAI
+
+from .schemas import (
+    ComprehensiveAIReport,
+    WorkoutPlan,
+    validate_ai_plan_response,
+    validate_comprehensive_ai_report,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -358,7 +363,7 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
     def _extract_json_robust(self, content: str) -> Dict:
         """Extract JSON from AI response using multiple robust strategies"""
         import re
-        
+
         # Strategy 1: Direct parsing (clean content first)
         cleaned_content = content.strip()
         

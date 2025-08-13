@@ -1,8 +1,10 @@
 """
 Tests for MediaService critical functionality
 """
+from unittest.mock import Mock, PropertyMock, patch
+
 import pytest
-from unittest.mock import Mock, patch, PropertyMock
+
 from apps.core.services.media import MediaService
 
 

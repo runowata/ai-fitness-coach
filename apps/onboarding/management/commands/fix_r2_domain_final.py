@@ -4,6 +4,7 @@ From Cloudflare Dashboard we see the actual domain is:
 https://pub-d620683e68bf49abb422f1bc95810ff7.r2.dev
 """
 from django.core.management.base import BaseCommand
+
 from apps.onboarding.models import MotivationalCard
 
 

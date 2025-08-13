@@ -3,6 +3,7 @@
 Create all 100 exercises EX001-EX100 atomically
 """
 from django.db import transaction
+
 from apps.workouts.models import Exercise
 
 # All 100 exercises from our prompts

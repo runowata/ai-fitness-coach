@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import PushSubscription, PushNotificationLog
+
+from .models import PushNotificationLog, PushSubscription
 
 
 class PushSubscriptionSerializer(serializers.ModelSerializer):

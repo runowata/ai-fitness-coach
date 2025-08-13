@@ -1,13 +1,16 @@
+from datetime import datetime
+
+import pytz
 from celery import shared_task
-from django.core.mail import send_mail
 from django.conf import settings
-from django.utils import timezone
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
-from datetime import datetime
-import pytz
-from .models import WeeklyLesson, WeeklyNotification
+from django.utils import timezone
+
 from apps.users.models import User
+
+from .models import WeeklyLesson, WeeklyNotification
 
 
 @shared_task

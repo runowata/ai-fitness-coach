@@ -1,18 +1,18 @@
 """Management command for load testing /api/weekly/current/ endpoint"""
-import time
 import asyncio
-import threading
 import statistics
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Dict
+from typing import Dict, List
 
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
 
-from apps.workouts.models import WeeklyNotification, WeeklyLesson
+from apps.workouts.models import WeeklyLesson, WeeklyNotification
 from apps.workouts.performance import OptimizedWeeklyCurrentService, WeeklyLessonHealthChecker
 
 User = get_user_model()

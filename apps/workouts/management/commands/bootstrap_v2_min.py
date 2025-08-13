@@ -1,7 +1,8 @@
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from apps.workouts.models import CSVExercise, VideoClip
+from django.core.management.base import BaseCommand
+
 from apps.ai_integration.services import WorkoutPlanGenerator
+from apps.workouts.models import CSVExercise, VideoClip
 
 R2_CLIPS = {
     "pushup": {

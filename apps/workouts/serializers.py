@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import WeeklyNotification, WeeklyLesson
+
+from .models import WeeklyLesson, WeeklyNotification
 
 
 class WeeklyNotificationSerializer(serializers.ModelSerializer):

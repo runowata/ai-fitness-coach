@@ -3,13 +3,14 @@ Management command to test the new comprehensive AI system
 """
 import json
 import logging
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth import get_user_model
 
-from apps.ai_integration.services import WorkoutPlanGenerator
-from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
+from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand, CommandError
+
 from apps.ai_integration.ai_client import AIClientFactory
 from apps.ai_integration.comprehensive_validator import ComprehensiveReportValidator
+from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
+from apps.ai_integration.services import WorkoutPlanGenerator
 from apps.onboarding.services import OnboardingDataProcessor
 
 User = get_user_model()

@@ -1,12 +1,12 @@
 import pytest
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.utils import timezone
 
-from apps.users.models import UserProfile
-from apps.workouts.models import Exercise, WorkoutPlan, DailyWorkout
 from apps.achievements.models import Achievement, UserAchievement
-from apps.onboarding.models import OnboardingQuestion, AnswerOption
+from apps.onboarding.models import AnswerOption, OnboardingQuestion
+from apps.users.models import UserProfile
+from apps.workouts.models import DailyWorkout, Exercise, WorkoutPlan
 
 User = get_user_model()
 

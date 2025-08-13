@@ -1,11 +1,13 @@
 """Push Notification Services"""
-import requests
 import json
 import logging
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
+
+import requests
 from django.conf import settings
 from django.utils import timezone
-from .models import PushSubscription, PushNotificationLog
+
+from .models import PushNotificationLog, PushSubscription
 
 logger = logging.getLogger(__name__)
 

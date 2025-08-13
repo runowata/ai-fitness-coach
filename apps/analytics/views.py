@@ -1,18 +1,19 @@
 """Analytics API views for tracking events and providing metrics"""
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from django.utils import timezone
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
 import json
 import logging
 
+from django.http import JsonResponse
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics, permissions, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from .models import AnalyticsEvent, UserSession
-from .services import AnalyticsService
 from .serializers import AnalyticsEventSerializer, TrackEventSerializer
+from .services import AnalyticsService
 
 logger = logging.getLogger(__name__)
 
@@ -291,9 +292,10 @@ def analytics_stats_view(request):
     if not request.user.is_staff:
         return Response({"error": "Permission denied"}, status=403)
     
-    from django.db.models import Count, Avg
     from datetime import datetime, timedelta
-    
+
+    from django.db.models import Avg, Count
+
     # Calculate stats
     now = timezone.now()
     yesterday = now - timedelta(days=1)

@@ -1,11 +1,13 @@
 """
 Playlist builder v2 - Clean implementation for video playlist generation
 """
-from typing import Dict, List, Optional
-from django.db.models import Q
-from apps.workouts.models import VideoClip, Exercise
-from apps.core.services.media import MediaService
 import logging
+from typing import Dict, List, Optional
+
+from django.db.models import Q
+
+from apps.core.services.media import MediaService
+from apps.workouts.models import Exercise, VideoClip
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,6 @@
-from apps.workouts.schemas import WorkoutPlan, WorkoutPlanItem, VideoScript
 import pytest
+
+from apps.workouts.schemas import VideoScript, WorkoutPlan, WorkoutPlanItem
 
 
 def test_plan_validation():

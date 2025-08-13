@@ -4,9 +4,9 @@ WSGI config for AI Fitness Coach project.
 
 import os
 
+from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from whitenoise import WhiteNoise
-from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 

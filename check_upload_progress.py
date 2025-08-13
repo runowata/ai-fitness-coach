@@ -6,8 +6,8 @@ check_upload_progress.py
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 PROJECT_ROOT = Path.cwd()
 SELECTED_MEDIA = PROJECT_ROOT / "selected_media"

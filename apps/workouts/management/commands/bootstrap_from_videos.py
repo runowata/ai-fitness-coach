@@ -1,15 +1,17 @@
 import os
 import re
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+
 from apps.workouts.models import Exercise, VideoClip
 
 # Import other app models
 try:
     from apps.achievements.models import Achievement
-    from apps.onboarding.models import OnboardingQuestion, AnswerOption, MotivationalCard
-    from apps.content.models import Story, Chapter
+    from apps.content.models import Chapter, Story
+    from apps.onboarding.models import AnswerOption, MotivationalCard, OnboardingQuestion
 except ImportError as e:
     # Some models might not exist yet - we'll handle this gracefully
     pass
@@ -273,8 +275,8 @@ class Command(BaseCommand):
     def create_onboarding_questions(self):
         """Create onboarding questions programmatically"""
         try:
-            from apps.onboarding.models import OnboardingQuestion, AnswerOption
-            
+            from apps.onboarding.models import AnswerOption, OnboardingQuestion
+
             # Clear existing
             OnboardingQuestion.objects.all().delete()
             
@@ -341,7 +343,7 @@ class Command(BaseCommand):
         """Create achievements programmatically"""
         try:
             from apps.achievements.models import Achievement
-            
+
             # Clear existing
             Achievement.objects.all().delete()
             
@@ -386,7 +388,7 @@ class Command(BaseCommand):
         """Create motivational cards programmatically"""
         try:
             from apps.onboarding.models import MotivationalCard
-            
+
             # Clear existing
             MotivationalCard.objects.all().delete()
             
@@ -421,8 +423,8 @@ class Command(BaseCommand):
     def create_stories(self):
         """Create story content programmatically"""
         try:
-            from apps.content.models import Story, Chapter
-            
+            from apps.content.models import Chapter, Story
+
             # Clear existing
             Story.objects.all().delete()
             

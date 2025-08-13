@@ -4,11 +4,12 @@ Provides emergency workouts when regular system fails
 """
 import logging
 from typing import Optional
+
 from django.utils import timezone
 
-from apps.users.models import UserProfile
-from apps.workouts.models import WorkoutPlan, DailyWorkout, WorkoutExecution, CSVExercise
 from apps.ai_integration.fallback_service import FallbackService
+from apps.users.models import UserProfile
+from apps.workouts.models import CSVExercise, DailyWorkout, WorkoutExecution, WorkoutPlan
 
 logger = logging.getLogger(__name__)
 

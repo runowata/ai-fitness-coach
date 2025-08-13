@@ -2,8 +2,9 @@
 Basic tests for video playlist building and workout plan services.
 These tests use mocks to avoid database dependency issues.
 """
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 
 
 class TestVideoPlaylistBuilder:
@@ -24,7 +25,7 @@ class TestVideoPlaylistBuilder:
             
             # Import after patching to avoid import-time database access
             from apps.workouts.services import VideoPlaylistBuilder
-            
+
             # Create mock user
             mock_user = Mock()
             mock_user.profile.archetype = 'bro'
@@ -211,8 +212,8 @@ def test_import_safety():
     """Test that we can safely import our service modules"""
     try:
         # These imports should work even if database isn't set up
-        from apps.workouts import services
         from apps.ai_integration import services as ai_services
+        from apps.workouts import services
         assert True, "Imports successful"
     except ImportError as e:
         pytest.fail(f"Import failed: {e}")

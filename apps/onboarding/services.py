@@ -3,7 +3,7 @@ Onboarding data processing services for AI workout plan generation
 """
 import json
 import logging
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

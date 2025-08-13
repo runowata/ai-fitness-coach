@@ -4,13 +4,13 @@ AI-Fitness Correct Media Picker
 Правильно отбирает и переименовывает медиафайлы согласно техзаданию
 """
 
-import os
-import sys
 import csv
+import os
 import random
 import shutil
-from pathlib import Path
+import sys
 from collections import defaultdict
+from pathlib import Path
 from typing import Dict, List, Tuple
 
 # Настройки

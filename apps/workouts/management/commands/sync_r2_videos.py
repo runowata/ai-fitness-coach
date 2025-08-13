@@ -4,21 +4,21 @@ Management command to sync existing R2 videos with database
 Discovers video files in Cloudflare R2 and creates VideoClip records
 """
 
+import logging
 import os
 import re
-import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-from django.db import transaction
 
 import boto3
 from botocore.config import Config
-from botocore.exceptions import NoCredentialsError, ClientError
+from botocore.exceptions import ClientError, NoCredentialsError
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
 
-from apps.workouts.models import VideoClip, CSVExercise, VideoProvider
-from apps.workouts.constants import VideoKind, Archetype
+from apps.workouts.constants import Archetype, VideoKind
+from apps.workouts.models import CSVExercise, VideoClip, VideoProvider
 
 logger = logging.getLogger(__name__)
 

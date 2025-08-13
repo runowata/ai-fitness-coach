@@ -2,13 +2,14 @@
 Unit tests for AI pipeline validation and robust processing
 """
 
-import pytest
 import json
 from unittest.mock import Mock, patch
+
+import pytest
 from django.test import TestCase, override_settings
 
-from apps.ai_integration.services import WorkoutPlanGenerator
 from apps.ai_integration.ai_client import AIClientFactory
+from apps.ai_integration.services import WorkoutPlanGenerator
 from tests.factories import UserFactory
 
 

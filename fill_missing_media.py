@@ -4,14 +4,14 @@ fill_missing_media.py
 Заменяет слишком большие видео и дозаполняет медиатеку до целевых объёмов.
 """
 
-import os
 import csv
-import shutil
 import hashlib
+import os
 import random
+import shutil
 import subprocess
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 PROJECT_ROOT = Path.cwd()
 TARGET_MEDIA = PROJECT_ROOT / "selected_media"

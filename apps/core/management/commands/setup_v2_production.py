@@ -1,10 +1,12 @@
 """
 One-command production setup for v2 system
 """
-from django.core.management.base import BaseCommand
-from django.core.management import call_command
-from pathlib import Path
 import os
+from pathlib import Path
+
+from django.core.management import call_command
+from django.core.management.base import BaseCommand
+
 
 class Command(BaseCommand):
     help = "Complete v2 production setup: import data, generate plans, run tests"

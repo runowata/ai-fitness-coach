@@ -1,10 +1,12 @@
 """
 Management command to update R2 URLs to the correct domain
 """
-from django.core.management.base import BaseCommand
-from django.conf import settings
-from apps.onboarding.models import MotivationalCard
 import os
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
+from apps.onboarding.models import MotivationalCard
 
 
 class Command(BaseCommand):

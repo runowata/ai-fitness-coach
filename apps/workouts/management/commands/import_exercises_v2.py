@@ -3,16 +3,17 @@ V2 Import command for exercises and video clips from Excel files
 Supports new archetype naming: peer/professional/mentor
 Maps Excel exercise IDs to R2 technical names
 """
+import json
+import os
+from pathlib import Path
+
 import pandas as pd
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from pathlib import Path
-from apps.workouts.models import CSVExercise, VideoClip
-import json
-import os
 
 # Import archetype mapping from core constants
 from apps.core.constants import ARCHETYPE_MAPPING
+from apps.workouts.models import CSVExercise, VideoClip
 
 # R2 video kind mapping
 VIDEO_KIND_MAPPING = {

@@ -1,6 +1,7 @@
-import pandas as pd
-from pathlib import Path
 import re
+from pathlib import Path
+
+import pandas as pd
 
 RAW_DIR = Path("data/raw")
 

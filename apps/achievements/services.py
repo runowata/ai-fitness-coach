@@ -1,8 +1,10 @@
-import logging
 import json
+import logging
+
 from django.db import transaction
 from django.utils import timezone
-from .models import Achievement, UserAchievement, XPTransaction, DailyProgress
+
+from .models import Achievement, DailyProgress, UserAchievement, XPTransaction
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +112,7 @@ class WorkoutCompletionService:
         
         try:
             from apps.workouts.models import WorkoutExecution
-            
+
             # Create or update workout execution
             logger.info("Creating workout execution...")
             execution, created = WorkoutExecution.objects.get_or_create(
@@ -210,7 +212,7 @@ class WorkoutCompletionService:
     def _analyze_workout_with_ai(self, user, workout, feedback_rating, feedback_note):
         """Анализ тренировки с помощью AI"""
         from apps.ai_integration.ai_client import AIClientFactory
-        
+
         # Создаем AI клиент
         ai_client = AIClientFactory.create_client()
         

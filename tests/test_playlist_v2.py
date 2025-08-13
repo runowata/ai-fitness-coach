@@ -1,10 +1,12 @@
 """
 Tests for v2 playlist builder
 """
-import pytest
 import json
-from apps.workouts.services.playlist_v2 import build_playlist, get_daily_playlist, _resolve_clip
+
+import pytest
+
 from apps.workouts.models import Exercise, VideoClip
+from apps.workouts.services.playlist_v2 import _resolve_clip, build_playlist, get_daily_playlist
 
 
 @pytest.fixture

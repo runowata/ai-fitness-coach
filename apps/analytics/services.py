@@ -1,12 +1,13 @@
 """Analytics services for tracking user events and sending to external platforms"""
-import requests
 import json
 import logging
-from typing import Dict, List, Optional, Any
-from django.conf import settings
-from django.utils import timezone
-from django.contrib.auth import get_user_model
 import uuid
+from typing import Any, Dict, List, Optional
+
+import requests
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from .models import AnalyticsEvent, UserSession
 

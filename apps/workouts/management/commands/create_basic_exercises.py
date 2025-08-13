@@ -1,7 +1,10 @@
 import os
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
+
 from apps.workouts.models import Exercise
+
 
 class Command(BaseCommand):
     help = 'Create basic exercises without video files - ensures AI prompts work'

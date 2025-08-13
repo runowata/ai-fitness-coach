@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def convert_archetype_values(apps, schema_editor):
     UserProfile = apps.get_model('users', 'UserProfile')
     

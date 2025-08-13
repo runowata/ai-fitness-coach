@@ -5,9 +5,14 @@
  и удаляет битые файлы в selected_media.
 """
 
-from pathlib import Path
-import hashlib, shutil, subprocess, re, sys, time
+import hashlib
+import re
+import shutil
+import subprocess
+import sys
+import time
 from collections import defaultdict
+from pathlib import Path
 
 ROOT   = Path(__file__).resolve().parent
 MEDIA  = ROOT / "selected_media"

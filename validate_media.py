@@ -10,9 +10,14 @@
 Выводит цветной отчёт; при ошибках завершается exit-кодом 1.
 """
 
-from pathlib import Path
-import csv, hashlib, subprocess, sys, re
+import csv
+import hashlib
+import re
+import subprocess
+import sys
 from datetime import datetime
+from pathlib import Path
+
 from rich import print
 from rich.table import Table
 

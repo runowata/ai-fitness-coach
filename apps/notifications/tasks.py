@@ -1,11 +1,13 @@
 """Celery tasks for push notifications"""
-from celery import shared_task
-from django.utils import timezone
-from django.contrib.auth import get_user_model
 import logging
 
-from .services import PushNotificationService
+from celery import shared_task
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+
 from apps.workouts.models import WeeklyNotification
+
+from .services import PushNotificationService
 
 logger = logging.getLogger(__name__)
 User = get_user_model()

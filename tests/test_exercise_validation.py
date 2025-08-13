@@ -1,7 +1,9 @@
 """Tests for exercise validation service"""
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+
 from apps.core.services.exercise_validation import ExerciseValidationService
 from apps.workouts.models import VideoClip, VideoProvider
 

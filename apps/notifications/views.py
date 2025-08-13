@@ -1,14 +1,16 @@
-from django.http import JsonResponse, HttpResponseBadRequest
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.utils.decorators import method_decorator
-from django.utils import timezone
-from django.views import View
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
 import json
 import logging
-from .models import PushSubscription, PushNotificationLog
+
+from django.http import HttpResponseBadRequest, JsonResponse
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+
+from .models import PushNotificationLog, PushSubscription
 from .serializers import PushSubscriptionSerializer
 
 logger = logging.getLogger(__name__)

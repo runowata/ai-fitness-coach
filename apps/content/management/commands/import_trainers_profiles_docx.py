@@ -2,8 +2,10 @@
 Import trainer personas from DOCX files
 """
 import re
-from django.core.management.base import BaseCommand
 from pathlib import Path
+
+from django.core.management.base import BaseCommand
+
 from apps.content.models import TrainerPersona
 
 try:

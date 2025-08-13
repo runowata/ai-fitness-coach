@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.views.generic import CreateView, UpdateView
 from rest_framework import generics, permissions
-from .forms import UserRegistrationForm, UserProfileForm
+
+from .forms import UserProfileForm, UserRegistrationForm
 from .models import User, UserProfile
 from .serializers import ArchetypeSerializer, UserSerializer
 

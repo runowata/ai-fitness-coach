@@ -6,12 +6,12 @@ Management command to extract exercises from R2 videos and create CSVExercise re
 import os
 import re
 from typing import Dict, List, Set
-from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
 
 from apps.workouts.models import CSVExercise
 
@@ -89,7 +89,7 @@ class Command(BaseCommand):
     def _get_s3_client(self):
         """Create S3 client for R2"""
         from django.conf import settings
-        
+
         # Use Django settings for consistency
         config = Config(
             signature_version='s3v4', 

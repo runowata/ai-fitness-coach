@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import PushSubscription, PushNotificationLog
+
+from .models import PushNotificationLog, PushSubscription
 
 
 @admin.register(PushSubscription)

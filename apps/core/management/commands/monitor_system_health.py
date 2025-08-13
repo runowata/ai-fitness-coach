@@ -1,7 +1,7 @@
 """Management command for system health monitoring and alerting"""
-import time
 import signal
 import sys
+import time
 from datetime import datetime
 
 from django.core.management.base import BaseCommand

@@ -1,7 +1,9 @@
-import yaml
 from pathlib import Path
+
+import yaml
 from django.core.management.base import BaseCommand, CommandError
-from apps.workouts.models import WeeklyLesson, FinalVideo
+
+from apps.workouts.models import FinalVideo, WeeklyLesson
 
 
 class Command(BaseCommand):

@@ -4,14 +4,16 @@ Post-deployment setup script for Render.com
 This script should be run after deployment to setup periodic tasks
 """
 import os
-import django
 from pathlib import Path
+
+import django
 
 # Setup Django
 BASE_DIR = Path(__file__).resolve().parent
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 import sys
+
 sys.path.append(str(BASE_DIR))
 
 django.setup()
