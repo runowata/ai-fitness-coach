@@ -8,4 +8,3 @@ class CoreConfig(AppConfig):
     
     def ready(self):
         """Import signal handlers when Django starts"""
-        import apps.core.signals

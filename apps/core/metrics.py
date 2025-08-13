@@ -30,15 +30,12 @@ class MetricsCollector:
     
     def incr(self, name: str, value: int = 1, tags: Optional[Dict[str, Any]] = None) -> None:
         """Increment a counter metric"""
-        pass
     
     def timing(self, name: str, ms: float, tags: Optional[Dict[str, Any]] = None) -> None:
         """Record a timing metric in milliseconds"""
-        pass
     
     def gauge(self, name: str, value: float, tags: Optional[Dict[str, Any]] = None) -> None:
         """Set a gauge metric to a specific value"""
-        pass
 
 
 class StatsDCollector(MetricsCollector):
@@ -90,7 +87,6 @@ class LoggingCollector(MetricsCollector):
 
 class NoOpCollector(MetricsCollector):
     """Silent no-op collector"""
-    pass
 
 
 # Initialize the appropriate collector based on settings

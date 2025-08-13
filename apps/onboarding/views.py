@@ -12,7 +12,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from apps.ai_integration.services import WorkoutPlanGenerator
 from apps.workouts.models import WorkoutPlan
 
 from .models import (
@@ -119,7 +118,7 @@ def question_view(request, question_id):
 @csrf_exempt
 def save_answer(request, question_id):
     """Save answer and show motivational card"""
-    logger.info(f"=== SAVE_ANSWER DEBUG START ===")
+    logger.info("=== SAVE_ANSWER DEBUG START ===")
     logger.info(f"Question ID: {question_id}")
     logger.info(f"User: {request.user}")
     logger.info(f"Method: {request.method}")
@@ -298,7 +297,7 @@ def save_answer(request, question_id):
         result['redirect_to_archetype'] = True
     
     logger.info(f"Final result: {result}")
-    logger.info(f"=== SAVE_ANSWER DEBUG END ===")
+    logger.info("=== SAVE_ANSWER DEBUG END ===")
     
     return JsonResponse(result)
 
@@ -614,7 +613,6 @@ def plan_preview(request):
 @login_required
 def ai_analysis_comprehensive(request):
     """Display comprehensive AI analysis with 4 blocks"""
-    from apps.workouts.models import WorkoutPlan
 
     # Get the latest plan with comprehensive analysis
     latest_plan = request.user.workout_plans.filter(is_active=True).first()
@@ -652,7 +650,6 @@ def ai_analysis_comprehensive(request):
 @login_required
 def plan_preview_comprehensive(request):
     """Show comprehensive plan preview with 4-block analysis"""
-    from apps.workouts.models import WorkoutPlan
     
     latest_plan = request.user.workout_plans.filter(is_active=True).first()
     
@@ -718,7 +715,6 @@ def plan_preview_comprehensive(request):
 @login_required
 def ai_analysis(request):
     """Regular AI analysis (fallback for non-comprehensive)"""
-    from apps.workouts.models import WorkoutPlan
     
     latest_plan = request.user.workout_plans.filter(is_active=True).first()
     

@@ -11,7 +11,7 @@ import shutil
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 # Настройки
 SOURCE_DIR = "/Volumes/fitnes ai/"
@@ -124,7 +124,7 @@ def scan_and_categorize(source_dir: str) -> Dict[str, List[Path]]:
                 categories[category].append(file_path)
     
     # Статистика
-    print(f"📊 Найдено файлов по категориям:")
+    print("📊 Найдено файлов по категориям:")
     for cat, files in categories.items():
         print(f"  {cat}: {len(files)} файлов")
     
@@ -136,7 +136,7 @@ def select_files_by_targets(categories: Dict[str, List[Path]]) -> Dict[str, List
     selected = {}
     all_targets = {**VIDEO_TARGETS, **IMAGE_TARGETS}
     
-    print(f"\n🎯 Отбираю файлы по целевым количествам...")
+    print("\n🎯 Отбираю файлы по целевым количествам...")
     
     for category, target_count in all_targets.items():
         available = categories.get(category, [])
@@ -223,7 +223,7 @@ def generate_correct_filename(old_path: Path, category: str, counter: int, exerc
 
 def copy_files_with_correct_names(selected_files: Dict[str, List[Path]], exercises: List[str]):
     """Копирует файлы с правильными именами в структуру проекта."""
-    print(f"\n📁 Создаю структуру папок...")
+    print("\n📁 Создаю структуру папок...")
     
     # Создаем структуру папок
     folders = [
@@ -242,7 +242,7 @@ def copy_files_with_correct_names(selected_files: Dict[str, List[Path]], exercis
     log_entries = []
     total_copied = 0
     
-    print(f"\n📋 Копирую файлы с правильными именами...")
+    print("\n📋 Копирую файлы с правильными именами...")
     
     for category, files in selected_files.items():
         print(f"\n  {category.upper()}: {len(files)} файлов")
@@ -290,7 +290,7 @@ def copy_files_with_correct_names(selected_files: Dict[str, List[Path]], exercis
 
 def print_summary(selected_files: Dict[str, List[Path]]):
     """Выводит итоговую сводку."""
-    print(f"\n📊 ИТОГОВАЯ СВОДКА:")
+    print("\n📊 ИТОГОВАЯ СВОДКА:")
     print("=" * 60)
     
     total_videos = 0

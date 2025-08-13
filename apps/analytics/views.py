@@ -292,9 +292,9 @@ def analytics_stats_view(request):
     if not request.user.is_staff:
         return Response({"error": "Permission denied"}, status=403)
     
-    from datetime import datetime, timedelta
+    from datetime import timedelta
 
-    from django.db.models import Avg, Count
+    from django.db.models import Count
 
     # Calculate stats
     now = timezone.now()

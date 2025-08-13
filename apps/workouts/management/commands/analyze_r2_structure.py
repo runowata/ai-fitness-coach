@@ -5,13 +5,12 @@ Management command to analyze R2 video structure and categorize all videos
 
 import os
 import re
-from collections import Counter, defaultdict
+from collections import defaultdict
 from typing import Dict, List, Tuple
 
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
-from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 
@@ -174,13 +173,13 @@ class Command(BaseCommand):
         self._check_missing_types(categories)
         
         # Summary
-        self.stdout.write(f"\n📈 ИТОГО:")
+        self.stdout.write("\n📈 ИТОГО:")
         self.stdout.write(f"   Всего видео: {len(all_videos)}")
         self.stdout.write(f"   Общий размер: {total_size / (1024**3):.2f} GB")
 
     def _analyze_exercises(self, categories: Dict):
         """Analyze what exercises we have videos for"""
-        self.stdout.write(f"\n🏋️ АНАЛИЗ УПРАЖНЕНИЙ:")
+        self.stdout.write("\n🏋️ АНАЛИЗ УПРАЖНЕНИЙ:")
         
         # Extract exercise names from technique/mistake videos
         exercise_names = set()
@@ -209,7 +208,7 @@ class Command(BaseCommand):
 
     def _check_missing_types(self, categories: Dict):
         """Check for missing video types based on our VideoKind constants"""
-        self.stdout.write(f"\n⚠️  ПРОВЕРКА ПОКРЫТИЯ:")
+        self.stdout.write("\n⚠️  ПРОВЕРКА ПОКРЫТИЯ:")
         
         expected_types = {
             'intro': categories['intro'],
@@ -243,7 +242,7 @@ class Command(BaseCommand):
 
     def _check_archetype_coverage(self, categories: Dict):
         """Check if we have archetype-specific videos"""
-        self.stdout.write(f"\n🎭 ПРОВЕРКА АРХЕТИПОВ:")
+        self.stdout.write("\n🎭 ПРОВЕРКА АРХЕТИПОВ:")
         
         archetype_patterns = {
             'mentor': ['mentor', 'мудрый', 'наставник'],

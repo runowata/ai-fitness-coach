@@ -40,7 +40,7 @@ class Command(BaseCommand):
         # Check exercises that would be used in comprehensive plans
         sample_exercises = ['push_ups', 'squats', 'plank', 'mountain_climbers', 'burpees']
         
-        self.stdout.write(f"\n🎯 Checking common exercises used in plans:")
+        self.stdout.write("\n🎯 Checking common exercises used in plans:")
         for exercise_slug in sample_exercises:
             try:
                 exercise = CSVExercise.objects.get(id=exercise_slug)
@@ -66,7 +66,7 @@ class Command(BaseCommand):
             self.stdout.write(f"📊 Video clips for {archetype}: {archetype_clips}")
         
         # Test exercise resolution in VideoPlaylistBuilder format
-        self.stdout.write(f"\n🔧 Testing exercise resolution for VideoPlaylistBuilder:")
+        self.stdout.write("\n🔧 Testing exercise resolution for VideoPlaylistBuilder:")
         for exercise_slug in sample_exercises[:3]:  # Test first 3
             try:
                 # This is how VideoPlaylistBuilder looks up exercises
@@ -81,7 +81,7 @@ class Command(BaseCommand):
                 self.stdout.write(f"❌ VideoPlaylistBuilder cannot resolve: {exercise_slug}")
         
         # Summary
-        self.stdout.write(f"\n📋 SUMMARY:")
+        self.stdout.write("\n📋 SUMMARY:")
         self.stdout.write(f"   • Total exercises: {total_exercises}")
         self.stdout.write(f"   • Allowed for {archetype}: {len(allowed_slugs)}")
         self.stdout.write(f"   • Total video clips: {total_clips}")

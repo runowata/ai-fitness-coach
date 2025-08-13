@@ -1,17 +1,8 @@
-import json
 import logging
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from apps.ai_integration.schemas import (
-    ComprehensiveAIReport,
-    LongTermStrategy,
-    MotivationSystem,
-    UserAnalysis,
-)
-from apps.ai_integration.schemas import WorkoutPlan as WorkoutPlanSchema
-from apps.workouts.models import CSVExercise, DailyWorkout, WorkoutPlan
 
 User = get_user_model()
 logger = logging.getLogger(__name__)

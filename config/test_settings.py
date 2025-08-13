@@ -1,7 +1,6 @@
 """
 Test settings - disable cache and external dependencies
 """
-from .settings import *
 
 # Disable cache for tests
 CACHES = {

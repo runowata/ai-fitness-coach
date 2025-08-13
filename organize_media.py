@@ -6,17 +6,16 @@ Copies and organizes media files from source to local destination folder.
 
 import argparse
 import csv
-import os
 import shutil
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 
 import yaml
 
 # File extensions
 VIDEO_EXTS = {'.mp4', '.mov', '.avi', '.mkv', '.webm', '.m4v', '.mpg', '.mpeg', '.wmv', '.flv'}
-PHOTO_EXTS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.svg', '.webp', '.heic', '.raw'}
+PHOTO_EXTS = {'.jpg', '.jpeg', '.png', '.gi', '.bmp', '.tif', '.svg', '.webp', '.heic', '.raw'}
 
 def load_categories(yaml_path: Path = Path("media_organizer/categories.yml")) -> Dict[str, str]:
     """Load category mappings from YAML file."""

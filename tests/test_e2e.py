@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -9,7 +9,6 @@ from django.utils import timezone
 from apps.achievements.models import Achievement, UserAchievement
 from apps.content.models import Story, StoryChapter, UserStoryAccess
 from apps.onboarding.models import AnswerOption, OnboardingQuestion, UserOnboardingResponse
-from apps.users.models import UserProfile
 from apps.workouts.models import DailyWorkout, Exercise, WorkoutPlan
 
 User = get_user_model()

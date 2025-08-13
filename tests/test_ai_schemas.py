@@ -130,7 +130,7 @@ class TestWorkoutWeek:
             if i == 7:  # Make day 7 a rest day
                 day = WorkoutDay(
                     day_number=i,
-                    workout_name=f"Rest Day",
+                    workout_name="Rest Day",
                     is_rest_day=True
                 )
             else:

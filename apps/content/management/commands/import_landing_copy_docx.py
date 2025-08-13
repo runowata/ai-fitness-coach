@@ -4,7 +4,6 @@ Import landing page content from DOCX files
 import re
 from pathlib import Path
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from apps.content.models import LandingContent

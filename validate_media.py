@@ -15,7 +15,6 @@ import hashlib
 import re
 import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
 
 from rich import print
@@ -66,7 +65,7 @@ def duration_sec(p: Path) -> float:
     try:
         out = subprocess.check_output(
             ["ffprobe","-v","error","-show_entries","format=duration",
-             "-of","default=noprint_wrappers=1:nokey=1", str(p)],
+             "-o","default=noprint_wrappers=1:nokey=1", str(p)],
             text=True, timeout=15)
         return float(out.strip())
     except Exception:
@@ -96,7 +95,7 @@ def main() -> int:
 
         # количество
         if miss != 0:
-            issue.append(f"[red]count[/red]")
+            issue.append("[red]count[/red]")
 
         # имя + ограничения + дубликаты + размер
         for f in files:
@@ -115,7 +114,7 @@ def main() -> int:
             elif f.suffix.lower() in {'.mp4', '.mov', '.avi', '.mkv', '.webm'} and size < MIN_VIDEO_BYTES:
                 tiny_or_empty.append((f, f"too small ({size//1024} KB)"))
                 issue.append("tiny")
-            elif f.suffix.lower() in {'.jpg', '.jpeg', '.png', '.gif', '.webp'} and size < MIN_PHOTO_BYTES:
+            elif f.suffix.lower() in {'.jpg', '.jpeg', '.png', '.gi', '.webp'} and size < MIN_PHOTO_BYTES:
                 tiny_or_empty.append((f, f"too small ({size//1024} KB)"))
                 issue.append("tiny")
             

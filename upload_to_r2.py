@@ -8,16 +8,14 @@ upload_to_r2.py
 
 import hashlib
 import json
-import os
 import sys
-import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
 import boto3
 from botocore.config import Config
-from botocore.exceptions import ClientError, NoCredentialsError
+from botocore.exceptions import ClientError
 from tqdm import tqdm
 
 # Конфигурация R2
@@ -104,8 +102,8 @@ def upload_file(s3_client, file_path, s3_key, pbar=None):
             content_type = 'image/jpeg'
         elif file_path.suffix.lower() == '.png':
             content_type = 'image/png'
-        elif file_path.suffix.lower() == '.gif':
-            content_type = 'image/gif'
+        elif file_path.suffix.lower() == '.gi':
+            content_type = 'image/gi'
         else:
             content_type = 'application/octet-stream'
         
@@ -285,7 +283,7 @@ def main():
         
         return 0
     else:
-        print(f"\n⚠️  Не все файлы загружены. Запустите скрипт повторно для докачки.")
+        print("\n⚠️  Не все файлы загружены. Запустите скрипт повторно для докачки.")
         return 1
 
 if __name__ == "__main__":

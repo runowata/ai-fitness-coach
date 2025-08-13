@@ -1,8 +1,6 @@
-import json
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-from django.template import Context, Template
 from django.template.loader import get_template
 
 User = get_user_model()

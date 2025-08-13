@@ -1,17 +1,16 @@
 """End-to-end tests for complete user flow"""
 
 import json
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory
-from django.urls import reverse
 
 from apps.ai_integration.schemas import WorkoutPlan as WorkoutPlanSchema
 from apps.onboarding.views import generate_plan_ajax
 from apps.users.models import UserProfile
-from apps.workouts.models import DailyWorkout, WorkoutPlan
+from apps.workouts.models import WorkoutPlan
 
 User = get_user_model()
 

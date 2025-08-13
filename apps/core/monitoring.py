@@ -1,9 +1,7 @@
 """System monitoring and alerting for AI Fitness Coach"""
-import json
 import logging
 import time
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import requests
 from django.conf import settings

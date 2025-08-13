@@ -4,10 +4,9 @@ Exercise catalog service for fast lookups and similarity matching
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set
 
 from django.core.cache import cache
-from django.db.models import Q
 
 from .constants import EXERCISE_FALLBACK_PRIORITY
 from .models import CSVExercise

@@ -1,5 +1,4 @@
 """URL Configuration for AI Fitness Coach"""
-import os
 
 from django.conf import settings
 from django.conf.urls.static import static

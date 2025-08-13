@@ -1,11 +1,14 @@
 """Video storage abstraction layer for multiple providers"""
 
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from django.conf import settings
 from django.core.files.storage import default_storage
 
 from .models import VideoProvider
+
+if TYPE_CHECKING:
+    from .models import VideoClip
 
 
 class VideoStorage(Protocol):

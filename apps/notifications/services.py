@@ -1,7 +1,6 @@
 """Push Notification Services"""
-import json
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import requests
 from django.conf import settings
@@ -123,7 +122,7 @@ class FCMService:
                 log.status = 'sent'
                 if response_data.get("results"):
                     log.provider_message_id = str(response_data["results"][0].get("message_id", ""))
-                logger.info(f"FCM notification sent successfully")
+                logger.info("FCM notification sent successfully")
                 success = True
             else:
                 log.status = 'failed'

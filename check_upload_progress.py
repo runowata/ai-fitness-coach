@@ -6,7 +6,6 @@ check_upload_progress.py
 """
 
 import json
-from datetime import datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path.cwd()

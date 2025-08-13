@@ -1,7 +1,7 @@
 """AI client interfaces for OpenAI and Anthropic"""
 import json
 import logging
-from typing import Dict, Optional
+from typing import Dict
 
 from django.conf import settings
 from openai import OpenAI
@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 class AIClientError(Exception):
     """Custom exception for AI client errors"""
-    pass
 
 
 class OpenAIClient:
@@ -111,7 +110,7 @@ class OpenAIClient:
             # Validate with comprehensive schema (should now pass)
             validated_report = validate_comprehensive_ai_report(raw_json)
             
-            logger.info(f"Successfully validated comprehensive report: "
+            logger.info("Successfully validated comprehensive report: "
                        f"user_analysis={bool(validated_report.user_analysis)}, "
                        f"training_program={validated_report.training_program.plan_name}, "
                        f"motivation_system={bool(validated_report.motivation_system)}, "
@@ -229,7 +228,7 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
         """Make API call for comprehensive 4-block report generation"""
         try:
             # Comprehensive system message for 4-block structure
-            system_message = f"""You are a professional fitness coach AI generating comprehensive analysis reports. Create a detailed 4-block report following EXACTLY this JSON structure.
+            system_message = """You are a professional fitness coach AI generating comprehensive analysis reports. Create a detailed 4-block report following EXACTLY this JSON structure.
 
 CRITICAL REQUIREMENTS:
 1. Return ONLY valid JSON with NO markdown, NO explanations

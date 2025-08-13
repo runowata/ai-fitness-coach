@@ -3,7 +3,7 @@ Post-validation and fixing services for AI-generated workout plans
 """
 import json
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 from apps.core.services.exercise_validation import ExerciseValidationService
 

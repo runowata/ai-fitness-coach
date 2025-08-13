@@ -2,8 +2,9 @@
 import logging
 
 from celery import shared_task
+from django.db import models
 from django.contrib.auth import get_user_model
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.utils import timezone
 
 from .models import AnalyticsEvent, AnalyticsMetrics
@@ -166,7 +167,7 @@ def calculate_daily_metrics_task(date_str: str = None):
 @shared_task
 def calculate_retention_metrics_task():
     """Calculate user retention metrics"""
-    from datetime import datetime, timedelta
+    from datetime import timedelta
     
     today = timezone.now().date()
     

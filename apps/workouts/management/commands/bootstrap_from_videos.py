@@ -1,5 +1,4 @@
 import os
-import re
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -9,10 +8,8 @@ from apps.workouts.models import Exercise, VideoClip
 
 # Import other app models
 try:
-    from apps.achievements.models import Achievement
-    from apps.content.models import Chapter, Story
-    from apps.onboarding.models import AnswerOption, MotivationalCard, OnboardingQuestion
-except ImportError as e:
+    pass
+except ImportError:
     # Some models might not exist yet - we'll handle this gracefully
     pass
 
@@ -180,7 +177,7 @@ class Command(BaseCommand):
         # Process trainer videos
         trainers_dir = '/opt/render/project/src/media/videos/trainers'
         if os.path.exists(trainers_dir):
-            self.stdout.write(f"\\n👨‍🏫 Processing trainer videos...")
+            self.stdout.write("\\n👨‍🏫 Processing trainer videos...")
             
             for archetype in ['bro', 'sergeant', 'intellectual']:
                 archetype_dir = os.path.join(trainers_dir, archetype)
@@ -206,7 +203,7 @@ class Command(BaseCommand):
                                 })
         
         # Show stats
-        self.stdout.write(f"\\n📊 BOOTSTRAP RESULTS:")
+        self.stdout.write("\\n📊 BOOTSTRAP RESULTS:")
         self.stdout.write(f"   💪 Exercises: {len(exercises_data)}")
         self.stdout.write(f"   🎬 Videos: {len(videos_data)}")
         
@@ -214,18 +211,18 @@ class Command(BaseCommand):
         for video in videos_data:
             type_stats[video['type']] = type_stats.get(video['type'], 0) + 1
         
-        self.stdout.write(f"\\n📈 VIDEO DISTRIBUTION:")
+        self.stdout.write("\\n📈 VIDEO DISTRIBUTION:")
         for vtype, count in sorted(type_stats.items()):
             self.stdout.write(f"   {vtype}: {count}")
         
         if dry_run:
-            self.stdout.write(f"\\n🔍 DRY RUN - Would create:")
+            self.stdout.write("\\n🔍 DRY RUN - Would create:")
             self.stdout.write(f"   💪 {len(exercises_data)} exercises")
             self.stdout.write(f"   🎬 {len(videos_data)} video clips")
             return
         
         # CLEAN START - Clear everything
-        self.stdout.write(f"\\n🗑️ CLEARING OLD DATA...")
+        self.stdout.write("\\n🗑️ CLEARING OLD DATA...")
         with transaction.atomic():
             VideoClip.objects.all().delete()
             Exercise.objects.all().delete()
@@ -259,16 +256,16 @@ class Command(BaseCommand):
         final_videos = VideoClip.objects.count()
         
         # Create essential app data
-        self.stdout.write(f"\\n📝 Creating essential app data...")
+        self.stdout.write("\\n📝 Creating essential app data...")
         self.create_onboarding_questions()
         self.create_achievements() 
         self.create_motivational_cards()
         self.create_stories()
         
-        self.stdout.write(f"\\n🎉 BOOTSTRAP COMPLETE!")
+        self.stdout.write("\\n🎉 BOOTSTRAP COMPLETE!")
         self.stdout.write(f"   💪 Total exercises: {final_exercises}")
         self.stdout.write(f"   🎬 Total videos: {final_videos}")
-        self.stdout.write(f"   🚀 AI Fitness Coach is ready!")
+        self.stdout.write("   🚀 AI Fitness Coach is ready!")
         
         return f"Bootstrapped {final_exercises} exercises and {final_videos} videos"
     

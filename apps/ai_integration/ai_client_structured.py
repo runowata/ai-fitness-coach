@@ -1,7 +1,7 @@
 """AI client interfaces for OpenAI with Structured Outputs support"""
 import json
 import logging
-from typing import Dict, Optional
+from typing import Dict
 
 from django.conf import settings
 from openai import OpenAI
@@ -10,7 +10,6 @@ from .schemas import (
     ComprehensiveAIReport,
     WorkoutPlan,
     validate_ai_plan_response,
-    validate_comprehensive_ai_report,
 )
 
 logger = logging.getLogger(__name__)
@@ -18,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 class AIClientError(Exception):
     """Custom exception for AI client errors"""
-    pass
 
 
 class OpenAIClient:

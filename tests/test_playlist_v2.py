@@ -1,7 +1,6 @@
 """
 Tests for v2 playlist builder
 """
-import json
 
 import pytest
 

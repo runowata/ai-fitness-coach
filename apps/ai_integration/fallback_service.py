@@ -6,7 +6,6 @@ import json
 import logging
 from typing import Dict, List, Optional
 
-from django.conf import settings
 from django.utils import timezone
 
 from apps.users.models import UserProfile

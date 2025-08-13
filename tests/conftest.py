@@ -184,7 +184,6 @@ def test_settings():
 @pytest.fixture(scope='session')
 def django_db_setup():
     """Optimize database for testing"""
-    pass
 
 
 # Custom markers

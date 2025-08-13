@@ -7,7 +7,6 @@ import csv
 import os
 import random
 import shutil
-import sys
 from pathlib import Path
 
 # Параметры
@@ -36,7 +35,7 @@ def load_exercises():
 
 def collect_remaining_videos():
     """Собирает все оставшиеся видео"""
-    print(f"📂 Собираю оставшиеся видео с диска...")
+    print("📂 Собираю оставшиеся видео с диска...")
     
     videos = []
     for path in Path(SOURCE_DIR).rglob('*'):
@@ -49,7 +48,7 @@ def collect_remaining_videos():
 
 def collect_images():
     """Собирает все изображения"""
-    print(f"📂 Собираю изображения с диска...")
+    print("📂 Собираю изображения с диска...")
     
     images = []
     for path in Path(SOURCE_DIR).rglob('*'):
@@ -132,7 +131,7 @@ def continue_copying():
     exercises = load_exercises()
     current_counts = get_current_counts()
     
-    print(f"\n🔄 ПРОДОЛЖАЮ КОПИРОВАНИЕ С ТЕКУЩЕГО СОСТОЯНИЯ:")
+    print("\n🔄 ПРОДОЛЖАЮ КОПИРОВАНИЕ С ТЕКУЩЕГО СОСТОЯНИЯ:")
     for category, current in current_counts.items():
         target = TARGETS[category]
         remaining = target - current
@@ -238,7 +237,7 @@ def continue_copying():
 
 def verify_final_results():
     """Проверяет финальные результаты"""
-    print(f"\n📊 ФИНАЛЬНАЯ ПРОВЕРКА:")
+    print("\n📊 ФИНАЛЬНАЯ ПРОВЕРКА:")
     print("=" * 50)
     
     all_targets = {

@@ -132,7 +132,7 @@ class Command(BaseCommand):
         if not dry_run:
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"\nИмпорт завершен!\n"
+                    "\nИмпорт завершен!\n"
                     f"Weekly: Created {created_weekly}, Updated {updated_weekly}\n"
                     f"Final: Created {created_final}, Updated {updated_final}"
                 )

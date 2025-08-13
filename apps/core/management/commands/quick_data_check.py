@@ -2,7 +2,6 @@
 Quick data check command for deployment verification
 """
 from django.core.management.base import BaseCommand
-from django.db.models import Count
 
 from apps.users.models import User
 from apps.workouts.models import CSVExercise, VideoClip
@@ -21,7 +20,7 @@ class Command(BaseCommand):
         active_exercises = CSVExercise.objects.filter(is_active=True).count()
         
         if exercise_count == 0:
-            self.stdout.write(self.style.ERROR(f"❌ NO EXERCISES in database!"))
+            self.stdout.write(self.style.ERROR("❌ NO EXERCISES in database!"))
             self.stdout.write(self.style.WARNING("  Run: python manage.py import_exercises_v2 --data-dir ./data/clean"))
         else:
             self.stdout.write(self.style.SUCCESS(f"✅ Exercises: {exercise_count} total, {active_exercises} active"))
@@ -39,7 +38,7 @@ class Command(BaseCommand):
         if video_count > 0:
             self.stdout.write(self.style.SUCCESS(f"✅ Video clips: {video_count} total, {videos_with_files} with R2 files"))
         else:
-            self.stdout.write(self.style.WARNING(f"⚠️  No video clips in database"))
+            self.stdout.write(self.style.WARNING("⚠️  No video clips in database"))
         
         # Check users
         user_count = User.objects.count()

@@ -276,7 +276,6 @@ PROMPTS_PROFILE = 'v2'  # Clean v2 implementation without legacy support
 
 # Archetype mapping for backward compatibility (old -> new only)
 # Import archetype configuration from core constants
-from apps.core.constants import ARCHETYPE_ALIASES
 
 # Anthropic Claude settings (alternative)
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')

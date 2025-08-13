@@ -19,7 +19,7 @@ def upload_to_r2():
         return False
     
     print(f"📦 Archive ready: {archive_path} ({os.path.getsize(archive_path):,} bytes)")
-    print(f"🔒 SHA256: 89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
+    print("🔒 SHA256: 89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
     print()
     
     # Get R2 credentials
@@ -92,8 +92,8 @@ def upload_to_r2():
         print("📋 RENDER ENVIRONMENT VARIABLES:")
         print("=" * 60)
         print(f"BOOTSTRAP_DATA_URL={public_url}")
-        print(f"BOOTSTRAP_DATA_SHA256=89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
-        print(f"BOOTSTRAP_DATA_VERSION=v2-2025-08-08")
+        print("BOOTSTRAP_DATA_SHA256=89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
+        print("BOOTSTRAP_DATA_VERSION=v2-2025-08-08")
         print("=" * 60)
         print(f"\n🔗 Public URL: {public_url}")
         print("\n🎯 Next steps:")

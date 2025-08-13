@@ -2,17 +2,14 @@
 Test deterministic video playlist generation with fallbacks
 """
 
-import random
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
-import pytest
 from django.test import TestCase, override_settings
 from django.test.utils import override_settings
 
 from apps.workouts.constants import ARCHETYPE_FALLBACK_ORDER, VideoKind
-from apps.workouts.models import CSVExercise, DailyWorkout, VideoClip, VideoProvider
+from apps.workouts.models import CSVExercise, VideoClip, VideoProvider
 from apps.workouts.services import VideoPlaylistBuilder
-from apps.workouts.video_storage import R2Adapter
 
 
 @override_settings(
@@ -216,8 +213,6 @@ class TestDeterministicPlaylist(TestCase):
             mock_storage.playbook_url = 'https://test.url/video.mp4'
             mock_get_storage.return_value = mock_storage
             
-            from django.db import connection
-            from django.test.utils import override_settings
 
             # Count queries during playlist generation
             with self.assertNumQueries(2):  # Should be minimal queries due to prefetch

@@ -4,25 +4,18 @@ import random
 import time
 from typing import Dict, List, Optional
 
-from django.db.models import Q
 
 from apps.core.metrics import MetricNames, incr, timing
 from apps.core.services.exercise_validation import ExerciseValidationService
 
 from .constants import (
     ARCHETYPE_FALLBACK_ORDER,
-    CONTEXTUAL_INTRO_SELECTION_FACTORS,
     MID_WORKOUT_INSERTION_FREQUENCY,
     OPTIONAL_VIDEO_KINDS_PLAYLIST,
-    PLAYLIST_FALLBACK_MAX_CANDIDATES,
-    PLAYLIST_MISTAKE_PROB,
-    PLAYLIST_STORAGE_RETRY,
     REQUIRED_VIDEO_KINDS_PLAYLIST,
-    WEEKLY_THEME_VIDEO_PRIORITY,
-    Archetype,
     VideoKind,
 )
-from .models import CSVExercise, DailyWorkout, VideoClip
+from .models import CSVExercise, DailyWorkout
 from .video_storage import get_storage
 
 logger = logging.getLogger(__name__)
@@ -208,7 +201,6 @@ class VideoPlaylistBuilder:
         Get video clip with storage availability check using deterministic selection
         Uses multi-level fallback strategy for better reliability
         """
-        from django.conf import settings
 
         # For global videos (intro, closing, weekly) use legacy logic
         if exercise is None:
@@ -492,7 +484,6 @@ class VideoPlaylistBuilder:
     
     def _get_contextual_intro_video(self, workout: DailyWorkout, archetype: str) -> Optional[Dict]:
         """Get contextual intro video based on workout context"""
-        from .models import WeeklyTheme
 
         # Determine context factors
         context_factors = {

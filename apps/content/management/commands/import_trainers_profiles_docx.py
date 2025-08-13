@@ -1,7 +1,6 @@
 """
 Import trainer personas from DOCX files
 """
-import re
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
@@ -104,14 +103,12 @@ class Command(BaseCommand):
     def _find_persona_section(self, text_lower, full_text, keywords):
         """Find section for specific persona"""
         start_pos = -1
-        matched_keyword = None
         
         # Find the start position of this persona section
         for keyword in keywords:
             pos = text_lower.find(keyword.lower())
             if pos != -1:
                 start_pos = pos
-                matched_keyword = keyword
                 break
         
         if start_pos == -1:

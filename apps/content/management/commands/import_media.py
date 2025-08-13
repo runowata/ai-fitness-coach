@@ -1,5 +1,4 @@
 import mimetypes
-import os
 from pathlib import Path
 
 from django.conf import settings
@@ -92,7 +91,7 @@ class Command(BaseCommand):
         
         # Parse file name for metadata
         file_name = file_path.name
-        parts = file_path.stem.split('_')
+        file_path.stem.split('_')
         
         # Try to determine category from path if not provided
         if not category:

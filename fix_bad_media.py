@@ -7,11 +7,7 @@
 
 import hashlib
 import re
-import shutil
 import subprocess
-import sys
-import time
-from collections import defaultdict
 from pathlib import Path
 
 ROOT   = Path(__file__).resolve().parent
@@ -41,7 +37,7 @@ def duration_ok(p: Path) -> bool:
     try:
         out = subprocess.check_output(
             ["ffprobe","-v","error","-show_entries","format=duration",
-             "-of","default=noprint_wrappers=1:nokey=1", str(p)],
+             "-o","default=noprint_wrappers=1:nokey=1", str(p)],
             text=True, timeout=15)
         dur = float(out.strip())
         return dur > 0
@@ -87,7 +83,7 @@ def main() -> None:
                 removed_counter += 1
                 print(f"🗑️  removed tiny video {f.relative_to(MEDIA)} ({size//1024} KB)")
                 continue
-            elif f.suffix.lower() in {'.jpg', '.jpeg', '.png', '.gif', '.webp'} and size < MIN_PHOTO_BYTES:
+            elif f.suffix.lower() in {'.jpg', '.jpeg', '.png', '.gi', '.webp'} and size < MIN_PHOTO_BYTES:
                 f.unlink()
                 removed_counter += 1
                 print(f"🗑️  removed tiny photo {f.relative_to(MEDIA)} ({size//1024} KB)")

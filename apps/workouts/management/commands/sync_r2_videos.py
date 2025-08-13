@@ -7,17 +7,16 @@ Discovers video files in Cloudflare R2 and creates VideoClip records
 import logging
 import os
 import re
-from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import boto3
 from botocore.config import Config
-from botocore.exceptions import ClientError, NoCredentialsError
+from botocore.exceptions import ClientError
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from apps.workouts.constants import Archetype, VideoKind
+from apps.workouts.constants import VideoKind
 from apps.workouts.models import CSVExercise, VideoClip, VideoProvider
 
 logger = logging.getLogger(__name__)
@@ -379,7 +378,7 @@ class Command(BaseCommand):
             return None
         
         filename = parts[-1]
-        category = parts[-2] if len(parts) > 1 else 'unknown'
+        parts[-2] if len(parts) > 1 else 'unknown'
         
         # Try to determine archetype from filename
         archetype = 'mentor'  # Default

@@ -3,7 +3,6 @@ Management command to update R2 URLs to the correct domain
 """
 import os
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from apps.onboarding.models import MotivationalCard
@@ -19,7 +18,7 @@ class Command(BaseCommand):
             # Fallback to construct from bucket name
             r2_bucket = os.getenv('R2_BUCKET', '')
             if r2_bucket:
-                r2_public_base = f"https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev"
+                r2_public_base = "https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev"
             else:
                 self.stdout.write(self.style.ERROR('Neither R2_PUBLIC_BASE nor R2_BUCKET set in environment'))
                 return
@@ -38,7 +37,6 @@ class Command(BaseCommand):
         
         for card in cards:
             if card.image_url:
-                updated = False
                 for old_domain in old_domains:
                     if old_domain in card.image_url:
                         # Extract path after domain
@@ -46,7 +44,6 @@ class Command(BaseCommand):
                         # Build new URL
                         card.image_url = f"{r2_public_base}{path}"
                         card.save(update_fields=['image_url'])
-                        updated = True
                         updated_count += 1
                         self.stdout.write(f"Updated card {card.id}: {card.image_url}")
                         break

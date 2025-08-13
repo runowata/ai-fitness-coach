@@ -43,7 +43,7 @@ class Command(BaseCommand):
         self.stdout.write(f"   🎭 With {len(video_types)} video types each")
         
         if dry_run:
-            self.stdout.write(f"\n🔍 DRY RUN - Would create:")
+            self.stdout.write("\n🔍 DRY RUN - Would create:")
             sample = videos_to_create[:5]
             for video in sample:
                 self.stdout.write(f"   {video['exercise'].id}: {video['type']} ({video['archetype']})")
@@ -54,7 +54,7 @@ class Command(BaseCommand):
         # Create video clips
         with transaction.atomic():
             # Clear existing video clips
-            self.stdout.write(f"🗑️ Clearing existing video clips...")
+            self.stdout.write("🗑️ Clearing existing video clips...")
             VideoClip.objects.all().delete()
             
             # Create new video clips
@@ -70,12 +70,12 @@ class Command(BaseCommand):
         
         # Final verification
         final_count = VideoClip.objects.count()
-        self.stdout.write(f"\n🎉 SUCCESS!")
+        self.stdout.write("\n🎉 SUCCESS!")
         self.stdout.write(f"   🎬 Total video clips created: {final_count}")
-        self.stdout.write(f"   📱 Video playlists will now work!")
+        self.stdout.write("   📱 Video playlists will now work!")
         
         # Show distribution
-        self.stdout.write(f"\n📊 Video distribution:")
+        self.stdout.write("\n📊 Video distribution:")
         for archetype in archetypes:
             count = VideoClip.objects.filter(archetype=archetype).count()
             self.stdout.write(f"   {archetype}: {count} videos")

@@ -54,14 +54,12 @@ def create_excel_r2_mapping():
             continue
         
         # Частичное сопоставление
-        found = False
         for r2_code in r2_exercise_codes:
             # Проверяем, содержится ли нормализованное название в R2 коде
             if normalized in r2_code or r2_code in normalized:
                 mapping[excel_id] = r2_code
                 if r2_code in unmatched_r2:
                     unmatched_r2.remove(r2_code)
-                found = True
                 break
             
             # Проверяем по ключевым словам
@@ -73,7 +71,6 @@ def create_excel_r2_mapping():
                 mapping[excel_id] = r2_code
                 if r2_code in unmatched_r2:
                     unmatched_r2.remove(r2_code)
-                found = True
                 break
 
     print(f"Создано сопоставлений: {len(mapping)} из {len(df)}")

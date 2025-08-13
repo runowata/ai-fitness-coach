@@ -25,7 +25,6 @@ try:
     from google.oauth2.credentials import Credentials
     from google_auth_oauthlib.flow import InstalledAppFlow
     from googleapiclient.discovery import build
-    from googleapiclient.errors import HttpError
     from googleapiclient.http import MediaFileUpload
 except ImportError:
     print("❌ Google API библиотеки не установлены.")
@@ -43,7 +42,7 @@ TEMP_DIR = 'temp_media'
 
 # Поддерживаемые форматы
 VIDEO_EXTS = {'.mp4', '.avi', '.mov', '.mkv', '.webm'}
-PHOTO_EXTS = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+PHOTO_EXTS = {'.jpg', '.jpeg', '.png', '.gi', '.webp'}
 
 
 def authenticate_gdrive():
@@ -303,7 +302,7 @@ def process_media(source_dir: str, rules: Dict[str, str],
             print(f"    Обработано {i+1} из {len(videos)} видео...")
     
     # Обработка фото
-    print(f"\n📸 Обработка фото...")
+    print("\n📸 Обработка фото...")
     for i, photo_path in enumerate(photos[:100]):  # Ограничиваем для теста
         filename = photo_path.name
         category = categorize_file(filename, rules)

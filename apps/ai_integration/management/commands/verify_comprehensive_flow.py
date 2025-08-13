@@ -1,14 +1,9 @@
-import json
 
 from django.core.management.base import BaseCommand
 
 from apps.ai_integration.schemas import (
     ComprehensiveAIReport,
-    LongTermStrategy,
-    MotivationSystem,
-    UserAnalysis,
 )
-from apps.ai_integration.schemas import WorkoutPlan as WorkoutPlanSchema
 
 
 class Command(BaseCommand):

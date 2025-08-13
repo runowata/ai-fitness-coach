@@ -7,7 +7,6 @@ while keeping other files private.
 """
 
 import json
-import os
 
 import boto3
 from botocore.exceptions import ClientError
@@ -85,7 +84,7 @@ def verify_public_access(bucket_name, account_id):
     """Verify that public access is working"""
     
     # Test URL format: https://pub-{hash}.r2.dev/photos/progress/card_progress_0066.jpg
-    public_domain = input(f"Enter R2 public domain (e.g., https://pub-xxxxx.r2.dev): ").strip()
+    public_domain = input("Enter R2 public domain (e.g., https://pub-xxxxx.r2.dev): ").strip()
     
     test_url = f"{public_domain}/photos/progress/card_progress_0066.jpg"
     

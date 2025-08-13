@@ -12,7 +12,7 @@ import random
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Tuple
 
 # Импорты для Google API
 try:
@@ -20,7 +20,6 @@ try:
     from google.oauth2.credentials import Credentials
     from google_auth_oauthlib.flow import InstalledAppFlow
     from googleapiclient.discovery import build
-    from googleapiclient.errors import HttpError
     from googleapiclient.http import MediaFileUpload
 except ImportError:
     print("❌ Google API библиотеки не установлены.")
@@ -173,7 +172,7 @@ def scan_source_files(source_dir: str) -> Tuple[Dict[str, List[Path]],
                 # Остальные картинки считаем cards
                 image_candidates['cards'].append(file_path)
     
-    print(f"📊 Найдено файлов по категориям:")
+    print("📊 Найдено файлов по категориям:")
     for category, files in video_candidates.items():
         print(f"  📹 {category}: {len(files)} видео")
     for category, files in image_candidates.items():
@@ -558,7 +557,7 @@ def main():
         IMAGE_TARGETS['stories'] = stories_count
     
     # Случайный выбор файлов
-    print(f"\n🎲 Случайный выбор файлов...")
+    print("\n🎲 Случайный выбор файлов...")
     random.seed()  # Инициализируем генератор случайных чисел
     
     selected_videos = pick_random_files(video_candidates, VIDEO_TARGETS)

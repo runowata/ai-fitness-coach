@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.db import transaction
 from django.utils import timezone
 
-from .models import WeeklyLesson, WeeklyNotification
+from .models import WeeklyNotification
 from .serializers import WeeklyNotificationSerializer
 
 logger = logging.getLogger(__name__)

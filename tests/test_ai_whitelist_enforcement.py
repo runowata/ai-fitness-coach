@@ -2,9 +2,8 @@
 Test AI whitelist enforcement and exercise substitutions
 """
 
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
-import pytest
 from django.test import TestCase, override_settings
 
 from apps.ai_integration.services import WorkoutPlanGenerator

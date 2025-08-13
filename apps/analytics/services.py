@@ -1,8 +1,7 @@
 """Analytics services for tracking user events and sending to external platforms"""
-import json
 import logging
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import requests
 from django.conf import settings

@@ -87,7 +87,6 @@ def bulk_send_weekly_lesson_pushes_task(weekly_notification_ids: list):
     """
     Send push notifications for multiple weekly lessons in bulk
     """
-    total_sent = 0
     total_failed = 0
     results = []
     
@@ -132,7 +131,6 @@ def send_workout_reminder_push_task(user_id: int):
             return {"status": "skipped", "reason": "notifications_disabled"}
         
         # Check if user has workout scheduled today
-        from apps.workouts.models import WorkoutPlan
         active_plan = user.workout_plans.filter(is_active=True).first()
         
         if not active_plan:

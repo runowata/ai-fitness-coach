@@ -1,7 +1,7 @@
 # Fixed v2 schema migration - works on both PostgreSQL and SQLite
 # This migration ensures all v2 models and fields exist properly
 
-from django.db import connection, migrations, models
+from django.db import connection, migrations
 
 
 def add_column_if_not_exists(apps, schema_editor):
@@ -50,7 +50,6 @@ def add_column_if_not_exists(apps, schema_editor):
             except Exception as e:
                 # Column might already exist or table might not exist
                 print(f"Warning: Could not add {table}.{column}: {e}")
-                pass
 
 
 def remove_legacy_columns(apps, schema_editor):
@@ -87,7 +86,6 @@ def remove_legacy_columns(apps, schema_editor):
             except Exception as e:
                 # Column might not exist
                 print(f"Warning: Could not remove {table}.{column}: {e}")
-                pass
 
 
 def add_indexes_if_not_exist(apps, schema_editor):
@@ -125,7 +123,6 @@ def add_indexes_if_not_exist(apps, schema_editor):
                         
             except Exception as e:
                 print(f"Warning: Could not create index {index_name}: {e}")
-                pass
 
 
 class Migration(migrations.Migration):

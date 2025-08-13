@@ -1,11 +1,11 @@
 """Tests for VideoPlaylistBuilder service"""
 
 import random
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
-from apps.workouts.models import DailyWorkout, Exercise, VideoClip
+from apps.workouts.models import DailyWorkout, Exercise
 from apps.workouts.services import VideoPlaylistBuilder
 
 

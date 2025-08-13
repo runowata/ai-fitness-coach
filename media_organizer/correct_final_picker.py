@@ -7,7 +7,6 @@ import csv
 import os
 import random
 import shutil
-import sys
 from pathlib import Path
 
 # ПРАВИЛЬНЫЕ ЦЕЛЕВЫЕ КОЛИЧЕСТВА
@@ -106,7 +105,7 @@ def continue_with_correct_amounts():
     exercises = load_exercises()
     current_counts = get_current_counts()
     
-    print(f"📊 ТЕКУЩЕЕ СОСТОЯНИЕ С ПРАВИЛЬНЫМИ ЦЕЛЯМИ:")
+    print("📊 ТЕКУЩЕЕ СОСТОЯНИЕ С ПРАВИЛЬНЫМИ ЦЕЛЯМИ:")
     print("=" * 50)
     
     total_current = 0
@@ -130,7 +129,7 @@ def continue_with_correct_amounts():
     
     # Удаляем лишние reminder видео если есть
     if current_counts.get('reminder', 0) > CORRECT_TARGETS['reminder']:
-        print(f"\n🗑️  Удаляю лишние reminder видео...")
+        print("\n🗑️  Удаляю лишние reminder видео...")
         reminder_files = list(Path(TARGET_DIR, "videos/reminders").glob("*"))
         
         # Удаляем лишние файлы
@@ -142,7 +141,7 @@ def continue_with_correct_amounts():
         current_counts['reminder'] = CORRECT_TARGETS['reminder']
     
     # Собираем медиафайлы для продолжения
-    print(f"\n📂 Собираю файлы с диска...")
+    print("\n📂 Собираю файлы с диска...")
     
     all_videos = []
     all_images = []
@@ -180,15 +179,12 @@ def continue_with_correct_amounts():
         # Определяем папку
         if category in ["reminder"]:
             folder = "videos/reminders"
-            file_source = all_videos
             idx_ref = 'video_idx'
         elif category in ["weekly", "final"]:
             folder = "videos/motivation" 
-            file_source = all_videos
             idx_ref = 'video_idx'
         else:  # avatars, cards
             folder = f"images/{category}"
-            file_source = all_images
             idx_ref = 'image_idx'
             
         os.makedirs(os.path.join(TARGET_DIR, folder), exist_ok=True)
@@ -196,13 +192,13 @@ def continue_with_correct_amounts():
         for i in range(remaining):
             if idx_ref == 'video_idx':
                 if video_idx >= len(all_videos):
-                    print(f"❌ Закончились видео!")
+                    print("❌ Закончились видео!")
                     break
                 source_file = all_videos[video_idx]
                 video_idx += 1
             else:
                 if image_idx >= len(all_images):
-                    print(f"❌ Закончились изображения!")
+                    print("❌ Закончились изображения!")
                     break
                 source_file = all_images[image_idx] 
                 image_idx += 1
@@ -226,7 +222,7 @@ def continue_with_correct_amounts():
 
 def verify_final_correct_results():
     """Проверяет финальные результаты с правильными целями"""
-    print(f"\n🎯 ФИНАЛЬНАЯ ПРОВЕРКА С ПРАВИЛЬНЫМИ ЦЕЛЯМИ:")
+    print("\n🎯 ФИНАЛЬНАЯ ПРОВЕРКА С ПРАВИЛЬНЫМИ ЦЕЛЯМИ:")
     print("=" * 60)
     
     total_actual = 0
@@ -255,7 +251,7 @@ def verify_final_correct_results():
     size_gb = sum(f.stat().st_size for f in Path(TARGET_DIR).rglob('*') if f.is_file()) / (1024**3)
     print(f"   {'РАЗМЕР':12} {size_gb:.1f} GB")
     
-    print(f"\nПРАВИЛЬНЫЕ ЦЕЛИ:")
+    print("\nПРАВИЛЬНЫЕ ЦЕЛИ:")
     print(f"- Видео: {147+441+147+441+36+3} = 1215 штук")  
     print(f"- Изображения: {9+600} = 609 штук")
     print(f"- ВСЕГО: {1215+609} = 1824 файла")

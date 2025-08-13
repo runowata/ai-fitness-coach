@@ -10,7 +10,7 @@ from rest_framework.test import APIClient
 
 from apps.notifications.models import PushNotificationLog, PushSubscription
 from apps.notifications.services import OneSignalService, PushNotificationService
-from apps.workouts.models import WeeklyLesson, WeeklyNotification
+from apps.workouts.models import WeeklyNotification
 
 User = get_user_model()
 
@@ -301,7 +301,7 @@ class WeeklyLessonPushTest(TestCase):
         mock_send.return_value = [{'success': True}]
         
         service = PushNotificationService()
-        results = service.send_weekly_lesson_notification(self.weekly_notification)
+        service.send_weekly_lesson_notification(self.weekly_notification)
         
         # Verify correct notification was sent
         mock_send.assert_called_once()
@@ -408,7 +408,7 @@ def test_push_stats_endpoint():
     
     # Create staff user
     staff_user = User.objects.create_user(
-        username='staff',
+        username='staf',
         email='staff@example.com',
         password='testpass123',
         is_staff=True

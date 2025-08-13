@@ -1,4 +1,3 @@
-import pytest
 
 from apps.workouts.schemas import VideoScript, WorkoutPlan, WorkoutPlanItem
 

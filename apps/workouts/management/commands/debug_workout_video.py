@@ -26,7 +26,7 @@ class Command(BaseCommand):
             real_clips = VideoClip.objects.filter(is_placeholder=False).count()
             placeholder_clips = VideoClip.objects.filter(is_placeholder=True).count()
             
-            self.stdout.write(f"\n📹 VideoClip database status:")
+            self.stdout.write("\n📹 VideoClip database status:")
             self.stdout.write(f"   Total clips: {total_clips}")
             self.stdout.write(f"   Real clips: {real_clips}")
             self.stdout.write(f"   Placeholder clips: {placeholder_clips}")
@@ -49,7 +49,7 @@ class Command(BaseCommand):
             builder = VideoPlaylistBuilder()
             playlist = builder.build_workout_playlist(workout, archetype)
             
-            self.stdout.write(f"\n🎵 Generated playlist:")
+            self.stdout.write("\n🎵 Generated playlist:")
             self.stdout.write(f"   Items: {len(playlist)}")
             
             for i, item in enumerate(playlist):
@@ -59,7 +59,7 @@ class Command(BaseCommand):
             
             # Check exercises exist
             if not workout.is_rest_day and workout.exercises:
-                self.stdout.write(f"\n🏋️ Exercise check:")
+                self.stdout.write("\n🏋️ Exercise check:")
                 for exercise_data in workout.exercises:
                     slug = exercise_data.get('exercise_slug')
                     try:
@@ -72,7 +72,7 @@ class Command(BaseCommand):
             # Sample video URLs
             sample_clips = VideoClip.objects.all()[:5]
             if sample_clips:
-                self.stdout.write(f"\n🔗 Sample video URLs:")
+                self.stdout.write("\n🔗 Sample video URLs:")
                 for clip in sample_clips:
                     self.stdout.write(f"   {clip.type}/{clip.archetype}: {clip.url}")
             

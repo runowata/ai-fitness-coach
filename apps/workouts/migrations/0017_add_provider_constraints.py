@@ -27,7 +27,6 @@ def clean_provider_data(apps, schema_editor):
 
 def reverse_clean_provider_data(apps, schema_editor):
     """Reverse migration - no action needed"""
-    pass
 
 
 class Migration(migrations.Migration):

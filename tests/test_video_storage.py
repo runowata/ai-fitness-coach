@@ -172,4 +172,3 @@ class TestVideoStorageIntegration:
         """Test complete R2 storage flow"""
         # This would require actual database models
         # For now, just verify our mocks work
-        pass

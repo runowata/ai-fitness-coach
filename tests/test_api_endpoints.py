@@ -5,7 +5,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from apps.users.models import UserProfile
 from apps.workouts.models import CSVExercise, ExplainerVideo, WeeklyLesson, WeeklyNotification
 
 User = get_user_model()

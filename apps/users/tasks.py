@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytz
 from celery import shared_task
+from django.db import models
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -187,7 +188,7 @@ def send_weekly_progress_summary():
                 'dashboard_url': f"{settings.FRONTEND_URL}/dashboard/"
             }
             
-            subject = f"📊 Ваш прогресс за неделю"
+            subject = "📊 Ваш прогресс за неделю"
             
             html_message = render_to_string('emails/weekly_summary.html', context)
             text_message = render_to_string('emails/weekly_summary.txt', context)

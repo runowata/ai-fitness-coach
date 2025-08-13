@@ -10,7 +10,6 @@ from django.test import TestCase, override_settings
 
 from apps.ai_integration.ai_client import AIClientFactory
 from apps.ai_integration.services import WorkoutPlanGenerator
-from tests.factories import UserFactory
 
 
 @pytest.mark.unit

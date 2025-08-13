@@ -38,7 +38,7 @@ class OnboardingQuestion(models.Model):
     
     # Conditional logic
     depends_on_question = models.ForeignKey(
-        'self',
+        'sel',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

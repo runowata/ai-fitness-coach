@@ -69,12 +69,12 @@ def upload_archive():
         print("="*60)
         print(f"📁 Archive: {archive_path}")
         print(f"🔗 Public URL: {public_url}")
-        print(f"🔒 SHA256: 89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
+        print("🔒 SHA256: 89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
         print("="*60)
         print("\n📋 Environment variables for Render:")
         print(f"BOOTSTRAP_DATA_URL={public_url}")
-        print(f"BOOTSTRAP_DATA_SHA256=89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
-        print(f"BOOTSTRAP_DATA_VERSION=v2-2025-08-08")
+        print("BOOTSTRAP_DATA_SHA256=89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
+        print("BOOTSTRAP_DATA_VERSION=v2-2025-08-08")
         
     except Exception as e:
         print(f"❌ Upload failed: {e}")

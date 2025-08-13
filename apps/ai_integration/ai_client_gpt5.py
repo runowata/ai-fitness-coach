@@ -1,7 +1,7 @@
 """AI client interfaces for GPT-5 with Responses API and Structured Outputs support"""
 import json
 import logging
-from typing import Dict, Optional
+from typing import Dict
 
 from django.conf import settings
 from openai import OpenAI
@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 class AIClientError(Exception):
     """Custom exception for AI client errors"""
-    pass
 
 
 class OpenAIClient:

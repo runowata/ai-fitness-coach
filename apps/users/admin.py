@@ -13,7 +13,7 @@ class UserProfileInline(admin.StackedInline):
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'username', 'is_adult_confirmed', 'is_2fa_enabled', 'created_at')
-    list_filter = ('is_adult_confirmed', 'is_2fa_enabled', 'is_staff', 'is_active')
+    list_filter = ('is_adult_confirmed', 'is_2fa_enabled', 'is_staf', 'is_active')
     search_fields = ('email', 'username')
     ordering = ('-created_at',)
     

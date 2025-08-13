@@ -12,7 +12,6 @@ def set_provider_for_existing_clips(apps, schema_editor):
 
 def reverse_set_provider(apps, schema_editor):
     """Reverse migration - no action needed"""
-    pass
 
 
 def safe_drop_weekly_lesson_constraint(apps, schema_editor):
@@ -49,13 +48,13 @@ def safe_add_exercise_columns(apps, schema_editor):
                 return cursor.fetchone() is not None
 
             if not col_exists("equipment"):
-                cursor.execute(f"""
+                cursor.execute("""
                     ALTER TABLE {qn(table)}
                     ADD COLUMN IF NOT EXISTS equipment varchar(50)
                     DEFAULT 'bodyweight' NOT NULL
                 """)
             if not col_exists("poster_image"):
-                cursor.execute(f"""
+                cursor.execute("""
                     ALTER TABLE {qn(table)}
                     ADD COLUMN IF NOT EXISTS poster_image varchar(100)
                 """)
@@ -105,7 +104,7 @@ def safe_add_videoclip_columns(apps, schema_editor):
 
             for col_name, col_definition in columns_to_add:
                 if not col_exists(col_name):
-                    cursor.execute(f"""
+                    cursor.execute("""
                         ALTER TABLE {qn(table)}
                         ADD COLUMN {col_name} {col_definition}
                     """)
@@ -156,7 +155,7 @@ def safe_alter_videoclip_unique_together(apps, schema_editor):
             
             if old_constraint_exists:
                 try:
-                    cursor.execute(f"""
+                    cursor.execute("""
                         ALTER TABLE {table}
                         DROP CONSTRAINT video_clips_exercise_id_type_archetype_model_name_reminder_text_key
                     """)
@@ -176,7 +175,7 @@ def safe_alter_videoclip_unique_together(apps, schema_editor):
             
             if not new_constraint_exists:
                 try:
-                    cursor.execute(f"""
+                    cursor.execute("""
                         ALTER TABLE {table}
                         ADD CONSTRAINT video_clips_exercise_id_r2_kind_r2_archetype_model_name_reminder_text_key
                         UNIQUE (exercise_id, r2_kind, r2_archetype, model_name, reminder_text)
@@ -256,7 +255,7 @@ def safe_remove_legacy_fields(apps, schema_editor):
             for field_name in legacy_fields:
                 if field_exists(field_name):
                     try:
-                        cursor.execute(f"""
+                        cursor.execute("""
                             ALTER TABLE {qn(table)}
                             DROP COLUMN IF EXISTS {qn(field_name)}
                         """)
@@ -330,7 +329,7 @@ def safe_remove_legacy_exercise_fields(apps, schema_editor):
             for field_name in legacy_fields:
                 if field_exists(field_name):
                     try:
-                        cursor.execute(f"""
+                        cursor.execute("""
                             ALTER TABLE {qn(table)}
                             DROP COLUMN IF EXISTS {qn(field_name)}
                         """)

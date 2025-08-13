@@ -115,7 +115,7 @@ class ExerciseValidationService:
             Dict with coverage statistics and details
         """
         try:
-            from apps.workouts.models import CSVExercise, VideoClip
+            from apps.workouts.models import CSVExercise
 
             # Use Django ORM instead of raw SQL for better database compatibility
             exercises_data = []

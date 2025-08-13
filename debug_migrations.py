@@ -3,7 +3,6 @@
 Diagnostic script to understand migration loading issues
 """
 import os
-import sys
 from pathlib import Path
 
 import django
@@ -15,7 +14,6 @@ django.setup()
 import importlib
 
 from django.apps import apps
-from django.db import migrations
 from django.db.migrations.loader import MigrationLoader
 
 
@@ -45,21 +43,21 @@ def diagnose_migrations():
         return
     
     # 3. Try to import 0013_v2_schema specifically
-    print(f"\n🔍 Testing 0013_v2_schema import:")
+    print("\n🔍 Testing 0013_v2_schema import:")
     try:
         mod = importlib.import_module('apps.workouts.migrations.0013_v2_schema')
         migration_class = getattr(mod, 'Migration', None)
         if migration_class:
-            print(f"   ✅ Module imported successfully")
+            print("   ✅ Module imported successfully")
             print(f"   Dependencies: {getattr(migration_class, 'dependencies', 'None')}")
             print(f"   Replaces: {getattr(migration_class, 'replaces', 'None')}")
         else:
-            print(f"   ❌ No Migration class found")
+            print("   ❌ No Migration class found")
     except Exception as e:
         print(f"   ❌ Import failed: {e}")
     
     # 4. Check Django migration loader
-    print(f"\n🔄 Django MigrationLoader analysis:")
+    print("\n🔄 Django MigrationLoader analysis:")
     try:
         loader = MigrationLoader(None)
         workouts_migrations = loader.graph.nodes.get(('workouts',), {})
@@ -75,16 +73,16 @@ def diagnose_migrations():
         
         # Check if 0013_v2_schema is in the graph
         if ('workouts', '0013_v2_schema') in workouts_migrations:
-            print(f"   ✅ 0013_v2_schema found in migration graph")
+            print("   ✅ 0013_v2_schema found in migration graph")
             node = loader.graph.nodes[('workouts', '0013_v2_schema')]
             print(f"   Dependencies: {node.dependencies}")
         else:
-            print(f"   ❌ 0013_v2_schema NOT found in migration graph")
+            print("   ❌ 0013_v2_schema NOT found in migration graph")
     
     except Exception as e:
         print(f"   ❌ MigrationLoader error: {e}")
     
-    print(f"\n=== DIAGNOSTICS COMPLETE ===")
+    print("\n=== DIAGNOSTICS COMPLETE ===")
 
 if __name__ == "__main__":
     diagnose_migrations()

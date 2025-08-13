@@ -5,7 +5,7 @@ Management command to extract exercises from R2 videos and create CSVExercise re
 
 import os
 import re
-from typing import Dict, List, Set
+from typing import Dict, Set
 
 import boto3
 from botocore.config import Config
@@ -185,7 +185,7 @@ class Command(BaseCommand):
                     r'.*-cum',
                     r'addicted',
                     r'muscle-russia',
-                    r'training-of',
+                    r'training-o',
                     r'pride-festiv',
                     r'^-',  # Names starting with dash
                 ]
@@ -284,7 +284,7 @@ class Command(BaseCommand):
             'back': ['rows', 'pull-ups', 'chin-ups', 'deadlift', 'shrugs'],
             'shoulders': ['shoulder', 'raises', 'overhead', 'lateral', 'front', 'rear'],
             'arms': ['curls', 'extensions', 'pushdowns', 'bicep', 'tricep'],
-            'legs': ['squats', 'lunges', 'leg', 'calf', 'glute', 'hip'],
+            'legs': ['squats', 'lunges', 'leg', 'cal', 'glute', 'hip'],
             'core': ['crunches', 'plank', 'abs', 'russian', 'bicycle', 'mountain'],
             'full_body': ['burpees', 'jump', 'bear', 'crawls', 'star'],
         }

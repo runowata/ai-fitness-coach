@@ -15,7 +15,7 @@ class AchievementChecker:
     def check_user_achievements(self, user):
         """Check all possible achievements for a user"""
         new_achievements = []
-        profile = user.profile
+        user.profile
         
         # Get all achievements not yet unlocked by user
         unlocked_ids = user.achievements.values_list('achievement_id', flat=True)
@@ -227,7 +227,7 @@ class WorkoutCompletionService:
         }
         
         # Создаем промпт для анализа
-        prompt = f"""
+        prompt = """
         Analyze this completed workout and provide feedback:
         
         WORKOUT DETAILS:

@@ -1,4 +1,3 @@
-import os
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -81,7 +80,7 @@ class Command(BaseCommand):
         self.stdout.write(f"📊 Will create {len(exercises_data)} exercises")
         
         if dry_run:
-            self.stdout.write(f"\n🔍 DRY RUN - Would create:")
+            self.stdout.write("\n🔍 DRY RUN - Would create:")
             for ex in exercises_data[:5]:  # Show first 5
                 self.stdout.write(f"   {ex['id']}: {ex['name']} ({ex['difficulty']})")
             if len(exercises_data) > 5:
@@ -91,7 +90,7 @@ class Command(BaseCommand):
         # Create exercises
         with transaction.atomic():
             # Clear existing exercises
-            self.stdout.write(f"🗑️ Clearing existing exercises...")
+            self.stdout.write("🗑️ Clearing existing exercises...")
             Exercise.objects.all().delete()
             
             # Create new exercises
@@ -118,12 +117,12 @@ class Command(BaseCommand):
         
         # Final verification
         final_count = Exercise.objects.count()
-        self.stdout.write(f"\n🎉 SUCCESS!")
+        self.stdout.write("\n🎉 SUCCESS!")
         self.stdout.write(f"   💪 Total exercises created: {final_count}")
-        self.stdout.write(f"   🤖 AI prompts can now generate workout plans!")
+        self.stdout.write("   🤖 AI prompts can now generate workout plans!")
         
         # Show some examples
-        self.stdout.write(f"\n📋 Sample exercises created:")
+        self.stdout.write("\n📋 Sample exercises created:")
         sample_exercises = Exercise.objects.all()[:5]
         for ex in sample_exercises:
             self.stdout.write(f"   {ex.id}: {ex.name} ({ex.difficulty})")

@@ -8,7 +8,6 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 

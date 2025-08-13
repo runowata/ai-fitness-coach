@@ -1,7 +1,6 @@
-import json
 import logging
 import os
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Set, Tuple
 
 from django.conf import settings
 from django.utils import timezone
@@ -30,7 +29,6 @@ def create_workout_plan_from_onboarding(user):
     Main function to create workout plan from onboarding data
     Called from onboarding views
     """
-    from apps.workouts.models import DailyWorkout, WorkoutPlan
     
     logger.info("🔍 PLAN GENERATION: Starting for user %s", user.id)
     
@@ -65,10 +63,8 @@ class WorkoutPlanGenerator:
     
     def create_plan(self, user, user_data: Dict) -> 'WorkoutPlan':
         """Create a complete workout plan for user"""
-        from django.db import transaction
 
-        from apps.onboarding.models import OnboardingSession
-        from apps.workouts.models import DailyWorkout, WorkoutPlan
+        from apps.workouts.models import WorkoutPlan
 
         # Prevent race condition - check if plan generation is already in progress
         existing_active_plan = WorkoutPlan.objects.filter(
@@ -99,7 +95,7 @@ class WorkoutPlanGenerator:
             plan_data, validation_report = validator.validate_and_fix_plan(plan_data)
             logger.info(f"Plan validation: {validation_report['fixes_applied']} fixes applied, {validation_report['issues_found']} issues found")
             
-            logger.info(f"Creating WorkoutPlan object...")
+            logger.info("Creating WorkoutPlan object...")
             
             # Extract analysis and plan from new structure
             analysis_data = plan_data.get('analysis', {})
@@ -117,25 +113,25 @@ class WorkoutPlanGenerator:
             )
             logger.info(f"WorkoutPlan created successfully with id: {workout_plan.id}")
             
-            logger.info(f"Creating daily workouts...")
+            logger.info("Creating daily workouts...")
             # Create daily workouts
             self._create_daily_workouts(workout_plan, plan_data)
-            logger.info(f"Daily workouts created successfully")
+            logger.info("Daily workouts created successfully")
             
-            logger.info(f"Updating user completion status...")
+            logger.info("Updating user completion status...")
             # Mark onboarding as completed
             user.onboarding_completed_at = timezone.now()
             user.completed_onboarding = True  # Set the boolean flag that dashboard checks
             user.save()
             
-            logger.info(f"Updating onboarding session...")
+            logger.info("Updating onboarding session...")
             # Update session
             self._update_onboarding_session(user, user_data, plan_data)
             
             # === NEW: окончательно помечаем онбординг как завершённый ===
             self._mark_onboarding_complete(user)
             
-            logger.info(f"Plan creation completed successfully")
+            logger.info("Plan creation completed successfully")
             return workout_plan
             
         except AIClientError as e:
@@ -147,7 +143,6 @@ class WorkoutPlanGenerator:
     
     def _create_daily_workouts(self, workout_plan, plan_data: Dict):
         """Create daily workout records from plan data (supports both old weeks and new cycles/phases)"""
-        from apps.workouts.models import DailyWorkout
         
         logger.info(f"_create_daily_workouts called with plan_data type: {type(plan_data)}")
         
@@ -285,7 +280,7 @@ class WorkoutPlanGenerator:
         
         # Check if we should use comprehensive 4-block structure
         if use_comprehensive:
-            logger.info(f"Using comprehensive 4-block report generation")
+            logger.info("Using comprehensive 4-block report generation")
             return self._generate_comprehensive_plan(user_data, archetype, allowed_slugs)
         
         # Build prompt with whitelist (legacy method)
@@ -345,7 +340,7 @@ class WorkoutPlanGenerator:
                     # Final attempt failed
                     logger.error(f"Failed to resolve exercises after {max_attempts} attempts")
                     incr(MetricNames.AI_VALIDATION_FAILED)
-                    raise ValueError(f"Unable to generate valid plan with available exercises")
+                    raise ValueError("Unable to generate valid plan with available exercises")
             
             except AIClientError as e:
                 logger.error(f"AI client error on attempt {attempt + 1}: {str(e)}")
@@ -542,7 +537,7 @@ class WorkoutPlanGenerator:
                     }
         
         # Build comprehensive whitelist instruction  
-        whitelist_instruction = f"""
+        whitelist_instruction = """
 КРИТИЧЕСКИ ВАЖНО - УПРАЖНЕНИЯ:
 Используйте ТОЛЬКО упражнения из этого списка в тренировочных планах:
 {', '.join(sorted(allowed_slugs))}
@@ -599,7 +594,7 @@ class WorkoutPlanGenerator:
         base_prompt = self._build_prompt(user_data)
         
         # Add whitelist instruction
-        whitelist_instruction = f"""
+        whitelist_instruction = """
 IMPORTANT: You MUST use ONLY exercises from this allowed list:
 {', '.join(sorted(allowed_slugs))}
 
@@ -675,7 +670,7 @@ DO NOT use any exercises not in this list.
         allowed_slugs: Set[str]
     ) -> str:
         """Build reprompt for unresolved exercises"""
-        reprompt = f"""
+        reprompt = """
 {original_prompt}
 
 CORRECTION NEEDED: The following exercises are not available and need replacement:
@@ -737,7 +732,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
     
     def _build_fallback_prompt(self, user_data: Dict) -> str:
         """Fallback prompt when file template has issues"""
-        prompt = f"""
+        prompt = """
         You are an expert fitness coach creating a personalized workout program.
         
         USER PROFILE:
@@ -927,7 +922,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
     
     def _build_adaptation_prompt(self, current_plan: Dict, user_feedback: List[Dict], week_number: int, user_archetype: str = 'bro') -> str:
         """Build prompt for weekly adaptation based on archetype"""
-        feedback_summary = self._summarize_feedback(user_feedback)
+        self._summarize_feedback(user_feedback)
         
         # Archetype-specific prompt introductions
         archetype_intros = {
@@ -978,10 +973,10 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
             """
         }
         
-        intro = archetype_intros.get(user_archetype, archetype_intros['bro'])
-        response_format = archetype_responses.get(user_archetype, archetype_responses['bro'])
+        archetype_intros.get(user_archetype, archetype_intros['bro'])
+        archetype_responses.get(user_archetype, archetype_responses['bro'])
         
-        return f"""
+        return """
         {intro}
         
         Анализ обратной связи:
@@ -1138,20 +1133,20 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
     def _build_evolution_prompt(self, user, evolution_context: Dict, archetype: str) -> str:
         """Build prompt for evolved plan generation"""
         
-        previous_plan = evolution_context['previous_plan_summary']
-        progress_data = evolution_context['user_progress']
-        selected_evolution = evolution_context['selected_evolution']
+        evolution_context['previous_plan_summary']
+        evolution_context['user_progress']
+        evolution_context['selected_evolution']
         
         # Archetype-specific introductions
         archetype_intros = {
-            'bro': f"Братан, ты завершил свой первый 6-недельный цикл! Время перейти на следующий уровень!",
-            'sergeant': f"Боец, базовая подготовка завершена! Пора переходить к продвинутому тренингу!",
-            'intellectual': f"Первый цикл успешно завершен. Анализируем данные для оптимизации следующего этапа."
+            'bro': "Братан, ты завершил свой первый 6-недельный цикл! Время перейти на следующий уровень!",
+            'sergeant': "Боец, базовая подготовка завершена! Пора переходить к продвинутому тренингу!",
+            'intellectual': "Первый цикл успешно завершен. Анализируем данные для оптимизации следующего этапа."
         }
         
-        intro = archetype_intros.get(archetype, archetype_intros['bro'])
+        archetype_intros.get(archetype, archetype_intros['bro'])
         
-        prompt = f"""
+        prompt = """
         {intro}
         
         СТАТИСТИКА ПЕРВОГО ЦИКЛА:

@@ -1,14 +1,13 @@
 """
 Smoke test command to verify v2 readiness
 """
-import json
 
 from django.core.management.base import BaseCommand
 from django.db import connection
 
 from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
 from apps.core.services.exercise_validation import ExerciseValidationService
-from apps.workouts.models import CSVExercise, VideoClip, WorkoutPlan
+from apps.workouts.models import CSVExercise, WorkoutPlan
 from apps.workouts.services.playlist_v2 import build_playlist
 
 

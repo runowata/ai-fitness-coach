@@ -180,7 +180,7 @@ class Command(BaseCommand):
         }
         
         if verbose:
-            self.stdout.write(f"🧪 Using test data for user")
+            self.stdout.write("🧪 Using test data for user")
         
         return test_data
 
@@ -211,7 +211,7 @@ class Command(BaseCommand):
             weeks_count = len(plan_data.get('weeks', []))
             
             if verbose:
-                self.stdout.write(f"📊 Plan results:")
+                self.stdout.write("📊 Plan results:")
                 self.stdout.write(f"   - Comprehensive: {is_comprehensive}")
                 self.stdout.write(f"   - Has analysis: {has_analysis}")
                 self.stdout.write(f"   - Weeks: {weeks_count}")

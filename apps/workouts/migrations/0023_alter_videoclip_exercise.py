@@ -26,7 +26,6 @@ def clear_orphaned_exercise_ids(apps, schema_editor):
 
 def reverse_clear(apps, schema_editor):
     """No-op reverse operation"""
-    pass
 
 class Migration(migrations.Migration):
 

@@ -3,7 +3,6 @@ Basic functionality tests for AI Fitness Coach
 These tests demonstrate testing patterns for the workout system.
 """
 import json
-from unittest.mock import Mock, patch
 
 
 def test_video_playlist_prioritization_logic():

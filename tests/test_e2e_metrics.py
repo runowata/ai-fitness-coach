@@ -5,7 +5,6 @@ End-to-end tests with comprehensive metrics verification
 from unittest.mock import Mock, patch
 
 import pytest
-from django.db import connection
 from django.test import TestCase, override_settings
 from django.test.utils import override_settings
 
@@ -15,7 +14,6 @@ from apps.workouts.models import DailyWorkout, WorkoutPlan
 from apps.workouts.services import VideoPlaylistBuilder
 from tests.factories import (
     CSVExerciseFactory,
-    DailyWorkoutFactory,
     SeededExerciseSetFactory,
     UserFactory,
     VideoClipFactory,

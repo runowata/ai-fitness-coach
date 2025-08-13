@@ -4,16 +4,12 @@
 import json
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Tuple
 
 from apps.core.services.exercise_validation import ExerciseValidationService
 
 from .schemas import (
     ComprehensiveAIReport,
-    LongTermStrategy,
-    MotivationSystem,
-    UserAnalysis,
-    WorkoutPlan,
 )
 from .validators import WorkoutPlanValidator
 
@@ -63,7 +59,7 @@ class ComprehensiveReportValidator:
             
             # Финальная валидация через Pydantic
             try:
-                validated_report = ComprehensiveAIReport.model_validate(fixed_report)
+                ComprehensiveAIReport.model_validate(fixed_report)
                 logger.info("Pydantic валидация пройдена успешно")
             except Exception as e:
                 logger.error(f"Ошибка Pydantic валидации: {e}")

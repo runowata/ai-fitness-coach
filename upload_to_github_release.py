@@ -2,7 +2,6 @@
 """
 Upload bootstrap archive to GitHub Releases (easier than R2)
 """
-import json
 import os
 import subprocess
 import sys
@@ -21,7 +20,7 @@ def create_github_release():
         return False
     
     print(f"📦 Archive: {archive_path} ({os.path.getsize(archive_path):,} bytes)")
-    print(f"🔒 SHA256: 89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
+    print("🔒 SHA256: 89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
     print()
     
     # Check if gh CLI is available
@@ -45,7 +44,7 @@ def create_github_release():
     
     release_tag = "bootstrap-v2.0.0"
     release_title = "Bootstrap Data v2.0.0"
-    release_notes = f"""# Workout Bootstrap Data v2.0.0
+    release_notes = """# Workout Bootstrap Data v2.0.0
 
 **📦 Archive**: `workouts_bootstrap_v2.tar.gz`  
 **🔒 SHA256**: `89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38`  
@@ -92,8 +91,8 @@ Then run Manual Deploy - the system will auto-download and import data.
             print("📋 RENDER ENVIRONMENT VARIABLES:")
             print("=" * 70)
             print(f"BOOTSTRAP_DATA_URL={download_url}")
-            print(f"BOOTSTRAP_DATA_SHA256=89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
-            print(f"BOOTSTRAP_DATA_VERSION=v2-2025-08-08")
+            print("BOOTSTRAP_DATA_SHA256=89cc0035adb8291a753eb450dc73c222bd96883d184e342c84290d4e8114db38")
+            print("BOOTSTRAP_DATA_VERSION=v2-2025-08-08")
             print("=" * 70)
             print(f"\n🔗 Release URL: https://github.com/runowata/ai-fitness-coach/releases/tag/{release_tag}")
             print(f"📥 Download URL: {download_url}")
@@ -104,7 +103,7 @@ Then run Manual Deploy - the system will auto-download and import data.
             
             return True
         else:
-            print(f"❌ Failed to create release:")
+            print("❌ Failed to create release:")
             print(result.stderr)
             return False
             

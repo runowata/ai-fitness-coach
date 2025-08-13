@@ -6,7 +6,6 @@ fill_missing_media.py
 
 import csv
 import hashlib
-import os
 import random
 import shutil
 import subprocess
@@ -35,7 +34,7 @@ MAX_VIDEO_SEC = 7 * 60  # 7 минут
 MAX_VIDEO_SIZE = 600 * 1024**2  # 600 МБ
 MAX_TOTAL_SIZE = 10 * 1024**3  # 10 ГБ
 VIDEO_EXTS = {".mp4", ".mov", ".avi", ".mkv", ".webm"}
-PHOTO_EXTS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+PHOTO_EXTS = {".jpg", ".jpeg", ".png", ".gi", ".webp"}
 
 def sha256_hash(file_path):
     """Вычисляет SHA256 хеш файла."""
@@ -53,7 +52,7 @@ def video_duration_sec(file_path):
     try:
         result = subprocess.run([
             "ffprobe", "-v", "error", "-show_entries", "format=duration",
-            "-of", "default=noprint_wrappers=1:nokey=1", str(file_path)
+            "-o", "default=noprint_wrappers=1:nokey=1", str(file_path)
         ], capture_output=True, text=True, timeout=30)
         
         if result.returncode == 0:
@@ -264,7 +263,7 @@ def main():
                 break
             
             if total_added_size + size > MAX_TOTAL_SIZE:
-                print(f"    ⚠️  Достигнут лимит 10 ГБ, остановлено")
+                print("    ⚠️  Достигнут лимит 10 ГБ, остановлено")
                 break
             
             if cand_type != file_type:

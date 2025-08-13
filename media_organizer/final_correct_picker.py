@@ -8,8 +8,6 @@ import csv
 import os
 import random
 import shutil
-import sys
-from collections import defaultdict
 from pathlib import Path
 
 # ТОЧНЫЕ ЦЕЛИ из техзадания
@@ -137,7 +135,7 @@ def generate_filename(category, counter, exercises):
 def copy_files_correctly(all_videos, all_images, exercises):
     """Копирует файлы с правильными именами в нужных количествах"""
     
-    print(f"\n🎯 ОТБИРАЮ И КОПИРУЮ ТОЧНЫЕ КОЛИЧЕСТВА:")
+    print("\n🎯 ОТБИРАЮ И КОПИРУЮ ТОЧНЫЕ КОЛИЧЕСТВА:")
     print(f"Видео нужно: {sum(VIDEO_TARGETS.values())} штук")
     print(f"Изображений нужно: {sum(IMAGE_TARGETS.values())} штук")
     
@@ -207,7 +205,7 @@ def copy_files_correctly(all_videos, all_images, exercises):
 
 def verify_results():
     """Проверяет правильность результатов"""
-    print(f"\n📊 ПРОВЕРКА РЕЗУЛЬТАТОВ:")
+    print("\n📊 ПРОВЕРКА РЕЗУЛЬТАТОВ:")
     print("=" * 50)
     
     # Проверяем видео
@@ -217,10 +215,10 @@ def verify_results():
             pattern = f"*_{category}_*"
             folder = "videos/exercises"
         elif category == 'instruction':
-            pattern = f"*_instruction_*"
+            pattern = "*_instruction_*"
             folder = "videos/instructions"
         elif category == 'reminder':
-            pattern = f"*_reminder_*"
+            pattern = "*_reminder_*"
             folder = "videos/reminders"
         else:  # weekly, final
             pattern = f"*_{category}_*"

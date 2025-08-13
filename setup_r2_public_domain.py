@@ -5,7 +5,6 @@ Since R2 doesn't support bucket policies, we need to:
 1. Check current R2 configuration
 2. Set up public access via R2 Custom Domain settings
 """
-import json
 import os
 import sys
 
@@ -69,7 +68,7 @@ def main():
             print(f"❌ Ошибка при просмотре файлов: {e}")
         
         # Test public access to known image
-        print(f"\n🧪 Тестируем публичный доступ:")
+        print("\n🧪 Тестируем публичный доступ:")
         test_url = f"{public_domain}/photos/progress/card_progress_0066.jpg"
         print(f"URL: {test_url}")
         

@@ -1,4 +1,3 @@
-import json
 
 from django.core.management.base import BaseCommand
 
@@ -51,10 +50,10 @@ class Command(BaseCommand):
             self.stdout.write(f"   {step}")
             
         if verbose:
-            self.stdout.write(f"\n🎯 Детали генерации:")
+            self.stdout.write("\n🎯 Детали генерации:")
             self.stdout.write(f"   • Mistake видео: {PLAYLIST_MISTAKE_PROB * 100}% вероятность")
-            self.stdout.write(f"   • Deterministic selection: Основан на workout_id + week + day + archetype")
-            self.stdout.write(f"   • Storage validation: Проверка существования файла в R2")
+            self.stdout.write("   • Deterministic selection: Основан на workout_id + week + day + archetype")
+            self.stdout.write("   • Storage validation: Проверка существования файла в R2")
 
     def analyze_video_types(self, verbose):
         """Анализ типов видео"""
@@ -212,15 +211,15 @@ class Command(BaseCommand):
         for placeholder in placeholders:
             self.stdout.write(f"   • {placeholder}")
         
-        self.stdout.write(f"\n🌐 URL Generation:")
-        self.stdout.write(f"   • Base URL: R2_PUBLIC_URL из настроек")
-        self.stdout.write(f"   • Dynamic path: Подставляется на основе VideoClip.r2_file")
-        self.stdout.write(f"   • CDN caching: Автоматически через Cloudflare")
+        self.stdout.write("\n🌐 URL Generation:")
+        self.stdout.write("   • Base URL: R2_PUBLIC_URL из настроек")
+        self.stdout.write("   • Dynamic path: Подставляется на основе VideoClip.r2_file")
+        self.stdout.write("   • CDN caching: Автоматически через Cloudflare")
         
         # Итоговая сводка
-        self.stdout.write(f"\n📋 ИТОГО:")
-        self.stdout.write(f"   🎬 Система плейлистов работает детерминистически")
-        self.stdout.write(f"   👤 3 архетипа с fallback цепочками")
-        self.stdout.write(f"   🔄 Контроль повторений через seeded RNG")
-        self.stdout.write(f"   ☁️  Все видео хранятся в Cloudflare R2")
-        self.stdout.write(f"   ⚡ Storage validation предотвращает битые ссылки")
+        self.stdout.write("\n📋 ИТОГО:")
+        self.stdout.write("   🎬 Система плейлистов работает детерминистически")
+        self.stdout.write("   👤 3 архетипа с fallback цепочками")
+        self.stdout.write("   🔄 Контроль повторений через seeded RNG")
+        self.stdout.write("   ☁️  Все видео хранятся в Cloudflare R2")
+        self.stdout.write("   ⚡ Storage validation предотвращает битые ссылки")

@@ -45,7 +45,7 @@ class Exercise(models.Model):
     )
     
     # Exercise alternatives (for substitution feature)
-    alternatives = models.ManyToManyField('self', blank=True, symmetrical=True)
+    alternatives = models.ManyToManyField('sel', blank=True, symmetrical=True)
     
     # Legacy video references removed - use VideoClip.r2_file instead
     

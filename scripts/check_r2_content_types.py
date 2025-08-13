@@ -32,9 +32,9 @@ def get_content_type(key: str) -> str:
         '.jpg': 'image/jpeg',
         '.jpeg': 'image/jpeg',
         '.png': 'image/png',
-        '.gif': 'image/gif',
+        '.gi': 'image/gi',
         '.webp': 'image/webp',
-        '.pdf': 'application/pdf',
+        '.pd': 'application/pdf',
     }
     return content_types.get(ext, 'application/octet-stream')
 
@@ -113,7 +113,7 @@ def check_r2_content_types(bucket_name: str, dry_run: bool = True) -> dict:
                                     ContentType=expected_content_type
                                 )
                                 stats['fixed_objects'] += 1
-                                print(f"   ✅ FIXED")
+                                print("   ✅ FIXED")
                             except Exception as e:
                                 print(f"   ❌ FIX FAILED: {e}")
                                 stats['errors'] += 1

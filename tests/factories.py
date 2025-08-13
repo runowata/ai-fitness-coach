@@ -8,7 +8,7 @@ import factory
 from factory.django import DjangoModelFactory
 
 from apps.users.models import User
-from apps.workouts.constants import Archetype, VideoKind
+from apps.workouts.constants import VideoKind
 from apps.workouts.models import CSVExercise, DailyWorkout, VideoClip, VideoProvider, WorkoutPlan
 
 
@@ -27,6 +27,8 @@ class UserFactory(DjangoModelFactory):
 class CSVExerciseFactory(DjangoModelFactory):
     class Meta:
         model = CSVExercise
+
+    slug = factory.Sequence(lambda n: f"exercise-{n}")
     
     id = factory.Sequence(lambda n: f"EX{n:03d}_v2")
     name_ru = factory.Faker('sentence', nb_words=3)

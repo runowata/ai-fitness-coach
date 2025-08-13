@@ -5,14 +5,9 @@
 """
 
 import csv
-import hashlib
-import os
 import random
-import re
 import shutil
-import subprocess
 import time
-from collections import defaultdict
 from pathlib import Path
 
 random.seed(42)
@@ -83,7 +78,7 @@ def get_all_source_files():
             continue
     
     # Сканируем все фото файлы
-    photo_patterns = ["**/*.jpg", "**/*.jpeg", "**/*.png", "**/*.gif", "**/*.webp", 
+    photo_patterns = ["**/*.jpg", "**/*.jpeg", "**/*.png", "**/*.gi", "**/*.webp", 
                       "**/*.JPG", "**/*.JPEG", "**/*.PNG"]
     for pattern in photo_patterns:
         try:
@@ -150,7 +145,7 @@ def create_placeholders(category, needed_count, source_files, target_dir):
         
         # Генерируем правильное имя в зависимости от категории
         ext = src_file.suffix.lower()
-        if ext in ['.jpeg', '.png', '.gif', '.webp']:
+        if ext in ['.jpeg', '.png', '.gi', '.webp']:
             ext = '.jpg'  # Унифицируем для фото
         
         if category == "photos/quotes":

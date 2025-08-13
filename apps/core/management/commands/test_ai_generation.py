@@ -6,7 +6,6 @@ import json
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from apps.ai_integration.services import WorkoutPlanGenerator
 
@@ -151,8 +150,8 @@ class Command(BaseCommand):
             
             self.stdout.write(self.style.SUCCESS(f"✅ Test user created: {username}"))
             self.stdout.write(f"📧 Email: {user.email}")
-            self.stdout.write(f"🔑 Password: test123456")
-            self.stdout.write(f"🌐 Login URL: https://ai-fitness-coach-ttzf.onrender.com/users/login/")
+            self.stdout.write("🔑 Password: test123456")
+            self.stdout.write("🌐 Login URL: https://ai-fitness-coach-ttzf.onrender.com/users/login/")
             
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"❌ Failed to create user: {str(e)}"))

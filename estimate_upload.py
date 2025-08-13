@@ -5,7 +5,6 @@ estimate_upload.py
 Оценивает размер и время загрузки медиатеки в R2.
 """
 
-import time
 from collections import defaultdict
 from pathlib import Path
 

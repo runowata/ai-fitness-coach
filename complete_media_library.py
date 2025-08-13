@@ -6,13 +6,11 @@
 
 import csv
 import hashlib
-import os
 import random
 import re
 import shutil
 import subprocess
 import time
-from collections import defaultdict
 from pathlib import Path
 
 random.seed(42)
@@ -123,7 +121,7 @@ def find_files_aggressive(category, needed_count):
         
     elif category in ["photos/workout", "photos/progress"]:
         search_patterns = [
-            "**/*.jpg", "**/*.jpeg", "**/*.png", "**/*.gif", "**/*.webp"
+            "**/*.jpg", "**/*.jpeg", "**/*.png", "**/*.gi", "**/*.webp"
         ]
     
     print(f"  Searching for {needed_count} files for {category}...")
@@ -166,7 +164,7 @@ def find_files_aggressive(category, needed_count):
     if len(found_files) < needed_count:
         shortage = needed_count - len(found_files)
         print(f"    ⚠️  Found only {len(found_files)} files, {shortage} still missing from external disk")
-        print(f"    Will use what we found, no duplicates created")
+        print("    Will use what we found, no duplicates created")
     
     random.shuffle(found_files)
     return found_files[:needed_count]
@@ -197,7 +195,7 @@ def copy_and_rename_smart(src_path, category, target_dir):
     target_dir.mkdir(parents=True, exist_ok=True)
     
     ext = src_path.suffix.lower()
-    if ext in ['.jpeg', '.png', '.gif', '.webp']:
+    if ext in ['.jpeg', '.png', '.gi', '.webp']:
         ext = '.jpg'  # Унифицируем расширение для фото
     
     # Генерируем имя в зависимости от категории
@@ -387,7 +385,7 @@ def main():
     
     # Запускаем финальную очистку
     if total_copied > 0:
-        print(f"\n🔧 Running final cleanup...")
+        print("\n🔧 Running final cleanup...")
         fix_script = SELECTED_MEDIA / "fix_selected_media.py"
         if fix_script.exists():
             try:

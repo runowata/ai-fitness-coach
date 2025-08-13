@@ -3,7 +3,10 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+import logging
 from django.shortcuts import get_object_or_404, redirect, render
+
+logger = logging.getLogger(__name__)
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -11,7 +14,6 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 
 from apps.achievements.services import WorkoutCompletionService
-from apps.users.models import UserProfile
 
 from .models import CSVExercise, DailyWorkout, ExplainerVideo, WeeklyLesson, WeeklyNotification
 from .serializers import WeeklyLessonSerializer, WeeklyNotificationSerializer

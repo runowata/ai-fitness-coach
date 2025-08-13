@@ -18,8 +18,7 @@ import json
 
 from django.conf import settings
 
-from apps.users.models import User
-from apps.workouts.models import DailyWorkout, Exercise, VideoClip, WorkoutPlan
+from apps.workouts.models import DailyWorkout, Exercise, VideoClip
 from apps.workouts.services import VideoPlaylistBuilder
 
 

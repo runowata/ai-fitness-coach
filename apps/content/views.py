@@ -157,15 +157,15 @@ def unlock_preview(request, chapter_id):
     
     if achievement.trigger_type == 'workout_count':
         current_progress = profile.total_workouts_completed
-        progress_text = f"тренировок выполнено"
+        progress_text = "тренировок выполнено"
         
     elif achievement.trigger_type == 'streak_days':
         current_progress = profile.current_streak
-        progress_text = f"дней подряд"
+        progress_text = "дней подряд"
         
     elif achievement.trigger_type == 'xp_earned':
         current_progress = profile.experience_points
-        progress_text = f"XP заработано"
+        progress_text = "XP заработано"
     
     progress_percent = min(int((current_progress / achievement.trigger_value) * 100), 100)
     

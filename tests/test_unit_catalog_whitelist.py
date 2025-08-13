@@ -2,7 +2,7 @@
 Unit tests for exercise catalog and whitelist functionality
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 from django.core.cache import cache
@@ -80,7 +80,7 @@ class TestExerciseCatalog(TestCase):
         
         # Next call should hit database again
         with self.assertNumQueries(1):
-            attrs3 = self.catalog.get_attributes('push-ups')
+            self.catalog.get_attributes('push-ups')
     
     def test_similarity_score_calculation(self):
         """Test similarity score follows priority weights"""

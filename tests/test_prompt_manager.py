@@ -1,8 +1,6 @@
 """
 Tests for PromptManagerV2 critical functionality
 """
-import json
-from pathlib import Path
 
 import pytest
 

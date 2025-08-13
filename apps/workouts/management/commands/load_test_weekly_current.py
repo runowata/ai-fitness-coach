@@ -1,7 +1,5 @@
 """Management command for load testing /api/weekly/current/ endpoint"""
-import asyncio
 import statistics
-import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List
@@ -10,9 +8,8 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.test import Client
 from django.urls import reverse
-from django.utils import timezone
 
-from apps.workouts.models import WeeklyLesson, WeeklyNotification
+from apps.workouts.models import WeeklyNotification
 from apps.workouts.performance import OptimizedWeeklyCurrentService, WeeklyLessonHealthChecker
 
 User = get_user_model()
@@ -74,7 +71,7 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.WARNING(
                         f"Only found {len(test_users)} users, expected {num_users}. "
-                        f"Use --create-test-data to create test users."
+                        "Use --create-test-data to create test users."
                     )
                 )
                 return
@@ -317,11 +314,11 @@ class Command(BaseCommand):
         self.stdout.write(f"⏱️  Total time: {total_time:.2f}s")
         self.stdout.write(f"⚡ Requests/second: {requests_per_second:.2f}")
         
-        self.stdout.write(f"\n🎯 SUCCESS RATE:")
+        self.stdout.write("\n🎯 SUCCESS RATE:")
         self.stdout.write(f"✅ Successful: {successful_requests} ({successful_requests/total_requests*100:.1f}%)")
         self.stdout.write(f"❌ Failed: {failed_requests} ({failed_requests/total_requests*100:.1f}%)")
         
-        self.stdout.write(f"\n📈 RESPONSE TIMES (ms):")
+        self.stdout.write("\n📈 RESPONSE TIMES (ms):")
         self.stdout.write(f"Average: {statistics.mean(response_times):.2f}")
         self.stdout.write(f"Median (P50): {p50:.2f}")
         self.stdout.write(f"95th percentile: {p95:.2f}")
@@ -329,13 +326,13 @@ class Command(BaseCommand):
         self.stdout.write(f"Min: {min(response_times):.2f}")
         self.stdout.write(f"Max: {max(response_times):.2f}")
         
-        self.stdout.write(f"\n📊 STATUS CODES:")
+        self.stdout.write("\n📊 STATUS CODES:")
         for code, count in sorted(status_codes.items()):
             percentage = (count / total_requests) * 100
             self.stdout.write(f"{code}: {count} ({percentage:.1f}%)")
         
         # Performance assessment
-        self.stdout.write(f"\n🏆 PERFORMANCE ASSESSMENT:")
+        self.stdout.write("\n🏆 PERFORMANCE ASSESSMENT:")
         
         if p95 < 100:
             self.stdout.write(self.style.SUCCESS("✅ Excellent: P95 < 100ms"))
@@ -393,6 +390,6 @@ class Command(BaseCommand):
         # Recommendations
         recommendations = post_health.get('recommendations', [])
         if recommendations:
-            self.stdout.write(f"\n💡 RECOMMENDATIONS:")
+            self.stdout.write("\n💡 RECOMMENDATIONS:")
             for rec in recommendations:
                 self.stdout.write(f"• {rec}")

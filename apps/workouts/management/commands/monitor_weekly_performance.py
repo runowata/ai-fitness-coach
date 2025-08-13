@@ -4,11 +4,9 @@ import time
 from datetime import datetime, timedelta
 
 from django.contrib.auth import get_user_model
-from django.core.cache import cache
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from apps.workouts.models import WeeklyNotification
 from apps.workouts.performance import OptimizedWeeklyCurrentService, WeeklyLessonHealthChecker
 
 User = get_user_model()
@@ -256,7 +254,7 @@ class Command(BaseCommand):
         if query_times:
             avg_query_time = sum(query_times) / len(query_times)
             max_query_time = max(query_times)
-            self.stdout.write(f"🗄️  Database Query Times:")
+            self.stdout.write("🗄️  Database Query Times:")
             self.stdout.write(f"   Average: {avg_query_time:.2f}ms")
             self.stdout.write(f"   Maximum: {max_query_time:.2f}ms")
             self.stdout.write(f"   Samples: {len(query_times)}")
@@ -272,7 +270,7 @@ class Command(BaseCommand):
         
         if cache_get_times:
             avg_cache_time = sum(cache_get_times) / len(cache_get_times)
-            self.stdout.write(f"\n🚄 Cache Performance:")
+            self.stdout.write("\n🚄 Cache Performance:")
             self.stdout.write(f"   Average get time: {avg_cache_time:.2f}ms")
             self.stdout.write(f"   Samples: {len(cache_get_times)}")
             
@@ -288,7 +286,7 @@ class Command(BaseCommand):
         if unread_counts:
             avg_unread = sum(unread_counts) / len(unread_counts)
             max_unread = max(unread_counts)
-            self.stdout.write(f"\n📬 Unread Notifications:")
+            self.stdout.write("\n📬 Unread Notifications:")
             self.stdout.write(f"   Average: {avg_unread:.0f}")
             self.stdout.write(f"   Maximum: {max_unread}")
             
@@ -302,7 +300,7 @@ class Command(BaseCommand):
         healthy_count = health_statuses.count('healthy')
         total_count = len(health_statuses)
         
-        self.stdout.write(f"\n🏥 System Health:")
+        self.stdout.write("\n🏥 System Health:")
         self.stdout.write(f"   Healthy samples: {healthy_count}/{total_count} ({healthy_count/total_count*100:.1f}%)")
         
         if healthy_count == total_count:
@@ -319,7 +317,7 @@ class Command(BaseCommand):
             )
         
         # Optimization recommendations
-        self.stdout.write(f"\n💡 OPTIMIZATION RECOMMENDATIONS:")
+        self.stdout.write("\n💡 OPTIMIZATION RECOMMENDATIONS:")
         
         if query_times and max(query_times) > 200:
             self.stdout.write("   • Consider database query optimization or indexing")

@@ -1,10 +1,9 @@
-import json
 
 from django.core.management.base import BaseCommand
 from django.db import connection
 
 from apps.users.models import User
-from apps.workouts.constants import Archetype, VideoKind
+from apps.workouts.constants import VideoKind
 from apps.workouts.models import CSVExercise, DailyWorkout, VideoClip, WorkoutPlan
 
 
@@ -243,7 +242,7 @@ class Command(BaseCommand):
             for issue in issues:
                 self.stdout.write(f"   • {issue}")
                 
-        self.stdout.write(f"\n📊 Ключевые метрики:")
+        self.stdout.write("\n📊 Ключевые метрики:")
         self.stdout.write(f"   • Упражнения: {exercises_count}")
         self.stdout.write(f"   • Видео клипы: {videos_count}")
         self.stdout.write(f"   • Пользователи: {users_count}")
@@ -251,7 +250,7 @@ class Command(BaseCommand):
         
         # Рекомендации
         if system_status != "🟢 ГОТОВА":
-            self.stdout.write(f"\n💡 Рекомендации для запуска:")
+            self.stdout.write("\n💡 Рекомендации для запуска:")
             if exercises_count == 0:
                 self.stdout.write("   1. python manage.py import_exercises_v2 --data-dir ./data/raw")
             if videos_count == 0:

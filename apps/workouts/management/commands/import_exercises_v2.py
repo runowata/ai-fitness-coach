@@ -89,7 +89,7 @@ class Command(BaseCommand):
             exercises_count = CSVExercise.objects.filter(is_active=True).count()
             clips_count = VideoClip.objects.filter(is_active=True, r2_file__isnull=False).count()
             
-            self.stdout.write(self.style.SUCCESS(f"\n🎉 Import complete!"))
+            self.stdout.write(self.style.SUCCESS("\n🎉 Import complete!"))
             self.stdout.write(f"  📊 {exercises_count} exercises imported")
             self.stdout.write(f"  🎥 {clips_count} video clips imported")
 
@@ -259,7 +259,7 @@ class Command(BaseCommand):
 
     def create_r2_placeholder_clips(self, force):
         """Create placeholder video clips for exercises with R2 mapping"""
-        self.stdout.write(f"\n🎥 Creating R2 placeholder clips...")
+        self.stdout.write("\n🎥 Creating R2 placeholder clips...")
         
         created_count = 0
         
