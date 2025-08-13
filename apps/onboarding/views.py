@@ -26,11 +26,24 @@ logger = logging.getLogger(__name__)
 
 
 def _get_random_motivational_background():
-    """Get random motivational background image from R2 using the same mechanism as videos"""
+    """Get random motivational background image from R2 using public CDN URLs"""
     try:
-        from django.core.files.storage import default_storage
-
-        # Read available photos from R2
+        # First try to get from database (cards with public URLs)
+        from apps.onboarding.models import MotivationalCard
+        
+        # Get random active card with image_url (public CDN)
+        card = MotivationalCard.objects.filter(
+            is_active=True,
+            image_url__isnull=False
+        ).exclude(image_url='').order_by('?').first()
+        
+        if card and card.image_url:
+            # Use public CDN URL - stable and fast
+            if card.image_url.startswith('https://pub-'):
+                logger.info(f"Using public CDN URL: {card.image_url}")
+                return card.image_url
+        
+        # Fallback: use r2_upload_state.json for quotes
         r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
         if os.path.exists(r2_state_path):
             with open(r2_state_path, 'r') as f:
@@ -43,29 +56,16 @@ def _get_random_motivational_background():
             ]
             
             if quotes_photos:
-                # Select random photo
+                # Select random photo and create public URL
                 random_photo = random.choice(quotes_photos)
-                
-                # Use the same mechanism as videos - default_storage.url()
-                # This will use signed URLs if USE_R2_STORAGE=True, or return empty in dev
-                try:
-                    photo_url = default_storage.url(random_photo)
-                    # In development (USE_R2_STORAGE=False), this returns /media/path
-                    # In production (USE_R2_STORAGE=True), this returns signed R2 URL
-                    
-                    # Check if it's a local path (dev environment)
-                    if photo_url.startswith('/media/'):
-                        logger.info("Development environment: using gradient background instead of R2 image")
-                        return ''  # Use gradient background in development
-                    else:
-                        # Production: return signed URL
-                        return photo_url
-                        
-                except Exception as e:
-                    logger.warning(f"Failed to get URL for {random_photo}: {e}")
-                    return ''
+                r2_public_base = os.getenv('R2_PUBLIC_BASE', 'https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev')
+                if r2_public_base:
+                    public_url = f"{r2_public_base.rstrip('/')}/{random_photo}"
+                    logger.info(f"Using public URL from state file: {public_url}")
+                    return public_url
         
-        # Fallback: return empty to use gradient background
+        # Final fallback: return empty to use gradient background
+        logger.info("No motivational images available, using gradient background")
         return ''
         
     except Exception as e:
