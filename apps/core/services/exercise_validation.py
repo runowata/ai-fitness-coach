@@ -62,15 +62,30 @@ class ExerciseValidationService:
         try:
             from apps.core.metrics import MetricNames, incr
 
+            # Debug: Check total video clips and CSVExercises
+            from apps.workouts.models import VideoClip, CSVExercise
+            total_clips = VideoClip.objects.count()
+            total_exercises = CSVExercise.objects.filter(is_active=True).count()
+            clips_with_video = ExerciseValidationService.get_clips_with_video().count()
+            
+            logger.info(f"DEBUG: Total VideoClips={total_clips}, Active CSVExercises={total_exercises}, Clips with video={clips_with_video}")
+            logger.info(f"DEBUG: Required kinds={ExerciseValidationService.REQUIRED_KINDS}")
+
             # Build query with optional filters
             query = ExerciseValidationService.get_clips_with_video().filter(
                 r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
                 exercise__is_active=True
             )
             
+            # Debug: Check intermediate results
+            query_count = query.count()
+            logger.info(f"DEBUG: Clips matching required kinds + active exercise={query_count}")
+            
             # Apply archetype filter if specified
             if archetype:
                 query = query.filter(r2_archetype=archetype)
+                query_count_arch = query.count()
+                logger.info(f"DEBUG: After archetype filter ({archetype})={query_count_arch}")
             
             # Apply locale filter if specified (future: when locale field exists)
             # if locale:
@@ -91,6 +106,9 @@ class ExerciseValidationService:
             )
             
             slugs = set(slugs_with_coverage)
+            
+            # Debug logging
+            logger.info(f"Query returned {len(slugs)} exercise IDs: {list(slugs)[:5]}...")  # Show first 5
             
             # Track metrics
             incr(MetricNames.AI_WHITELIST_COUNT, len(slugs))
