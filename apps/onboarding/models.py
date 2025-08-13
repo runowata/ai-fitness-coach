@@ -92,14 +92,23 @@ class AnswerOption(models.Model):
 class MotivationalCard(models.Model):
     title = models.CharField(max_length=200, blank=True)
     message = models.TextField()
-    image_url = models.URLField(blank=True)  # Keep for backward compatibility
     
-    # New image field for R2/S3 storage
+    # DEPRECATED: Keep for backward compatibility during migration
+    image_url = models.URLField(blank=True, help_text='DEPRECATED: Use path field instead')
+    
+    # New image field for R2/S3 storage (DEPRECATED: Use path field instead)
     image = models.ImageField(
         upload_to='photos/quotes/',
         blank=True,
         null=True,
-        help_text='Motivational card image'
+        help_text='DEPRECATED: Use path field instead'
+    )
+    
+    # NEW: Relative path for R2 storage (e.g., "photos/quotes/card_quotes_0170.jpg")
+    path = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text='Relative path to image in R2 storage (e.g., "photos/quotes/card_quotes_0170.jpg")'
     )
     
     # Specific linking to questions and answers
@@ -151,7 +160,13 @@ class MotivationalCard(models.Model):
     
     @property
     def cdn_url(self):
-        """Get CDN URL for card image using the same mechanism as videos"""
+        """Get CDN URL for card image using path field"""
+        # NEW approach: use path field with public R2 URL
+        if self.path:
+            from apps.onboarding.utils import public_r2_url
+            return public_r2_url(self.path)
+        
+        # LEGACY fallback for migration period
         if self.image:
             # Use Django's default storage mechanism (same as videos)
             from django.core.files.storage import default_storage
@@ -176,22 +191,10 @@ class MotivationalCard(models.Model):
         if self.image_url:
             # If it's already a full URL with pub-*.r2.dev domain, extract path and create signed URL
             if self.image_url.startswith('http'):
-                import re
-                match = re.search(r'https://pub-[^/]+\.r2\.dev/(.+)', self.image_url)
-                if match:
-                    file_path = match.group(1)  # e.g., "photos/progress/card_progress_0066.jpg"
-                    from django.core.files.storage import default_storage
-                    try:
-                        # Use the same mechanism as videos
-                        signed_url = default_storage.url(file_path)
-                        if signed_url.startswith('/media/'):
-                            return ''  # Dev environment
-                        return signed_url
-                    except Exception as e:
-                        import logging
-                        logger = logging.getLogger(__name__)
-                        logger.warning(f"Failed to generate signed URL for {file_path}: {e}")
-                        return ''  # Return empty instead of broken URL
+                from apps.onboarding.utils import extract_path_from_r2_url, public_r2_url
+                file_path = extract_path_from_r2_url(self.image_url)
+                if file_path:
+                    return public_r2_url(file_path)
                 else:
                     return ''  # Pattern doesn't match, return empty
             

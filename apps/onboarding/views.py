@@ -26,24 +26,35 @@ logger = logging.getLogger(__name__)
 
 
 def _get_random_motivational_background():
-    """Get random motivational background image from R2 using public CDN URLs"""
+    """Get random motivational background image using path field (NEW APPROACH)"""
     try:
-        # First try to get from database (cards with public URLs)
         from apps.onboarding.models import MotivationalCard
+        from apps.onboarding.utils import public_r2_url
         
-        # Get random active card with image_url (public CDN)
+        # NEW approach: use path field directly
         card = MotivationalCard.objects.filter(
+            is_active=True,
+            path__isnull=False
+        ).exclude(path='').order_by('?').first()
+        
+        if card and card.path:
+            public_url = public_r2_url(card.path)
+            if public_url:
+                logger.info(f"Using path field: {card.path} -> {public_url}")
+                return public_url
+        
+        # LEGACY fallback: try to find cards with image_url (during migration period)
+        legacy_card = MotivationalCard.objects.filter(
             is_active=True,
             image_url__isnull=False
         ).exclude(image_url='').order_by('?').first()
         
-        if card and card.image_url:
-            # Use public CDN URL - stable and fast
-            if card.image_url.startswith('https://pub-'):
-                logger.info(f"Using public CDN URL: {card.image_url}")
-                return card.image_url
+        if legacy_card and legacy_card.image_url:
+            if legacy_card.image_url.startswith('https://pub-'):
+                logger.warning(f"Using legacy image_url (should be migrated to path): {legacy_card.image_url}")
+                return legacy_card.image_url
         
-        # Fallback: use r2_upload_state.json for quotes
+        # Secondary fallback: use r2_upload_state.json for quotes
         r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
         if os.path.exists(r2_state_path):
             with open(r2_state_path, 'r') as f:
@@ -56,11 +67,10 @@ def _get_random_motivational_background():
             ]
             
             if quotes_photos:
-                # Select random photo and create public URL
+                # Select random photo and create public URL using new helper
                 random_photo = random.choice(quotes_photos)
-                r2_public_base = os.getenv('R2_PUBLIC_BASE', 'https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev')
-                if r2_public_base:
-                    public_url = f"{r2_public_base.rstrip('/')}/{random_photo}"
+                public_url = public_r2_url(random_photo)
+                if public_url:
                     logger.info(f"Using public URL from state file: {public_url}")
                     return public_url
         

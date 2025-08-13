@@ -62,6 +62,8 @@ pytest -k test_workout_completion      # Pattern matching
 pytest -m unit                         # Unit tests only
 pytest -m integration                  # Integration tests
 pytest -m ai                          # AI-related tests
+pytest -m "not slow"                   # Skip slow tests
+pytest -m e2e                         # End-to-end tests
 DJANGO_SETTINGS_MODULE=config.test_settings pytest -q -k "unit or catalog or whitelist" --tb=short
 ```
 
