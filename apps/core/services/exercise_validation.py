@@ -80,7 +80,7 @@ class ExerciseValidationService:
                 # Try each archetype in fallback order until we find exercises that have complete coverage
                 final_query = None
                 for arch in fallback_archetypes:
-                    arch_query = query.filter(r2_archetype=arch)
+                    arch_query = query.filter(archetype=arch)
                     
                     # Check if this archetype produces complete exercise coverage
                     test_slugs = (arch_query

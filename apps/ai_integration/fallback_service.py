@@ -320,12 +320,18 @@ class FallbackService:
             
             for day_num in range(1, 8):  # 7 days per week
                 if day_num in [6, 7]:  # Weekend rest days
+                    # Rest day with confidence task block
+                    blocks = [{
+                        'type': 'confidence_task',
+                        'text': "Rest and recovery - you're doing great!",
+                        'description': 'Rest day motivation'
+                    }]
+                    
                     day_data = {
                         'day_number': day_num,
                         'workout_name': f"Rest Day {day_num}",
                         'is_rest_day': True,
-                        'exercises': [],
-                        'confidence_task': "Rest and recovery - you're doing great!"
+                        'blocks': blocks
                     }
                 else:
                     # Select exercise pattern
@@ -344,12 +350,27 @@ class FallbackService:
                                 'rest_seconds': template['rest_seconds']
                             })
                     
+                    # Create blocks structure for new schema
+                    blocks = []
+                    if exercises:
+                        blocks.append({
+                            'type': 'main',
+                            'name': 'Main Workout',
+                            'exercises': exercises
+                        })
+                    
+                    # Add confidence task as separate block
+                    blocks.append({
+                        'type': 'confidence_task',
+                        'text': f"Complete Day {day_num} - you're building strength!",
+                        'description': 'Daily confidence building task'
+                    })
+                    
                     day_data = {
                         'day_number': day_num,
                         'workout_name': f"Day {day_num} Workout",
                         'is_rest_day': False,
-                        'exercises': exercises,
-                        'confidence_task': f"Complete Day {day_num} - you're building strength!"
+                        'blocks': blocks
                     }
                 
                 week_data['days'].append(day_data)
@@ -385,71 +406,121 @@ class FallbackService:
                             "day_number": 1,
                             "workout_name": "Basic Movement",
                             "is_rest_day": False,
-                            "exercises": [
+                            "blocks": [
                                 {
-                                    "slug": "push-ups",
-                                    "sets": 2,
-                                    "reps": "5-8",
-                                    "rest_seconds": 60
+                                    "type": "main",
+                                    "name": "Basic Exercise",
+                                    "exercises": [
+                                        {
+                                            "slug": "EX001_v2",
+                                            "sets": 2,
+                                            "reps": "5-8",
+                                            "rest_seconds": 60
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "You started - that's the hardest part!",
+                                    "description": "Daily motivation"
                                 }
-                            ],
-                            "confidence_task": "You started - that's the hardest part!"
+                            ]
                         },
                         {
                             "day_number": 2,
                             "workout_name": "Rest Day",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Rest and recover"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Rest and recover",
+                                    "description": "Rest day motivation"
+                                }
+                            ]
                         },
                         {
                             "day_number": 3,
                             "workout_name": "Basic Movement",
                             "is_rest_day": False,
-                            "exercises": [
+                            "blocks": [
                                 {
-                                    "slug": "squats",
-                                    "sets": 2,
-                                    "reps": "8-12",
-                                    "rest_seconds": 60
+                                    "type": "main",
+                                    "name": "Basic Exercise",
+                                    "exercises": [
+                                        {
+                                            "slug": "EX002_v2",
+                                            "sets": 2,
+                                            "reps": "8-12",
+                                            "rest_seconds": 60
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Building consistency",
+                                    "description": "Progress motivation"
                                 }
-                            ],
-                            "confidence_task": "Building consistency"
+                            ]
                         },
                         {
                             "day_number": 4,
                             "workout_name": "Rest Day",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Recovery is important"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Recovery is important",
+                                    "description": "Rest day wisdom"
+                                }
+                            ]
                         },
                         {
                             "day_number": 5,
                             "workout_name": "Basic Movement", 
                             "is_rest_day": False,
-                            "exercises": [
+                            "blocks": [
                                 {
-                                    "slug": "planks",
-                                    "sets": 2,
-                                    "reps": "15-30 seconds",
-                                    "rest_seconds": 45
+                                    "type": "main",
+                                    "name": "Basic Exercise",
+                                    "exercises": [
+                                        {
+                                            "slug": "EX003_v2",
+                                            "sets": 2,
+                                            "reps": "15-30 seconds",
+                                            "rest_seconds": 45
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "You're getting stronger!",
+                                    "description": "Progress celebration"
                                 }
-                            ],
-                            "confidence_task": "You're getting stronger!"
+                            ]
                         },
                         {
                             "day_number": 6,
                             "workout_name": "Weekend Rest",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Enjoy your weekend"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Enjoy your weekend",
+                                    "description": "Weekend motivation"
+                                }
+                            ]
                         },
                         {
                             "day_number": 7,
                             "workout_name": "Weekend Rest",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Ready for next week"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Ready for next week",
+                                    "description": "Week transition"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -461,95 +532,145 @@ class FallbackService:
                             "day_number": 1,
                             "workout_name": "Progressive Movement",
                             "is_rest_day": False,
-                            "exercises": [
+                            "blocks": [
                                 {
-                                    "slug": "push-ups",
-                                    "sets": 3,
-                                    "reps": "8-10",
-                                    "rest_seconds": 60
+                                    "type": "main",
+                                    "name": "Progressive Workout",
+                                    "exercises": [
+                                        {
+                                            "slug": "EX001_v2",
+                                            "sets": 3,
+                                            "reps": "8-10",
+                                            "rest_seconds": 60
+                                        },
+                                        {
+                                            "slug": "EX002_v2",
+                                            "sets": 3,
+                                            "reps": "10-15",
+                                            "rest_seconds": 60
+                                        }
+                                    ]
                                 },
                                 {
-                                    "slug": "squats",
-                                    "sets": 3,
-                                    "reps": "10-15",
-                                    "rest_seconds": 60
+                                    "type": "confidence_task",
+                                    "text": "You're progressing!",
+                                    "description": "Week 2 progress celebration"
                                 }
-                            ],
-                            "confidence_task": "You're progressing!"
+                            ]
                         },
                         {
                             "day_number": 2,
                             "workout_name": "Rest Day",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Rest and prepare"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Rest and prepare",
+                                    "description": "Preparation for next workout"
+                                }
+                            ]
                         },
                         {
                             "day_number": 3,
                             "workout_name": "Full Body Basic",
                             "is_rest_day": False,
-                            "exercises": [
+                            "blocks": [
                                 {
-                                    "slug": "jumping-jacks",
-                                    "sets": 3,
-                                    "reps": "30 seconds",
-                                    "rest_seconds": 45
+                                    "type": "main",
+                                    "name": "Full Body Training",
+                                    "exercises": [
+                                        {
+                                            "slug": "EX004_v2",
+                                            "sets": 3,
+                                            "reps": "30 seconds",
+                                            "rest_seconds": 45
+                                        },
+                                        {
+                                            "slug": "EX003_v2",
+                                            "sets": 3,
+                                            "reps": "20-45 seconds",
+                                            "rest_seconds": 45
+                                        }
+                                    ]
                                 },
                                 {
-                                    "slug": "planks",
-                                    "sets": 3,
-                                    "reps": "20-45 seconds",
-                                    "rest_seconds": 45
+                                    "type": "confidence_task",
+                                    "text": "You're building real habits!",
+                                    "description": "Habit formation motivation"
                                 }
-                            ],
-                            "confidence_task": "You're building real habits!"
+                            ]
                         },
                         {
                             "day_number": 4,
                             "workout_name": "Rest Day",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Recovery helps you grow"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Recovery helps you grow",
+                                    "description": "Recovery importance"
+                                }
+                            ]
                         },
                         {
                             "day_number": 5,
                             "workout_name": "Challenge Day",
                             "is_rest_day": False,
-                            "exercises": [
+                            "blocks": [
                                 {
-                                    "slug": "push-ups",
-                                    "sets": 3,
-                                    "reps": "max effort",
-                                    "rest_seconds": 90
+                                    "type": "main",
+                                    "name": "Challenge Workout",
+                                    "exercises": [
+                                        {
+                                            "slug": "EX001_v2",
+                                            "sets": 3,
+                                            "reps": "max effort",
+                                            "rest_seconds": 90
+                                        },
+                                        {
+                                            "slug": "EX002_v2",
+                                            "sets": 3,
+                                            "reps": "max effort",
+                                            "rest_seconds": 90
+                                        },
+                                        {
+                                            "slug": "EX003_v2",
+                                            "sets": 1,
+                                            "reps": "max time",
+                                            "rest_seconds": 90
+                                        }
+                                    ]
                                 },
                                 {
-                                    "slug": "squats",
-                                    "sets": 3,
-                                    "reps": "max effort",
-                                    "rest_seconds": 90
-                                },
-                                {
-                                    "slug": "planks",
-                                    "sets": 1,
-                                    "reps": "max time",
-                                    "rest_seconds": 90
+                                    "type": "confidence_task",
+                                    "text": "You've completed the program! Ready for more challenges?",
+                                    "description": "Program completion celebration"
                                 }
-                            ],
-                            "confidence_task": "You've completed the program! Ready for more challenges?"
+                            ]
                         },
                         {
                             "day_number": 6,
                             "workout_name": "Victory Rest",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Celebrate your progress!"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Celebrate your progress!",
+                                    "description": "Victory celebration"
+                                }
+                            ]
                         },
                         {
                             "day_number": 7,
                             "workout_name": "Planning Day",
                             "is_rest_day": True,
-                            "exercises": [],
-                            "confidence_task": "Plan your next fitness journey!"
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Plan your next fitness journey!",
+                                    "description": "Future planning motivation"
+                                }
+                            ]
                         }
                     ]
                 }

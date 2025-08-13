@@ -96,12 +96,12 @@ class OpenAIClient:
                     reasoning={
                         'effort': 'medium'  # Higher reasoning for comprehensive analysis
                     },
-                    response_format={
-                        'type': 'json_schema',
-                        'json_schema': {
-                            'name': 'comprehensive_report',
-                            'strict': False,
-                            'schema': {
+                    text={
+                        'verbosity': 'high',
+                        'format': {
+                            'type': 'json_schema',
+                            'name': 'ComprehensiveReport',
+                            'json_schema': {
                                 "type": "object",
                                 "properties": {
                                     "meta": {"type": "object"},
@@ -111,11 +111,9 @@ class OpenAIClient:
                                     "long_term_strategy": {"type": "object"}
                                 },
                                 "required": ["meta", "user_analysis", "training_program", "motivation_system", "long_term_strategy"]
-                            }
+                            },
+                            'strict': False
                         }
-                    },
-                    text={
-                        'verbosity': 'high'  # Detailed output for comprehensive reports
                     }
                 )
                 
@@ -176,16 +174,14 @@ class OpenAIClient:
                     'reasoning': {
                         'effort': 'minimal'  # Fast response for workout generation
                     },
-                    'response_format': {
-                        'type': 'json_schema',
-                        'json_schema': {
-                            'name': 'workout_plan',
-                            'strict': True,
-                            'schema': workout_plan_schema
-                        }
-                    },
                     'text': {
-                        'verbosity': 'low'  # Concise output
+                        'verbosity': 'medium',
+                        'format': {
+                            'type': 'json_schema',
+                            'name': 'WorkoutPlan',
+                            'json_schema': workout_plan_schema,
+                            'strict': True
+                        }
                     }
                 }
             else:

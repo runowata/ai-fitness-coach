@@ -135,7 +135,7 @@ class Command(BaseCommand):
                     'muscle_group': str(row.get('Основная мышечная группа', '')).strip(),
                     'exercise_type': str(row.get('Тип упражнения', '')).strip(),
                     'level': level_en,
-                    'duration_seconds': 30,  # Default duration
+                    'duration_sec': 30,  # Correct field name for CSVExercise model
                     'is_active': True
                 }
                 
@@ -223,7 +223,7 @@ class Command(BaseCommand):
                     'r2_kind': video_kind,
                     'model_name': 'default',
                     'reminder_text': instruction_script[:500],  # Limit text length
-                    'duration_seconds': 60,
+                    'duration_sec': 60,  # Correct field name
                     'is_active': True,
                     'is_placeholder': True  # Mark as placeholder since no R2 files yet
                 }
@@ -281,7 +281,7 @@ class Command(BaseCommand):
                         'r2_kind': video_kind,
                         'model_name': 'default',
                         'reminder_text': f'{video_kind} for {exercise.name_en}',
-                        'duration_seconds': 60,
+                        'duration_sec': 60,  # Correct field name
                         'is_active': True,
                         'is_placeholder': True
                     }
