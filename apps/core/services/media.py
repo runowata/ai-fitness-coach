@@ -90,6 +90,49 @@ class MediaService:
         return ''
     
     @staticmethod
+    def get_video_url(clip) -> str:
+        """
+        Get video URL for a VideoClip using structured R2 paths
+        
+        Args:
+            clip: VideoClip instance
+            
+        Returns:
+            Public URL for video file
+        """
+        if not clip or not clip.model_name or not clip.r2_kind:
+            return ''
+        
+        try:
+            # Generate structured path based on video kind and clip data
+            if clip.r2_kind == 'instruction':
+                # Check if it's exercise-specific or general instruction
+                if clip.exercise:
+                    # Exercise instructions: /videos/instructions/{slug}_instruction_{archetype}_{model}.mp4
+                    file_path = f"videos/instructions/{clip.exercise.id}_instruction_{clip.r2_archetype}_{clip.model_name}.mp4"
+                else:
+                    # General instructions (closing, intro, etc): /videos/instructions/{model}.mp4
+                    file_path = f"videos/instructions/{clip.model_name}.mp4"
+            elif clip.r2_kind in ['technique', 'mistake']:
+                # Exercises: /videos/exercises/{slug}_{kind}_{model}.mp4
+                if not clip.exercise:
+                    return ''  # Need exercise link
+                file_path = f"videos/exercises/{clip.exercise.id}_{clip.r2_kind}_{clip.model_name}.mp4"
+            elif clip.r2_kind in ['weekly', 'closing', 'intro']:
+                # General videos: /videos/{kind}/{model}.mp4
+                file_path = f"videos/{clip.r2_kind}/{clip.model_name}.mp4"
+            else:
+                # Fallback for other kinds
+                file_path = f"videos/{clip.r2_kind}/{clip.model_name}.mp4"
+            
+            # Use public CDN URL
+            return MediaService.get_public_cdn_url(file_path)
+            
+        except Exception as e:
+            logger.error(f"Error generating video URL for clip {clip.id}: {e}")
+            return ''
+    
+    @staticmethod
     def get_public_cdn_url(file_field_or_name) -> str:
         """
         Get public CDN URL for a file (if R2 public access is configured)

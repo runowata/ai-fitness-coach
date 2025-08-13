@@ -102,10 +102,10 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                             poster_cdn = ""
                             
                             try:
-                                if clip.r2_file:
-                                    signed_url = MediaService.get_signed_url(clip.r2_file)
+                                # Use structured path URL generation instead of r2_file
+                                signed_url = MediaService.get_video_url(clip)
                             except (AttributeError, TypeError) as e:
-                                logger.warning(f"Invalid r2_file for clip {clip.id}: {e}")
+                                logger.warning(f"Error generating video URL for clip {clip.id}: {e}")
                             
                             try:
                                 if clip.exercise and clip.exercise.poster_image:
@@ -138,10 +138,10 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                                 poster_cdn = ""
                                 
                                 try:
-                                    if clip.r2_file:
-                                        signed_url = MediaService.get_signed_url(clip.r2_file)
+                                    # Use structured path URL generation instead of r2_file
+                                    signed_url = MediaService.get_video_url(clip)
                                 except (AttributeError, TypeError) as e:
-                                    logger.warning(f"Invalid r2_file for {aux_kind} clip {clip.id}: {e}")
+                                    logger.warning(f"Error generating video URL for {aux_kind} clip {clip.id}: {e}")
                                 
                                 try:
                                     if clip.exercise and clip.exercise.poster_image:

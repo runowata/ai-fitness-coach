@@ -28,29 +28,17 @@ class R2Adapter:
     
     def exists(self, clip: 'VideoClip') -> bool:
         """Check if R2 video file exists"""
-        if not clip.r2_file:
+        if not clip.model_name or not clip.r2_kind:
             return False
         # Trust DB for performance - could add storage.exists() check if needed
         return True
     
     def playback_url(self, clip: 'VideoClip') -> str:
-        """Get R2 video playback URL with CDN/signed URL support"""
-        if not clip.r2_file:
-            return ''
+        """Get R2 video playback URL using structured paths"""
+        from apps.core.services.media import MediaService
         
-        # Check for CDN base URL configuration
-        cdn_base = getattr(settings, 'R2_CDN_BASE_URL', None)
-        if cdn_base:
-            # Use CDN URL for better performance and caching
-            return f"{cdn_base.rstrip('/')}/{clip.r2_file.name.lstrip('/')}"
-        
-        # Check if signed URLs are enabled for private buckets
-        use_signed_urls = getattr(settings, 'R2_SIGNED_URLS', False)
-        if use_signed_urls:
-            return self._generate_signed_url(clip.r2_file)
-        
-        # Default: use storage URL (S3 endpoint)
-        return default_storage.url(clip.r2_file.name)
+        # Use structured path URL generation
+        return MediaService.get_video_url(clip)
     
     def _generate_signed_url(self, file_field) -> str:
         """Generate signed URL for private R2 bucket access"""
