@@ -41,13 +41,18 @@
     - **day_number**: номер дня (1-7)
     - **workout_name**: friendly название тренировки
     - **is_rest_day**: important дни для восстановления
-    - **exercises**: доступные и enjoyable упражнения:
-      - **exercise_slug**: slug из базы данных
-      - **sets**: comfortable количество подходов (1-10)
-      - **reps**: achievable диапазон повторений
-      - **rest_seconds**: достаточное время для comfortable recovery (10-600 сек)
-      - **duration_seconds**: realistic длительность
-    - **confidence_task**: ежедневное задание на self-care и self-compassion
+    - **blocks**: friendly и доступные блоки тренировки:
+      - **type**: тип блока ("warmup", "main", "cooldown", "confidence_task")
+      - **name**: название блока (опционально)
+      - **exercises**: доступные и enjoyable упражнения (для warmup/main/cooldown):
+        - **slug**: slug упражнения из базы данных (НЕ exercise_slug!)
+        - **name**: название упражнения (опционально)
+        - **sets**: comfortable количество подходов (1-10)
+        - **reps**: achievable диапазон повторений
+        - **rest_seconds**: достаточное время для comfortable recovery (10-600 сек)
+        - **duration_seconds**: realistic длительность
+      - **text**: текст для confidence_task блоков (задания на self-care и self-compassion)
+      - **description**: описание блока или задания
 
 #### 3. motivation_system (Система peer поддержки)
 - **psychological_support** (100-800 символов): Comprehensive план peer поддержки с пониманием эмоциональных challenges
@@ -63,7 +68,7 @@
 
 ### ДРУЖЕСКИЕ ПРИНЦИПЫ:
 
-1. **Упражнения**: Только accessible exercise_slug из базы данных
+1. **Упражнения**: Только accessible slug (НЕ exercise_slug!) из базы данных
 2. **Comfortable recovery**: rest_seconds для комфортного восстановления:
    - Силовые (building strength): 60-90 секунд
    - Functional (everyday movement): 45-60 секунд

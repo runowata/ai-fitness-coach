@@ -113,7 +113,7 @@
                 "maxItems": 7,
                 "items": {
                   "type": "object",
-                  "required": ["day_number", "workout_name", "is_rest_day", "exercises"],
+                  "required": ["day_number", "workout_name", "is_rest_day", "blocks"],
                   "properties": {
                     "day_number": {
                       "type": "integer",
@@ -128,44 +128,73 @@
                     "is_rest_day": {
                       "type": "boolean"
                     },
-                    "exercises": {
+                    "blocks": {
                       "type": "array",
+                      "minItems": 1,
                       "items": {
                         "type": "object",
-                        "required": ["exercise_slug", "sets", "reps"],
+                        "required": ["type"],
                         "properties": {
-                          "exercise_slug": {
+                          "type": {
                             "type": "string",
-                            "description": "Slug упражнения из базы данных"
+                            "enum": ["warmup", "main", "cooldown", "confidence_task"],
+                            "description": "Тип блока тренировки"
                           },
-                          "sets": {
-                            "type": "integer",
-                            "minimum": 1,
-                            "maximum": 10
-                          },
-                          "reps": {
+                          "name": {
                             "type": "string",
-                            "description": "Повторения (например '8-12', '30 сек')"
+                            "maxLength": 100,
+                            "description": "Название блока"
                           },
-                          "rest_seconds": {
-                            "type": "integer",
-                            "minimum": 10,
-                            "maximum": 600,
-                            "description": "Время отдыха в секундах"
+                          "exercises": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": ["slug", "sets", "reps"],
+                              "properties": {
+                                "slug": {
+                                  "type": "string",
+                                  "description": "Slug упражнения из базы данных"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Название упражнения (опционально)"
+                                },
+                                "sets": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 10
+                                },
+                                "reps": {
+                                  "type": "string",
+                                  "description": "Повторения (например '8-12', '30 сек')"
+                                },
+                                "rest_seconds": {
+                                  "type": "integer",
+                                  "minimum": 10,
+                                  "maximum": 600,
+                                  "description": "Время отдыха в секундах"
+                                },
+                                "duration_seconds": {
+                                  "type": "integer",
+                                  "minimum": 10,
+                                  "maximum": 1800,
+                                  "description": "Длительность упражнения"
+                                }
+                              }
+                            }
                           },
-                          "duration_seconds": {
-                            "type": "integer",
-                            "minimum": 10,
-                            "maximum": 1800,
-                            "description": "Длительность упражнения"
+                          "text": {
+                            "type": "string",
+                            "maxLength": 500,
+                            "description": "Текст для confidence_task блоков"
+                          },
+                          "description": {
+                            "type": "string",
+                            "maxLength": 500,
+                            "description": "Описание блока или задания"
                           }
                         }
                       }
-                    },
-                    "confidence_task": {
-                      "type": "string",
-                      "maxLength": 500,
-                      "description": "Ежедневное задание на развитие уверенности"
                     }
                   }
                 }
