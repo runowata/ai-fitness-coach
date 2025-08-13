@@ -135,7 +135,7 @@ class Command(BaseCommand):
                     'muscle_group': str(row.get('Основная мышечная группа', '')).strip(),
                     'exercise_type': str(row.get('Тип упражнения', '')).strip(),
                     'level': level_en,
-                    'duration_sec': 30,  # Correct field name for CSVExercise model
+                    # Note: CSVExercise model doesn't have duration field
                     'is_active': True
                 }
                 
