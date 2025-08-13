@@ -223,7 +223,7 @@ class Command(BaseCommand):
                     'r2_kind': video_kind,
                     'model_name': 'default',
                     'reminder_text': instruction_script[:500],  # Limit text length
-                    'duration_sec': 60,  # Correct field name
+                    'duration_seconds': 60,  # Correct field name is duration_seconds
                     'is_active': True,
                     'is_placeholder': True  # Mark as placeholder since no R2 files yet
                 }
@@ -281,7 +281,7 @@ class Command(BaseCommand):
                         'r2_kind': video_kind,
                         'model_name': 'default',
                         'reminder_text': f'{video_kind} for {exercise.name_en}',
-                        'duration_sec': 60,  # Correct field name
+                        'duration_seconds': 60,  # Correct field name is duration_seconds
                         'is_active': True,
                         'is_placeholder': True
                     }

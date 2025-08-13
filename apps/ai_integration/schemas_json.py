@@ -106,9 +106,9 @@ WORKOUT_PLAN_JSON_SCHEMA = {
         "Exercise": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["slug", "sets", "reps"],
+            "required": ["exercise_slug", "sets", "reps"],
             "properties": {
-                "slug": {
+                "exercise_slug": {
                     "type": "string",
                     "pattern": "^[A-Z0-9_]+$",
                     "description": "Exercise ID from CSVExercise.id (e.g., EX027_v2)"
@@ -160,7 +160,7 @@ WORKOUT_PLAN_JSON_SCHEMA = {
                                     "name": "Dynamic Warm-up",
                                     "exercises": [
                                         {
-                                            "slug": "EX001_v2",
+                                            "exercise_slug": "EX001_v2",
                                             "name": "Arm Circles",
                                             "sets": 1,
                                             "reps": "30 sec",
@@ -173,7 +173,7 @@ WORKOUT_PLAN_JSON_SCHEMA = {
                                     "name": "Strength Training",
                                     "exercises": [
                                         {
-                                            "slug": "EX027_v2",
+                                            "exercise_slug": "EX027_v2",
                                             "name": "Push-ups",
                                             "sets": 3,
                                             "reps": "8-12",

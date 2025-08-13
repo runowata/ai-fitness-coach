@@ -344,7 +344,7 @@ class FallbackService:
                         final_exercise = self._ensure_exercise_exists(exercise_slug)
                         if final_exercise:
                             exercises.append({
-                                'slug': final_exercise,
+                                'exercise_slug': final_exercise,
                                 'sets': random.choice(template['sets_range']),
                                 'reps': random.choice(template['reps_range']),
                                 'rest_seconds': template['rest_seconds']
@@ -412,7 +412,7 @@ class FallbackService:
                                     "name": "Basic Exercise",
                                     "exercises": [
                                         {
-                                            "slug": "EX001_v2",
+                                            "exercise_slug": "EX001_v2",
                                             "sets": 2,
                                             "reps": "5-8",
                                             "rest_seconds": 60
@@ -448,7 +448,7 @@ class FallbackService:
                                     "name": "Basic Exercise",
                                     "exercises": [
                                         {
-                                            "slug": "EX002_v2",
+                                            "exercise_slug": "EX002_v2",
                                             "sets": 2,
                                             "reps": "8-12",
                                             "rest_seconds": 60
@@ -484,7 +484,7 @@ class FallbackService:
                                     "name": "Basic Exercise",
                                     "exercises": [
                                         {
-                                            "slug": "EX003_v2",
+                                            "exercise_slug": "EX003_v2",
                                             "sets": 2,
                                             "reps": "15-30 seconds",
                                             "rest_seconds": 45
@@ -538,13 +538,13 @@ class FallbackService:
                                     "name": "Progressive Workout",
                                     "exercises": [
                                         {
-                                            "slug": "EX001_v2",
+                                            "exercise_slug": "EX001_v2",
                                             "sets": 3,
                                             "reps": "8-10",
                                             "rest_seconds": 60
                                         },
                                         {
-                                            "slug": "EX002_v2",
+                                            "exercise_slug": "EX002_v2",
                                             "sets": 3,
                                             "reps": "10-15",
                                             "rest_seconds": 60
@@ -580,13 +580,13 @@ class FallbackService:
                                     "name": "Full Body Training",
                                     "exercises": [
                                         {
-                                            "slug": "EX004_v2",
+                                            "exercise_slug": "EX004_v2",
                                             "sets": 3,
                                             "reps": "30 seconds",
                                             "rest_seconds": 45
                                         },
                                         {
-                                            "slug": "EX003_v2",
+                                            "exercise_slug": "EX003_v2",
                                             "sets": 3,
                                             "reps": "20-45 seconds",
                                             "rest_seconds": 45
@@ -622,19 +622,19 @@ class FallbackService:
                                     "name": "Challenge Workout",
                                     "exercises": [
                                         {
-                                            "slug": "EX001_v2",
+                                            "exercise_slug": "EX001_v2",
                                             "sets": 3,
                                             "reps": "max effort",
                                             "rest_seconds": 90
                                         },
                                         {
-                                            "slug": "EX002_v2",
+                                            "exercise_slug": "EX002_v2",
                                             "sets": 3,
                                             "reps": "max effort",
                                             "rest_seconds": 90
                                         },
                                         {
-                                            "slug": "EX003_v2",
+                                            "exercise_slug": "EX003_v2",
                                             "sets": 1,
                                             "reps": "max time",
                                             "rest_seconds": 90
