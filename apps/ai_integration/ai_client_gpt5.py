@@ -98,6 +98,7 @@ class OpenAIClient:
                     text={
                         'verbosity': 'high',  # Detailed output for comprehensive reports
                         'format': {
+                            'name': 'comprehensive_report',
                             'type': 'json_schema',
                             'json_schema': {
                                 'name': 'comprehensive_report',
@@ -225,6 +226,7 @@ class OpenAIClient:
                     'text': {
                         'verbosity': 'low',  # Concise output
                         'format': {
+                            'name': 'workout_plan',
                             'type': 'json_schema',
                             'json_schema': {
                                 'name': 'workout_plan',
