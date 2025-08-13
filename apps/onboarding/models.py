@@ -151,37 +151,57 @@ class MotivationalCard(models.Model):
     
     @property
     def cdn_url(self):
-        """Get CDN URL for card image"""
+        """Get CDN URL for card image using the same mechanism as videos"""
         if self.image:
-            from apps.core.services import MediaService
-            return MediaService.get_public_cdn_url(self.image)
+            # Use Django's default storage mechanism (same as videos)
+            from django.core.files.storage import default_storage
+            try:
+                image_url = default_storage.url(self.image.name)
+                # In development (USE_R2_STORAGE=False), this returns /media/path
+                # In production (USE_R2_STORAGE=True), this returns signed R2 URL
+                
+                # Check if it's a local path (dev environment)
+                if image_url.startswith('/media/'):
+                    return ''  # Return empty in development
+                else:
+                    # Production: return signed URL
+                    return image_url
+            except Exception as e:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(f"Failed to get URL for image {self.image.name}: {e}")
+                return ''
         
-        # For legacy image_url fields, create signed URL since public R2 access not configured
+        # For legacy image_url fields, use signed URLs
         if self.image_url:
             # If it's already a full URL with pub-*.r2.dev domain, extract path and create signed URL
             if self.image_url.startswith('http'):
-                # Extract path from public URL (remove https://pub-xxxxx.r2.dev/)
                 import re
                 match = re.search(r'https://pub-[^/]+\.r2\.dev/(.+)', self.image_url)
                 if match:
                     file_path = match.group(1)  # e.g., "photos/progress/card_progress_0066.jpg"
-                    # Create a mock file field with the path for signed URL generation
                     from django.core.files.storage import default_storage
                     try:
-                        # Generate signed URL using the file path
+                        # Use the same mechanism as videos
                         signed_url = default_storage.url(file_path)
+                        if signed_url.startswith('/media/'):
+                            return ''  # Dev environment
                         return signed_url
                     except Exception as e:
                         import logging
                         logger = logging.getLogger(__name__)
                         logger.warning(f"Failed to generate signed URL for {file_path}: {e}")
-                        return self.image_url  # Fallback to original URL
+                        return ''  # Return empty instead of broken URL
                 else:
-                    return self.image_url  # Return original URL if pattern doesn't match
+                    return ''  # Pattern doesn't match, return empty
             
-            # If it's a relative path, try to build signed URL
-            from apps.core.services import MediaService
-            return MediaService.get_public_cdn_url(self.image_url)
+            # If it's a relative path, use default storage
+            from django.core.files.storage import default_storage
+            try:
+                url = default_storage.url(self.image_url)
+                return '' if url.startswith('/media/') else url
+            except Exception:
+                return ''
         
         return ''  # No image available
 

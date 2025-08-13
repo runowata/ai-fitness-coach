@@ -26,9 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 def _get_random_motivational_background():
-    """Get random motivational background image from R2"""
+    """Get random motivational background image from R2 using the same mechanism as videos"""
     try:
-        from apps.core.services.media import MediaService
+        from django.core.files.storage import default_storage
 
         # Read available photos from R2
         r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
@@ -46,8 +46,24 @@ def _get_random_motivational_background():
                 # Select random photo
                 random_photo = random.choice(quotes_photos)
                 
-                # Use MediaService to get proper CDN URL
-                return MediaService.get_public_cdn_url(random_photo)
+                # Use the same mechanism as videos - default_storage.url()
+                # This will use signed URLs if USE_R2_STORAGE=True, or return empty in dev
+                try:
+                    photo_url = default_storage.url(random_photo)
+                    # In development (USE_R2_STORAGE=False), this returns /media/path
+                    # In production (USE_R2_STORAGE=True), this returns signed R2 URL
+                    
+                    # Check if it's a local path (dev environment)
+                    if photo_url.startswith('/media/'):
+                        logger.info("Development environment: using gradient background instead of R2 image")
+                        return ''  # Use gradient background in development
+                    else:
+                        # Production: return signed URL
+                        return photo_url
+                        
+                except Exception as e:
+                    logger.warning(f"Failed to get URL for {random_photo}: {e}")
+                    return ''
         
         # Fallback: return empty to use gradient background
         return ''

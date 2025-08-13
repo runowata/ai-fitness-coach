@@ -41,9 +41,16 @@
                             <!-- Trainer Avatar with glow effect -->
                             <div class="trainer-avatar-container">
                                 <div class="avatar-glow"></div>
-                                <img src="{{ motivational_card.image_url }}" 
-                                     alt="Тренер" 
-                                     class="trainer-avatar">
+                                {% if motivational_card.image_url %}
+                                    <img src="{{ motivational_card.image_url }}" 
+                                         alt="Тренер" 
+                                         class="trainer-avatar">
+                                {% else %}
+                                    <!-- Fallback icon when no image is available -->
+                                    <div class="trainer-avatar-fallback">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                {% endif %}
                             </div>
                             
                             <!-- Card Content -->
@@ -318,6 +325,27 @@
 @keyframes avatarFloat {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
+}
+
+/* Fallback avatar icon */
+.trainer-avatar-fallback {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    animation: avatarFloat 4s ease-in-out infinite;
+}
+
+.trainer-avatar-fallback i {
+    font-size: 80px;
+    color: white;
+    opacity: 0.9;
 }
 
 /* Success Icon (for no card state) */
