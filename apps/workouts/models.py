@@ -220,7 +220,7 @@ class VideoClip(models.Model):
         ]
     
     def __str__(self):
-        return f"{self.exercise.name if self.exercise else 'General'} - {self.r2_kind} - {self.archetype}"
+        return f"{self.exercise.name_ru if self.exercise else 'General'} - {self.r2_kind} - {self.archetype}"
     
     @property
     def signed_url(self):

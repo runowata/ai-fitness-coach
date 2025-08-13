@@ -70,9 +70,44 @@ class ExerciseValidationService:
                 exercise__is_active=True
             )
             
-            # Apply archetype filter if specified
+            # Apply archetype filter with fallback logic
             if archetype:
-                query = query.filter(r2_archetype=archetype)
+                from apps.workouts.constants import ARCHETYPE_FALLBACK_ORDER
+                
+                # Get fallback order for this archetype
+                fallback_archetypes = ARCHETYPE_FALLBACK_ORDER.get(archetype, [archetype])
+                
+                # Try each archetype in fallback order until we find exercises that have complete coverage
+                final_query = None
+                for arch in fallback_archetypes:
+                    arch_query = query.filter(r2_archetype=arch)
+                    
+                    # Check if this archetype produces complete exercise coverage
+                    test_slugs = (arch_query
+                        .values('exercise__id')
+                        .annotate(
+                            kinds_count=Count(
+                                'r2_kind', 
+                                filter=Q(r2_kind__in=ExerciseValidationService.REQUIRED_KINDS),
+                                distinct=True
+                            )
+                        )
+                        .filter(kinds_count=len(ExerciseValidationService.REQUIRED_KINDS))
+                        .values_list('exercise__id', flat=True)
+                    )
+                    
+                    if test_slugs.exists():
+                        final_query = arch_query
+                        if arch != archetype:
+                            logger.info(f"Using fallback archetype '{arch}' for '{archetype}' (found {test_slugs.count()} exercises)")
+                        break
+                
+                if final_query:
+                    query = final_query
+                else:
+                    # No archetype worked, use without archetype filter
+                    logger.warning(f"No videos found for archetype '{archetype}' or its fallbacks, using all archetypes")
+                    # query remains unchanged (no archetype filter)
             
             # Apply locale filter if specified (future: when locale field exists)
             # if locale:
@@ -257,6 +292,15 @@ class ExerciseValidationService:
     @staticmethod
     def invalidate_cache():
         """Invalidate the allowed exercises cache"""
-        cache.delete('allowed_exercise_slugs_v2')
-        cache.delete('allowed_exercise_slugs_v3')
+        # Clear all cache versions and archetype combinations
+        cache_patterns = [
+            'allowed_exercise_slugs_v2',
+            'allowed_exercise_slugs_v3', 
+            'allowed_exercise_slugs_v4',
+            'allowed_exercise_slugs_v4:arch_mentor',
+            'allowed_exercise_slugs_v4:arch_professional',
+            'allowed_exercise_slugs_v4:arch_peer'
+        ]
+        for pattern in cache_patterns:
+            cache.delete(pattern)
         logger.info("Invalidated allowed exercise slugs cache")
