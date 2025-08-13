@@ -12,6 +12,7 @@ from .schemas import (
     validate_ai_plan_response,
     validate_comprehensive_ai_report,
 )
+from .schemas_json import WORKOUT_PLAN_JSON_SCHEMA
 
 logger = logging.getLogger(__name__)
 
@@ -95,25 +96,26 @@ class OpenAIClient:
                     reasoning={
                         'effort': 'medium'  # Higher reasoning for comprehensive analysis
                     },
-                    text={
-                        'verbosity': 'high',  # Detailed output for comprehensive reports
-                        'format': {
+                    response_format={
+                        'type': 'json_schema',
+                        'json_schema': {
                             'name': 'comprehensive_report',
-                            'type': 'json_schema',
-                            'json_schema': {
-                                'name': 'comprehensive_report',
-                                'strict': False,
-                                'schema': {
-                                    "type": "object",
-                                    "properties": {
-                                        "user_analysis": {"type": "string"},
-                                        "training_program": {"type": "string"}, 
-                                        "motivation_system": {"type": "string"},
-                                        "long_term_strategy": {"type": "string"}
-                                    }
-                                }
+                            'strict': False,
+                            'schema': {
+                                "type": "object",
+                                "properties": {
+                                    "meta": {"type": "object"},
+                                    "user_analysis": {"type": "object"},
+                                    "training_program": {"type": "object"}, 
+                                    "motivation_system": {"type": "object"},
+                                    "long_term_strategy": {"type": "object"}
+                                },
+                                "required": ["meta", "user_analysis", "training_program", "motivation_system", "long_term_strategy"]
                             }
                         }
+                    },
+                    text={
+                        'verbosity': 'high'  # Detailed output for comprehensive reports
                     }
                 )
                 
@@ -152,57 +154,8 @@ class OpenAIClient:
     def _make_structured_api_call(self, prompt: str, max_tokens: int, temperature: float) -> Dict:
         """Make API call using GPT-5 with Responses API and Structured Outputs"""
         try:
-            # Define JSON Schema for workout plan
-            workout_plan_schema = {
-                "type": "object",
-                "properties": {
-                    "plan_name": {"type": "string"},
-                    "duration_weeks": {"type": "integer"},
-                    "goal": {"type": "string"},
-                    "weeks": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "week_number": {"type": "integer"},
-                                "week_focus": {"type": "string"},
-                                "days": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "day_number": {"type": "integer"},
-                                            "workout_name": {"type": "string"},
-                                            "is_rest_day": {"type": "boolean"},
-                                            "exercises": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "exercise_slug": {"type": "string"},
-                                                        "sets": {"type": "integer"},
-                                                        "reps": {"type": "string"},
-                                                        "rest_seconds": {"type": "integer"}
-                                                    },
-                                                    "required": ["exercise_slug", "sets", "reps", "rest_seconds"],
-                                                    "additionalProperties": False
-                                                }
-                                            },
-                                            "confidence_task": {"type": "string"}
-                                        },
-                                        "required": ["day_number", "workout_name", "is_rest_day", "exercises", "confidence_task"],
-                                        "additionalProperties": False
-                                    }
-                                }
-                            },
-                            "required": ["week_number", "week_focus", "days"],
-                            "additionalProperties": False
-                        }
-                    }
-                },
-                "required": ["plan_name", "duration_weeks", "goal", "weeks"],
-                "additionalProperties": False
-            }
+            # Use the corrected JSON Schema with blocks structure
+            workout_plan_schema = WORKOUT_PLAN_JSON_SCHEMA
 
             system_message = """You are a professional fitness coach AI. Create a personalized workout plan based on the user's requirements. Generate ALL weeks requested (typically 4-8 weeks). Each week MUST have 7 days. Include rest days as appropriate."""
 
@@ -223,17 +176,16 @@ class OpenAIClient:
                     'reasoning': {
                         'effort': 'minimal'  # Fast response for workout generation
                     },
-                    'text': {
-                        'verbosity': 'low',  # Concise output
-                        'format': {
+                    'response_format': {
+                        'type': 'json_schema',
+                        'json_schema': {
                             'name': 'workout_plan',
-                            'type': 'json_schema',
-                            'json_schema': {
-                                'name': 'workout_plan',
-                                'strict': True,
-                                'schema': workout_plan_schema
-                            }
+                            'strict': True,
+                            'schema': workout_plan_schema
                         }
+                    },
+                    'text': {
+                        'verbosity': 'low'  # Concise output
                     }
                 }
             else:

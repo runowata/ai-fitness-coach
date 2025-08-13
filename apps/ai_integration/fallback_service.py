@@ -338,7 +338,7 @@ class FallbackService:
                         final_exercise = self._ensure_exercise_exists(exercise_slug)
                         if final_exercise:
                             exercises.append({
-                                'exercise_slug': final_exercise,
+                                'slug': final_exercise,
                                 'sets': random.choice(template['sets_range']),
                                 'reps': random.choice(template['reps_range']),
                                 'rest_seconds': template['rest_seconds']
@@ -387,7 +387,7 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "push-ups",
+                                    "slug": "push-ups",
                                     "sets": 2,
                                     "reps": "5-8",
                                     "rest_seconds": 60
@@ -408,7 +408,7 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "squats",
+                                    "slug": "squats",
                                     "sets": 2,
                                     "reps": "8-12",
                                     "rest_seconds": 60
@@ -429,7 +429,7 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "planks",
+                                    "slug": "planks",
                                     "sets": 2,
                                     "reps": "15-30 seconds",
                                     "rest_seconds": 45
@@ -463,13 +463,13 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "push-ups",
+                                    "slug": "push-ups",
                                     "sets": 3,
                                     "reps": "8-10",
                                     "rest_seconds": 60
                                 },
                                 {
-                                    "exercise_slug": "squats",
+                                    "slug": "squats",
                                     "sets": 3,
                                     "reps": "10-15",
                                     "rest_seconds": 60
@@ -490,13 +490,13 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "jumping-jacks",
+                                    "slug": "jumping-jacks",
                                     "sets": 3,
                                     "reps": "30 seconds",
                                     "rest_seconds": 45
                                 },
                                 {
-                                    "exercise_slug": "planks",
+                                    "slug": "planks",
                                     "sets": 3,
                                     "reps": "20-45 seconds",
                                     "rest_seconds": 45
@@ -517,19 +517,19 @@ class FallbackService:
                             "is_rest_day": False,
                             "exercises": [
                                 {
-                                    "exercise_slug": "push-ups",
+                                    "slug": "push-ups",
                                     "sets": 3,
                                     "reps": "max effort",
                                     "rest_seconds": 90
                                 },
                                 {
-                                    "exercise_slug": "squats",
+                                    "slug": "squats",
                                     "sets": 3,
                                     "reps": "max effort",
                                     "rest_seconds": 90
                                 },
                                 {
-                                    "exercise_slug": "planks",
+                                    "slug": "planks",
                                     "sets": 1,
                                     "reps": "max time",
                                     "rest_seconds": 90
