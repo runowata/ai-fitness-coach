@@ -49,10 +49,16 @@ def _get_random_motivational_background():
                     return public_url
         
         # LEGACY fallback: try to find cards with image_url (during migration period)
-        legacy_card = MotivationalCard.objects.filter(
+        available_legacy_cards = list(MotivationalCard.objects.filter(
             is_active=True,
             image_url__isnull=False
-        ).exclude(image_url='').order_by('?').first()
+        ).exclude(image_url='').values_list('id', flat=True))
+        
+        legacy_card = None
+        if available_legacy_cards:
+            # Use Python's random selection instead of order_by('?') for better distribution
+            random_id = random.choice(available_legacy_cards)
+            legacy_card = MotivationalCard.objects.get(id=random_id)
         
         if legacy_card and legacy_card.image_url:
             if legacy_card.image_url.startswith('https://pub-'):

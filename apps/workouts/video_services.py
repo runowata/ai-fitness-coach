@@ -46,11 +46,17 @@ class VideoPlaylistBuilder:
                 continue
                 
             # Get video script for this exercise/archetype/locale
-            video = ExplainerVideo.objects.filter(
+            available_videos = list(ExplainerVideo.objects.filter(
                 exercise=exercise,
                 archetype=self.archetype,
                 locale=self.locale
-            ).order_by("?").first()  # Random if multiple
+            ).values_list('id', flat=True))
+            
+            video = None
+            if available_videos:
+                # Use RNG instead of order_by('?') for better distribution
+                random_id = self.rng.choice(available_videos)
+                video = ExplainerVideo.objects.get(id=random_id)
             
             if video:
                 videos.append({

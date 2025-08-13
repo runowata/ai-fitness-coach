@@ -64,30 +64,15 @@ class ExerciseValidationService:
         try:
             from apps.core.metrics import MetricNames, incr
 
-            # Debug: Check total video clips and CSVExercises
-            from apps.workouts.models import VideoClip, CSVExercise
-            total_clips = VideoClip.objects.count()
-            total_exercises = CSVExercise.objects.filter(is_active=True).count()
-            clips_with_video = ExerciseValidationService.get_clips_with_video().count()
-            
-            logger.info(f"DEBUG: Total VideoClips={total_clips}, Active CSVExercises={total_exercises}, Clips with video={clips_with_video}")
-            logger.info(f"DEBUG: Required kinds={ExerciseValidationService.REQUIRED_KINDS}")
-
             # Build query with optional filters
             query = ExerciseValidationService.get_clips_with_video().filter(
                 r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
                 exercise__is_active=True
             )
             
-            # Debug: Check intermediate results
-            query_count = query.count()
-            logger.info(f"DEBUG: Clips matching required kinds + active exercise={query_count}")
-            
             # Apply archetype filter if specified
             if archetype:
                 query = query.filter(r2_archetype=archetype)
-                query_count_arch = query.count()
-                logger.info(f"DEBUG: After archetype filter ({archetype})={query_count_arch}")
             
             # Apply locale filter if specified (future: when locale field exists)
             # if locale:
@@ -108,9 +93,6 @@ class ExerciseValidationService:
             )
             
             slugs = set(slugs_with_coverage)
-            
-            # Debug logging
-            logger.info(f"Query returned {len(slugs)} exercise IDs: {list(slugs)[:5]}...")  # Show first 5
             
             # Track metrics
             incr(MetricNames.AI_WHITELIST_COUNT, len(slugs))
@@ -203,9 +185,9 @@ class ExerciseValidationService:
             # Get exercise details for filtering
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT muscle_groups, equipment_needed, difficulty
-                    FROM exercises 
-                    WHERE slug = %s AND is_active = TRUE
+                    SELECT ai_tags, '', level
+                    FROM csv_exercises 
+                    WHERE id = %s AND is_active = TRUE
                 """, [slug])
                 
                 result = cursor.fetchone()
@@ -214,27 +196,54 @@ class ExerciseValidationService:
                 
                 original_muscle_groups, original_equipment, original_difficulty = result
                 
-                # Find similar exercises
-                cursor.execute("""
-                    SELECT e.slug
-                    FROM exercises e
-                    WHERE e.slug = ANY(%s)
-                    AND e.is_active = TRUE
-                    AND (
-                        (e.muscle_groups IS NOT NULL AND e.muscle_groups::jsonb ?| %s)  -- Overlapping muscle groups
-                        OR e.difficulty = %s   -- Same difficulty
-                    )
-                    ORDER BY 
-                        CASE WHEN (e.muscle_groups IS NOT NULL AND e.muscle_groups::jsonb ?| %s) THEN 1 ELSE 2 END,  -- Prefer muscle group match
-                        CASE WHEN e.difficulty = %s THEN 1 ELSE 2 END      -- Then difficulty match
-                    LIMIT 5
-                """, [
-                    list(allowed_slugs), 
-                    original_muscle_groups,
-                    original_difficulty,
-                    original_muscle_groups,
-                    original_difficulty
-                ])
+                # Ensure muscle_groups is a valid list for PostgreSQL
+                if original_muscle_groups is None or not original_muscle_groups:
+                    muscle_groups_list = []
+                elif isinstance(original_muscle_groups, str):
+                    try:
+                        import json
+                        muscle_groups_list = json.loads(original_muscle_groups)
+                    except (json.JSONDecodeError, TypeError):
+                        muscle_groups_list = [original_muscle_groups]  # Single string
+                elif isinstance(original_muscle_groups, list):
+                    muscle_groups_list = original_muscle_groups
+                else:
+                    muscle_groups_list = []
+                
+                # Skip JSONb operator if no muscle groups to compare
+                if not muscle_groups_list:
+                    # Simpler query without muscle group matching
+                    cursor.execute("""
+                        SELECT e.id
+                        FROM csv_exercises e
+                        WHERE e.id = ANY(%s)
+                        AND e.is_active = TRUE
+                        AND e.level = %s
+                        ORDER BY e.id
+                        LIMIT 5
+                    """, [list(allowed_slugs), original_difficulty])
+                else:
+                    # Full query with muscle group matching
+                    cursor.execute("""
+                        SELECT e.id
+                        FROM csv_exercises e
+                        WHERE e.id = ANY(%s)
+                        AND e.is_active = TRUE
+                        AND (
+                            (e.ai_tags IS NOT NULL AND e.ai_tags::jsonb ?| %s)  -- Overlapping AI tags
+                            OR e.level = %s   -- Same difficulty
+                        )
+                        ORDER BY 
+                            CASE WHEN (e.ai_tags IS NOT NULL AND e.ai_tags::jsonb ?| %s) THEN 1 ELSE 2 END,  -- Prefer tag match
+                            CASE WHEN e.level = %s THEN 1 ELSE 2 END      -- Then level match
+                        LIMIT 5
+                    """, [
+                        list(allowed_slugs), 
+                        muscle_groups_list,
+                        original_difficulty,
+                        muscle_groups_list,
+                        original_difficulty
+                    ])
                 
                 alternatives = [row[0] for row in cursor.fetchall()]
                 

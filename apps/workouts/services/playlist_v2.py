@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 from django.db.models import Q
 
 from apps.core.services.media import MediaService
-from apps.workouts.models import Exercise, VideoClip
+from apps.workouts.models import CSVExercise, VideoClip
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +23,8 @@ def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip
     3. Any other archetype
     """
     try:
-        ex = Exercise.objects.get(slug=ex_slug)
-    except Exercise.DoesNotExist:
+        ex = CSVExercise.objects.get(id=ex_slug)
+    except CSVExercise.DoesNotExist:
         logger.warning(f"Exercise not found: {ex_slug}")
         return None
 
@@ -33,8 +33,9 @@ def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip
         exercise=ex, 
         r2_kind=kind, 
         archetype=archetype, 
-        r2_file__isnull=False
-    )
+        is_active=True,
+        model_name__isnull=False
+    ).exclude(model_name='')
     clip = qs.order_by("-is_active", "-created_at").first()
     if clip:
         logger.debug(f"Found exact match for {ex_slug}/{kind}/{archetype}")
@@ -44,8 +45,9 @@ def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip
     qs = VideoClip.objects.filter(
         exercise=ex, 
         r2_kind=kind, 
-        r2_file__isnull=False
-    ).filter(
+        is_active=True,
+        model_name__isnull=False
+    ).exclude(model_name='').filter(
         Q(archetype="") | Q(archetype__isnull=True)
     )
     clip = qs.order_by("-is_active", "-created_at").first()
@@ -57,8 +59,9 @@ def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip
     qs = VideoClip.objects.filter(
         exercise=ex, 
         r2_kind=kind, 
-        r2_file__isnull=False
-    ).exclude(archetype=archetype)
+        is_active=True,
+        model_name__isnull=False
+    ).exclude(model_name='').exclude(archetype=archetype)
     clip = qs.order_by("-is_active", "-created_at").first()
     if clip:
         logger.debug(f"Using fallback archetype {clip.archetype} for {ex_slug}/{kind}")
