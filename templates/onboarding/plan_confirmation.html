@@ -26,11 +26,11 @@
                             <div class="trainer-avatar-container">
                                 <div class="success-rays"></div>
                                 {% if archetype %}
-                                    <img src="{% static 'images/avatars/' %}{{ archetype }}-avatar.png" 
+                                    <img src="{% static 'images/avatars/' %}{{ archetype }}_avatar_01.jpg" 
                                          alt="Тренер {{ archetype|title }}" 
                                          class="trainer-avatar-large">
                                 {% else %}
-                                    <img src="{% static 'images/avatars/bro-avatar.png' %}" 
+                                    <img src="{% static 'images/avatars/mentor_avatar_01.jpg' %}" 
                                          alt="Тренер" 
                                          class="trainer-avatar-large">
                                 {% endif %}
@@ -43,11 +43,11 @@
                                 </h1>
                                 
                                 <p class="trainer-message">
-                                    {% if archetype == 'bro' %}
+                                    {% if archetype == 'peer' %}
                                         Братан! Я создал крутейший план специально для тебя! Готов начать путь к новому себе?
-                                    {% elif archetype == 'sergeant' %}
+                                    {% elif archetype == 'professional' %}
                                         Боец! Ваша персональная программа подготовки готова. Приказы получены?
-                                    {% elif archetype == 'intellectual' %}
+                                    {% elif archetype == 'mentor' %}
                                         Ваш научно обоснованный протокол тренировок разработан. Готовы к реализации?
                                     {% endif %}
                                 </p>

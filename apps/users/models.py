@@ -115,3 +115,23 @@ class UserProfile(models.Model):
     def get_local_time(self):
         tz = pytz.timezone(self.user.timezone)
         return timezone.now().astimezone(tz)
+    
+    @property
+    def archetype_name(self):
+        """Convert numeric archetype code to string name for AI integration"""
+        archetype_map = {
+            '111': 'mentor',        # Wise Mentor
+            '112': 'professional',  # Pro Coach
+            '113': 'peer',          # Best Mate
+        }
+        return archetype_map.get(self.archetype, 'mentor')  # Default to mentor
+    
+    @property
+    def archetype_display_name(self):
+        """Convert numeric archetype code to display name for UI"""
+        display_map = {
+            '111': 'Мудрый наставник',
+            '112': 'Профессиональный тренер',
+            '113': 'Лучший друг',
+        }
+        return display_map.get(self.archetype, 'Мудрый наставник')

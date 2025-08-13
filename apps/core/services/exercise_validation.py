@@ -201,11 +201,11 @@ class ExerciseValidationService:
                     WHERE e.slug = ANY(%s)
                     AND e.is_active = TRUE
                     AND (
-                        e.muscle_groups && %s  -- Overlapping muscle groups
+                        (e.muscle_groups IS NOT NULL AND e.muscle_groups::jsonb ?| %s)  -- Overlapping muscle groups
                         OR e.difficulty = %s   -- Same difficulty
                     )
                     ORDER BY 
-                        CASE WHEN e.muscle_groups && %s THEN 1 ELSE 2 END,  -- Prefer muscle group match
+                        CASE WHEN (e.muscle_groups IS NOT NULL AND e.muscle_groups::jsonb ?| %s) THEN 1 ELSE 2 END,  -- Prefer muscle group match
                         CASE WHEN e.difficulty = %s THEN 1 ELSE 2 END      -- Then difficulty match
                     LIMIT 5
                 """, [

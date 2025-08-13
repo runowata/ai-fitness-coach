@@ -17,7 +17,7 @@ from apps.achievements.services import WorkoutCompletionService
 
 from .models import CSVExercise, DailyWorkout, ExplainerVideo, WeeklyLesson, WeeklyNotification
 from .serializers import WeeklyLessonSerializer, WeeklyNotificationSerializer
-from .services import VideoPlaylistBuilder
+from .video_services import VideoPlaylistBuilder
 
 
 @login_required
@@ -26,7 +26,7 @@ def daily_workout_view(request, workout_id):
     workout = get_object_or_404(DailyWorkout, id=workout_id, plan__user=request.user)
     
     # Get user's archetype
-    archetype = request.user.profile.archetype
+    archetype = request.user.profile.archetype_name
     if not archetype:
         messages.error(request, 'Пожалуйста, выберите архетип тренера в настройках')
         return redirect('users:profile_settings')
@@ -129,7 +129,8 @@ def substitute_exercise_view(request, workout_id):
         workout.save()
         
         # Rebuild playlist with substitution
-        playlist_builder = VideoPlaylistBuilder()
+        user_archetype = request.user.profile.archetype_name_name or 'mentor'
+        playlist_builder = VideoPlaylistBuilder(archetype=user_archetype)
         
         # Update exercise in workout data
         updated_exercises = []
@@ -215,7 +216,7 @@ class ExplainerVideoView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, exercise_id):
-        user_archetype = request.user.profile.archetype
+        user_archetype = request.user.profile.archetype_name
         if not user_archetype:
             return Response({'error': 'User archetype not set'}, status=400)
         
@@ -363,7 +364,7 @@ class WeeklyLessonView(generics.RetrieveAPIView):
     lookup_field = 'week'
     
     def get(self, request, week):
-        user_archetype = request.user.profile.archetype
+        user_archetype = request.user.profile.archetype_name
         if not user_archetype:
             return Response({'error': 'User archetype not set'}, status=400)
         

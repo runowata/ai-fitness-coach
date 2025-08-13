@@ -106,12 +106,11 @@ class FallbackService:
                 logger.info(f"Level 3 fallback: {exercise_slug}")
                 return exercise_slug
         
-        # Level 4: Ultimate fallback - basic exercises
-        ultimate_fallbacks = ['push-ups', 'squats', 'planks', 'jumping-jacks']
-        for fallback in ultimate_fallbacks:
-            if fallback in self.fallback_exercises:
-                logger.warning(f"Ultimate fallback: {fallback}")
-                return fallback
+        # Level 4: Ultimate fallback - use first available exercise from our reliable set
+        if self.fallback_exercises:
+            first_available = list(self.fallback_exercises.keys())[0]
+            logger.warning(f"Ultimate fallback: {first_available}")
+            return first_available
         
         logger.error(f"No fallback found for {target_exercise}")
         return None
@@ -123,12 +122,30 @@ class FallbackService:
         """
         logger.warning(f"Creating emergency workout for user {user_profile.user.id}")
         
-        emergency_exercises = [
-            ('push-ups', 3, '5-10', 45),
-            ('squats', 3, '10-15', 45), 
-            ('planks', 3, '20-30 seconds', 45),
-            ('jumping-jacks', 2, '30 seconds', 45),
-        ]
+        # Use actual CSVExercise IDs from the database
+        try:
+            available_exercises = CSVExercise.objects.filter(
+                is_active=True,
+                level='beginner',
+                exercise_type__in=['strength', 'cardio']
+            ).order_by('id')[:4].values_list('id', flat=True)
+            
+            emergency_exercises = []
+            for i, ex_id in enumerate(available_exercises):
+                sets = 3 if i < 3 else 2
+                reps = '5-10' if i == 0 else ('10-15' if i == 1 else ('20-30 seconds' if i == 2 else '30 seconds'))
+                emergency_exercises.append((ex_id, sets, reps, 45))
+                
+            if not emergency_exercises:
+                # Ultimate fallback if no exercises found
+                emergency_exercises = [
+                    ('EX001_v2', 3, '5-10', 45),  # Assume this exists
+                ]
+        except Exception as e:
+            logger.error(f"Failed to load emergency exercises: {e}")
+            emergency_exercises = [
+                ('EX001_v2', 3, '5-10', 45),  # Ultimate fallback
+            ]
         
         try:
             # Create minimal workout plan if none exists
@@ -154,9 +171,9 @@ class FallbackService:
             )
             
             # Add exercises
-            for order, (slug, sets, reps, rest) in enumerate(emergency_exercises, 1):
+            for order, (ex_id, sets, reps, rest) in enumerate(emergency_exercises, 1):
                 try:
-                    exercise = CSVExercise.objects.get(slug=slug)
+                    exercise = CSVExercise.objects.get(id=ex_id)
                     WorkoutExecution.objects.create(
                         workout=workout,
                         exercise=exercise,
@@ -166,7 +183,7 @@ class FallbackService:
                         order=order
                     )
                 except CSVExercise.DoesNotExist:
-                    logger.warning(f"Emergency exercise {slug} not found, skipping")
+                    logger.warning(f"Emergency exercise {ex_id} not found, skipping")
                     continue
             
             logger.info(f"Created emergency workout {workout.id}")
@@ -181,15 +198,13 @@ class FallbackService:
         reliable_exercises = {}
         
         try:
-            # Query most common exercises from database by technical names  
-            # CSVExercise uses 'id' field, not 'slug'
+            # Query most common exercises from database by actual exercise IDs
+            # CSVExercise uses 'id' field (e.g., EX001_v2, EX002_v2, etc.)
             common_exercises = CSVExercise.objects.filter(
-                id__in=[
-                    'push-ups', 'squats', 'planks', 'jumping-jacks', 
-                    'lunges', 'mountain-climbers', 'burpees',
-                    'sit-ups', 'calf-raises', 'wall-sits'
-                ]
-            ).values('id', 'muscle_group', 'exercise_type')
+                is_active=True,
+                level__in=['beginner', 'intermediate'],
+                exercise_type__in=['strength', 'cardio']
+            ).order_by('id')[:20].values('id', 'muscle_group', 'exercise_type')
             
             for exercise in common_exercises:
                 reliable_exercises[exercise['id']] = {

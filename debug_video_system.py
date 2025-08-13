@@ -19,7 +19,7 @@ import json
 from django.conf import settings
 
 from apps.workouts.models import DailyWorkout, Exercise, VideoClip
-from apps.workouts.services import VideoPlaylistBuilder
+from apps.workouts.video_services import VideoPlaylistBuilder
 
 
 def check_video_files():
@@ -124,7 +124,7 @@ def test_playlist_builder():
         return
     
     # Build playlist
-    builder = VideoPlaylistBuilder()
+    builder = VideoPlaylistBuilder(archetype=archetype)
     playlist = builder.build_workout_playlist(recent_workout, archetype)
     
     print(f"\nPlaylist built with {len(playlist)} videos:")
@@ -159,7 +159,7 @@ def check_specific_workout(workout_id):
             return
         
         # Build playlist
-        builder = VideoPlaylistBuilder()
+        builder = VideoPlaylistBuilder(archetype=archetype)
         playlist = builder.build_workout_playlist(workout, archetype)
         
         print(f"\nPlaylist has {len(playlist)} videos")

@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from apps.workouts.models import DailyWorkout, Exercise, VideoClip
-from apps.workouts.services import VideoPlaylistBuilder
+from apps.workouts.video_services import VideoPlaylistBuilder
 
 
 class Command(BaseCommand):
@@ -46,7 +46,7 @@ class Command(BaseCommand):
             self.stdout.write(f"   Intro videos: {intro_clips}")
             
             # Test playlist builder
-            builder = VideoPlaylistBuilder()
+            builder = VideoPlaylistBuilder(archetype=archetype)
             playlist = builder.build_workout_playlist(workout, archetype)
             
             self.stdout.write("\n🎵 Generated playlist:")

@@ -31,17 +31,22 @@ def _get_random_motivational_background():
         from apps.onboarding.models import MotivationalCard
         from apps.onboarding.utils import public_r2_url
         
-        # NEW approach: use path field directly
-        card = MotivationalCard.objects.filter(
+        # NEW approach: use path field directly with better randomization
+        available_cards = list(MotivationalCard.objects.filter(
             is_active=True,
             path__isnull=False
-        ).exclude(path='').order_by('?').first()
+        ).exclude(path='').values_list('id', 'path'))
         
-        if card and card.path:
-            public_url = public_r2_url(card.path)
-            if public_url:
-                logger.info(f"Using path field: {card.path} -> {public_url}")
-                return public_url
+        if available_cards:
+            # Use Python's random selection for better distribution
+            card_id, card_path = random.choice(available_cards)
+            card = MotivationalCard.objects.get(id=card_id)
+            
+            if card and card.path:
+                public_url = public_r2_url(card.path)
+                if public_url:
+                    logger.info(f"Using path field: {card.path} -> {public_url}")
+                    return public_url
         
         # LEGACY fallback: try to find cards with image_url (during migration period)
         legacy_card = MotivationalCard.objects.filter(
@@ -68,10 +73,11 @@ def _get_random_motivational_background():
             
             if quotes_photos:
                 # Select random photo and create public URL using new helper
+                # Use better randomization to avoid patterns
                 random_photo = random.choice(quotes_photos)
                 public_url = public_r2_url(random_photo)
                 if public_url:
-                    logger.info(f"Using public URL from state file: {public_url}")
+                    logger.info(f"Using public URL from state file ({len(quotes_photos)} available): {public_url}")
                     return public_url
         
         # Final fallback: return empty to use gradient background
@@ -333,9 +339,16 @@ def select_archetype(request):
     """Archetype selection page"""
     if request.method == 'POST':
         archetype = request.POST.get('archetype')
-        if archetype in ['bro', 'sergeant', 'intellectual']:
+        # Map old UI values to numeric codes for database storage
+        archetype_map = {
+            'bro': '113',           # peer
+            'sergeant': '112',      # professional  
+            'intellectual': '111',  # mentor
+        }
+        
+        if archetype in archetype_map:
             profile = request.user.profile
-            profile.archetype = archetype
+            profile.archetype = archetype_map[archetype]
             profile.save()
             
             # Generate workout plan with real AI analysis
@@ -397,7 +410,7 @@ def generate_plan(request):
     # Collect all user responses
     responses = UserOnboardingResponse.objects.filter(user=request.user)
     user_data = {
-        'archetype': profile.archetype,
+        'archetype': profile.archetype_name,
         'age': 25,  # Default, will be overridden by responses
         'height': 175,
         'weight': 70,
@@ -573,7 +586,7 @@ def plan_confirmation(request, plan_id=None):
     
     # Count total exercises - check old structure first
     total_exercises = 0
-    archetype = request.user.profile.archetype
+    archetype = request.user.profile.archetype_name  # Convert numeric to string
     
     # First try the old weeks structure (most common case)
     weeks_data = plan_data.get('weeks', [])
@@ -666,7 +679,7 @@ def ai_analysis_comprehensive(request):
         'plan': latest_plan,
         'plan_data': plan_data,
         'comprehensive_data': ai_analysis,
-        'archetype': request.user.profile.archetype,
+        'archetype': request.user.profile.archetype_name,
         'user_level': 'Персональный'  # Could be determined from analysis
     }
     
@@ -731,7 +744,7 @@ def plan_preview_comprehensive(request):
         'plan_data': plan_data,
         'training_program': training_program,
         'comprehensive_data': ai_analysis,
-        'archetype': request.user.profile.archetype,
+        'archetype': request.user.profile.archetype_name,
         'user_level': 'Comprehensive'
     }
     
