@@ -25,10 +25,12 @@ class ExerciseValidationService:
         """Get QuerySet of VideoClips that have available video content"""
         from apps.workouts.models import VideoClip
         
+        # For R2 provider, videos are available if they have model_name and r2_kind
+        # (files are accessed via structured paths, not FileField)
         return VideoClip.objects.filter(
             is_active=True
         ).filter(
-            Q(provider=VideoProvider.R2, r2_file__isnull=False) |
+            Q(provider=VideoProvider.R2, model_name__isnull=False, r2_kind__isnull=False) |
             Q(provider=VideoProvider.STREAM, stream_uid__isnull=False) |
             Q(provider=VideoProvider.STREAM, playback_id__isnull=False)
         )

@@ -58,8 +58,10 @@ class Archetype(StrEnum):
         return mapping.get(archetype, archetype)
 
 
-# Required video kinds for exercise validation
-REQUIRED_VIDEO_KINDS = [VideoKind.INSTRUCTION, VideoKind.TECHNIQUE, VideoKind.MISTAKE]
+# Required video kinds for exercise validation  
+# Note: INSTRUCTION videos are general/archetype-specific, not exercise-specific
+# Only TECHNIQUE and MISTAKE are required per exercise
+REQUIRED_VIDEO_KINDS = [VideoKind.TECHNIQUE, VideoKind.MISTAKE]
 
 # Exercise fallback priority for substitutions
 EXERCISE_FALLBACK_PRIORITY = {
