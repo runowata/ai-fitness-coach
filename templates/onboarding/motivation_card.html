@@ -44,19 +44,26 @@
                                 {% if motivational_card.image_url %}
                                     <img src="{{ motivational_card.image_url }}" 
                                          alt="Тренер" 
-                                         class="trainer-avatar">
-                                {% else %}
-                                    <!-- Fallback icon when no image is available -->
-                                    <div class="trainer-avatar-fallback">
-                                        <i class="fas fa-user-circle"></i>
-                                    </div>
+                                         class="trainer-avatar"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 {% endif %}
+                                <!-- Always include fallback, show if image fails or is empty -->
+                                <div class="trainer-avatar-fallback" style="{% if motivational_card.image_url %}display: none;{% endif %}">
+                                    <span class="fallback-text">💪</span>
+                                </div>
                             </div>
                             
                             <!-- Card Content -->
                             <div class="card-content">
                                 <h2 class="motivation-title">{{ motivational_card.title }}</h2>
                                 <p class="motivation-message">{{ motivational_card.message }}</p>
+                                
+                                <!-- Debug info (remove after fixing) -->
+                                {% comment %}
+                                <div style="font-size: 10px; color: #666; margin-top: 10px; opacity: 0.7;">
+                                    Debug: image_url = "{{ motivational_card.image_url }}"
+                                </div>
+                                {% endcomment %}
                             </div>
                             
                             <!-- Action Button -->
@@ -342,10 +349,11 @@
     animation: avatarFloat 4s ease-in-out infinite;
 }
 
-.trainer-avatar-fallback i {
+.trainer-avatar-fallback .fallback-text {
     font-size: 80px;
     color: white;
     opacity: 0.9;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 /* Success Icon (for no card state) */
