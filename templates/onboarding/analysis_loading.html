@@ -1017,7 +1017,10 @@ function startAIPlanGeneration() {
             'Content-Type': 'application/json',
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
         },
-        credentials: 'same-origin'
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            'action': 'generate'
+        })
     })
     .then(response => {
         const elapsedTime = (Date.now() - startTime) / 1000;
@@ -1041,6 +1044,7 @@ function startAIPlanGeneration() {
             // AI generation completed - stop animation and redirect
             console.log('✅ AI generation successful! Plan ID:', data.plan_id);
             console.log('Frontend elapsed time:', elapsedTime);
+            console.log('Response data:', data);
             console.log('Redirecting to:', data.redirect_url);
             
             // Mark generation as complete to allow 100% progress
@@ -1052,20 +1056,21 @@ function startAIPlanGeneration() {
                 el.classList.add('completed');
             });
             
-            // Set progress to 100%
+            // Set progress to 100% (use data.progress if available)
+            const finalProgress = data.progress || 100;
             const progressBar = document.getElementById('overall-progress-bar');
             const progressGlow = document.querySelector('.progress-glow');
             const progressPercentage = document.getElementById('overall-percentage');
             const etaTime = document.getElementById('eta-time');
             
             if (progressBar) {
-                progressBar.style.width = '100%';
+                progressBar.style.width = finalProgress + '%';
             }
             if (progressGlow) {
-                progressGlow.style.width = '100%';
+                progressGlow.style.width = finalProgress + '%';
             }
             if (progressPercentage) {
-                progressPercentage.textContent = '100%';
+                progressPercentage.textContent = finalProgress + '%';
             }
             if (etaTime) {
                 etaTime.textContent = '0';
@@ -1075,7 +1080,12 @@ function startAIPlanGeneration() {
             console.log('Setting redirect timeout...');
             setTimeout(() => {
                 console.log('🚀 REDIRECTING NOW to:', data.redirect_url);
-                window.location.href = data.redirect_url || '/users/dashboard/';
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    console.error('No redirect_url provided, falling back to dashboard');
+                    window.location.href = '/users/dashboard/';
+                }
             }, 2000);
         } else {
             // Show error after 3 seconds

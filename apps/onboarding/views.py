@@ -484,12 +484,20 @@ def generate_plan_ajax(request):
     if existing_plan:
         return JsonResponse({
             'status': 'success',
+            'progress': 100,
             'redirect_url': reverse('users:dashboard')
         })
     
     try:
-        # Check if we're confirming a previewed plan
-        action = request.POST.get('action', 'generate')
+        # Parse JSON data if Content-Type is application/json, otherwise use POST data
+        if request.content_type == 'application/json' and request.body:
+            try:
+                data = json.loads(request.body)
+                action = data.get('action', 'generate')
+            except json.JSONDecodeError:
+                action = 'generate'
+        else:
+            action = request.POST.get('action', 'generate')
         
         if action == 'confirm':
             # User confirmed the plan after preview
@@ -513,6 +521,7 @@ def generate_plan_ajax(request):
             
             return JsonResponse({
                 'status': 'success',
+                'progress': 100,
                 'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
                 'plan_id': workout_plan.id
             })
@@ -551,6 +560,7 @@ def generate_plan_ajax(request):
                 
                 return JsonResponse({
                     'status': 'success',
+                    'progress': 100,
                     'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
                     'plan_id': workout_plan.id
                 })
