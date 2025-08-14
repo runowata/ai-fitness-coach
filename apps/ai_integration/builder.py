@@ -22,11 +22,9 @@ def build_responses_payload(prompt: str, model: str, max_tokens: int, temperatur
         "text": {
             "format": {
                 "type": "json_schema",
-                "json_schema": {
-                    "name": "WorkoutPlan",
-                    "schema": schema,      # <-- ВАЖНО: именно здесь ключ 'schema'
-                    "strict": True
-                }
+                "name": "WorkoutPlan",
+                "schema": schema,
+                "strict": True,
             }
         },
         "max_output_tokens": max_tokens,
@@ -90,7 +88,7 @@ def build_comprehensive_payload(
                 'format': {
                     'type': 'json_schema',
                     'name': 'ComprehensiveReport',
-                    'json_schema': report_schema,
+                    'schema': report_schema,
                     'strict': False  # More flexible for comprehensive reports
                 }
             }
