@@ -90,7 +90,7 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                 if btype in ("warmup", "main", "cooldown"):
                     # Process exercise blocks
                     for ex in block.get("exercises", []):
-                        slug = ex.get("slug")
+                        slug = ex.get("exercise_slug") or ex.get("slug")  # Support both new and legacy formats
                         if not slug:
                             continue
                             

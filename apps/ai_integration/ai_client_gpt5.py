@@ -83,39 +83,18 @@ class OpenAIClient:
         """Generate comprehensive report using GPT-5 with higher reasoning"""
         try:
             if self.default_model.startswith('gpt-5'):
-                # Use GPT-5 with higher reasoning effort for comprehensive reports
-                response = self.client.responses.create(
-                    model=self.default_model,
-                    input=[
-                        {
-                            "role": "developer", 
-                            "content": "You are a professional fitness coach AI generating comprehensive analysis reports. Create a detailed 4-block report with user analysis, training program, motivation system, and long-term strategy."
-                        },
-                        {"role": "user", "content": prompt}
-                    ],
-                    reasoning={
-                        'effort': 'medium'  # Higher reasoning for comprehensive analysis
-                    },
-                    text={
-                        'verbosity': 'high',
-                        'format': {
-                            'type': 'json_schema',
-                            'name': 'ComprehensiveReport',
-                            'json_schema': {
-                                "type": "object",
-                                "properties": {
-                                    "meta": {"type": "object"},
-                                    "user_analysis": {"type": "object"},
-                                    "training_program": {"type": "object"}, 
-                                    "motivation_system": {"type": "object"},
-                                    "long_term_strategy": {"type": "object"}
-                                },
-                                "required": ["meta", "user_analysis", "training_program", "motivation_system", "long_term_strategy"]
-                            },
-                            'strict': False
-                        }
-                    }
+                from .builder import build_comprehensive_payload
+                
+                # Build comprehensive report payload
+                api_params = build_comprehensive_payload(
+                    prompt=prompt,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                    model=self.default_model
                 )
+                
+                # Use GPT-5 with higher reasoning effort for comprehensive reports
+                response = self.client.responses.create(**api_params)
                 
                 # Extract content
                 content = None
@@ -152,57 +131,20 @@ class OpenAIClient:
     def _make_structured_api_call(self, prompt: str, max_tokens: int, temperature: float) -> Dict:
         """Make API call using GPT-5 with Responses API and Structured Outputs"""
         try:
-            # Use the corrected JSON Schema with blocks structure
-            workout_plan_schema = WORKOUT_PLAN_JSON_SCHEMA
+            from .builder import build_responses_payload
 
-            system_message = """You are a professional fitness coach AI. Create a personalized workout plan based on the user's requirements. Generate ALL weeks requested (typically 4-8 weeks). Each week MUST have 7 days. Include rest days as appropriate."""
+            # Build API payload using the builder function
+            api_params = build_responses_payload(
+                prompt=prompt,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                model=self.default_model
+            )
 
             # Add retry logic
             import time
             last_error = None
             response = None
-            
-            # Use new Responses API with GPT-5
-            if self.default_model.startswith('gpt-5'):
-                # GPT-5 with Responses API and full Structured Outputs
-                api_params = {
-                    'model': self.default_model,
-                    'input': [
-                        {"role": "developer", "content": system_message},
-                        {"role": "user", "content": prompt}
-                    ],
-                    'reasoning': {
-                        'effort': 'minimal'  # Fast response for workout generation
-                    },
-                    'text': {
-                        'verbosity': 'medium',
-                        'format': {
-                            'type': 'json_schema',
-                            'name': 'WorkoutPlan',
-                            'json_schema': workout_plan_schema,
-                            'strict': True
-                        }
-                    }
-                }
-            else:
-                # Fallback for other models using Chat Completions API
-                api_params = {
-                    'model': self.default_model,
-                    'messages': [
-                        {"role": "system", "content": system_message},
-                        {"role": "user", "content": prompt}
-                    ],
-                    'max_tokens': min(max_tokens, settings.OPENAI_MAX_TOKENS),
-                    'temperature': temperature,
-                    'response_format': {
-                        'type': 'json_schema',
-                        'json_schema': {
-                            'name': 'workout_plan',
-                            'strict': True,
-                            'schema': workout_plan_schema
-                        }
-                    }
-                }
             
             for attempt in range(3):
                 try:

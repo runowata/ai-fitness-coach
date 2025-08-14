@@ -39,10 +39,10 @@ class FallbackService:
         """
         logger.warning(f"Using fallback plan generation: {error_context}")
         
-        # Determine user parameters
+        # Determine user parameters - enforce exactly 4 weeks as per ChatGPT plan
         experience = user_data.get('experience_level', 'beginner').lower()
         days_per_week = min(max(int(user_data.get('days_per_week', 3)), 2), 6)
-        duration_weeks = min(max(int(user_data.get('duration_weeks', 4)), 2), 8)
+        duration_weeks = 4  # Fixed to exactly 4 weeks per ChatGPT plan
         
         # Select appropriate template
         template_key = f"{experience}_{days_per_week}days"
@@ -416,6 +416,18 @@ class FallbackService:
                                             "sets": 2,
                                             "reps": "5-8",
                                             "rest_seconds": 60
+                                        },
+                                        {
+                                            "exercise_slug": "EX002_v2",
+                                            "sets": 2,
+                                            "reps": "8-10",
+                                            "rest_seconds": 60
+                                        },
+                                        {
+                                            "exercise_slug": "EX003_v2",
+                                            "sets": 1,
+                                            "reps": "20 seconds",
+                                            "rest_seconds": 45
                                         }
                                     ]
                                 },
@@ -452,6 +464,12 @@ class FallbackService:
                                             "sets": 2,
                                             "reps": "8-12",
                                             "rest_seconds": 60
+                                        },
+                                        {
+                                            "exercise_slug": "EX004_v2",
+                                            "sets": 2,
+                                            "reps": "30 seconds",
+                                            "rest_seconds": 45
                                         }
                                     ]
                                 },
@@ -488,6 +506,12 @@ class FallbackService:
                                             "sets": 2,
                                             "reps": "15-30 seconds",
                                             "rest_seconds": 45
+                                        },
+                                        {
+                                            "exercise_slug": "EX001_v2",
+                                            "sets": 1,
+                                            "reps": "max effort",
+                                            "rest_seconds": 60
                                         }
                                     ]
                                 },
@@ -668,6 +692,306 @@ class FallbackService:
                                 {
                                     "type": "confidence_task",
                                     "text": "Plan your next fitness journey!",
+                                    "description": "Future planning motivation"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "week_number": 3,
+                    "week_focus": "Strength building",
+                    "days": [
+                        {
+                            "day_number": 1,
+                            "workout_name": "Strength Focus",
+                            "is_rest_day": False,
+                            "blocks": [
+                                {
+                                    "type": "main",
+                                    "name": "Strength Workout",
+                                    "exercises": [
+                                        {
+                                            "exercise_slug": "EX001_v2",
+                                            "sets": 3,
+                                            "reps": "10-12",
+                                            "rest_seconds": 75
+                                        },
+                                        {
+                                            "exercise_slug": "EX002_v2",
+                                            "sets": 3,
+                                            "reps": "12-15",
+                                            "rest_seconds": 75
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "You're getting stronger every day!",
+                                    "description": "Week 3 strength building motivation"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 2,
+                            "workout_name": "Rest Day",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Rest and recover for tomorrow",
+                                    "description": "Week 3 rest day"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 3,
+                            "workout_name": "Endurance Focus",
+                            "is_rest_day": False,
+                            "blocks": [
+                                {
+                                    "type": "main",
+                                    "name": "Endurance Training",
+                                    "exercises": [
+                                        {
+                                            "exercise_slug": "EX003_v2",
+                                            "sets": 2,
+                                            "reps": "45 seconds",
+                                            "rest_seconds": 30
+                                        },
+                                        {
+                                            "exercise_slug": "EX004_v2",
+                                            "sets": 2,
+                                            "reps": "30 seconds",
+                                            "rest_seconds": 30
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Your endurance is improving!",
+                                    "description": "Endurance progress motivation"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 4,
+                            "workout_name": "Rest Day",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Recovery builds strength",
+                                    "description": "Mid-week recovery"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 5,
+                            "workout_name": "Combined Training",
+                            "is_rest_day": False,
+                            "blocks": [
+                                {
+                                    "type": "main",
+                                    "name": "Mixed Workout",
+                                    "exercises": [
+                                        {
+                                            "exercise_slug": "EX001_v2",
+                                            "sets": 2,
+                                            "reps": "8-10",
+                                            "rest_seconds": 60
+                                        },
+                                        {
+                                            "exercise_slug": "EX003_v2",
+                                            "sets": 2,
+                                            "reps": "30 seconds",
+                                            "rest_seconds": 45
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "You're mastering the basics!",
+                                    "description": "Skill mastery celebration"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 6,
+                            "workout_name": "Weekend Rest",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Enjoy your weekend break",
+                                    "description": "Weekend rest motivation"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 7,
+                            "workout_name": "Weekend Rest",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Ready for week 4!",
+                                    "description": "Preparation for final week"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "week_number": 4,
+                    "week_focus": "Final challenge",
+                    "days": [
+                        {
+                            "day_number": 1,
+                            "workout_name": "Final Challenge",
+                            "is_rest_day": False,
+                            "blocks": [
+                                {
+                                    "type": "main",
+                                    "name": "Challenge Workout",
+                                    "exercises": [
+                                        {
+                                            "exercise_slug": "EX001_v2",
+                                            "sets": 4,
+                                            "reps": "max effort",
+                                            "rest_seconds": 90
+                                        },
+                                        {
+                                            "exercise_slug": "EX002_v2",
+                                            "sets": 4,
+                                            "reps": "max effort",
+                                            "rest_seconds": 90
+                                        },
+                                        {
+                                            "exercise_slug": "EX003_v2",
+                                            "sets": 2,
+                                            "reps": "max time",
+                                            "rest_seconds": 90
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Final week - show your strength!",
+                                    "description": "Final week motivation"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 2,
+                            "workout_name": "Rest Day",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "You're almost there!",
+                                    "description": "Near completion encouragement"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 3,
+                            "workout_name": "Final Test",
+                            "is_rest_day": False,
+                            "blocks": [
+                                {
+                                    "type": "main",
+                                    "name": "Final Assessment",
+                                    "exercises": [
+                                        {
+                                            "exercise_slug": "EX004_v2",
+                                            "sets": 3,
+                                            "reps": "60 seconds",
+                                            "rest_seconds": 60
+                                        },
+                                        {
+                                            "exercise_slug": "EX001_v2",
+                                            "sets": 2,
+                                            "reps": "15-20",
+                                            "rest_seconds": 90
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Look how far you've come!",
+                                    "description": "Progress reflection"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 4,
+                            "workout_name": "Rest Day",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Prepare for graduation!",
+                                    "description": "Pre-completion rest"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 5,
+                            "workout_name": "Graduation Day",
+                            "is_rest_day": False,
+                            "blocks": [
+                                {
+                                    "type": "main",
+                                    "name": "Graduation Workout",
+                                    "exercises": [
+                                        {
+                                            "exercise_slug": "EX001_v2",
+                                            "sets": 3,
+                                            "reps": "personal best",
+                                            "rest_seconds": 120
+                                        },
+                                        {
+                                            "exercise_slug": "EX002_v2",
+                                            "sets": 3,
+                                            "reps": "personal best",
+                                            "rest_seconds": 120
+                                        },
+                                        {
+                                            "exercise_slug": "EX003_v2",
+                                            "sets": 1,
+                                            "reps": "maximum time",
+                                            "rest_seconds": 120
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "confidence_task",
+                                    "text": "🎉 CONGRATULATIONS! You completed the 4-week program!",
+                                    "description": "Program completion celebration"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 6,
+                            "workout_name": "Victory Rest",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "Celebrate your achievement!",
+                                    "description": "Victory celebration"
+                                }
+                            ]
+                        },
+                        {
+                            "day_number": 7,
+                            "workout_name": "Planning Day",
+                            "is_rest_day": True,
+                            "blocks": [
+                                {
+                                    "type": "confidence_task",
+                                    "text": "What's your next fitness goal?",
                                     "description": "Future planning motivation"
                                 }
                             ]

@@ -272,6 +272,31 @@ The `VideoPlaylistBuilder` (apps/workouts/services/playlist_v2.py) creates perso
 - `112` = Pro Coach (professional)  
 - `113` = Best Mate (peer)
 
+## Shell Scripts
+
+### Deployment & Build Scripts
+```bash
+# Build and deployment
+./build.sh                      # Build Django application
+./start.sh                      # Start Django development server
+./deploy_video_fix.sh           # Deploy video-related fixes to production
+```
+
+### R2/Media Management Scripts
+```bash
+# R2 bucket and media management
+./apply_r2_bucket_policy.sh     # Apply CORS and access policies to R2 bucket
+./auto_upload_r2.sh             # Automated upload of media files to R2 storage
+./reliable_upload.sh            # Reliable upload with retry logic and verification
+./monitor_upload.sh             # Monitor R2 upload progress and status
+```
+
+### Utility Scripts
+```bash
+# Development utilities
+./scripts/setup_github_labels.sh  # Setup GitHub issue labels for project management
+```
+
 ## Troubleshooting
 
 ### Common Issues
