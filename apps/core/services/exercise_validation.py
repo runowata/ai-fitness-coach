@@ -73,14 +73,13 @@ class ExerciseValidationService:
             # Apply archetype filter with fallback logic
             if archetype:
                 from apps.workouts.constants import ARCHETYPE_FALLBACK_ORDER
+                from apps.core.utils.archetypes import normalize_archetype
                 
-                # Normalize archetype codes to string names
-                archetype_mapping = {
-                    '111': 'mentor', 
-                    '112': 'professional', 
-                    '113': 'peer'
-                }
-                normalized_archetype = archetype_mapping.get(archetype, archetype)
+                # Normalize archetype to standard string name
+                normalized_archetype = normalize_archetype(archetype)
+                if not normalized_archetype:
+                    from django.core.exceptions import ValidationError
+                    raise ValidationError(f"Invalid archetype: {archetype!r}")
                 
                 # Get fallback order for this archetype
                 fallback_archetypes = ARCHETYPE_FALLBACK_ORDER.get(normalized_archetype, [normalized_archetype])

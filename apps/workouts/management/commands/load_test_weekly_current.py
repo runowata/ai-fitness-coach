@@ -138,7 +138,9 @@ class Command(BaseCommand):
             if created:
                 # Create user profile
                 if hasattr(user, 'profile'):
-                    user.profile.archetype = ['111', '222', '333'][i % 3]
+                    from apps.core.utils.archetypes import validate_archetype
+                    archetype_codes = ['111', '112', '113']  # Fixed: 112 not 222
+                    user.profile.archetype = validate_archetype(archetype_codes[i % 3])
                     user.profile.save()
             
             users.append(user)

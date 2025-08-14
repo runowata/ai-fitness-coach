@@ -45,7 +45,8 @@ class Command(BaseCommand):
         
         # 2. Set up user profile
         if hasattr(user, 'profile'):
-            user.profile.archetype = archetype
+            from apps.core.utils.archetypes import validate_archetype
+            user.profile.archetype = validate_archetype(archetype)
             user.profile.age = 28
             user.profile.height = 175
             user.profile.weight = 70

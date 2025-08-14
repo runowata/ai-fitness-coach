@@ -345,16 +345,18 @@ def select_archetype(request):
     """Archetype selection page"""
     if request.method == 'POST':
         archetype = request.POST.get('archetype')
-        # Map old UI values to numeric codes for database storage
+        # Map UI values to proper archetype names
         archetype_map = {
-            'bro': '113',           # peer
-            'sergeant': '112',      # professional  
-            'intellectual': '111',  # mentor
+            'bro': 'peer',           # Best Mate
+            'sergeant': 'professional',      # Pro Coach  
+            'intellectual': 'mentor',  # Wise Mentor
         }
         
         if archetype in archetype_map:
+            from apps.core.utils.archetypes import validate_archetype
             profile = request.user.profile
-            profile.archetype = archetype_map[archetype]
+            # Save normalized archetype name instead of numeric code
+            profile.archetype = validate_archetype(archetype_map[archetype])
             profile.save()
             
             # Generate workout plan with real AI analysis
