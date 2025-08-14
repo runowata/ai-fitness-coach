@@ -264,14 +264,26 @@ class FallbackService:
     
     def _load_default_templates(self) -> Dict:
         """Load hardcoded workout templates for different experience levels"""
+        # Use real exercise IDs from database
+        try:
+            available_exercises = list(CSVExercise.objects.filter(
+                is_active=True
+            ).order_by('id')[:20].values_list('id', flat=True))
+        except Exception:
+            # Fallback if database query fails
+            available_exercises = ['CX001', 'CX002', 'CX003', 'CX004', 'CX005', 'CX006', 'CX007', 'CX008', 'CX009', 'CX010']
+        
+        # Use first 15 exercises and cycle through them
+        base_exercises = available_exercises[:15] if len(available_exercises) >= 15 else available_exercises
+        
         return {
             'beginner_3days': {
                 'plan_name': 'Beginner 3-Day Foundation',
                 'goal': 'Build basic fitness foundation',
                 'exercises_per_day': [
-                    ['push-ups', 'squats', 'planks'],
-                    ['lunges', 'crunches', 'jumping-jacks'], 
-                    ['wall-sits', 'mountain-climbers', 'calf-raises'],
+                    base_exercises[:4],  # 4 exercises per day
+                    base_exercises[4:8],  
+                    base_exercises[8:12],
                 ],
                 'sets_range': [2, 3],
                 'reps_range': ['5-8', '8-12'],
@@ -281,10 +293,10 @@ class FallbackService:
                 'plan_name': 'Intermediate 4-Day Builder',
                 'goal': 'Increase strength and endurance',
                 'exercises_per_day': [
-                    ['push-ups', 'squats', 'planks', 'lunges'],
-                    ['burpees', 'crunches', 'mountain-climbers'],
-                    ['jumping-jacks', 'wall-sits', 'calf-raises'],
-                    ['push-ups', 'squats', 'planks', 'burpees'],
+                    base_exercises[:4],
+                    base_exercises[3:7], 
+                    base_exercises[6:10],
+                    base_exercises[9:13],
                 ],
                 'sets_range': [3, 4],
                 'reps_range': ['8-12', '10-15'],
@@ -320,18 +332,13 @@ class FallbackService:
             
             for day_num in range(1, 8):  # 7 days per week
                 if day_num in [6, 7]:  # Weekend rest days
-                    # Rest day with confidence task block
-                    blocks = [{
-                        'type': 'confidence_task',
-                        'text': "Rest and recovery - you're doing great!",
-                        'description': 'Rest day motivation'
-                    }]
-                    
+                    # Rest day with old schema format
                     day_data = {
                         'day_number': day_num,
                         'workout_name': f"Rest Day {day_num}",
                         'is_rest_day': True,
-                        'blocks': blocks
+                        'exercises': [],
+                        'confidence_task': "Rest and recovery - you're doing great!"
                     }
                 else:
                     # Select exercise pattern
@@ -350,27 +357,13 @@ class FallbackService:
                                 'rest_seconds': template['rest_seconds']
                             })
                     
-                    # Create blocks structure for new schema
-                    blocks = []
-                    if exercises:
-                        blocks.append({
-                            'type': 'main',
-                            'name': 'Main Workout',
-                            'exercises': exercises
-                        })
-                    
-                    # Add confidence task as separate block
-                    blocks.append({
-                        'type': 'confidence_task',
-                        'text': f"Complete Day {day_num} - you're building strength!",
-                        'description': 'Daily confidence building task'
-                    })
-                    
+                    # Use old schema format with exercises directly on day
                     day_data = {
                         'day_number': day_num,
                         'workout_name': f"Day {day_num} Workout",
                         'is_rest_day': False,
-                        'blocks': blocks
+                        'exercises': exercises,
+                        'confidence_task': f"Complete Day {day_num} - you're building strength!"
                     }
                 
                 week_data['days'].append(day_data)
@@ -393,7 +386,19 @@ class FallbackService:
         """Last resort - minimal plan that will definitely validate"""
         from .schemas import validate_ai_plan_response
         
-        minimal_plan = {
+        # Use template builder for better exercise coverage
+        logger.warning("Using template-based emergency plan")
+        template_plan = self._build_plan_from_template(
+            template=self.default_plan_templates['beginner_3days'],
+            user_data=user_data,
+            duration_weeks=4
+        )
+        
+        plan_json = json.dumps(template_plan)
+        return validate_ai_plan_response(plan_json)
+        
+        # Old hardcoded minimal plan (kept as backup)
+        minimal_plan_backup = {
             "plan_name": "Emergency Basic Plan",
             "duration_weeks": 4,
             "goal": "Stay active",

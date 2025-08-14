@@ -136,9 +136,10 @@ class OpenAIClient:
             # Build API payload using the builder function
             api_params = build_responses_payload(
                 prompt=prompt,
+                model=self.default_model,
                 max_tokens=max_tokens,
                 temperature=temperature,
-                model=self.default_model
+                schema=WORKOUT_PLAN_JSON_SCHEMA,
             )
 
             # Add retry logic

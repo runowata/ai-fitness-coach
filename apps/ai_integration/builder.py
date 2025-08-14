@@ -12,81 +12,26 @@ from .schemas_json import WORKOUT_PLAN_JSON_SCHEMA
 logger = logging.getLogger(__name__)
 
 
-def build_responses_payload(
-    prompt: str, 
-    system_message: str = None, 
-    max_tokens: int = 8192, 
-    temperature: float = 0.7, 
-    model: str = None
-) -> Dict:
-    """
-    Build API payload based on model type (GPT-5 Responses API vs Chat Completions API)
-    
-    Args:
-        prompt: User prompt for workout generation
-        system_message: System prompt (optional)
-        max_tokens: Maximum tokens for response
-        temperature: Response randomness (0.0 to 1.0)
-        model: Model to use (defaults to settings.OPENAI_MODEL)
-        
-    Returns:
-        Dictionary with correct API parameters for the model
-    """
-    if model is None:
-        model = getattr(settings, 'OPENAI_MODEL', 'gpt-5')
-    
-    if system_message is None:
-        system_message = """You are a professional fitness coach AI. Create a personalized workout plan based on the user's requirements. Generate ALL weeks requested (typically 4-8 weeks). Each week MUST have 7 days. Include rest days as appropriate."""
-    
-    # Use the corrected JSON Schema with blocks structure
-    workout_plan_schema = WORKOUT_PLAN_JSON_SCHEMA
-    
-    if model.startswith('gpt-5'):
-        # GPT-5 Responses API - uses 'text.format' parameter structure
-        logger.info(f"Building Responses API payload for model: {model}")
-        payload = {
-            'model': model,
-            'input': [
-                {"role": "developer", "content": system_message},
-                {"role": "user", "content": prompt}
-            ],
-            'reasoning': {
-                'effort': 'minimal'  # Fast response for workout generation
-            },
-            'text': {
-                'verbosity': 'medium',
-                'format': {
-                    'type': 'json_schema',
-                    'name': 'WorkoutPlan',
-                    'json_schema': workout_plan_schema,
-                    'strict': True
+def build_responses_payload(prompt: str, model: str, max_tokens: int, temperature: float, schema: dict):
+    return {
+        "model": model,
+        "input": [
+            {"role": "developer", "content": "You are a professional fitness coach AI."},
+            {"role": "user", "content": prompt},
+        ],
+        "text": {
+            "format": {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "WorkoutPlan",
+                    "schema": schema,      # <-- ВАЖНО: именно здесь ключ 'schema'
+                    "strict": True
                 }
             }
-        }
-        logger.debug("Created Responses API payload with text.format structure")
-    else:
-        # Chat Completions API - uses 'response_format' parameter
-        logger.info(f"Building Chat Completions API payload for model: {model}")
-        payload = {
-            'model': model,
-            'messages': [
-                {"role": "system", "content": system_message},
-                {"role": "user", "content": prompt}
-            ],
-            'max_tokens': min(max_tokens, getattr(settings, 'OPENAI_MAX_TOKENS', 16384)),
-            'temperature': temperature,
-            'response_format': {
-                'type': 'json_schema',
-                'json_schema': {
-                    'name': 'workout_plan',
-                    'strict': True,
-                    'schema': workout_plan_schema
-                }
-            }
-        }
-        logger.debug("Created Chat Completions API payload with response_format structure")
-    
-    return payload
+        },
+        "max_output_tokens": max_tokens,
+        "temperature": temperature,
+    }
 
 
 def build_comprehensive_payload(

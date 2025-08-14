@@ -410,8 +410,8 @@ class CSVExercise(models.Model):
     name_en = models.CharField(max_length=120, blank=True)
     level = models.CharField(max_length=20)                         # beginner / intermediate / advanced
     description = models.TextField(blank=True)
-    muscle_group = models.CharField(max_length=50, blank=True)
-    exercise_type = models.CharField(max_length=50, blank=True)     # strength / stretch / cardio
+    muscle_group = models.CharField(max_length=120, blank=True)
+    exercise_type = models.CharField(max_length=120, blank=True)     # strength / stretch / cardio
     ai_tags = models.JSONField(blank=True, default=list)
     is_active = models.BooleanField(default=True)
 
