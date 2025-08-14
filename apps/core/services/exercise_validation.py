@@ -74,8 +74,16 @@ class ExerciseValidationService:
             if archetype:
                 from apps.workouts.constants import ARCHETYPE_FALLBACK_ORDER
                 
+                # Normalize archetype codes to string names
+                archetype_mapping = {
+                    '111': 'mentor', 
+                    '112': 'professional', 
+                    '113': 'peer'
+                }
+                normalized_archetype = archetype_mapping.get(archetype, archetype)
+                
                 # Get fallback order for this archetype
-                fallback_archetypes = ARCHETYPE_FALLBACK_ORDER.get(archetype, [archetype])
+                fallback_archetypes = ARCHETYPE_FALLBACK_ORDER.get(normalized_archetype, [normalized_archetype])
                 
                 # Try each archetype in fallback order until we find exercises that have complete coverage
                 final_query = None
@@ -98,7 +106,7 @@ class ExerciseValidationService:
                     
                     if test_slugs.exists():
                         final_query = arch_query
-                        if arch != archetype:
+                        if arch != normalized_archetype:
                             logger.info(f"Using fallback archetype '{arch}' for '{archetype}' (found {test_slugs.count()} exercises)")
                         break
                 
@@ -108,7 +116,7 @@ class ExerciseValidationService:
                     # No archetype worked - this is a data configuration error
                     from django.core.exceptions import ValidationError
                     msg = (
-                        f"No exercises with video coverage for archetype '{archetype}' or its fallbacks. "
+                        f"No exercises with video coverage for archetype '{archetype}' (normalized: '{normalized_archetype}') or its fallbacks. "
                         "Refusing to fallback to other archetypes. Check video data integrity."
                     )
                     logger.error(msg)
