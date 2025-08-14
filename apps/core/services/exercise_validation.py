@@ -191,11 +191,47 @@ class ExerciseValidationService:
                 
             # Sort exercises by coverage
             exercises_data.sort(key=lambda x: (-x['kinds_covered'], x['name']))
+            
+            # Add required kinds info
+            from apps.workouts.constants import REQUIRED_VIDEO_KINDS
+            required_kinds = [k.value if hasattr(k, 'value') else str(k) for k in REQUIRED_VIDEO_KINDS]
+            
+            # Add by_archetype breakdown
+            by_archetype = {}
+            for archetype in ['mentor', 'peer', 'professional']:
+                # Get clips for this archetype only
+                archetype_clips = ExerciseValidationService.get_clips_with_video().filter(
+                    archetype=archetype,
+                    r2_kind__in=ExerciseValidationService.REQUIRED_KINDS
+                )
+                
+                # Count exercises that have ALL required kinds for this archetype
+                exercise_coverage = {}
+                for clip in archetype_clips:
+                    if clip.exercise_id not in exercise_coverage:
+                        exercise_coverage[clip.exercise_id] = set()
+                    exercise_coverage[clip.exercise_id].add(clip.r2_kind)
+                
+                # Count complete exercises (have all required kinds)
+                required_kinds_set = set(k.value if hasattr(k, 'value') else str(k) for k in REQUIRED_VIDEO_KINDS)
+                complete_exercises = sum(1 for kinds in exercise_coverage.values() 
+                                       if required_kinds_set.issubset(kinds))
+                
+                total_exercises = len(exercise_coverage)
+                coverage_pct = round(complete_exercises / total_exercises * 100, 1) if total_exercises else 0
+                
+                by_archetype[archetype] = {
+                    'total': total_exercises,
+                    'complete': complete_exercises,
+                    'coverage_percentage': coverage_pct
+                }
                 
             return {
                 'total_exercises': len(exercises_data),
                 'statistics': stats,
                 'coverage_percentage': round(stats['complete'] / len(exercises_data) * 100, 1) if exercises_data else 0,
+                'required_kinds': required_kinds,
+                'by_archetype': by_archetype,
                 'exercises': exercises_data
             }
                 
