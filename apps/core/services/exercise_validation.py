@@ -105,9 +105,14 @@ class ExerciseValidationService:
                 if final_query:
                     query = final_query
                 else:
-                    # No archetype worked, use without archetype filter
-                    logger.warning(f"No videos found for archetype '{archetype}' or its fallbacks, using all archetypes")
-                    # query remains unchanged (no archetype filter)
+                    # No archetype worked - this is a data configuration error
+                    from django.core.exceptions import ValidationError
+                    msg = (
+                        f"No exercises with video coverage for archetype '{archetype}' or its fallbacks. "
+                        "Refusing to fallback to other archetypes. Check video data integrity."
+                    )
+                    logger.error(msg)
+                    raise ValidationError(msg)
             
             # Apply locale filter if specified (future: when locale field exists)
             # if locale:

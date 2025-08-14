@@ -59,9 +59,9 @@ class Archetype(StrEnum):
 
 
 # Required video kinds for exercise validation  
-# Note: INSTRUCTION videos are general/archetype-specific, not exercise-specific
-# Only TECHNIQUE and MISTAKE are required per exercise
-REQUIRED_VIDEO_KINDS = [VideoKind.TECHNIQUE, VideoKind.MISTAKE]
+# Note: INSTRUCTION videos are guaranteed for all exercises with all archetypes
+# TECHNIQUE and MISTAKE are optional but not available for all exercises
+REQUIRED_VIDEO_KINDS = [VideoKind.INSTRUCTION]  # Only instruction videos are guaranteed
 
 # Exercise fallback priority for substitutions
 EXERCISE_FALLBACK_PRIORITY = {
