@@ -470,6 +470,8 @@ def generate_plan(request):
 @login_required
 def generate_plan_ajax(request):
     """AJAX endpoint for plan generation with progress updates"""
+    logger.info(f"=== GENERATE_PLAN_AJAX START === User: {request.user}")
+    
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
@@ -490,14 +492,20 @@ def generate_plan_ajax(request):
     
     try:
         # Parse JSON data if Content-Type is application/json, otherwise use POST data
+        logger.info(f"Request content_type: {request.content_type}")
+        logger.info(f"Request body: {request.body}")
+        
         if request.content_type == 'application/json' and request.body:
             try:
                 data = json.loads(request.body)
                 action = data.get('action', 'generate')
-            except json.JSONDecodeError:
+                logger.info(f"Parsed JSON data: {data}, action: {action}")
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON decode error: {e}")
                 action = 'generate'
         else:
             action = request.POST.get('action', 'generate')
+            logger.info(f"POST data action: {action}")
         
         if action == 'confirm':
             # User confirmed the plan after preview
@@ -558,19 +566,23 @@ def generate_plan_ajax(request):
                 request.user.completed_onboarding = True
                 request.user.save()
                 
-                return JsonResponse({
+                result = {
                     'status': 'success',
                     'progress': 100,
                     'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
                     'plan_id': workout_plan.id
-                })
+                }
+                logger.info(f"=== GENERATE_PLAN_AJAX SUCCESS === Result: {result}")
+                return JsonResponse(result)
         
     except Exception as e:
         logger.error(f"Plan generation failed for user {request.user.id}: {str(e)}")
-        return JsonResponse({
-            'status': 'error',
+        error_result = {
+            'status': 'error', 
             'error': str(e)
-        }, status=500)
+        }
+        logger.info(f"=== GENERATE_PLAN_AJAX ERROR === Result: {error_result}")
+        return JsonResponse(error_result, status=500)
 
 
 @login_required
