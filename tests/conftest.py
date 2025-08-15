@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.test import override_settings
 
 from apps.workouts.catalog import get_catalog
-from apps.workouts.services import VideoPlaylistBuilder
+from apps.workouts.video_services import VideoPlaylistBuilder
 from tests.factories import SeededExerciseSetFactory
 
 
