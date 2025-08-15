@@ -995,18 +995,27 @@ document.addEventListener('DOMContentLoaded', function() {
 // CRITICAL FIX: AI Plan Generation Function with race condition prevention
 let generationInProgress = false;
 function startAIPlanGeneration() {
-    console.log('=== startAIPlanGeneration CALLED ===');
+    console.log('=== 🚀 AI PLAN GENERATION START ===');
+    console.time('total-generation');
+    console.time('ajax-request');
     
     if (generationInProgress) {
-        console.log('Generation already in progress, skipping duplicate request');
+        console.log('⚠️ Generation already in progress, skipping duplicate request');
         return;
     }
     
     generationInProgress = true;
     const startTime = Date.now();
     
-    console.log('Starting AJAX request to /onboarding/generate-ajax/');
-    console.log('Request headers:', {
+    // Log timing and context
+    console.log('📊 Timing context:', {
+        page_load_time: Date.now() - (window.pageStartTime || Date.now()),
+        user_agent: navigator.userAgent.substring(0, 100),
+        timestamp: new Date().toISOString()
+    });
+    
+    console.log('📡 Starting AJAX request to /onboarding/generate-ajax/');
+    console.log('📋 Request headers:', {
         'Content-Type': 'application/json',
         'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || 'NOT_FOUND'
     });
@@ -1038,17 +1047,19 @@ function startAIPlanGeneration() {
     })
     .then(data => {
         const elapsedTime = (Date.now() - startTime) / 1000;
-        console.log(`AJAX JSON parsed after ${elapsedTime}s:`, data);
+        console.log(`✅ AJAX JSON parsed after ${elapsedTime}s:`, data);
+        console.time('frontend-processing');
         
-        if (data.status === 'success') {
-            // AI generation completed - stop animation and redirect
+        // CRITICAL FIX: Always stop animation and set progress to 100%
+        generationInProgress = false;
+        completeProgress(data.progress || 100);
+        
+        if (data.success === true) {
+            // AI generation completed successfully
             console.log('✅ AI generation successful! Plan ID:', data.plan_id);
-            console.log('Frontend elapsed time:', elapsedTime);
-            console.log('Response data:', data);
-            console.log('Redirecting to:', data.redirect_url);
-            
-            // Mark generation as complete to allow 100% progress
-            generationInProgress = false;
+            console.log('✅ Frontend elapsed time:', elapsedTime.toFixed(2) + 's');
+            console.log('✅ Response data:', data);
+            console.log('✅ Redirecting to:', data.redirect_url);
             
             // Mark all stages as completed
             document.querySelectorAll('.stage').forEach(el => {
@@ -1056,44 +1067,37 @@ function startAIPlanGeneration() {
                 el.classList.add('completed');
             });
             
-            // Set progress to 100% (use data.progress if available)
-            const finalProgress = data.progress || 100;
-            const progressBar = document.getElementById('overall-progress-bar');
-            const progressGlow = document.querySelector('.progress-glow');
-            const progressPercentage = document.getElementById('overall-percentage');
-            const etaTime = document.getElementById('eta-time');
-            
-            if (progressBar) {
-                progressBar.style.width = finalProgress + '%';
-            }
-            if (progressGlow) {
-                progressGlow.style.width = finalProgress + '%';
-            }
-            if (progressPercentage) {
-                progressPercentage.textContent = finalProgress + '%';
-            }
-            if (etaTime) {
-                etaTime.textContent = '0';
-            }
-            
             // Redirect after showing completion
-            console.log('Setting redirect timeout...');
+            console.log('⏱ Setting redirect timeout...');
             setTimeout(() => {
+                console.timeEnd('frontend-processing');
                 console.log('🚀 REDIRECTING NOW to:', data.redirect_url);
                 if (data.redirect_url) {
                     window.location.href = data.redirect_url;
                 } else {
-                    console.error('No redirect_url provided, falling back to dashboard');
+                    console.error('❌ No redirect_url provided, falling back to dashboard');
                     window.location.href = '/users/dashboard/';
                 }
             }, 2000);
+            
         } else {
-            // Show error after 3 seconds
-            console.error('❌ AI generation failed:', data.error);
-            generationInProgress = false;
+            // Handle error response (success: false)
+            console.error('❌ AI generation failed:', {
+                error_code: data.error_code,
+                message: data.message,
+                retry_allowed: data.retry_allowed,
+                details: data.details
+            });
+            
+            // Show error with retry option if allowed
             setTimeout(() => {
-                showError(data.error || 'Произошла ошибка при генерации плана');
-            }, 3000);
+                console.timeEnd('frontend-processing');
+                showError(
+                    data.message || 'Произошла ошибка при генерации плана',
+                    data.retry_allowed !== false,
+                    data.error_code
+                );
+            }, 2000);
         }
     })
     .catch(error => {
@@ -1106,35 +1110,99 @@ function startAIPlanGeneration() {
         });
         
         generationInProgress = false;
+        completeProgress(100); // Always complete progress on error
         setTimeout(() => {
-            showError(`Ошибка подключения (${elapsedTime.toFixed(1)}s): ${error.message}`);
-        }, 3000);
+            showError(`Ошибка подключения (${elapsedTime.toFixed(1)}s): ${error.message}`, true, 'NETWORK_ERROR');
+        }, 2000);
     });
 }
 
-// Show error message
-function showError(message) {
-    const statusMessage = document.querySelector('.status-message');
-    if (statusMessage) {
-        statusMessage.innerHTML = `
-            <div style="color: #ff6b6b; text-align: center; margin-top: 20px;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
-                <p style="font-size: 18px; margin-bottom: 15px;">${message}</p>
-                <button onclick="location.reload()" style="
-                    background: linear-gradient(45deg, #667eea, #764ba2);
-                    color: white;
-                    border: none;
-                    padding: 10px 20px;
-                    border-radius: 25px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    Попробовать снова
-                </button>
+// Complete progress bar animation
+function completeProgress(progress = 100) {
+    console.log(`📊 Setting progress to ${progress}%`);
+    
+    const progressBar = document.getElementById('overall-progress-bar');
+    const progressGlow = document.querySelector('.progress-glow');
+    const progressPercentage = document.getElementById('overall-percentage');
+    const etaTime = document.getElementById('eta-time');
+    
+    if (progressBar) {
+        progressBar.style.width = progress + '%';
+    }
+    if (progressGlow) {
+        progressGlow.style.width = progress + '%';
+    }
+    if (progressPercentage) {
+        progressPercentage.textContent = progress + '%';
+    }
+    if (etaTime) {
+        etaTime.textContent = '0';
+    }
+}
+
+// Show error message with retry option
+function showError(message, retryAllowed = true, errorCode = 'UNKNOWN') {
+    console.log(`❌ Showing error: ${errorCode} - ${message} (retry: ${retryAllowed})`);
+    
+    // Replace the analysis content with error message
+    const analysisCard = document.querySelector('.analysis-card .card-inner');
+    if (analysisCard) {
+        const retryButton = retryAllowed ? `
+            <button onclick="retryGeneration()" style="
+                background: linear-gradient(45deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 25px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-right: 15px;
+            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                Попробовать ещё раз
+            </button>
+        ` : '';
+        
+        analysisCard.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 60px; color: #ff6b6b; margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2 style="color: #2c3e50; margin-bottom: 15px; font-size: 24px;">Ошибка генерации</h2>
+                <p style="color: #7f8c8d; font-size: 18px; margin-bottom: 25px; line-height: 1.5;">
+                    ${message}
+                </p>
+                <div style="margin-bottom: 20px;">
+                    <small style="color: #95a5a6; font-size: 14px;">
+                        Код ошибки: ${errorCode}
+                    </small>
+                </div>
+                <div>
+                    ${retryButton}
+                    <button onclick="window.location.href='/users/dashboard/'" style="
+                        background: #ecf0f1;
+                        color: #2c3e50;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 25px;
+                        font-size: 16px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.background='#d5dbdb'" onmouseout="this.style.background='#ecf0f1'">
+                        На главную
+                    </button>
+                </div>
             </div>
         `;
     }
+}
+
+// Retry generation function
+function retryGeneration() {
+    console.log('🔄 Retrying generation...');
+    location.reload();
 }
 
 // Add a hidden CSRF token for AJAX

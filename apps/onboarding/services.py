@@ -108,16 +108,40 @@ class OnboardingDataProcessor:
     
     @staticmethod
     def _validate_user_data(user_data: Dict[str, Any]) -> None:
-        """Validate that essential fields are present"""
-        required_fields = ['age', 'height', 'weight', 'primary_goal', 'archetype']
+        """Validate that essential fields are present and apply defaults"""
+        required_fields = {
+            'age': 25,
+            'height': 175, 
+            'weight': 70,
+            'primary_goal': 'general_fitness',
+            'archetype': 'mentor'
+        }
         
-        missing_fields = []
-        for field in required_fields:
+        missing_before_defaults = []
+        applied_defaults = []
+        
+        # First pass: identify truly missing fields
+        for field, default_value in required_fields.items():
+            current_value = user_data.get(field)
+            if not current_value or (isinstance(current_value, (int, float)) and current_value <= 0):
+                missing_before_defaults.append(field)
+                user_data[field] = default_value
+                applied_defaults.append(f"{field}={default_value}")
+        
+        # Log meaningful information
+        if missing_before_defaults:
+            logger.warning(f"Applied defaults for missing fields: {applied_defaults}")
+        
+        # Validate after defaults applied
+        missing_after_defaults = []
+        for field in required_fields.keys():
             if not user_data.get(field):
-                missing_fields.append(field)
+                missing_after_defaults.append(field)
         
-        if missing_fields:
-            logger.warning(f"Missing required user data fields: {missing_fields}")
+        if missing_after_defaults:
+            logger.error(f"Critical: Fields still missing after defaults: {missing_after_defaults}")
+        else:
+            logger.info(f"✅ All required fields validated. Defaults applied: {len(applied_defaults)}")
     
     @staticmethod
     def _get_fallback_data(user) -> Dict[str, Any]:

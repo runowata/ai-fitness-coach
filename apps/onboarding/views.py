@@ -471,10 +471,18 @@ def generate_plan(request):
 @login_required
 def generate_plan_ajax(request):
     """AJAX endpoint for plan generation with progress updates"""
-    logger.info(f"=== GENERATE_PLAN_AJAX START === User: {request.user}")
+    request_start = time.time()
+    logger.info(f"=== 🚀 GENERATE_PLAN_AJAX START === User: {request.user.email}")
     
     if request.method != 'POST':
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        logger.warning(f"❌ Invalid method {request.method} from user {request.user}")
+        return JsonResponse({
+            'success': False,
+            'error_code': 'METHOD_NOT_ALLOWED',
+            'message': 'Метод не поддерживается',
+            'progress': 100,
+            'retry_allowed': False
+        }, status=405)
     
     from django.conf import settings
 
@@ -485,16 +493,24 @@ def generate_plan_ajax(request):
     # Check if plan already exists
     existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
     if existing_plan:
+        logger.info(f"✅ Existing plan found for user {request.user}: {existing_plan.id}")
         return JsonResponse({
-            'status': 'success',
+            'success': True,
             'progress': 100,
-            'redirect_url': reverse('users:dashboard')
+            'redirect_url': reverse('users:dashboard'),
+            'plan_id': existing_plan.id
         })
     
-    # Progress tracking
-    progress = 90
+    # Progress tracking with detailed timing
     response_sent = False
-    start_time = time.time()
+    milestone_times = {
+        'request_start': request_start,
+        'prepare_user_data': None,
+        'call_openai_start': None,
+        'call_openai_finish': None,
+        'build_response': None,
+        'total_duration': None
+    }
     
     try:
         # Parse JSON data if Content-Type is application/json, otherwise use POST data
@@ -543,11 +559,20 @@ def generate_plan_ajax(request):
         
         else:
             # Generate new plan
+            milestone_times['prepare_user_data'] = time.time()
+            logger.info(f"📊 Collecting user data for {request.user}...")
+            
             user_data = OnboardingDataProcessor.collect_user_data(request.user)
             generator = WorkoutPlanGenerator()
             
-            # Generate plan data (not saved to DB yet)
+            logger.info(f"🧠 Starting AI plan generation (archetype: {user_data.get('archetype')})")
+            milestone_times['call_openai_start'] = time.time()
+            
+            # Generate plan data (not saved to DB yet) 
             plan_data = generator.generate_plan(user_data)
+            
+            milestone_times['call_openai_finish'] = time.time()
+            logger.info(f"✅ AI generation completed in {milestone_times['call_openai_finish'] - milestone_times['call_openai_start']:.1f}s")
             
             if settings.SHOW_AI_ANALYSIS and 'analysis' in plan_data:
                 # Store plan in session for confirmation
@@ -569,25 +594,38 @@ def generate_plan_ajax(request):
                 })
             else:
                 # Direct creation without preview
+                milestone_times['build_response'] = time.time()
                 workout_plan = generator.create_plan(request.user, plan_data)
                 
                 # Mark onboarding as complete
                 request.user.completed_onboarding = True
                 request.user.save()
                 
+                milestone_times['total_duration'] = time.time() - request_start
+                
                 result = {
                     'success': True,
+                    'message': 'План успешно создан',
                     'progress': 100,
                     'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
-                    'plan_id': workout_plan.id
+                    'plan_id': workout_plan.id,
+                    'retry_allowed': False
                 }
-                logger.info(f"=== GENERATE_PLAN_AJAX SUCCESS === Result: {result}")
+                
+                # Log detailed timing breakdown
+                logger.info(f"✅ === GENERATE_PLAN_AJAX SUCCESS ===")
+                logger.info(f"📊 Timing breakdown: " + 
+                           f"prepare={milestone_times['prepare_user_data'] - request_start:.1f}s, " +
+                           f"ai_call={milestone_times['call_openai_finish'] - milestone_times['call_openai_start']:.1f}s, " +
+                           f"total={milestone_times['total_duration']:.1f}s")
+                logger.info(f"🎯 Result: {result}")
+                
                 response_sent = True
                 return JsonResponse(result)
         
     except Exception as e:
-        duration = time.time() - start_time
-        logger.error(f"Plan generation failed for user {request.user.id} after {duration:.1f}s: {str(e)}")
+        milestone_times['total_duration'] = time.time() - request_start
+        logger.error(f"❌ Plan generation failed for user {request.user.email} after {milestone_times['total_duration']:.1f}s: {str(e)}")
         
         # Handle specific AI client errors with standardized response format
         from apps.ai_integration.ai_client_gpt5 import AIClientError, ServiceTimeoutError, ServiceCallError
@@ -624,15 +662,20 @@ def generate_plan_ajax(request):
             'retry_allowed': True,
             'details': str(e) if settings.DEBUG else None  # Only in debug mode
         }
-        logger.info(f"=== GENERATE_PLAN_AJAX ERROR === Code: {error_code}, Result: {error_result}")
+        
+        # Log detailed error breakdown
+        logger.error(f"💥 === GENERATE_PLAN_AJAX ERROR ===")
+        logger.error(f"📊 Error timing: total={milestone_times['total_duration']:.1f}s")
+        logger.error(f"🔍 Error details: {error_code} - {error_result}")
+        
         response_sent = True
         return JsonResponse(error_result, status=status_code)
     
     finally:
         # Safety net: ensure we always send a response to prevent frontend hanging
         if not response_sent:
-            duration = time.time() - start_time
-            logger.error(f"No response sent after {duration:.1f}s, sending fallback error response")
+            milestone_times['total_duration'] = time.time() - request_start
+            logger.error(f"🚨 CRITICAL: No response sent after {milestone_times['total_duration']:.1f}s, sending fallback error response")
             fallback_result = {
                 'success': False,
                 'error_code': 'FALLBACK_ERROR',
