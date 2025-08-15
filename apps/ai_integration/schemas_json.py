@@ -29,7 +29,7 @@ WORKOUT_PLAN_JSON_SCHEMA = {
         "Week": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["week_number", "days"],
+            "required": ["week_number", "week_focus", "days"],
             "properties": {
                 "week_number": {
                     "type": "integer",

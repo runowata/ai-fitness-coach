@@ -75,6 +75,7 @@ class WorkoutPlan(BaseModel):
     duration_weeks: int = Field(..., ge=4, le=12, description="Plan duration in weeks")
     goal: str = Field(..., min_length=10, max_length=300, description="Plan goal")
     weeks: List[WorkoutWeek] = Field(..., description="List of workout weeks")
+    notes: Optional[str] = Field(None, max_length=500, description="Additional notes about the plan")
     
     @field_validator('weeks')
     @classmethod
