@@ -19,4 +19,7 @@ urlpatterns = [
     path('ai-analysis/', views.ai_analysis, name='ai_analysis'),
     path('ai-analysis-comprehensive/', views.ai_analysis_comprehensive, name='ai_analysis_comprehensive'),
     path('plan-preview-comprehensive/', views.plan_preview_comprehensive, name='plan_preview_comprehensive'),
+    
+    # Diagnostic endpoints
+    path('diag/sleep/<int:seconds>/', views.sleep_test, name='sleep_test'),
 ]

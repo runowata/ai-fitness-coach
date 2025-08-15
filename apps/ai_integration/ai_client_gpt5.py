@@ -4,6 +4,7 @@ import logging
 import time
 from typing import Dict
 
+import random
 import httpx
 from django.conf import settings
 from openai import OpenAI, APITimeoutError, APIError
@@ -42,15 +43,22 @@ class OpenAIClient:
         self.connect_timeout = getattr(settings, 'OPENAI_CONNECT_TIMEOUT', 10)
         self.read_timeout = getattr(settings, 'OPENAI_READ_TIMEOUT', 180)  # < 600 gunicorn timeout
         self.total_timeout = getattr(settings, 'OPENAI_TOTAL_TIMEOUT', 240)  # overall limit
+        self.max_retries = getattr(settings, 'OPENAI_MAX_RETRIES', 3)
+        
+        # Create httpx client with connection pooling and limits
+        timeout = httpx.Timeout(
+            timeout=self.total_timeout,
+            connect=self.connect_timeout,
+            read=self.read_timeout,
+            write=30,
+            pool=self.total_timeout
+        )
+        limits = httpx.Limits(max_keepalive_connections=20, max_connections=40)
+        self.httpx_client = httpx.Client(timeout=timeout, limits=limits)
         
         self.client = OpenAI(
             api_key=settings.OPENAI_API_KEY,
-            timeout=httpx.Timeout(
-                timeout=self.total_timeout,
-                connect=self.connect_timeout,
-                read=self.read_timeout,
-                write=30
-            )
+            http_client=self.httpx_client
         )
         self.default_model = getattr(settings, 'OPENAI_MODEL', 'gpt-5')
         
@@ -61,7 +69,32 @@ class OpenAIClient:
         
         logger.info(f"Initialized OpenAI client with model: {self.default_model}")
         logger.info(f"Timeouts: connect={self.connect_timeout}s, read={self.read_timeout}s, total={self.total_timeout}s")
+        logger.info(f"Retries: max={self.max_retries}, connection pooling enabled")
         logger.info(f"GPT-5 features enabled: {self.default_model.startswith('gpt-5')}")
+    
+    def _with_retries(self, call_func, operation_name="OpenAI API call"):
+        """Execute function with exponential backoff retries"""
+        last_error = None
+        
+        for attempt in range(self.max_retries):
+            try:
+                return call_func()
+            except (httpx.ConnectError, httpx.ReadTimeout, APIError) as e:
+                last_error = e
+                if attempt < self.max_retries - 1:
+                    backoff = (2 ** attempt) + random.uniform(0, 1)
+                    logger.warning(f"{operation_name} attempt {attempt + 1} failed: {str(e)}, retrying in {backoff:.1f}s")
+                    time.sleep(backoff)
+                else:
+                    logger.error(f"{operation_name} failed after {self.max_retries} attempts: {str(e)}")
+        
+        # Convert to our specific exceptions
+        if isinstance(last_error, (httpx.ConnectError, httpx.ReadTimeout)):
+            raise ServiceTimeoutError(f"{operation_name} timeout after {self.max_retries} retries: {str(last_error)}")
+        elif isinstance(last_error, APIError):
+            raise ServiceCallError(f"{operation_name} error after {self.max_retries} retries: {str(last_error)}")
+        else:
+            raise ServiceCallError(f"{operation_name} failed: {str(last_error)}")
     
     def generate_completion(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> Dict:
         """Generate completion using GPT-5 with Structured Outputs"""
@@ -118,28 +151,29 @@ class OpenAIClient:
                     model=self.default_model
                 )
                 
-                # Log payload sizes for debugging
+                # Log and validate payload sizes for debugging  
+                payload_bytes = len(json.dumps(api_params, ensure_ascii=False).encode('utf-8'))
                 logger.info(f"Payload sizes: prompt={len(prompt)} chars, "
                            f"system={len(api_params.get('input', [{}])[0].get('content', ''))}, "
-                           f"max_tokens={max_tokens}")
+                           f"max_tokens={max_tokens}, total_bytes={payload_bytes}")
                 
-                # Use GPT-5 with higher reasoning effort for comprehensive reports
+                # Validate payload size to prevent upstream errors
+                if payload_bytes > 900_000:  # ~0.9 MB limit
+                    raise ServiceCallError(f"Payload too large for AI request: {payload_bytes} bytes (max 900KB)")
+                
+                # Use GPT-5 with higher reasoning effort and retries
                 try:
                     logger.info("Starting OpenAI API call for comprehensive report...")
-                    response = self.client.responses.create(**api_params)
+                    response = self._with_retries(
+                        lambda: self.client.responses.create(**api_params),
+                        operation_name="GPT-5 comprehensive report"
+                    )
                     duration = time.time() - start_time
                     logger.info(f"OpenAI call finished in {duration:.1f}s")
                     
-                except (APITimeoutError, httpx.ReadTimeout, httpx.ConnectTimeout, httpx.TimeoutException) as e:
-                    duration = time.time() - start_time
-                    logger.error(f"OpenAI timeout after {duration:.1f}s: {str(e)}")
-                    raise ServiceTimeoutError(f"AI generation timed out after {duration:.1f}s. The service is overloaded, try again in a few minutes.")
-                    
-                except APIError as e:
-                    duration = time.time() - start_time
-                    logger.error(f"OpenAI API error after {duration:.1f}s: {str(e)}")
-                    raise ServiceCallError(f"AI service error: {str(e)}")
-                    
+                except (ServiceTimeoutError, ServiceCallError):
+                    # These are already properly formatted by _with_retries
+                    raise
                 except Exception as e:
                     duration = time.time() - start_time
                     logger.error(f"Unexpected error during OpenAI call after {duration:.1f}s: {str(e)}")

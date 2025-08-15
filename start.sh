@@ -12,6 +12,14 @@ echo "🏗️ Setting up database..."
 python manage.py setup_database
 
 # Start gunicorn
-echo "🌟 Starting gunicorn server with extended timeout for AI operations..."
-exec gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 600 --keep-alive 65
+echo "🌟 Starting gunicorn server with production-ready configuration..."
+exec gunicorn config.wsgi:application \
+  --bind 0.0.0.0:$PORT \
+  --workers 2 \
+  --threads 2 \
+  --timeout 600 \
+  --graceful-timeout 90 \
+  --keep-alive 65 \
+  --max-requests 200 --max-requests-jitter 50 \
+  --capture-output --log-level info --access-logfile - --error-logfile -
 EOF < /dev/null

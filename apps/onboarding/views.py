@@ -535,7 +535,7 @@ def generate_plan_ajax(request):
             
             response_sent = True
             return JsonResponse({
-                'status': 'success',
+                'success': True,
                 'progress': 100,
                 'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
                 'plan_id': workout_plan.id
@@ -556,6 +556,7 @@ def generate_plan_ajax(request):
                 # Return analysis for preview
                 response_sent = True
                 return JsonResponse({
+                    'success': True,
                     'status': 'needs_confirmation',
                     'analysis': plan_data.get('analysis', {}),
                     'plan_preview': {
@@ -575,7 +576,7 @@ def generate_plan_ajax(request):
                 request.user.save()
                 
                 result = {
-                    'status': 'success',
+                    'success': True,
                     'progress': 100,
                     'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
                     'plan_id': workout_plan.id
@@ -588,30 +589,42 @@ def generate_plan_ajax(request):
         duration = time.time() - start_time
         logger.error(f"Plan generation failed for user {request.user.id} after {duration:.1f}s: {str(e)}")
         
-        # Handle specific AI client errors with user-friendly messages
+        # Handle specific AI client errors with standardized response format
         from apps.ai_integration.ai_client_gpt5 import AIClientError, ServiceTimeoutError, ServiceCallError
         
+        # Map exceptions to standardized error codes and messages
         if isinstance(e, ServiceTimeoutError):
+            error_code = "AI_TIMEOUT"
             error_message = "Генерация плана заняла слишком много времени. Сервис перегружен, попробуйте через несколько минут."
             status_code = 504  # Gateway timeout
         elif isinstance(e, ServiceCallError):
-            error_message = "Ошибка AI-сервиса. Попробуйте еще раз через минуту."
-            status_code = 502  # Bad gateway
+            if "too large" in str(e).lower():
+                error_code = "PAYLOAD_TOO_LARGE"  
+                error_message = "Слишком много данных для обработки. Упростите ответы в анкете."
+                status_code = 413  # Request Entity Too Large
+            else:
+                error_code = "AI_UPSTREAM_ERROR"
+                error_message = "Ошибка AI-сервиса. Попробуйте еще раз через минуту."
+                status_code = 502  # Bad gateway
         elif isinstance(e, AIClientError):
+            error_code = "AI_CLIENT_ERROR"
             error_message = "Не удалось сгенерировать план. Попробуйте еще раз."
             status_code = 500
         else:
+            error_code = "UNEXPECTED_ERROR"
             error_message = "Неожиданная ошибка. Попробуйте еще раз."
             status_code = 500
         
+        # Standardized error response format
         error_result = {
-            'status': 'error',
-            'progress': 100,  # Always set to 100 to unblock frontend
-            'error': error_message,
+            'success': False,
+            'error_code': error_code,
+            'message': error_message,
+            'progress': 100,  # Always 100 to unblock frontend
             'retry_allowed': True,
-            'error_type': type(e).__name__
+            'details': str(e) if settings.DEBUG else None  # Only in debug mode
         }
-        logger.info(f"=== GENERATE_PLAN_AJAX ERROR === Result: {error_result}")
+        logger.info(f"=== GENERATE_PLAN_AJAX ERROR === Code: {error_code}, Result: {error_result}")
         response_sent = True
         return JsonResponse(error_result, status=status_code)
     
@@ -621,9 +634,10 @@ def generate_plan_ajax(request):
             duration = time.time() - start_time
             logger.error(f"No response sent after {duration:.1f}s, sending fallback error response")
             fallback_result = {
-                'status': 'error',
+                'success': False,
+                'error_code': 'FALLBACK_ERROR',
+                'message': 'Неожиданная ошибка при генерации плана. Попробуйте еще раз.',
                 'progress': 100,
-                'error': 'Неожиданная ошибка при генерации плана. Попробуйте еще раз.',
                 'retry_allowed': True
             }
             return JsonResponse(fallback_result, status=500)
@@ -865,3 +879,49 @@ def ai_analysis(request):
     }
     
     return render(request, 'onboarding/ai_analysis.html', context)
+
+
+def sleep_test(request, seconds):
+    """Diagnostic endpoint to test timeout handling without external dependencies"""
+    import time
+    from django.conf import settings
+    
+    # Security: limit sleep time in production
+    max_sleep = 600 if settings.DEBUG else 300
+    if seconds > max_sleep:
+        return JsonResponse({
+            'success': False,
+            'error_code': 'SLEEP_TOO_LONG',
+            'message': f'Sleep time limited to {max_sleep}s',
+            'requested': seconds,
+            'max_allowed': max_sleep
+        }, status=400)
+    
+    start_time = time.time()
+    logger.info(f"Sleep test starting: {seconds}s requested")
+    
+    try:
+        time.sleep(seconds)
+        duration = time.time() - start_time
+        
+        result = {
+            'success': True,
+            'slept': seconds,
+            'actual_duration': round(duration, 2),
+            'message': f'Successfully slept for {seconds}s',
+            'timestamp': time.time()
+        }
+        
+        logger.info(f"Sleep test completed: {duration:.1f}s actual duration")
+        return JsonResponse(result)
+        
+    except Exception as e:
+        duration = time.time() - start_time
+        logger.error(f"Sleep test failed after {duration:.1f}s: {str(e)}")
+        
+        return JsonResponse({
+            'success': False,
+            'error_code': 'SLEEP_INTERRUPTED',
+            'message': f'Sleep interrupted: {str(e)}',
+            'actual_duration': round(duration, 2)
+        }, status=500)
