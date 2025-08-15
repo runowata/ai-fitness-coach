@@ -78,13 +78,13 @@ class WorkoutPlanValidator:
     def _validate_structure(self, plan_data: Dict[str, Any]) -> Dict[str, Any]:
         """Validate basic plan structure"""
         # For Pydantic validation, we only need the required fields for WorkoutPlan schema
-        required_fields = ['plan_name', 'duration_weeks', 'goal', 'weeks']
+        required_fields = ['name', 'duration_weeks', 'goal', 'weeks']
         
         for field in required_fields:
             if field not in plan_data:
                 self.issues_found.append(f"Missing required field: {field}")
-                if field == 'plan_name':
-                    plan_data['plan_name'] = 'Generated Workout Plan'
+                if field == 'name':
+                    plan_data['name'] = 'Generated Workout Plan'
                 elif field == 'duration_weeks':
                     plan_data['duration_weeks'] = 4  # Minimum valid value
                 elif field == 'goal':
@@ -92,6 +92,23 @@ class WorkoutPlanValidator:
                 elif field == 'weeks':
                     plan_data['weeks'] = []
                 self.fixes_applied.append(f"Added missing {field}")
+        
+        # Convert plan_name to name if present
+        if 'plan_name' in plan_data and 'name' not in plan_data:
+            plan_data['name'] = plan_data['plan_name']
+            del plan_data['plan_name']
+            self.fixes_applied.append("Converted plan_name to name field")
+        
+        # Fix duration_weeks type if it's a string
+        if 'duration_weeks' in plan_data:
+            try:
+                if isinstance(plan_data['duration_weeks'], str):
+                    plan_data['duration_weeks'] = int(plan_data['duration_weeks'])
+                    self.fixes_applied.append("Converted duration_weeks from string to integer")
+            except (ValueError, TypeError):
+                plan_data['duration_weeks'] = 4
+                self.fixes_applied.append("Fixed invalid duration_weeks value")
+                self.issues_found.append("Invalid duration_weeks value")
         
         # Remove 'meta' field if present (not allowed in Pydantic schema)
         if 'meta' in plan_data:

@@ -57,6 +57,9 @@ class ComprehensiveReportValidator:
             fixed_report = self._validate_motivation_system_block(fixed_report)
             fixed_report = self._validate_long_term_strategy_block(fixed_report)
             
+            # Исправляем типы данных для Pydantic валидации
+            fixed_report = self._fix_data_types(fixed_report)
+            
             # Финальная валидация через Pydantic
             try:
                 ComprehensiveAIReport.model_validate(fixed_report)
@@ -227,6 +230,87 @@ class ComprehensiveReportValidator:
                 self.fixes_applied.append(f"Добавлен недостающий {field} в долгосрочную стратегию")
         
         report_data['long_term_strategy'] = strategy
+        return report_data
+    
+    def _fix_data_types(self, report_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Исправляет типы данных для соответствия Pydantic схемам"""
+        
+        # Исправляем training_program если он есть
+        if 'training_program' in report_data and report_data['training_program']:
+            training_program = report_data['training_program']
+            
+            # Преобразуем plan_name в name если присутствует
+            if 'plan_name' in training_program and 'name' not in training_program:
+                training_program['name'] = training_program['plan_name']
+                del training_program['plan_name']
+                self.fixes_applied.append("Преобразован plan_name в name")
+            
+            # Исправляем duration_weeks - должен быть integer
+            if 'duration_weeks' in training_program:
+                try:
+                    if isinstance(training_program['duration_weeks'], str):
+                        training_program['duration_weeks'] = int(training_program['duration_weeks'])
+                        self.fixes_applied.append("Преобразован duration_weeks из строки в integer")
+                except (ValueError, TypeError):
+                    training_program['duration_weeks'] = 4  # Fallback
+                    self.fixes_applied.append("Установлен fallback duration_weeks = 4")
+                    self.issues_found.append("Некорректное значение duration_weeks")
+            
+            # Исправляем week_number - должен быть integer
+            if 'weeks' in training_program:
+                for week in training_program.get('weeks', []):
+                    if 'week_number' in week:
+                        try:
+                            if isinstance(week['week_number'], str):
+                                week['week_number'] = int(week['week_number'])
+                                self.fixes_applied.append(f"Преобразован week_number из строки в integer")
+                        except (ValueError, TypeError):
+                            week['week_number'] = 1  # Fallback
+                            self.fixes_applied.append("Установлен fallback week_number = 1")
+                    
+                    # Исправляем day_number - должен быть integer
+                    for day in week.get('days', []):
+                        if 'day_number' in day:
+                            try:
+                                if isinstance(day['day_number'], str):
+                                    day['day_number'] = int(day['day_number'])
+                                    self.fixes_applied.append(f"Преобразован day_number из строки в integer")
+                            except (ValueError, TypeError):
+                                day['day_number'] = 1  # Fallback
+                                self.fixes_applied.append("Установлен fallback day_number = 1")
+                        
+                        # Исправляем sets в упражнениях - должен быть integer
+                        for block in day.get('blocks', []):
+                            for exercise in block.get('exercises', []):
+                                if 'sets' in exercise:
+                                    try:
+                                        if isinstance(exercise['sets'], str):
+                                            exercise['sets'] = int(exercise['sets'])
+                                            self.fixes_applied.append(f"Преобразован sets из строки в integer")
+                                    except (ValueError, TypeError):
+                                        exercise['sets'] = 3  # Fallback
+                                        self.fixes_applied.append("Установлен fallback sets = 3")
+                                
+                                # Исправляем rest_seconds - должен быть integer
+                                if 'rest_seconds' in exercise:
+                                    try:
+                                        if isinstance(exercise['rest_seconds'], str):
+                                            exercise['rest_seconds'] = int(exercise['rest_seconds'])
+                                            self.fixes_applied.append(f"Преобразован rest_seconds из строки в integer")
+                                    except (ValueError, TypeError):
+                                        exercise['rest_seconds'] = 60  # Fallback
+                                        self.fixes_applied.append("Установлен fallback rest_seconds = 60")
+                                
+                                # Исправляем duration_seconds - должен быть integer
+                                if 'duration_seconds' in exercise:
+                                    try:
+                                        if isinstance(exercise['duration_seconds'], str):
+                                            exercise['duration_seconds'] = int(exercise['duration_seconds'])
+                                            self.fixes_applied.append(f"Преобразован duration_seconds из строки в integer")
+                                    except (ValueError, TypeError):
+                                        exercise['duration_seconds'] = 30  # Fallback
+                                        self.fixes_applied.append("Установлен fallback duration_seconds = 30")
+        
         return report_data
     
     def dry_run_validation(self, report_data: Dict[str, Any]) -> Dict[str, Any]:
