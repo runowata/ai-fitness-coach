@@ -28,15 +28,18 @@ class OpenAIClient:
             raise AIClientError("OPENAI_API_KEY not configured")
         
         self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
-        self.default_model = getattr(settings, 'OPENAI_MODEL', 'o1')
+        self.default_model = getattr(settings, 'OPENAI_MODEL', 'gpt-5')
         
-        # Validate model is supported
-        allowed_models = {"o1", "o1-mini", "o1-preview", "gpt-4o", "gpt-4o-mini"}
-        if self.default_model not in allowed_models:
-            raise AIClientError(f"Unsupported OPENAI_MODEL: {self.default_model}. Allowed: {allowed_models}")
+        # ONLY GPT-5 models supported
+        gpt5_models = {"gpt-5", "gpt-5-mini", "gpt-5-nano"}
+        
+        if self.default_model not in gpt5_models:
+            raise AIClientError(f"ONLY GPT-5 models supported. Got: {self.default_model}. Supported: {gpt5_models}")
+        
+        logger.info(f"Using GPT-5 model: {self.default_model}")
     
     def generate_completion(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> Dict:
-        """Generate completion from OpenAI API for o1 model with basic JSON parsing"""
+        """Generate completion from OpenAI API with JSON parsing (legacy client)"""
         # This method maintains backward compatibility - returns raw dict
         try:
             response = self._make_api_call(prompt, max_tokens, temperature)
@@ -125,8 +128,8 @@ class OpenAIClient:
     def _make_api_call(self, prompt: str, max_tokens: int, temperature: float) -> Dict:
         """Make API call to OpenAI and return parsed JSON"""
         try:
-            # For o1 models, use simple approach without response_format
-            # o1 models have reasoning capabilities and follow JSON instructions well
+            # For GPT-5 models, use simple approach without response_format
+            # GPT-5 has strong reasoning capabilities and follows JSON instructions well
             system_message = """You are a professional fitness coach AI. Create a workout plan following EXACTLY this JSON structure.
 
 CRITICAL: 
@@ -170,7 +173,7 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
             last_error = None
             response = None
             
-            # Create API parameters - o1 models have different parameter requirements
+            # Create API parameters - reasoning models have different parameter requirements
             api_params = {
                 'model': self.default_model,
                 'messages': [
@@ -180,11 +183,13 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
                 'timeout': 240  # 4 minutes - safe buffer before gunicorn timeout
             }
             
-            # o1 models use different parameters
-            if self.default_model.startswith('o1'):
+            # GPT-5 models use different parameters than legacy models
+            if self.default_model.startswith('gpt-5'):
                 api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
-                # o1 models don't support temperature parameter
+                api_params['temperature'] = temperature  # GPT-5 supports temperature
             else:
+                # Should not reach here since we only support GPT-5
+                logger.error(f"Unexpected model: {self.default_model}")
                 api_params['max_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
                 api_params['temperature'] = temperature
             
@@ -305,7 +310,7 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
             last_error = None
             response = None
             
-            # Create API parameters - o1 models have different parameter requirements
+            # Create API parameters - reasoning models have different parameter requirements
             api_params = {
                 'model': self.default_model,
                 'messages': [
@@ -315,11 +320,13 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
                 'timeout': 300  # 5 minutes for comprehensive reports
             }
             
-            # o1 models use different parameters
-            if self.default_model.startswith('o1'):
+            # GPT-5 models use different parameters than legacy models
+            if self.default_model.startswith('gpt-5'):
                 api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
-                # o1 models don't support temperature parameter
+                api_params['temperature'] = temperature  # GPT-5 supports temperature
             else:
+                # Should not reach here since we only support GPT-5
+                logger.error(f"Unexpected model: {self.default_model}")
                 api_params['max_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
                 api_params['temperature'] = temperature
             

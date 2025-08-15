@@ -62,10 +62,16 @@ class OpenAIClient:
         )
         self.default_model = getattr(settings, 'OPENAI_MODEL', 'gpt-5')
         
-        # Validate model is supported
-        allowed_models = {"gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-4o", "gpt-4o-mini", "gpt-4o-2024-08-06"}
-        if self.default_model not in allowed_models:
-            raise AIClientError(f"Unsupported OPENAI_MODEL: {self.default_model}. Allowed: {allowed_models}")
+        # Validate model is supported - prioritize GPT-5 series
+        gpt5_models = {"gpt-5", "gpt-5-mini", "gpt-5-nano"}
+        legacy_models = {"gpt-4o", "gpt-4o-mini", "gpt-4o-2024-08-06"}
+        
+        if self.default_model not in gpt5_models | legacy_models:
+            raise AIClientError(f"Unsupported OPENAI_MODEL: {self.default_model}. GPT-5 models: {gpt5_models}")
+        
+        # Recommend GPT-5 if using legacy model
+        if self.default_model in legacy_models:
+            logger.warning(f"Using legacy model {self.default_model}. Consider upgrading to GPT-5 series for better performance.")
         
         logger.info(f"Initialized OpenAI client with model: {self.default_model}")
         logger.info(f"Timeouts: connect={self.connect_timeout}s, read={self.read_timeout}s, total={self.total_timeout}s")
@@ -96,7 +102,7 @@ class OpenAIClient:
         else:
             raise ServiceCallError(f"{operation_name} failed: {str(last_error)}")
     
-    def generate_completion(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> Dict:
+    def generate_completion(self, prompt: str, max_tokens: int = 8000, temperature: float = 0.7) -> Dict:
         """Generate completion using GPT-5 with Structured Outputs"""
         try:
             logger.info(f"Generating completion with {self.default_model}")
@@ -106,7 +112,7 @@ class OpenAIClient:
             logger.error(f"GPT-5 completion generation failed: {str(e)}")
             raise AIClientError(f"Failed to generate GPT-5 response: {str(e)}")
     
-    def generate_workout_plan(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> WorkoutPlan:
+    def generate_workout_plan(self, prompt: str, max_tokens: int = 4000, temperature: float = 0.7) -> WorkoutPlan:
         """Generate and validate workout plan using GPT-5 with Structured Outputs"""
         try:
             logger.info(f"Generating workout plan with {self.default_model} using {'Responses API' if self.default_model.startswith('gpt-5') else 'Chat Completions API'}")
@@ -134,7 +140,7 @@ class OpenAIClient:
         prompt: str, 
         user_id: str = None, 
         archetype: str = None,
-        max_tokens: int = 12288, 
+        max_tokens: int = 15000,  # Optimal for 8-week comprehensive reports 
         temperature: float = 0.7
     ) -> ComprehensiveAIReport:
         """Generate comprehensive report using GPT-5 with higher reasoning"""
@@ -219,6 +225,9 @@ class OpenAIClient:
     def _make_structured_api_call(self, prompt: str, max_tokens: int, temperature: float) -> Dict:
         """Make API call using GPT-5 with Responses API and Structured Outputs"""
         try:
+            import time
+            start_time = time.time()
+            
             from .builder import build_responses_payload
 
             # Build API payload using the builder function
@@ -237,10 +246,10 @@ class OpenAIClient:
             
             for attempt in range(3):
                 try:
-                    if self.default_model.startswith('gpt-5'):
-                        response = self.client.responses.create(**api_params)
-                    else:
-                        response = self.client.chat.completions.create(**api_params)
+                    # All models should be GPT-5 series now
+                    if not self.default_model.startswith('gpt-5'):
+                        raise AIClientError(f"Only GPT-5 models supported, got: {self.default_model}")
+                    response = self.client.responses.create(**api_params)
                     break
                 except Exception as e:
                     last_error = e
@@ -251,32 +260,24 @@ class OpenAIClient:
             if response is None:
                 raise AIClientError(f"OpenAI request failed after 3 retries: {last_error}")
             
-            # Extract content based on API type
-            if self.default_model.startswith('gpt-5'):
-                # Responses API format
-                content = None
-                for item in response.output:
-                    if hasattr(item, 'content') and item.content:
-                        for content_item in item.content:
-                            if hasattr(content_item, 'text'):
-                                content = content_item.text
-                                break
-                        if content:
+            # Extract content from Responses API (GPT-5 only)
+            content = None
+            for item in response.output:
+                if hasattr(item, 'content') and item.content:
+                    for content_item in item.content:
+                        if hasattr(content_item, 'text'):
+                            content = content_item.text
                             break
-                            
-                # Check for refusals in Responses API
-                for item in response.output:
-                    if hasattr(item, 'content') and item.content:
-                        for content_item in item.content:
-                            if hasattr(content_item, 'type') and content_item.type == 'refusal':
-                                logger.error(f"AI model refused request: {content_item.refusal}")
-                                raise AIClientError(f"AI model refused the request: {content_item.refusal}")
-            else:
-                # Chat Completions API format
-                if response.choices[0].message.refusal:
-                    logger.error(f"AI model refused request: {response.choices[0].message.refusal}")
-                    raise AIClientError(f"AI model refused the request: {response.choices[0].message.refusal}")
-                content = response.choices[0].message.content
+                    if content:
+                        break
+                        
+            # Check for refusals in Responses API
+            for item in response.output:
+                if hasattr(item, 'content') and item.content:
+                    for content_item in item.content:
+                        if hasattr(content_item, 'type') and content_item.type == 'refusal':
+                            logger.error(f"AI model refused request: {content_item.refusal}")
+                            raise AIClientError(f"AI model refused the request: {content_item.refusal}")
             
             if not content or content.strip() == "":
                 raise AIClientError("AI response is empty")
@@ -286,8 +287,21 @@ class OpenAIClient:
             # Parse JSON - guaranteed to be valid with Structured Outputs
             try:
                 parsed_json = json.loads(content)
-                logger.info(f"Successfully parsed GPT-5 structured JSON with keys: {list(parsed_json.keys())}")
-                logger.info(f"Model: {self.default_model}, Response API used: {'Responses' if self.default_model.startswith('gpt-5') else 'Chat Completions'}")
+                
+                # Calculate and log performance metrics
+                duration = time.time() - start_time
+                api_type = 'Responses' if self.default_model.startswith('gpt-5') else 'Chat Completions'
+                
+                logger.info(f"✅ GPT-5 generation completed in {duration:.1f}s")
+                logger.info(f"📊 Model: {self.default_model}, API: {api_type}, max_tokens: {max_tokens}")
+                logger.info(f"🔧 Successfully parsed JSON with keys: {list(parsed_json.keys())}")
+                
+                # Log token usage if available
+                if hasattr(response, 'usage'):
+                    efficiency = response.usage.completion_tokens / duration if duration > 0 else 0
+                    logger.info(f"💰 Tokens: {response.usage.prompt_tokens}→{response.usage.completion_tokens} "
+                               f"(total: {response.usage.total_tokens}, {efficiency:.1f} tokens/sec)")
+                
                 return parsed_json
             except json.JSONDecodeError as e:
                 logger.error(f"Failed to parse structured JSON: {str(e)}")

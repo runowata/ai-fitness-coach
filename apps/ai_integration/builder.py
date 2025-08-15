@@ -81,19 +81,21 @@ def build_comprehensive_payload(
                 {"role": "user", "content": prompt}
             ],
             'reasoning': {
-                'effort': 'medium'  # Higher reasoning for comprehensive analysis
+                'effort': getattr(settings, 'OPENAI_REASONING_EFFORT', 'medium')  # Configurable reasoning effort
             },
             'text': {
-                'verbosity': 'high',
+                'verbosity': getattr(settings, 'OPENAI_TEXT_VERBOSITY', 'low'),  # Configurable verbosity
                 'format': {
                     'type': 'json_schema',
                     'name': 'ComprehensiveReport',
                     'schema': report_schema,
                     'strict': False  # More flexible for comprehensive reports
                 }
-            }
+            },
+            'max_output_tokens': max_tokens,
+            'temperature': temperature
         }
-        logger.debug("Created comprehensive Responses API payload with medium reasoning effort")
+        logger.debug(f"Created comprehensive Responses API payload: reasoning={payload['reasoning']['effort']}, verbosity={payload['text']['verbosity']}, max_tokens={max_tokens}")
     else:
         # Chat Completions API fallback for comprehensive reports
         logger.info(f"Building comprehensive Chat Completions API payload for model: {model}")

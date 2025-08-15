@@ -27,12 +27,15 @@ class OpenAIClient:
             raise AIClientError("OPENAI_API_KEY not configured")
         
         self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
-        self.default_model = getattr(settings, 'OPENAI_MODEL', 'o1')
+        self.default_model = getattr(settings, 'OPENAI_MODEL', 'gpt-5')
         
-        # Validate model is supported
-        allowed_models = {"o1", "o1-mini", "o1-preview", "gpt-4o", "gpt-4o-mini", "gpt-4o-2024-08-06"}
-        if self.default_model not in allowed_models:
-            raise AIClientError(f"Unsupported OPENAI_MODEL: {self.default_model}. Allowed: {allowed_models}")
+        # ONLY GPT-5 models supported
+        gpt5_models = {"gpt-5", "gpt-5-mini", "gpt-5-nano"}
+        
+        if self.default_model not in gpt5_models:
+            raise AIClientError(f"ONLY GPT-5 models supported. Got: {self.default_model}. Supported: {gpt5_models}")
+        
+        logger.info(f"Using GPT-5 model: {self.default_model}")
     
     def generate_completion(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> Dict:
         """Generate completion from OpenAI API using Structured Outputs"""
@@ -163,8 +166,8 @@ class OpenAIClient:
                         }
                     }
                 }
-            elif self.default_model.startswith('o1'):
-                # Use JSON mode for o1 models
+            elif self.default_model.startswith('gpt-5'):
+                # GPT-5 models - use responses API (handled elsewhere)
                 combined_prompt = f"{system_message}\n\nIMPORTANT: Return response as valid JSON matching the workout plan structure.\n\nUSER REQUEST:\n{prompt}"
                 api_params = {
                     'model': self.default_model,

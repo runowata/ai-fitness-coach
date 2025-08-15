@@ -247,12 +247,26 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@aifitnesscoach.com
 # AI Integration
 AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai')  # 'openai' or 'anthropic'
 
-# OpenAI settings  
+# OpenAI GPT-5 settings  
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-5')  # gpt-5 model is default
-OPENAI_MAX_TOKENS = max(512, min(8192, int(os.getenv('OPENAI_MAX_TOKENS', '4000'))))
+OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-5')  # Full GPT-5 for best quality
+OPENAI_MODEL_MINI = os.getenv('OPENAI_MODEL_MINI', 'gpt-5-mini')  # Fast GPT-5 for quick tasks
+
+# Token limits (configurable for different scenarios)
+OPENAI_MAX_OUTPUT_TOKENS = max(512, min(32000, int(os.getenv('OPENAI_MAX_OUTPUT_TOKENS', '12288'))))  # Production comprehensive reports
+OPENAI_MAX_OUTPUT_TOKENS_FAST = max(256, min(8000, int(os.getenv('OPENAI_MAX_OUTPUT_TOKENS_FAST', '4096'))))  # Fast mode for testing
 OPENAI_TEMPERATURE = float(os.getenv('OPENAI_TEMPERATURE', '0.7'))
+
+# GPT-5 specific parameters
+OPENAI_REASONING_EFFORT = os.getenv('OPENAI_REASONING_EFFORT', 'medium')  # minimal | medium | high
+OPENAI_TEXT_VERBOSITY = os.getenv('OPENAI_TEXT_VERBOSITY', 'low')  # low | medium | high
+
+# Legacy setting for backward compatibility
+OPENAI_MAX_TOKENS = OPENAI_MAX_OUTPUT_TOKENS
 USE_JSON_MODE = os.getenv('USE_JSON_MODE', 'False') == 'True'
+
+# Performance mode toggle
+AI_FAST_MODE = os.getenv('AI_FAST_MODE', 'False') == 'True'  # Enable for quick testing with reduced tokens
 
 # Video generation flags
 STRICT_ALLOWED_ONLY = os.getenv('STRICT_ALLOWED_ONLY', 'False') == 'True'
