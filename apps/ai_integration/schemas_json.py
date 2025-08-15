@@ -51,7 +51,7 @@ WORKOUT_PLAN_JSON_SCHEMA = {
         "Day": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["day_number", "is_rest_day", "blocks"],
+            "required": ["day_number", "workout_name", "is_rest_day", "blocks"],
             "properties": {
                 "day_number": {
                     "type": "integer",

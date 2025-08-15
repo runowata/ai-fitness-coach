@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def build_responses_payload(prompt: str, model: str, max_tokens: int, temperature: float, schema: dict):
-    return {
+    payload = {
         "model": model,
         "input": [
             {"role": "developer", "content": "You are a professional fitness coach AI."},
@@ -28,8 +28,14 @@ def build_responses_payload(prompt: str, model: str, max_tokens: int, temperatur
             }
         },
         "max_output_tokens": max_tokens,
-        "temperature": temperature,
     }
+    
+    # GPT-5 Responses API doesn't support temperature parameter
+    # Only default temperature (1.0) is supported
+    if not model.startswith('gpt-5'):
+        payload["temperature"] = temperature
+    
+    return payload
 
 
 def build_comprehensive_payload(
@@ -93,8 +99,9 @@ def build_comprehensive_payload(
                 }
             },
             'max_output_tokens': max_tokens,
-            'temperature': temperature
         }
+        # GPT-5 Responses API doesn't support temperature parameter
+        # Note: temperature parameter removed for GPT-5 compatibility
         logger.debug(f"Created comprehensive Responses API payload: reasoning={payload['reasoning']['effort']}, verbosity={payload['text']['verbosity']}, max_tokens={max_tokens}")
     else:
         # Chat Completions API fallback for comprehensive reports

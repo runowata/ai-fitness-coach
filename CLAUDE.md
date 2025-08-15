@@ -272,6 +272,17 @@ The `VideoPlaylistBuilder` (apps/workouts/services/playlist_v2.py) creates perso
 - `112` = Pro Coach (professional)  
 - `113` = Best Mate (peer)
 
+## Pre-commit Hooks & Code Quality Standards
+The project uses pre-commit hooks (`.pre-commit-config.yaml`) that automatically run:
+- Black formatting (line length 100)
+- isort import sorting (black profile)
+- Flake8 linting (max line length 100, ignore E203,W503)
+- Bandit security scanning (excludes tests/ and migrations/)
+- Django-upgrade for Django 5.0 compatibility
+- pytest test suite on commit
+
+Run `pre-commit install` after cloning to enable automatic checks.
+
 ## Shell Scripts
 
 ### Deployment & Build Scripts

@@ -186,7 +186,10 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
             # GPT-5 models use different parameters than legacy models
             if self.default_model.startswith('gpt-5'):
                 api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
-                api_params['temperature'] = temperature  # GPT-5 supports temperature
+                # GPT-5 only supports default temperature (1.0) in chat completions
+                if temperature != 1.0:
+                    logger.warning(f"GPT-5 only supports temperature=1.0, ignoring temperature={temperature}")
+                # Don't set temperature parameter for GPT-5
             else:
                 # Should not reach here since we only support GPT-5
                 logger.error(f"Unexpected model: {self.default_model}")
@@ -323,7 +326,10 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
             # GPT-5 models use different parameters than legacy models
             if self.default_model.startswith('gpt-5'):
                 api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
-                api_params['temperature'] = temperature  # GPT-5 supports temperature
+                # GPT-5 only supports default temperature (1.0) in chat completions
+                if temperature != 1.0:
+                    logger.warning(f"GPT-5 only supports temperature=1.0, ignoring temperature={temperature}")
+                # Don't set temperature parameter for GPT-5
             else:
                 # Should not reach here since we only support GPT-5
                 logger.error(f"Unexpected model: {self.default_model}")

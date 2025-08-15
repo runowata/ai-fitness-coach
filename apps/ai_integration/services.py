@@ -201,17 +201,54 @@ class WorkoutPlanGenerator:
                                          workout.get('operation_name', 
                                                    workout.get('session_name', f'День {day_number}')))
                 
-                logger.info(f"Creating DailyWorkout for day {day_number} (week {week_number})")
+                # Extract exercises from workout data - support both old and new formats
+                exercises = self._extract_exercises_from_day(workout)
+                
+                logger.info(f"Creating DailyWorkout for day {day_number} (week {week_number}) with {len(exercises)} exercises")
                 DailyWorkout.objects.create(
                     plan=workout_plan,
                     day_number=day_number,
                     week_number=week_number,
                     name=workout_name,
-                    exercises=workout.get('exercises', []),
+                    exercises=exercises,
                     is_rest_day=workout.get('is_rest_day', False),
                     confidence_task=confidence_task_str
                 )
     
+    def _extract_exercises_from_day(self, day_data: Dict) -> List[Dict]:
+        """
+        Extract exercises from day data, supporting both old and new formats
+        
+        Old format: day has direct 'exercises' field
+        New format: day has 'blocks' with exercises inside
+        """
+        exercises = []
+        
+        # Try old format first (direct exercises field)
+        if 'exercises' in day_data and day_data['exercises']:
+            exercises = day_data['exercises']
+            logger.debug(f"Extracted {len(exercises)} exercises from direct exercises field")
+            return exercises
+        
+        # Try new format (blocks containing exercises)
+        if 'blocks' in day_data:
+            for block in day_data.get('blocks', []):
+                if not isinstance(block, dict):
+                    continue
+                    
+                # Skip non-exercise blocks
+                if block.get('type') not in ['main', 'warmup', 'cooldown', 'superset', 'circuit']:
+                    continue
+                    
+                # Extract exercises from this block
+                block_exercises = block.get('exercises', [])
+                if block_exercises:
+                    exercises.extend(block_exercises)
+                    logger.debug(f"Extracted {len(block_exercises)} exercises from block type '{block.get('type')}'")
+        
+        logger.debug(f"Total extracted exercises: {len(exercises)}")
+        return exercises
+
     def _process_weeks_structure(self, workout_plan, weeks_data):
         """Process old weeks structure (fallback)"""
         from apps.workouts.models import DailyWorkout
@@ -237,13 +274,16 @@ class WorkoutPlanGenerator:
                 actual_week_number = week_index + 1  
                 actual_day_number = day_index + 1
                 
-                logger.info(f"Creating DailyWorkout for week {actual_week_number} day {actual_day_number}")
+                # Extract exercises from day data - support both old and new formats
+                exercises = self._extract_exercises_from_day(day)
+                
+                logger.info(f"Creating DailyWorkout for week {actual_week_number} day {actual_day_number} with {len(exercises)} exercises")
                 DailyWorkout.objects.create(
                     plan=workout_plan,
                     day_number=actual_day_number,
                     week_number=actual_week_number,
                     name=day.get('workout_name', f'День {actual_day_number}'),
-                    exercises=day.get('exercises', []),
+                    exercises=exercises,
                     is_rest_day=day.get('is_rest_day', False),
                     confidence_task=confidence_task_str
                 )
