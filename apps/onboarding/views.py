@@ -589,23 +589,31 @@ def generate_plan_ajax(request):
         logger.error(f"Plan generation failed for user {request.user.id} after {duration:.1f}s: {str(e)}")
         
         # Handle specific AI client errors with user-friendly messages
-        from apps.ai_integration.ai_client_gpt5 import AIClientError
-        if isinstance(e, AIClientError):
+        from apps.ai_integration.ai_client_gpt5 import AIClientError, ServiceTimeoutError, ServiceCallError
+        
+        if isinstance(e, ServiceTimeoutError):
+            error_message = "Генерация плана заняла слишком много времени. Сервис перегружен, попробуйте через несколько минут."
+            status_code = 504  # Gateway timeout
+        elif isinstance(e, ServiceCallError):
+            error_message = "Ошибка AI-сервиса. Попробуйте еще раз через минуту."
+            status_code = 502  # Bad gateway
+        elif isinstance(e, AIClientError):
             error_message = "Не удалось сгенерировать план. Попробуйте еще раз."
-            if "timed out" in str(e).lower():
-                error_message = "Генерация плана заняла слишком много времени. Попробуйте еще раз."
+            status_code = 500
         else:
-            error_message = str(e)
+            error_message = "Неожиданная ошибка. Попробуйте еще раз."
+            status_code = 500
         
         error_result = {
             'status': 'error',
             'progress': 100,  # Always set to 100 to unblock frontend
             'error': error_message,
-            'retry_allowed': True
+            'retry_allowed': True,
+            'error_type': type(e).__name__
         }
         logger.info(f"=== GENERATE_PLAN_AJAX ERROR === Result: {error_result}")
         response_sent = True
-        return JsonResponse(error_result, status=500)
+        return JsonResponse(error_result, status=status_code)
     
     finally:
         # Safety net: ensure we always send a response to prevent frontend hanging

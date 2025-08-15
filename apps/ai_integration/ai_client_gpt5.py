@@ -4,6 +4,7 @@ import logging
 import time
 from typing import Dict
 
+import httpx
 from django.conf import settings
 from openai import OpenAI, APITimeoutError, APIError
 
@@ -22,6 +23,14 @@ class AIClientError(Exception):
     """Custom exception for AI client errors"""
 
 
+class ServiceTimeoutError(AIClientError):
+    """Raised when OpenAI service times out"""
+
+
+class ServiceCallError(AIClientError):
+    """Raised when OpenAI service returns an error"""
+
+
 class OpenAIClient:
     """OpenAI API client with GPT-5 and Responses API support"""
     
@@ -29,11 +38,19 @@ class OpenAIClient:
         if not settings.OPENAI_API_KEY:
             raise AIClientError("OPENAI_API_KEY not configured")
         
-        # Set timeout for all requests (prevent hanging)
-        self.timeout_seconds = getattr(settings, 'OPENAI_TIMEOUT_SECONDS', 120)
+        # Set comprehensive timeouts (prevent hanging)
+        self.connect_timeout = getattr(settings, 'OPENAI_CONNECT_TIMEOUT', 10)
+        self.read_timeout = getattr(settings, 'OPENAI_READ_TIMEOUT', 180)  # < 600 gunicorn timeout
+        self.total_timeout = getattr(settings, 'OPENAI_TOTAL_TIMEOUT', 240)  # overall limit
+        
         self.client = OpenAI(
             api_key=settings.OPENAI_API_KEY,
-            timeout=self.timeout_seconds  # Global timeout
+            timeout=httpx.Timeout(
+                timeout=self.total_timeout,
+                connect=self.connect_timeout,
+                read=self.read_timeout,
+                write=30
+            )
         )
         self.default_model = getattr(settings, 'OPENAI_MODEL', 'gpt-5')
         
@@ -42,7 +59,8 @@ class OpenAIClient:
         if self.default_model not in allowed_models:
             raise AIClientError(f"Unsupported OPENAI_MODEL: {self.default_model}. Allowed: {allowed_models}")
         
-        logger.info(f"Initialized OpenAI client with model: {self.default_model}, timeout: {self.timeout_seconds}s")
+        logger.info(f"Initialized OpenAI client with model: {self.default_model}")
+        logger.info(f"Timeouts: connect={self.connect_timeout}s, read={self.read_timeout}s, total={self.total_timeout}s")
         logger.info(f"GPT-5 features enabled: {self.default_model.startswith('gpt-5')}")
     
     def generate_completion(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> Dict:
@@ -112,15 +130,20 @@ class OpenAIClient:
                     duration = time.time() - start_time
                     logger.info(f"OpenAI call finished in {duration:.1f}s")
                     
-                except APITimeoutError as e:
+                except (APITimeoutError, httpx.ReadTimeout, httpx.ConnectTimeout, httpx.TimeoutException) as e:
                     duration = time.time() - start_time
-                    logger.error(f"OpenAI API timeout after {duration:.1f}s: {str(e)}")
-                    raise AIClientError(f"AI generation timed out after {duration:.1f}s. Try again later.")
+                    logger.error(f"OpenAI timeout after {duration:.1f}s: {str(e)}")
+                    raise ServiceTimeoutError(f"AI generation timed out after {duration:.1f}s. The service is overloaded, try again in a few minutes.")
                     
                 except APIError as e:
                     duration = time.time() - start_time
                     logger.error(f"OpenAI API error after {duration:.1f}s: {str(e)}")
-                    raise AIClientError(f"AI service error: {str(e)}")
+                    raise ServiceCallError(f"AI service error: {str(e)}")
+                    
+                except Exception as e:
+                    duration = time.time() - start_time
+                    logger.error(f"Unexpected error during OpenAI call after {duration:.1f}s: {str(e)}")
+                    raise ServiceCallError(f"Unexpected service error: {str(e)}")
                 
                 # Extract content
                 content = None
