@@ -6,6 +6,7 @@ import logging
 from typing import Any, Dict, Optional, Tuple
 
 from apps.core.services.exercise_validation import ExerciseValidationService
+from apps.core.utils.slug import normalize_slug_with_aliases
 
 logger = logging.getLogger(__name__)
 
@@ -180,8 +181,16 @@ class WorkoutPlanValidator:
             self.issues_found.append(f"Exercise missing slug in week {week_num}, day {day_num}")
             return None
         
+        # Normalize slug with aliases to handle AI variations
+        normalized_slug = normalize_slug_with_aliases(slug)
+        if normalized_slug != slug:
+            self.fixes_applied.append(f"Normalized slug '{slug}' → '{normalized_slug}' (week {week_num}, day {day_num})")
+            slug = normalized_slug
+        
         # Ensure exercise_slug field is present for new schema
         if 'exercise_slug' not in exercise:
+            exercise['exercise_slug'] = slug
+        else:
             exercise['exercise_slug'] = slug
         
         # Check if slug is allowed (has video coverage)

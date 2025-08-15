@@ -7,7 +7,7 @@ from typing import List, Dict, Set
 from django.core.cache import cache
 
 from apps.workouts.models import CSVExercise, VideoClip
-from apps.core.utils.slug import normalize_exercise_slug
+from apps.core.utils.slug import normalize_exercise_slug, normalize_slug_with_aliases
 
 logger = logging.getLogger(__name__)
 
@@ -118,14 +118,18 @@ def validate_exercise_slugs(plan_data: Dict) -> Dict[str, List[str]]:
 def fix_exercise_slugs_in_plan(plan_data: Dict) -> Dict:
     """
     Normalize all exercise slugs in a workout plan
-    Returns modified plan with normalized slugs
+    Returns modified plan with normalized slugs and alias mapping
     """
     import copy
     fixed_plan = copy.deepcopy(plan_data)
     
     def normalize_exercise(exercise: Dict) -> Dict:
         if 'exercise_slug' in exercise:
-            exercise['exercise_slug'] = normalize_exercise_slug(exercise['exercise_slug'])
+            original_slug = exercise['exercise_slug']
+            normalized_slug = normalize_slug_with_aliases(original_slug)
+            exercise['exercise_slug'] = normalized_slug
+            if normalized_slug != original_slug:
+                logger.info(f"Normalized exercise slug: {original_slug} → {normalized_slug}")
         return exercise
     
     # Fix in both formats

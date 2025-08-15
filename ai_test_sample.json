@@ -1,0 +1,808 @@
+{
+  "plan_name": "Beginner 3-Day Foundation",
+  "duration_weeks": 4,
+  "goal": "Build basic fitness foundation",
+  "weeks": [
+    {
+      "week_number": 1,
+      "week_focus": "Week 1 - Building Consistency",
+      "days": [
+        {
+          "day_number": 1,
+          "workout_name": "Day 1 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 1 - you're building strength!"
+        },
+        {
+          "day_number": 2,
+          "workout_name": "Day 2 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 2 - you're building strength!"
+        },
+        {
+          "day_number": 3,
+          "workout_name": "Day 3 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx009",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx010",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx011",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx012",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 3 - you're building strength!"
+        },
+        {
+          "day_number": 4,
+          "workout_name": "Day 4 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 4 - you're building strength!"
+        },
+        {
+          "day_number": 5,
+          "workout_name": "Day 5 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 5 - you're building strength!"
+        },
+        {
+          "day_number": 6,
+          "workout_name": "Rest Day 6",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        },
+        {
+          "day_number": 7,
+          "workout_name": "Rest Day 7",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        }
+      ]
+    },
+    {
+      "week_number": 2,
+      "week_focus": "Week 2 - Building Consistency",
+      "days": [
+        {
+          "day_number": 1,
+          "workout_name": "Day 1 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 1 - you're building strength!"
+        },
+        {
+          "day_number": 2,
+          "workout_name": "Day 2 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 2 - you're building strength!"
+        },
+        {
+          "day_number": 3,
+          "workout_name": "Day 3 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx009",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx010",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx011",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx012",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 3 - you're building strength!"
+        },
+        {
+          "day_number": 4,
+          "workout_name": "Day 4 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 4 - you're building strength!"
+        },
+        {
+          "day_number": 5,
+          "workout_name": "Day 5 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 5 - you're building strength!"
+        },
+        {
+          "day_number": 6,
+          "workout_name": "Rest Day 6",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        },
+        {
+          "day_number": 7,
+          "workout_name": "Rest Day 7",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        }
+      ]
+    },
+    {
+      "week_number": 3,
+      "week_focus": "Week 3 - Building Consistency",
+      "days": [
+        {
+          "day_number": 1,
+          "workout_name": "Day 1 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 1 - you're building strength!"
+        },
+        {
+          "day_number": 2,
+          "workout_name": "Day 2 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 2 - you're building strength!"
+        },
+        {
+          "day_number": 3,
+          "workout_name": "Day 3 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx009",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx010",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx011",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx012",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 3 - you're building strength!"
+        },
+        {
+          "day_number": 4,
+          "workout_name": "Day 4 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 4 - you're building strength!"
+        },
+        {
+          "day_number": 5,
+          "workout_name": "Day 5 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 5 - you're building strength!"
+        },
+        {
+          "day_number": 6,
+          "workout_name": "Rest Day 6",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        },
+        {
+          "day_number": 7,
+          "workout_name": "Rest Day 7",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        }
+      ]
+    },
+    {
+      "week_number": 4,
+      "week_focus": "Week 4 - Building Consistency",
+      "days": [
+        {
+          "day_number": 1,
+          "workout_name": "Day 1 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 1 - you're building strength!"
+        },
+        {
+          "day_number": 2,
+          "workout_name": "Day 2 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 2 - you're building strength!"
+        },
+        {
+          "day_number": 3,
+          "workout_name": "Day 3 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx009",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx010",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx011",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx012",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 3 - you're building strength!"
+        },
+        {
+          "day_number": 4,
+          "workout_name": "Day 4 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx001",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx002",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx003",
+              "sets": 3,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 4 - you're building strength!"
+        },
+        {
+          "day_number": 5,
+          "workout_name": "Day 5 Workout",
+          "is_rest_day": false,
+          "exercises": [
+            {
+              "exercise_slug": "cx005",
+              "sets": 3,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx006",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx007",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx008",
+              "sets": 2,
+              "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            }
+          ],
+          "confidence_task": "Complete Day 5 - you're building strength!"
+        },
+        {
+          "day_number": 6,
+          "workout_name": "Rest Day 6",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        },
+        {
+          "day_number": 7,
+          "workout_name": "Rest Day 7",
+          "is_rest_day": true,
+          "exercises": [],
+          "confidence_task": "Rest and recovery - you're doing great!"
+        }
+      ]
+    }
+  ],
+  "notes": null
+}

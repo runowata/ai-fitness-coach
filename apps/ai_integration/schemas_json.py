@@ -6,8 +6,12 @@ WORKOUT_PLAN_JSON_SCHEMA = {
     "title": "WorkoutPlan",
     "type": "object",
     "additionalProperties": False,
-    "required": ["duration_weeks", "weeks"],
+    "required": ["name", "duration_weeks", "weeks"],
     "properties": {
+        "name": {
+            "type": "string",
+            "description": "Name of the workout plan"
+        },
         "duration_weeks": {
             "type": "integer",
             "minimum": 4,

@@ -6,7 +6,8 @@ from django.core.management.base import BaseCommand
 from django.db.models import Count, Q
 
 from apps.workouts.models import CSVExercise, VideoClip
-from apps.core.utils.slug import normalize_exercise_slug
+from apps.core.utils.slug import slugify_strict, normalize_exercise_slug, SLUG_ALIASES
+from apps.core.services.media import MediaService
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +142,46 @@ class Command(BaseCommand):
                     )
                 )
         
-        # 5. Summary
+        # 5. Check slug aliases effectiveness
+        self.stdout.write("\n🔄 Checking slug aliases coverage...")
+        aliases_used = 0
+        for alias, target in SLUG_ALIASES.items():
+            if CSVExercise.objects.filter(id=target).exists():
+                aliases_used += 1
+        
+        coverage_pct = (aliases_used / len(SLUG_ALIASES) * 100) if SLUG_ALIASES else 0
+        self.stdout.write(
+            self.style.SUCCESS(f"✅ {aliases_used}/{len(SLUG_ALIASES)} aliases have targets ({coverage_pct:.1f}%)")
+        )
+        
+        # 6. Check for potential slug normalization issues
+        self.stdout.write("\n🔧 Checking slug normalization consistency...")
+        normalization_issues = []
+        
+        for exercise in CSVExercise.objects.filter(is_active=True)[:20]:  # Sample check
+            strict_slug = slugify_strict(exercise.id)
+            if exercise.id != strict_slug:
+                normalization_issues.append({
+                    'current': exercise.id,
+                    'strict': strict_slug,
+                    'name': exercise.name_ru
+                })
+        
+        if normalization_issues:
+            self.stdout.write(
+                self.style.WARNING(
+                    f"⚠️ {len(normalization_issues)} exercises could benefit from strict normalization:"
+                )
+            )
+            for issue in normalization_issues[:5]:
+                self.stdout.write(
+                    f"   - {issue['current']} → {issue['strict']} ({issue['name']})"
+                )
+            issues.extend([f"Normalization: {issue['current']}" for issue in normalization_issues])
+        else:
+            self.stdout.write(self.style.SUCCESS("✅ Slug normalization looks good"))
+        
+        # 7. Summary
         self.stdout.write("\n" + "="*50)
         if issues:
             self.stdout.write(
