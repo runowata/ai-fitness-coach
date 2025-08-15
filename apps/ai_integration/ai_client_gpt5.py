@@ -1,10 +1,11 @@
 """AI client interfaces for GPT-5 with Responses API and Structured Outputs support"""
 import json
 import logging
+import time
 from typing import Dict
 
 from django.conf import settings
-from openai import OpenAI
+from openai import OpenAI, APITimeoutError, APIError
 
 from .schemas import (
     ComprehensiveAIReport,
@@ -28,7 +29,12 @@ class OpenAIClient:
         if not settings.OPENAI_API_KEY:
             raise AIClientError("OPENAI_API_KEY not configured")
         
-        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        # Set timeout for all requests (prevent hanging)
+        self.timeout_seconds = getattr(settings, 'OPENAI_TIMEOUT_SECONDS', 120)
+        self.client = OpenAI(
+            api_key=settings.OPENAI_API_KEY,
+            timeout=self.timeout_seconds  # Global timeout
+        )
         self.default_model = getattr(settings, 'OPENAI_MODEL', 'gpt-5')
         
         # Validate model is supported
@@ -36,7 +42,7 @@ class OpenAIClient:
         if self.default_model not in allowed_models:
             raise AIClientError(f"Unsupported OPENAI_MODEL: {self.default_model}. Allowed: {allowed_models}")
         
-        logger.info(f"Initialized OpenAI client with model: {self.default_model}")
+        logger.info(f"Initialized OpenAI client with model: {self.default_model}, timeout: {self.timeout_seconds}s")
         logger.info(f"GPT-5 features enabled: {self.default_model.startswith('gpt-5')}")
     
     def generate_completion(self, prompt: str, max_tokens: int = 8192, temperature: float = 0.7) -> Dict:
@@ -81,6 +87,7 @@ class OpenAIClient:
         temperature: float = 0.7
     ) -> ComprehensiveAIReport:
         """Generate comprehensive report using GPT-5 with higher reasoning"""
+        start_time = time.time()
         try:
             if self.default_model.startswith('gpt-5'):
                 from .builder import build_comprehensive_payload
@@ -93,8 +100,27 @@ class OpenAIClient:
                     model=self.default_model
                 )
                 
+                # Log payload sizes for debugging
+                logger.info(f"Payload sizes: prompt={len(prompt)} chars, "
+                           f"system={len(api_params.get('input', [{}])[0].get('content', ''))}, "
+                           f"max_tokens={max_tokens}")
+                
                 # Use GPT-5 with higher reasoning effort for comprehensive reports
-                response = self.client.responses.create(**api_params)
+                try:
+                    logger.info("Starting OpenAI API call for comprehensive report...")
+                    response = self.client.responses.create(**api_params)
+                    duration = time.time() - start_time
+                    logger.info(f"OpenAI call finished in {duration:.1f}s")
+                    
+                except APITimeoutError as e:
+                    duration = time.time() - start_time
+                    logger.error(f"OpenAI API timeout after {duration:.1f}s: {str(e)}")
+                    raise AIClientError(f"AI generation timed out after {duration:.1f}s. Try again later.")
+                    
+                except APIError as e:
+                    duration = time.time() - start_time
+                    logger.error(f"OpenAI API error after {duration:.1f}s: {str(e)}")
+                    raise AIClientError(f"AI service error: {str(e)}")
                 
                 # Extract content
                 content = None
@@ -115,7 +141,8 @@ class OpenAIClient:
                 raw_json = json.dumps(parsed_json)
                 validated_report = validate_comprehensive_ai_report(raw_json)
                 
-                logger.info(f"Successfully generated GPT-5 comprehensive report for archetype: {archetype}")
+                total_duration = time.time() - start_time
+                logger.info(f"Successfully generated GPT-5 comprehensive report for archetype: {archetype} in {total_duration:.1f}s")
                 return validated_report
             else:
                 # Fallback to legacy client for non-GPT-5 models
@@ -124,8 +151,12 @@ class OpenAIClient:
                 legacy_client = LegacyClient()
                 return legacy_client.generate_comprehensive_report(prompt, user_id, archetype, max_tokens, temperature)
                 
+        except AIClientError:
+            # Re-raise our own errors without wrapping
+            raise
         except Exception as e:
-            logger.error(f"GPT-5 comprehensive report generation failed: {str(e)}")
+            duration = time.time() - start_time
+            logger.error(f"GPT-5 comprehensive report generation failed after {duration:.1f}s: {str(e)}")
             raise AIClientError(f"Failed to generate GPT-5 comprehensive report: {str(e)}")
     
     def _make_structured_api_call(self, prompt: str, max_tokens: int, temperature: float) -> Dict:

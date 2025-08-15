@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import random
+import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -490,6 +491,11 @@ def generate_plan_ajax(request):
             'redirect_url': reverse('users:dashboard')
         })
     
+    # Progress tracking
+    progress = 90
+    response_sent = False
+    start_time = time.time()
+    
     try:
         # Parse JSON data if Content-Type is application/json, otherwise use POST data
         logger.info(f"Request content_type: {request.content_type}")
@@ -527,6 +533,7 @@ def generate_plan_ajax(request):
             request.user.completed_onboarding = True
             request.user.save()
             
+            response_sent = True
             return JsonResponse({
                 'status': 'success',
                 'progress': 100,
@@ -547,6 +554,7 @@ def generate_plan_ajax(request):
                 request.session['pending_plan_data'] = plan_data
                 
                 # Return analysis for preview
+                response_sent = True
                 return JsonResponse({
                     'status': 'needs_confirmation',
                     'analysis': plan_data.get('analysis', {}),
@@ -573,16 +581,44 @@ def generate_plan_ajax(request):
                     'plan_id': workout_plan.id
                 }
                 logger.info(f"=== GENERATE_PLAN_AJAX SUCCESS === Result: {result}")
+                response_sent = True
                 return JsonResponse(result)
         
     except Exception as e:
-        logger.error(f"Plan generation failed for user {request.user.id}: {str(e)}")
+        duration = time.time() - start_time
+        logger.error(f"Plan generation failed for user {request.user.id} after {duration:.1f}s: {str(e)}")
+        
+        # Handle specific AI client errors with user-friendly messages
+        from apps.ai_integration.ai_client_gpt5 import AIClientError
+        if isinstance(e, AIClientError):
+            error_message = "Не удалось сгенерировать план. Попробуйте еще раз."
+            if "timed out" in str(e).lower():
+                error_message = "Генерация плана заняла слишком много времени. Попробуйте еще раз."
+        else:
+            error_message = str(e)
+        
         error_result = {
-            'status': 'error', 
-            'error': str(e)
+            'status': 'error',
+            'progress': 100,  # Always set to 100 to unblock frontend
+            'error': error_message,
+            'retry_allowed': True
         }
         logger.info(f"=== GENERATE_PLAN_AJAX ERROR === Result: {error_result}")
+        response_sent = True
         return JsonResponse(error_result, status=500)
+    
+    finally:
+        # Safety net: ensure we always send a response to prevent frontend hanging
+        if not response_sent:
+            duration = time.time() - start_time
+            logger.error(f"No response sent after {duration:.1f}s, sending fallback error response")
+            fallback_result = {
+                'status': 'error',
+                'progress': 100,
+                'error': 'Неожиданная ошибка при генерации плана. Попробуйте еще раз.',
+                'retry_allowed': True
+            }
+            return JsonResponse(fallback_result, status=500)
 
 
 @login_required
