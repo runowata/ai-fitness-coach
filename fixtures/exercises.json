@@ -1,0 +1,47 @@
+[
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_classic_push_ups",
+    "fields": {
+      "slug": "classic-push-ups",
+      "name": "Classic Push Ups",
+      "description": "Standard push up exercise targeting chest, shoulders, and triceps",
+      "difficulty": "beginner",
+      "muscle_groups": ["chest", "arms"],
+      "equipment_needed": [],
+      "technique_video_url": "",
+      "mistake_video_url": "",
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_classic_squats",
+    "fields": {
+      "slug": "classic-squats",
+      "name": "Classic Squats",
+      "description": "Basic squat exercise for legs and glutes",
+      "difficulty": "beginner",
+      "muscle_groups": ["legs"],
+      "equipment_needed": [],
+      "technique_video_url": "",
+      "mistake_video_url": "",
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_plank",
+    "fields": {
+      "slug": "main-plank",
+      "name": "Main Plank",
+      "description": "Core strengthening plank exercise",
+      "difficulty": "beginner",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "technique_video_url": "",
+      "mistake_video_url": "",
+      "is_active": true
+    }
+  }
+]

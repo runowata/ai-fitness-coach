@@ -1,0 +1,47 @@
+[
+  {
+    "model": "achievements.achievement",
+    "pk": 1,
+    "fields": {
+      "slug": "first-workout",
+      "name": "Первая тренировка",
+      "description": "Выполните свою первую тренировку",
+      "icon_url": "/static/images/achievements/first_workout.png",
+      "trigger_type": "workout_count",
+      "trigger_value": 1,
+      "xp_reward": 50,
+      "story_chapter": null,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 2,
+    "fields": {
+      "slug": "week-streak",
+      "name": "Неделя подряд",
+      "description": "Тренируйтесь неделю подряд без пропусков",
+      "icon_url": "/static/images/achievements/week_streak.png",
+      "trigger_type": "streak_days",
+      "trigger_value": 7,
+      "xp_reward": 100,
+      "story_chapter": null,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 3,
+    "fields": {
+      "slug": "xp-milestone",
+      "name": "Первые 1000 XP",
+      "description": "Наберите 1000 очков опыта",
+      "icon_url": "/static/images/achievements/xp_milestone.png",
+      "trigger_type": "xp_earned",
+      "trigger_value": 1000,
+      "xp_reward": 200,
+      "story_chapter": null,
+      "is_active": true
+    }
+  }
+]

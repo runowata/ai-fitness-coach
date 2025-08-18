@@ -1,0 +1,50 @@
+[
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 1,
+    "fields": {
+      "order": 1,
+      "question_text": "Какая ваша основная цель тренировок?",
+      "question_type": "single_choice",
+      "min_value": null,
+      "max_value": null,
+      "help_text": "Выберите основную цель, чтобы мы могли подобрать подходящую программу",
+      "is_required": true,
+      "ai_field_name": "primary_goal",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 1,
+    "fields": {
+      "question": 1,
+      "option_text": "Похудение",
+      "option_value": "weight_loss",
+      "order": 1,
+      "motivational_card": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 2,
+    "fields": {
+      "question": 1,
+      "option_text": "Набор мышечной массы",
+      "option_value": "muscle_gain",
+      "order": 2,
+      "motivational_card": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 3,
+    "fields": {
+      "question": 1,
+      "option_text": "Общий фитнес",
+      "option_value": "general_fitness",
+      "order": 3,
+      "motivational_card": 1
+    }
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "model": "workouts.videoclip",
+    "pk": 1,
+    "fields": {
+      "exercise": "ex_classic_push_ups",
+      "type": "technique",
+      "archetype": "bro",
+      "model_name": "mod1",
+      "url": "https://pub-d620683e68bf49abb422f1bc95810ff7.r2.dev/videos/exercises/classic_push_ups_technique_mod1.mp4",
+      "duration_seconds": 30,
+      "reminder_text": "",
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.videoclip",
+    "pk": 2,
+    "fields": {
+      "exercise": "ex_classic_squats",
+      "type": "technique", 
+      "archetype": "bro",
+      "model_name": "mod1",
+      "url": "https://pub-d620683e68bf49abb422f1bc95810ff7.r2.dev/videos/exercises/classic_squats_technique_mod1.mp4",
+      "duration_seconds": 30,
+      "reminder_text": "",
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.videoclip",
+    "pk": 3,
+    "fields": {
+      "exercise": null,
+      "type": "intro",
+      "archetype": "bro",
+      "model_name": "mod1",
+      "url": "https://pub-d620683e68bf49abb422f1bc95810ff7.r2.dev/videos/motivation/intro_bro_day01.mp4",
+      "duration_seconds": 60,
+      "reminder_text": "",
+      "is_active": true
+    }
+  }
+]

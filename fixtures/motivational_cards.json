@@ -1,0 +1,46 @@
+[
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 1,
+    "fields": {
+      "title": "Отличный выбор цели!",
+      "message": "Вы определились с целью - это первый важный шаг к успеху!",
+      "image_url": "/static/images/cards/goal_motivation.jpg",
+      "category": "goal",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 2,
+    "fields": {
+      "title": "Опыт - ваше преимущество!",
+      "message": "Ваш уровень подготовки поможет нам создать идеальный план.",
+      "image_url": "/static/images/cards/experience_motivation.jpg",
+      "category": "experience",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 3,
+    "fields": {
+      "title": "Мы учтем все ограничения!",
+      "message": "Безопасность тренировок - наш приоритет.",
+      "image_url": "/static/images/cards/limitation_motivation.jpg",
+      "category": "limitation",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 4,
+    "fields": {
+      "title": "Готовы к переменам!",
+      "message": "Путь к лучшей версии себя начинается сейчас!",
+      "image_url": "/static/images/cards/general_motivation.jpg",
+      "category": "general",
+      "is_active": true
+    }
+  }
+]

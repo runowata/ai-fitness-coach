@@ -1,0 +1,15 @@
+[
+  {
+    "model": "content.story",
+    "pk": 1,
+    "fields": {
+      "slug": "first-story",
+      "title": "Первая история",
+      "author": "AI Fitness Coach",
+      "description": "Вводная история для новых пользователей",
+      "cover_image_url": "/static/images/stories/first_story_cover.jpg",
+      "total_chapters": 1,
+      "is_published": true
+    }
+  }
+]
