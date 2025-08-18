@@ -7,14 +7,11 @@ echo "Starting build process..."
 echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Reset and recreate database
-echo "Resetting database..."
-python manage.py migrate --fake workouts zero
-python manage.py migrate --fake contenttypes zero
-python manage.py migrate --fake auth zero
-python manage.py migrate --fake sessions zero
+# Clear all data from database tables (keeps tables structure)
+echo "Clearing all database tables..."
+python manage.py flush --noinput || true
 
-# Run all migrations fresh
+# Run all migrations to ensure correct schema
 echo "Running database migrations..."
 python manage.py migrate --verbosity=2
 
