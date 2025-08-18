@@ -3,10 +3,10 @@
     "model": "onboarding.motivationalcard",
     "pk": 1,
     "fields": {
-      "title": "Отличный выбор цели!",
-      "message": "Вы определились с целью - это первый важный шаг к успеху!",
-      "image_url": "/static/images/cards/goal_motivation.jpg",
-      "category": "goal",
+      "title": "Добро пожаловать в свое фитнес-путешествие!",
+      "message": "Каждый эксперт когда-то был новичком. Ты уже сделал самый важный шаг - начал!",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_experience_1.jpg",
+      "category": "experience",
       "is_active": true
     }
   },
@@ -14,9 +14,9 @@
     "model": "onboarding.motivationalcard",
     "pk": 2,
     "fields": {
-      "title": "Опыт - ваше преимущество!",
-      "message": "Ваш уровень подготовки поможет нам создать идеальный план.",
-      "image_url": "/static/images/cards/experience_motivation.jpg",
+      "title": "Отличная база!",
+      "message": "У тебя уже есть опыт - это дает тебе преимущество. Время перейти на новый уровень!",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_experience_2.jpg",
       "category": "experience",
       "is_active": true
     }
@@ -25,10 +25,10 @@
     "model": "onboarding.motivationalcard",
     "pk": 3,
     "fields": {
-      "title": "Мы учтем все ограничения!",
-      "message": "Безопасность тренировок - наш приоритет.",
-      "image_url": "/static/images/cards/limitation_motivation.jpg",
-      "category": "limitation",
+      "title": "Ты настоящий атлет!",
+      "message": "Твой опыт - это твоя сила. Готов покорить новые вершины вместе с нами!",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_experience_3.jpg",
+      "category": "experience",
       "is_active": true
     }
   },
@@ -36,10 +36,98 @@
     "model": "onboarding.motivationalcard",
     "pk": 4,
     "fields": {
-      "title": "Готовы к переменам!",
-      "message": "Путь к лучшей версии себя начинается сейчас!",
-      "image_url": "/static/images/cards/general_motivation.jpg",
+      "title": "Фитнес - это образ жизни!",
+      "message": "Отличная цель! Мы поможем тебе создать здоровые привычки на всю жизнь.",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_goal_1.jpg",
+      "category": "goal",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 5,
+    "fields": {
+      "title": "Построим мышцы!",
+      "message": "Набор массы требует терпения и постоянства. Мы составим идеальный план для тебя!",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_goal_2.jpg",
+      "category": "goal",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 6,
+    "fields": {
+      "title": "Сжигаем жир эффективно!",
+      "message": "Потеря веса - это марафон, не спринт. Мы поможем тебе достичь цели здоровым способом!",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_goal_3.jpg",
+      "category": "goal",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 7,
+    "fields": {
+      "title": "Выносливость - твоя суперсила!",
+      "message": "Отличная выносливость изменит всю твою жизнь. Готов почувствовать себя супергероем?",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_goal_4.jpg",
+      "category": "goal",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 8,
+    "fields": {
+      "title": "Идеальный старт!",
+      "message": "2-3 тренировки в неделю - отличное начало! Качество важнее количества.",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_general_1.jpg",
       "category": "general",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 9,
+    "fields": {
+      "title": "Активный образ жизни!",
+      "message": "4-5 тренировок в неделю - ты серьезно настроен! Результаты не заставят себя ждать.",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_general_2.jpg",
+      "category": "general",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 10,
+    "fields": {
+      "title": "Ты машина!",
+      "message": "6-7 тренировок в неделю - впечатляющая преданность! Помни о важности восстановления.",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_general_3.jpg",
+      "category": "general",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 11,
+    "fields": {
+      "title": "Минимализм работает!",
+      "message": "Тренировки с собственным весом невероятно эффективны. Твое тело - лучший тренажер!",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_limitation_1.jpg",
+      "category": "limitation",
+      "is_active": true
+    }
+  },
+  {
+    "model": "onboarding.motivationalcard",
+    "pk": 12,
+    "fields": {
+      "title": "Классика работает!",
+      "message": "Гантели - универсальный инструмент для любых целей. Безграничные возможности!",
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/cards/card_limitation_2.jpg",
+      "category": "limitation",
       "is_active": true
     }
   }

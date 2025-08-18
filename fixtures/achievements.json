@@ -4,13 +4,13 @@
     "pk": 1,
     "fields": {
       "slug": "first-workout",
-      "name": "Первая тренировка",
-      "description": "Выполните свою первую тренировку",
-      "icon_url": "/static/images/achievements/first_workout.png",
+      "name": "First Steps",
+      "description": "Complete your first workout",
       "trigger_type": "workout_count",
       "trigger_value": 1,
-      "xp_reward": 50,
-      "story_chapter": null,
+      "xp_reward": 100,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/first_workout.png",
+      "order": 1,
       "is_active": true
     }
   },
@@ -18,14 +18,15 @@
     "model": "achievements.achievement",
     "pk": 2,
     "fields": {
-      "slug": "week-streak",
-      "name": "Неделя подряд",
-      "description": "Тренируйтесь неделю подряд без пропусков",
-      "icon_url": "/static/images/achievements/week_streak.png",
+      "slug": "week-warrior",
+      "name": "Week Warrior",
+      "description": "Train for 7 consecutive days",
       "trigger_type": "streak_days",
       "trigger_value": 7,
-      "xp_reward": 100,
-      "story_chapter": null,
+      "xp_reward": 200,
+      "unlocks_story_chapter": 1,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/week_warrior.png",
+      "order": 2,
       "is_active": true
     }
   },
@@ -33,14 +34,123 @@
     "model": "achievements.achievement",
     "pk": 3,
     "fields": {
-      "slug": "xp-milestone",
-      "name": "Первые 1000 XP",
-      "description": "Наберите 1000 очков опыта",
-      "icon_url": "/static/images/achievements/xp_milestone.png",
+      "slug": "dedication-master",
+      "name": "Dedication Master",
+      "description": "Complete 10 workouts",
+      "trigger_type": "workout_count",
+      "trigger_value": 10,
+      "xp_reward": 300,
+      "unlocks_story_chapter": 2,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/dedication_master.png",
+      "order": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 4,
+    "fields": {
+      "slug": "streak-legend",
+      "name": "Streak Legend",
+      "description": "Maintain a 14-day training streak",
+      "trigger_type": "streak_days",
+      "trigger_value": 14,
+      "xp_reward": 500,
+      "unlocks_story_chapter": 3,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/streak_legend.png",
+      "order": 4,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 5,
+    "fields": {
+      "slug": "xp-hunter",
+      "name": "XP Hunter",
+      "description": "Earn 1000 experience points",
       "trigger_type": "xp_earned",
       "trigger_value": 1000,
-      "xp_reward": 200,
-      "story_chapter": null,
+      "xp_reward": 250,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/xp_hunter.png",
+      "order": 5,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 6,
+    "fields": {
+      "slug": "perfect-week",
+      "name": "Perfect Week",
+      "description": "Complete a perfect training week",
+      "trigger_type": "perfect_week",
+      "trigger_value": 1,
+      "xp_reward": 400,
+      "unlocks_story_chapter": 4,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/perfect_week.png",
+      "order": 6,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 7,
+    "fields": {
+      "slug": "confidence-builder",
+      "name": "Confidence Builder",
+      "description": "Complete 5 confidence tasks",
+      "trigger_type": "confidence_tasks",
+      "trigger_value": 5,
+      "xp_reward": 300,
+      "unlocks_story_chapter": 5,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/confidence_builder.png",
+      "order": 7,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 8,
+    "fields": {
+      "slug": "plan-finisher",
+      "name": "Plan Finisher",
+      "description": "Complete your first workout plan",
+      "trigger_type": "plan_completed",
+      "trigger_value": 1,
+      "xp_reward": 1000,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/plan_finisher.png",
+      "order": 8,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 9,
+    "fields": {
+      "slug": "marathon-runner",
+      "name": "Marathon Runner",
+      "description": "Complete 50 workouts",
+      "trigger_type": "workout_count",
+      "trigger_value": 50,
+      "xp_reward": 750,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/marathon_runner.png",
+      "order": 9,
+      "is_active": true
+    }
+  },
+  {
+    "model": "achievements.achievement",
+    "pk": 10,
+    "fields": {
+      "slug": "ultimate-streaker",
+      "name": "Ultimate Streaker",
+      "description": "Maintain a 30-day training streak",
+      "trigger_type": "streak_days",
+      "trigger_value": 30,
+      "xp_reward": 1000,
+      "icon_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/achievements/ultimate_streaker.png",
+      "order": 10,
       "is_active": true
     }
   }

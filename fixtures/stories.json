@@ -3,12 +3,90 @@
     "model": "content.story",
     "pk": 1,
     "fields": {
-      "slug": "first-story",
-      "title": "Первая история",
-      "author": "AI Fitness Coach",
-      "description": "Вводная история для новых пользователей",
-      "cover_image_url": "/static/images/stories/first_story_cover.jpg",
-      "total_chapters": 1,
+      "slug": "gym-encounters",
+      "title": "Encounters at the Gym",
+      "author": "FitAuthor",
+      "description": "Steamy encounters and connections formed through shared fitness goals",
+      "cover_image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/stories/gym_encounters_cover.jpg",
+      "total_chapters": 10,
+      "is_published": true
+    }
+  },
+  {
+    "model": "content.storychapter",
+    "pk": 1,
+    "fields": {
+      "story": 1,
+      "chapter_number": 1,
+      "title": "First Day",
+      "content": "The first chapter of your fitness journey begins here...",
+      "estimated_reading_time": 5,
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/stories/gym_encounters_chapter1.jpg",
+      "is_published": true
+    }
+  },
+  {
+    "model": "content.storychapter",
+    "pk": 2,
+    "fields": {
+      "story": 1,
+      "chapter_number": 2,
+      "title": "The Trainer",
+      "content": "Meeting the experienced trainer changes everything...",
+      "estimated_reading_time": 7,
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/stories/gym_encounters_chapter2.jpg",
+      "is_published": true
+    }
+  },
+  {
+    "model": "content.storychapter",
+    "pk": 3,
+    "fields": {
+      "story": 1,
+      "chapter_number": 3,
+      "title": "After Hours",
+      "content": "The gym after closing time holds special memories...",
+      "estimated_reading_time": 8,
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/stories/gym_encounters_chapter3.jpg",
+      "is_published": true
+    }
+  },
+  {
+    "model": "content.story",
+    "pk": 2,
+    "fields": {
+      "slug": "summer-transformation",
+      "title": "Summer Transformation",
+      "author": "FitAuthor",
+      "description": "A summer of intense training leads to unexpected connections",
+      "cover_image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/stories/summer_transformation_cover.jpg",
+      "total_chapters": 8,
+      "is_published": true
+    }
+  },
+  {
+    "model": "content.storychapter",
+    "pk": 4,
+    "fields": {
+      "story": 2,
+      "chapter_number": 1,
+      "title": "Beach Body Goals",
+      "content": "The decision to transform for summer begins the journey...",
+      "estimated_reading_time": 6,
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/stories/summer_transformation_chapter1.jpg",
+      "is_published": true
+    }
+  },
+  {
+    "model": "content.storychapter",
+    "pk": 5,
+    "fields": {
+      "story": 2,
+      "chapter_number": 2,
+      "title": "Training Partner",
+      "content": "Finding the perfect training partner changes the game...",
+      "estimated_reading_time": 7,
+      "image_url": "https://ai-fitness-media.r2.cloudflarestorage.com/images/stories/summer_transformation_chapter2.jpg",
       "is_published": true
     }
   }

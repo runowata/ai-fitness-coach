@@ -4,14 +4,11 @@
     "pk": 1,
     "fields": {
       "order": 1,
-      "question_text": "Какая ваша основная цель тренировок?",
+      "question_text": "Какой у тебя основной фитнес-опыт?",
       "question_type": "single_choice",
-      "min_value": null,
-      "max_value": null,
-      "help_text": "Выберите основную цель, чтобы мы могли подобрать подходящую программу",
+      "help_text": "Выбери наиболее подходящий вариант",
       "is_required": true,
-      "ai_field_name": "primary_goal",
-      "is_active": true
+      "ai_field_name": "experience_level"
     }
   },
   {
@@ -19,10 +16,9 @@
     "pk": 1,
     "fields": {
       "question": 1,
-      "option_text": "Похудение",
-      "option_value": "weight_loss",
-      "order": 1,
-      "motivational_card": 1
+      "option_text": "Новичок (никогда серьезно не тренировался)",
+      "option_value": "beginner",
+      "order": 1
     }
   },
   {
@@ -30,10 +26,9 @@
     "pk": 2,
     "fields": {
       "question": 1,
-      "option_text": "Набор мышечной массы",
-      "option_value": "muscle_gain",
-      "order": 2,
-      "motivational_card": 1
+      "option_text": "Базовый уровень (тренируюсь время от времени)",
+      "option_value": "intermediate",
+      "order": 2
     }
   },
   {
@@ -41,10 +36,197 @@
     "pk": 3,
     "fields": {
       "question": 1,
-      "option_text": "Общий фитнес",
-      "option_value": "general_fitness",
+      "option_text": "Продвинутый (регулярно тренируюсь)",
+      "option_value": "advanced",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 2,
+    "fields": {
+      "order": 2,
+      "question_text": "Какая твоя основная цель тренировок?",
+      "question_type": "single_choice",
+      "help_text": "Выбери главную мотивацию",
+      "is_required": true,
+      "ai_field_name": "primary_goal"
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 4,
+    "fields": {
+      "question": 2,
+      "option_text": "Улучшить физическую форму",
+      "option_value": "fitness",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 5,
+    "fields": {
+      "question": 2,
+      "option_text": "Набрать мышечную массу",
+      "option_value": "muscle_gain",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 6,
+    "fields": {
+      "question": 2,
+      "option_text": "Сбросить вес",
+      "option_value": "weight_loss",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 7,
+    "fields": {
+      "question": 2,
+      "option_text": "Повысить выносливость",
+      "option_value": "endurance",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 3,
+    "fields": {
       "order": 3,
-      "motivational_card": 1
+      "question_text": "Сколько дней в неделю ты можешь тренироваться?",
+      "question_type": "single_choice",
+      "help_text": "Будь реалистичен",
+      "is_required": true,
+      "ai_field_name": "days_per_week"
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 8,
+    "fields": {
+      "question": 3,
+      "option_text": "2-3 дня",
+      "option_value": "3",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 9,
+    "fields": {
+      "question": 3,
+      "option_text": "4-5 дней",
+      "option_value": "5",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 10,
+    "fields": {
+      "question": 3,
+      "option_text": "6-7 дней",
+      "option_value": "7",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 4,
+    "fields": {
+      "order": 4,
+      "question_text": "Какое оборудование у тебя есть?",
+      "question_type": "multiple_choice",
+      "help_text": "Можешь выбрать несколько вариантов",
+      "is_required": true,
+      "ai_field_name": "available_equipment"
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 11,
+    "fields": {
+      "question": 4,
+      "option_text": "Только собственное тело",
+      "option_value": "bodyweight",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 12,
+    "fields": {
+      "question": 4,
+      "option_text": "Гантели",
+      "option_value": "dumbbells",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 13,
+    "fields": {
+      "question": 4,
+      "option_text": "Штанга",
+      "option_value": "barbell",
+      "order": 3
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 14,
+    "fields": {
+      "question": 4,
+      "option_text": "Турник",
+      "option_value": "pullup_bar",
+      "order": 4
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 5,
+    "fields": {
+      "order": 5,
+      "question_text": "Сколько времени ты можешь уделить одной тренировке?",
+      "question_type": "single_choice",
+      "help_text": "Включая разминку и заминку",
+      "is_required": true,
+      "ai_field_name": "workout_duration"
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 15,
+    "fields": {
+      "question": 5,
+      "option_text": "30-45 минут",
+      "option_value": "45",
+      "order": 1
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 16,
+    "fields": {
+      "question": 5,
+      "option_text": "45-60 минут",
+      "option_value": "60",
+      "order": 2
+    }
+  },
+  {
+    "model": "onboarding.answeroption",
+    "pk": 17,
+    "fields": {
+      "question": 5,
+      "option_text": "Больше часа",
+      "option_value": "90",
+      "order": 3
     }
   }
 ]
