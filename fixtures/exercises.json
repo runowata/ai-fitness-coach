@@ -1,13 +1,1170 @@
 [
   {
     "model": "workouts.exercise",
+    "pk": "ex_high_knees",
+    "fields": {
+      "slug": "high-knees",
+      "name": "High Knees",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_butt_kicks",
+    "fields": {
+      "slug": "butt-kicks",
+      "name": "Butt Kicks",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_arm_circles",
+    "fields": {
+      "slug": "arm-circles",
+      "name": "Arm Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_arm_swings",
+    "fields": {
+      "slug": "arm-swings",
+      "name": "Arm Swings",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_calf_raises_warmup",
+    "fields": {
+      "slug": "calf-raises-warmup",
+      "name": "Calf Raises Warmup",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_leg_swings",
+    "fields": {
+      "slug": "leg-swings",
+      "name": "Leg Swings",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_leg_circles",
+    "fields": {
+      "slug": "leg-circles",
+      "name": "Leg Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_shoulder_rolls",
+    "fields": {
+      "slug": "shoulder-rolls",
+      "name": "Shoulder Rolls",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_wrist_circles",
+    "fields": {
+      "slug": "wrist-circles",
+      "name": "Wrist Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_ankle_circles",
+    "fields": {
+      "slug": "ankle-circles",
+      "name": "Ankle Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_glute_bridge_warmup",
+    "fields": {
+      "slug": "glute-bridge-warmup",
+      "name": "Glute Bridge Warmup",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_cat_cow_warmup",
+    "fields": {
+      "slug": "cat-cow-warmup",
+      "name": "Cat Cow Warmup",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_leg_raises_warmup",
+    "fields": {
+      "slug": "leg-raises-warmup",
+      "name": "Leg Raises Warmup",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_superman_warmup",
+    "fields": {
+      "slug": "superman-warmup",
+      "name": "Superman Warmup",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_bear_crawl_warmup",
+    "fields": {
+      "slug": "bear-crawl-warmup",
+      "name": "Bear Crawl Warmup",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_bird_dog_warmup",
+    "fields": {
+      "slug": "bird-dog-warmup",
+      "name": "Bird Dog Warmup",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_arm_circles",
+    "fields": {
+      "slug": "plank-arm-circles",
+      "name": "Plank Arm Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hip_circles",
+    "fields": {
+      "slug": "hip-circles",
+      "name": "Hip Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hip_swings",
+    "fields": {
+      "slug": "hip-swings",
+      "name": "Hip Swings",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_standing_leg_circles",
+    "fields": {
+      "slug": "standing-leg-circles",
+      "name": "Standing Leg Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_knee_circles",
+    "fields": {
+      "slug": "knee-circles",
+      "name": "Knee Circles",
+      "description": "Dynamic warmup exercise to increase heart rate and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["mobility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_marching_in_place",
+    "fields": {
+      "slug": "marching-in-place",
+      "name": "Marching In Place",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_jumping_jacks",
+    "fields": {
+      "slug": "jumping-jacks",
+      "name": "Jumping Jacks",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_spot_jumps",
+    "fields": {
+      "slug": "spot-jumps",
+      "name": "Spot Jumps",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_steps",
+    "fields": {
+      "slug": "side-steps",
+      "name": "Side Steps",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_torso_twists",
+    "fields": {
+      "slug": "torso-twists",
+      "name": "Torso Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_bends",
+    "fields": {
+      "slug": "side-bends",
+      "name": "Side Bends",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_gentle_squats",
+    "fields": {
+      "slug": "gentle-squats",
+      "name": "Gentle Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_neck_rolls",
+    "fields": {
+      "slug": "neck-rolls",
+      "name": "Neck Rolls",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_shoulder_shrugs",
+    "fields": {
+      "slug": "shoulder-shrugs",
+      "name": "Shoulder Shrugs",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_stationary_lunges",
+    "fields": {
+      "slug": "stationary-lunges",
+      "name": "Stationary Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_knee_pulls",
+    "fields": {
+      "slug": "knee-pulls",
+      "name": "Knee Pulls",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_ankle_grabs",
+    "fields": {
+      "slug": "ankle-grabs",
+      "name": "Ankle Grabs",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_toe_touches",
+    "fields": {
+      "slug": "toe-touches",
+      "name": "Toe Touches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_shoulder_blade_squeezes",
+    "fields": {
+      "slug": "shoulder-blade-squeezes",
+      "name": "Shoulder Blade Squeezes",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_spinal_twists",
+    "fields": {
+      "slug": "spinal-twists",
+      "name": "Spinal Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_15_second_plank",
+    "fields": {
+      "slug": "15-second-plank",
+      "name": "15 Second Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_squat_with_arms",
+    "fields": {
+      "slug": "squat-with-arms",
+      "name": "Squat With Arms",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_wall_push_ups",
+    "fields": {
+      "slug": "wall-push-ups",
+      "name": "Wall Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_prone_arm_raises",
+    "fields": {
+      "slug": "prone-arm-raises",
+      "name": "Prone Arm Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lying_bicycle",
+    "fields": {
+      "slug": "lying-bicycle",
+      "name": "Lying Bicycle",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_10_second_side_plank",
+    "fields": {
+      "slug": "10-second-side-plank",
+      "name": "10 Second Side Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_steps_with_squat",
+    "fields": {
+      "slug": "side-steps-with-squat",
+      "name": "Side Steps With Squat",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
     "pk": "ex_classic_push_ups",
     "fields": {
       "slug": "classic-push-ups",
       "name": "Classic Push Ups",
-      "description": "Standard push up exercise targeting chest, shoulders, and triceps",
-      "difficulty": "beginner",
-      "muscle_groups": ["chest", "arms"],
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_knee_push_ups",
+    "fields": {
+      "slug": "knee-push-ups",
+      "name": "Knee Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_wide_push_ups",
+    "fields": {
+      "slug": "wide-push-ups",
+      "name": "Wide Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_diamond_push_ups",
+    "fields": {
+      "slug": "diamond-push-ups",
+      "name": "Diamond Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_one_arm_push_ups",
+    "fields": {
+      "slug": "one-arm-push-ups",
+      "name": "One Arm Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_clap_push_ups",
+    "fields": {
+      "slug": "clap-push-ups",
+      "name": "Clap Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_decline_push_ups",
+    "fields": {
+      "slug": "decline-push-ups",
+      "name": "Decline Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hindu_push_ups",
+    "fields": {
+      "slug": "hindu-push-ups",
+      "name": "Hindu Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_archer_push_ups",
+    "fields": {
+      "slug": "archer-push-ups",
+      "name": "Archer Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_t_push_ups",
+    "fields": {
+      "slug": "t-push-ups",
+      "name": "T Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pike_push_ups",
+    "fields": {
+      "slug": "pike-push-ups",
+      "name": "Pike Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_spartan_push_ups",
+    "fields": {
+      "slug": "spartan-push-ups",
+      "name": "Spartan Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_jump_push_ups",
+    "fields": {
+      "slug": "jump-push-ups",
+      "name": "Jump Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_knuckle_push_ups",
+    "fields": {
+      "slug": "knuckle-push-ups",
+      "name": "Knuckle Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_slow_push_ups",
+    "fields": {
+      "slug": "slow-push-ups",
+      "name": "Slow Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_negative_push_ups",
+    "fields": {
+      "slug": "negative-push-ups",
+      "name": "Negative Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pause_push_ups",
+    "fields": {
+      "slug": "pause-push-ups",
+      "name": "Pause Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_fingertip_push_ups",
+    "fields": {
+      "slug": "fingertip-push-ups",
+      "name": "Fingertip Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_handstand_push_ups",
+    "fields": {
+      "slug": "handstand-push-ups",
+      "name": "Handstand Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plyometric_push_ups",
+    "fields": {
+      "slug": "plyometric-push-ups",
+      "name": "Plyometric Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_shoulder_taps",
+    "fields": {
+      "slug": "plank-shoulder-taps",
+      "name": "Plank Shoulder Taps",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_up_downs",
+    "fields": {
+      "slug": "plank-up-downs",
+      "name": "Plank Up Downs",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_dive_bomber_push_ups",
+    "fields": {
+      "slug": "dive-bomber-push-ups",
+      "name": "Dive Bomber Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_triangle_push_ups",
+    "fields": {
+      "slug": "triangle-push-ups",
+      "name": "Triangle Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_superman_push_ups",
+    "fields": {
+      "slug": "superman-push-ups",
+      "name": "Superman Push Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_classic_pull_ups",
+    "fields": {
+      "slug": "classic-pull-ups",
+      "name": "Classic Pull Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_chin_ups",
+    "fields": {
+      "slug": "chin-ups",
+      "name": "Chin Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_wide_grip_pull_ups",
+    "fields": {
+      "slug": "wide-grip-pull-ups",
+      "name": "Wide Grip Pull Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_neutral_grip_pull_ups",
+    "fields": {
+      "slug": "neutral-grip-pull-ups",
+      "name": "Neutral Grip Pull Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_australian_pull_ups",
+    "fields": {
+      "slug": "australian-pull-ups",
+      "name": "Australian Pull Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_superman_exercise",
+    "fields": {
+      "slug": "superman-exercise",
+      "name": "Superman Exercise",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hyperextensions",
+    "fields": {
+      "slug": "hyperextensions",
+      "name": "Hyperextensions",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_reverse_flyes",
+    "fields": {
+      "slug": "reverse-flyes",
+      "name": "Reverse Flyes",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_bent_over_rows",
+    "fields": {
+      "slug": "bent-over-rows",
+      "name": "Bent Over Rows",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_swimming_exercise",
+    "fields": {
+      "slug": "swimming-exercise",
+      "name": "Swimming Exercise",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_glute_bridge_main",
+    "fields": {
+      "slug": "glute-bridge-main",
+      "name": "Glute Bridge Main",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_arm_raises",
+    "fields": {
+      "slug": "plank-arm-raises",
+      "name": "Plank Arm Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_bird_dog_main",
+    "fields": {
+      "slug": "bird-dog-main",
+      "name": "Bird Dog Main",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_table_top",
+    "fields": {
+      "slug": "table-top",
+      "name": "Table Top",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_y_raises",
+    "fields": {
+      "slug": "y-raises",
+      "name": "Y Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_t_raises",
+    "fields": {
+      "slug": "t-raises",
+      "name": "T Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_w_raises",
+    "fields": {
+      "slug": "w-raises",
+      "name": "W Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_reverse_plank",
+    "fields": {
+      "slug": "reverse-plank",
+      "name": "Reverse Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_commando_pull_ups",
+    "fields": {
+      "slug": "commando-pull-ups",
+      "name": "Commando Pull Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_swallow_exercise",
+    "fields": {
+      "slug": "swallow-exercise",
+      "name": "Swallow Exercise",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_romanian_deadlift",
+    "fields": {
+      "slug": "romanian-deadlift",
+      "name": "Romanian Deadlift",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_good_morning",
+    "fields": {
+      "slug": "good-morning",
+      "name": "Good Morning",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
       "equipment_needed": [],
       "is_active": true
     }
@@ -18,9 +1175,568 @@
     "fields": {
       "slug": "classic-squats",
       "name": "Classic Squats",
-      "description": "Basic squat exercise for legs and glutes",
-      "difficulty": "beginner",
-      "muscle_groups": ["legs"],
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_sumo_squats",
+    "fields": {
+      "slug": "sumo-squats",
+      "name": "Sumo Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plie_squats",
+    "fields": {
+      "slug": "plie-squats",
+      "name": "Plie Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pistol_squats",
+    "fields": {
+      "slug": "pistol-squats",
+      "name": "Pistol Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_jump_squats",
+    "fields": {
+      "slug": "jump-squats",
+      "name": "Jump Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_cossack_squats",
+    "fields": {
+      "slug": "cossack-squats",
+      "name": "Cossack Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_forward_lunges",
+    "fields": {
+      "slug": "forward-lunges",
+      "name": "Forward Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_reverse_lunges",
+    "fields": {
+      "slug": "reverse-lunges",
+      "name": "Reverse Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_lunges",
+    "fields": {
+      "slug": "side-lunges",
+      "name": "Side Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_jumping_lunges",
+    "fields": {
+      "slug": "jumping-lunges",
+      "name": "Jumping Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_calf_raises_main",
+    "fields": {
+      "slug": "calf-raises-main",
+      "name": "Calf Raises Main",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_single_calf_raises",
+    "fields": {
+      "slug": "single-calf-raises",
+      "name": "Single Calf Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_glute_bridge_exercise",
+    "fields": {
+      "slug": "glute-bridge-exercise",
+      "name": "Glute Bridge Exercise",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_single_leg_glute_bridge",
+    "fields": {
+      "slug": "single-leg-glute-bridge",
+      "name": "Single Leg Glute Bridge",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_leg_raises",
+    "fields": {
+      "slug": "side-leg-raises",
+      "name": "Side Leg Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_glute_kickbacks",
+    "fields": {
+      "slug": "glute-kickbacks",
+      "name": "Glute Kickbacks",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_donkey_kicks",
+    "fields": {
+      "slug": "donkey-kicks",
+      "name": "Donkey Kicks",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_clamshells",
+    "fields": {
+      "slug": "clamshells",
+      "name": "Clamshells",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_wall_sits",
+    "fields": {
+      "slug": "wall-sits",
+      "name": "Wall Sits",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_step_ups",
+    "fields": {
+      "slug": "step-ups",
+      "name": "Step Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_bulgarian_split_squats",
+    "fields": {
+      "slug": "bulgarian-split-squats",
+      "name": "Bulgarian Split Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_single_leg_hops",
+    "fields": {
+      "slug": "single-leg-hops",
+      "name": "Single Leg Hops",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_skaters",
+    "fields": {
+      "slug": "skaters",
+      "name": "Skaters",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_crab_walk",
+    "fields": {
+      "slug": "crab-walk",
+      "name": "Crab Walk",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_bear_crawl_main",
+    "fields": {
+      "slug": "bear-crawl-main",
+      "name": "Bear Crawl Main",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_duck_walk",
+    "fields": {
+      "slug": "duck-walk",
+      "name": "Duck Walk",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_frog_jumps",
+    "fields": {
+      "slug": "frog-jumps",
+      "name": "Frog Jumps",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_single_leg_stand",
+    "fields": {
+      "slug": "single-leg-stand",
+      "name": "Single Leg Stand",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_sissy_squats",
+    "fields": {
+      "slug": "sissy-squats",
+      "name": "Sissy Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_shrimp_squats",
+    "fields": {
+      "slug": "shrimp-squats",
+      "name": "Shrimp Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_clock_lunges",
+    "fields": {
+      "slug": "clock-lunges",
+      "name": "Clock Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_star_jumps",
+    "fields": {
+      "slug": "star-jumps",
+      "name": "Star Jumps",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pause_squats",
+    "fields": {
+      "slug": "pause-squats",
+      "name": "Pause Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_calf_squat",
+    "fields": {
+      "slug": "calf-squat",
+      "name": "Calf Squat",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_curtsy_lunges",
+    "fields": {
+      "slug": "curtsy-lunges",
+      "name": "Curtsy Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_scissor_squats",
+    "fields": {
+      "slug": "scissor-squats",
+      "name": "Scissor Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_marching_bridge",
+    "fields": {
+      "slug": "marching-bridge",
+      "name": "Marching Bridge",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_spartan_squats",
+    "fields": {
+      "slug": "spartan-squats",
+      "name": "Spartan Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pulse_lunges",
+    "fields": {
+      "slug": "pulse-lunges",
+      "name": "Pulse Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_box_step_ups",
+    "fields": {
+      "slug": "box-step-ups",
+      "name": "Box Step Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_box_jumps",
+    "fields": {
+      "slug": "box-jumps",
+      "name": "Box Jumps",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lateral_lunges",
+    "fields": {
+      "slug": "lateral-lunges",
+      "name": "Lateral Lunges",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_1.5_rep_squats",
+    "fields": {
+      "slug": "1-5-rep-squats",
+      "name": "1 5 Rep Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_tempo_squats",
+    "fields": {
+      "slug": "tempo-squats",
+      "name": "Tempo Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
       "equipment_needed": [],
       "is_active": true
     }
@@ -31,9 +1747,1764 @@
     "fields": {
       "slug": "main-plank",
       "name": "Main Plank",
-      "description": "Core strengthening plank exercise",
-      "difficulty": "beginner",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_side_plank",
+    "fields": {
+      "slug": "main-side-plank",
+      "name": "Main Side Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_crunches",
+    "fields": {
+      "slug": "main-crunches",
+      "name": "Main Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_bicycle_crunches",
+    "fields": {
+      "slug": "main-bicycle-crunches",
+      "name": "Main Bicycle Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_leg_raises",
+    "fields": {
+      "slug": "main-leg-raises",
+      "name": "Main Leg Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_scissors",
+    "fields": {
+      "slug": "main-scissors",
+      "name": "Main Scissors",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_russian_twists",
+    "fields": {
+      "slug": "russian-twists",
+      "name": "Russian Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_dead_bug",
+    "fields": {
+      "slug": "main-dead-bug",
+      "name": "Main Dead Bug",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_mountain_climbers",
+    "fields": {
+      "slug": "main-mountain-climbers",
+      "name": "Main Mountain Climbers",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_main_burpees",
+    "fields": {
+      "slug": "main-burpees",
+      "name": "Main Burpees",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_star_crunches",
+    "fields": {
+      "slug": "star-crunches",
+      "name": "Star Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_v_ups",
+    "fields": {
+      "slug": "v-ups",
+      "name": "V Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_reverse_crunches",
+    "fields": {
+      "slug": "reverse-crunches",
+      "name": "Reverse Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_commando_plank",
+    "fields": {
+      "slug": "commando-plank",
+      "name": "Commando Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_jacks",
+    "fields": {
+      "slug": "plank-jacks",
+      "name": "Plank Jacks",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_bicycle_abs",
+    "fields": {
+      "slug": "bicycle-abs",
+      "name": "Bicycle Abs",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hip_lifts",
+    "fields": {
+      "slug": "hip-lifts",
+      "name": "Hip Lifts",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_jumping_plank",
+    "fields": {
+      "slug": "jumping-plank",
+      "name": "Jumping Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_oblique_crunches",
+    "fields": {
+      "slug": "oblique-crunches",
+      "name": "Oblique Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_sit_ups",
+    "fields": {
+      "slug": "sit-ups",
+      "name": "Sit Ups",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_flutter_kicks",
+    "fields": {
+      "slug": "flutter-kicks",
+      "name": "Flutter Kicks",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_spider_plank",
+    "fields": {
+      "slug": "spider-plank",
+      "name": "Spider Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_toe_touch_twists",
+    "fields": {
+      "slug": "toe-touch-twists",
+      "name": "Toe Touch Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_steps",
+    "fields": {
+      "slug": "plank-steps",
+      "name": "Plank Steps",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_superman_twist",
+    "fields": {
+      "slug": "superman-twist",
+      "name": "Superman Twist",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_knee_to_elbow_plank",
+    "fields": {
+      "slug": "knee-to-elbow-plank",
+      "name": "Knee To Elbow Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_reverse_plank_hold",
+    "fields": {
+      "slug": "reverse-plank-hold",
+      "name": "Reverse Plank Hold",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_cross_crunches",
+    "fields": {
+      "slug": "cross-crunches",
+      "name": "Cross Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_leg_lifts",
+    "fields": {
+      "slug": "plank-leg-lifts",
+      "name": "Plank Leg Lifts",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lying_twists",
+    "fields": {
+      "slug": "lying-twists",
+      "name": "Lying Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pulse_crunches",
+    "fields": {
+      "slug": "pulse-crunches",
+      "name": "Pulse Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_wave",
+    "fields": {
+      "slug": "plank-wave",
+      "name": "Plank Wave",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_body_lifts",
+    "fields": {
+      "slug": "body-lifts",
+      "name": "Body Lifts",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_standing_twists",
+    "fields": {
+      "slug": "standing-twists",
+      "name": "Standing Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_dynamo_plank",
+    "fields": {
+      "slug": "dynamo-plank",
+      "name": "Dynamo Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_diagonal_crunches",
+    "fields": {
+      "slug": "diagonal-crunches",
+      "name": "Diagonal Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_rocks",
+    "fields": {
+      "slug": "plank-rocks",
+      "name": "Plank Rocks",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_medicine_ball_twists",
+    "fields": {
+      "slug": "medicine-ball-twists",
+      "name": "Medicine Ball Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_surfer_plank",
+    "fields": {
+      "slug": "surfer-plank",
+      "name": "Surfer Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hundred_crunches",
+    "fields": {
+      "slug": "hundred-crunches",
+      "name": "Hundred Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_clock_plank",
+    "fields": {
+      "slug": "clock-plank",
+      "name": "Clock Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_seated_twists",
+    "fields": {
+      "slug": "seated-twists",
+      "name": "Seated Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_tiger_plank",
+    "fields": {
+      "slug": "tiger-plank",
+      "name": "Tiger Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_crisscross_crunches",
+    "fields": {
+      "slug": "crisscross-crunches",
+      "name": "Crisscross Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_seesaw",
+    "fields": {
+      "slug": "plank-seesaw",
+      "name": "Plank Seesaw",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_warrior_twists",
+    "fields": {
+      "slug": "warrior-twists",
+      "name": "Warrior Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_freestyle_plank",
+    "fields": {
+      "slug": "freestyle-plank",
+      "name": "Freestyle Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_finish_crunches",
+    "fields": {
+      "slug": "finish-crunches",
+      "name": "Finish Crunches",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_victory_plank",
+    "fields": {
+      "slug": "victory-plank",
+      "name": "Victory Plank",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_hip_pulls",
+    "fields": {
+      "slug": "plank-hip-pulls",
+      "name": "Plank Hip Pulls",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_lying_leg_lifts",
+    "fields": {
+      "slug": "side-lying-leg-lifts",
+      "name": "Side Lying Leg Lifts",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_knee_to_chest_raises",
+    "fields": {
+      "slug": "knee-to-chest-raises",
+      "name": "Knee To Chest Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_reverse_lunge_knee_up",
+    "fields": {
+      "slug": "reverse-lunge-knee-up",
+      "name": "Reverse Lunge Knee Up",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_hip_raises",
+    "fields": {
+      "slug": "plank-hip-raises",
+      "name": "Plank Hip Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_sumo_squat_pulses",
+    "fields": {
+      "slug": "sumo-squat-pulses",
+      "name": "Sumo Squat Pulses",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lying_knee_pulls",
+    "fields": {
+      "slug": "lying-knee-pulls",
+      "name": "Lying Knee Pulls",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lunge_with_twist",
+    "fields": {
+      "slug": "lunge-with-twist",
+      "name": "Lunge With Twist",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_bridge_hip_lifts",
+    "fields": {
+      "slug": "side-bridge-hip-lifts",
+      "name": "Side Bridge Hip Lifts",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_wide_stance_squats",
+    "fields": {
+      "slug": "wide-stance-squats",
+      "name": "Wide Stance Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_support_leg_raises",
+    "fields": {
+      "slug": "support-leg-raises",
+      "name": "Support Leg Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_hip_lifts",
+    "fields": {
+      "slug": "side-hip-lifts",
+      "name": "Side Hip Lifts",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_squat_arm_raises",
+    "fields": {
+      "slug": "squat-arm-raises",
+      "name": "Squat Arm Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lunge_back_raises",
+    "fields": {
+      "slug": "lunge-back-raises",
+      "name": "Lunge Back Raises",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_body_waves",
+    "fields": {
+      "slug": "body-waves",
+      "name": "Body Waves",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lunge_floor_touch",
+    "fields": {
+      "slug": "lunge-floor-touch",
+      "name": "Lunge Floor Touch",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_standing_hip_lifts",
+    "fields": {
+      "slug": "standing-hip-lifts",
+      "name": "Standing Hip Lifts",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_spring_squats",
+    "fields": {
+      "slug": "spring-squats",
+      "name": "Spring Squats",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_seated_spinal_twists",
+    "fields": {
+      "slug": "seated-spinal-twists",
+      "name": "Seated Spinal Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_seated_forward_fold",
+    "fields": {
+      "slug": "seated-forward-fold",
+      "name": "Seated Forward Fold",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lying_spinal_twists",
+    "fields": {
+      "slug": "lying-spinal-twists",
+      "name": "Lying Spinal Twists",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_gentle_cobra",
+    "fields": {
+      "slug": "gentle-cobra",
+      "name": "Gentle Cobra",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_gentle_neck_rolls",
+    "fields": {
+      "slug": "gentle-neck-rolls",
+      "name": "Gentle Neck Rolls",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_standing_forward_fold",
+    "fields": {
+      "slug": "standing-forward-fold",
+      "name": "Standing Forward Fold",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_meditative_movements",
+    "fields": {
+      "slug": "meditative-movements",
+      "name": "Meditative Movements",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_gentle_rocking",
+    "fields": {
+      "slug": "gentle-rocking",
+      "name": "Gentle Rocking",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_grounding_exercise",
+    "fields": {
+      "slug": "grounding-exercise",
+      "name": "Grounding Exercise",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_integration_moment",
+    "fields": {
+      "slug": "integration-moment",
+      "name": "Integration Moment",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_intention_setting",
+    "fields": {
+      "slug": "intention-setting",
+      "name": "Intention Setting",
+      "description": "Full body strength and conditioning exercise",
+      "difficulty": "intermediate",
+      "muscle_groups": ["full_body"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hip_thrusts",
+    "fields": {
+      "slug": "hip-thrusts",
+      "name": "Hip Thrusts",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
       "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hip_thrusts_sexual",
+    "fields": {
+      "slug": "hip-thrusts-sexual",
+      "name": "Hip Thrusts Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_male_kegels",
+    "fields": {
+      "slug": "male-kegels",
+      "name": "Male Kegels",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_deep_squats_sexual",
+    "fields": {
+      "slug": "deep-squats-sexual",
+      "name": "Deep Squats Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_cat_cow_sexual",
+    "fields": {
+      "slug": "cat-cow-sexual",
+      "name": "Cat Cow Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_dynamic_bridge_sexual",
+    "fields": {
+      "slug": "dynamic-bridge-sexual",
+      "name": "Dynamic Bridge Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pulse_lunges_sexual",
+    "fields": {
+      "slug": "pulse-lunges-sexual",
+      "name": "Pulse Lunges Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_single_leg_bridge_sexual",
+    "fields": {
+      "slug": "single-leg-bridge-sexual",
+      "name": "Single Leg Bridge Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hold_squats_sexual",
+    "fields": {
+      "slug": "hold-squats-sexual",
+      "name": "Hold Squats Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pelvic_tilts",
+    "fields": {
+      "slug": "pelvic-tilts",
+      "name": "Pelvic Tilts",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pelvic_waves",
+    "fields": {
+      "slug": "pelvic-waves",
+      "name": "Pelvic Waves",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_curtsy_lunges_sexual",
+    "fields": {
+      "slug": "curtsy-lunges-sexual",
+      "name": "Curtsy Lunges Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pause_hip_thrusts",
+    "fields": {
+      "slug": "pause-hip-thrusts",
+      "name": "Pause Hip Thrusts",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_plank_leg_raises_sexual",
+    "fields": {
+      "slug": "plank-leg-raises-sexual",
+      "name": "Plank Leg Raises Sexual",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_single_leg_hip_thrust",
+    "fields": {
+      "slug": "single-leg-hip-thrust",
+      "name": "Single Leg Hip Thrust",
+      "description": "Advanced endurance exercise for core and conditioning",
+      "difficulty": "advanced",
+      "muscle_groups": ["core"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_calf_stretch",
+    "fields": {
+      "slug": "calf-stretch",
+      "name": "Calf Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_tricep_stretch",
+    "fields": {
+      "slug": "tricep-stretch",
+      "name": "Tricep Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_neck_stretches",
+    "fields": {
+      "slug": "neck-stretches",
+      "name": "Neck Stretches",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_cobra_pose",
+    "fields": {
+      "slug": "cobra-pose",
+      "name": "Cobra Pose",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_scorpion_stretch",
+    "fields": {
+      "slug": "scorpion-stretch",
+      "name": "Scorpion Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_boat_pose",
+    "fields": {
+      "slug": "boat-pose",
+      "name": "Boat Pose",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_relax_twists",
+    "fields": {
+      "slug": "relax-twists",
+      "name": "Relax Twists",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_butterfly_stretch",
+    "fields": {
+      "slug": "butterfly-stretch",
+      "name": "Butterfly Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pigeon_stretch",
+    "fields": {
+      "slug": "pigeon-stretch",
+      "name": "Pigeon Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_frog_stretch",
+    "fields": {
+      "slug": "frog-stretch",
+      "name": "Frog Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_90_90_stretch",
+    "fields": {
+      "slug": "90-90-stretch",
+      "name": "90 90 Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_final_hip_stretch",
+    "fields": {
+      "slug": "final-hip-stretch",
+      "name": "Final Hip Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_neck_stretch_final",
+    "fields": {
+      "slug": "neck-stretch-final",
+      "name": "Neck Stretch Final",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_childs_pose",
+    "fields": {
+      "slug": "childs-pose",
+      "name": "Childs Pose",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_chest_stretch_final",
+    "fields": {
+      "slug": "chest-stretch-final",
+      "name": "Chest Stretch Final",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_shoulder_stretch",
+    "fields": {
+      "slug": "shoulder-stretch",
+      "name": "Shoulder Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_cat_pose_relax",
+    "fields": {
+      "slug": "cat-pose-relax",
+      "name": "Cat Pose Relax",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_tricep_stretch_relax",
+    "fields": {
+      "slug": "tricep-stretch-relax",
+      "name": "Tricep Stretch Relax",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_hip_flexor_stretch",
+    "fields": {
+      "slug": "hip-flexor-stretch",
+      "name": "Hip Flexor Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_pigeon_pose_relax",
+    "fields": {
+      "slug": "pigeon-pose-relax",
+      "name": "Pigeon Pose Relax",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_calf_stretch_relax",
+    "fields": {
+      "slug": "calf-stretch-relax",
+      "name": "Calf Stretch Relax",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_quad_stretch",
+    "fields": {
+      "slug": "quad-stretch",
+      "name": "Quad Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_happy_baby_pose",
+    "fields": {
+      "slug": "happy-baby-pose",
+      "name": "Happy Baby Pose",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_side_stretch",
+    "fields": {
+      "slug": "side-stretch",
+      "name": "Side Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_glute_stretch",
+    "fields": {
+      "slug": "glute-stretch",
+      "name": "Glute Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_back_stretch",
+    "fields": {
+      "slug": "back-stretch",
+      "name": "Back Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_mountain_pose",
+    "fields": {
+      "slug": "mountain-pose",
+      "name": "Mountain Pose",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_arm_stretch_circle",
+    "fields": {
+      "slug": "arm-stretch-circle",
+      "name": "Arm Stretch Circle",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_inner_thigh_stretch",
+    "fields": {
+      "slug": "inner-thigh-stretch",
+      "name": "Inner Thigh Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_tree_pose_relax",
+    "fields": {
+      "slug": "tree-pose-relax",
+      "name": "Tree Pose Relax",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_lower_back_stretch",
+    "fields": {
+      "slug": "lower-back-stretch",
+      "name": "Lower Back Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_corpse_pose",
+    "fields": {
+      "slug": "corpse-pose",
+      "name": "Corpse Pose",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_deep_breathing",
+    "fields": {
+      "slug": "deep-breathing",
+      "name": "Deep Breathing",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_ankle_stretch",
+    "fields": {
+      "slug": "ankle-stretch",
+      "name": "Ankle Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_wrist_stretch",
+    "fields": {
+      "slug": "wrist-stretch",
+      "name": "Wrist Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_butterfly_pose_relax",
+    "fields": {
+      "slug": "butterfly-pose-relax",
+      "name": "Butterfly Pose Relax",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_final_relaxation",
+    "fields": {
+      "slug": "final-relaxation",
+      "name": "Final Relaxation",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_full_body_stretch",
+    "fields": {
+      "slug": "full-body-stretch",
+      "name": "Full Body Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_body_gratitude",
+    "fields": {
+      "slug": "body-gratitude",
+      "name": "Body Gratitude",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_recovery_breathing",
+    "fields": {
+      "slug": "recovery-breathing",
+      "name": "Recovery Breathing",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_spine_stretch",
+    "fields": {
+      "slug": "spine-stretch",
+      "name": "Spine Stretch",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_face_muscle_relax",
+    "fields": {
+      "slug": "face-muscle-relax",
+      "name": "Face Muscle Relax",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
+      "equipment_needed": [],
+      "is_active": true
+    }
+  },
+  {
+    "model": "workouts.exercise",
+    "pk": "ex_final_gratitude",
+    "fields": {
+      "slug": "final-gratitude",
+      "name": "Final Gratitude",
+      "description": "Relaxing flexibility exercise for recovery and mobility",
+      "difficulty": "beginner",
+      "muscle_groups": ["flexibility"],
       "equipment_needed": [],
       "is_active": true
     }
