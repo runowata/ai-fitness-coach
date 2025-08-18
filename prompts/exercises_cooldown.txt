@@ -1,0 +1,10 @@
+# УПРАЖНЕНИЯ КАТЕГОРИИ: COOLDOWN
+# Количество: 43 упражнений
+# Сгенерировано автоматически
+
+calf_stretch, tricep_stretch, neck_stretches, cobra_pose, scorpion_stretch, boat_pose, relax_twists, butterfly_stretch,
+pigeon_stretch, frog_stretch, 90_90_stretch, final_hip_stretch, neck_stretch_final, childs_pose, chest_stretch_final, shoulder_stretch,
+cat_pose_relax, tricep_stretch_relax, hip_flexor_stretch, pigeon_pose_relax, calf_stretch_relax, quad_stretch, happy_baby_pose, side_stretch,
+glute_stretch, back_stretch, mountain_pose, arm_stretch_circle, inner_thigh_stretch, tree_pose_relax, lower_back_stretch, corpse_pose,
+deep_breathing, ankle_stretch, wrist_stretch, butterfly_pose_relax, final_relaxation, full_body_stretch, body_gratitude, recovery_breathing,
+spine_stretch, face_muscle_relax, final_gratitude

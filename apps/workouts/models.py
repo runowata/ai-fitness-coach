@@ -61,7 +61,9 @@ class VideoClip(models.Model):
         ('mistake', 'Common Mistake'),
         ('instruction', 'Instruction'),
         ('reminder', 'Reminder'),
+        ('intro', 'Daily Intro'),
         ('weekly', 'Weekly Motivation'),
+        ('progress', 'Progress Milestone'),
         ('final', 'Final Congratulation'),
     ]
     

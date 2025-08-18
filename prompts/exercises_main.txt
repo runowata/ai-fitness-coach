@@ -1,0 +1,28 @@
+# УПРАЖНЕНИЯ КАТЕГОРИИ: MAIN
+# Количество: 192 упражнений
+# Сгенерировано автоматически
+
+marching_in_place, jumping_jacks, spot_jumps, side_steps, torso_twists, side_bends, gentle_squats, neck_rolls,
+shoulder_shrugs, stationary_lunges, knee_pulls, ankle_grabs, toe_touches, shoulder_blade_squeezes, spinal_twists, 15_second_plank,
+squat_with_arms, wall_push_ups, prone_arm_raises, lying_bicycle, 10_second_side_plank, side_steps_with_squat, classic_push_ups, knee_push_ups,
+wide_push_ups, diamond_push_ups, one_arm_push_ups, clap_push_ups, decline_push_ups, hindu_push_ups, archer_push_ups, t_push_ups,
+pike_push_ups, spartan_push_ups, jump_push_ups, knuckle_push_ups, slow_push_ups, negative_push_ups, pause_push_ups, fingertip_push_ups,
+handstand_push_ups, plyometric_push_ups, plank_shoulder_taps, plank_up_downs, dive_bomber_push_ups, triangle_push_ups, superman_push_ups, classic_pull_ups,
+chin_ups, wide_grip_pull_ups, neutral_grip_pull_ups, australian_pull_ups, superman_exercise, hyperextensions, reverse_flyes, bent_over_rows,
+swimming_exercise, glute_bridge_main, plank_arm_raises, bird_dog_main, table_top, y_raises, t_raises, w_raises,
+reverse_plank, commando_pull_ups, swallow_exercise, romanian_deadlift, good_morning, classic_squats, sumo_squats, plie_squats,
+pistol_squats, jump_squats, cossack_squats, forward_lunges, reverse_lunges, side_lunges, jumping_lunges, calf_raises_main,
+single_calf_raises, glute_bridge_exercise, single_leg_glute_bridge, side_leg_raises, glute_kickbacks, donkey_kicks, clamshells, wall_sits,
+step_ups, bulgarian_split_squats, single_leg_hops, skaters, crab_walk, bear_crawl_main, duck_walk, frog_jumps,
+single_leg_stand, sissy_squats, shrimp_squats, clock_lunges, star_jumps, pause_squats, calf_squat, curtsy_lunges,
+scissor_squats, marching_bridge, spartan_squats, pulse_lunges, box_step_ups, box_jumps, lateral_lunges, 1.5_rep_squats,
+tempo_squats, main_plank, main_side_plank, main_crunches, main_bicycle_crunches, main_leg_raises, main_scissors, russian_twists,
+main_dead_bug, main_mountain_climbers, main_burpees, star_crunches, v_ups, reverse_crunches, commando_plank, plank_jacks,
+bicycle_abs, hip_lifts, jumping_plank, oblique_crunches, sit_ups, flutter_kicks, spider_plank, toe_touch_twists,
+plank_steps, superman_twist, knee_to_elbow_plank, reverse_plank_hold, cross_crunches, plank_leg_lifts, lying_twists, pulse_crunches,
+plank_wave, body_lifts, standing_twists, dynamo_plank, diagonal_crunches, plank_rocks, medicine_ball_twists, surfer_plank,
+hundred_crunches, clock_plank, seated_twists, tiger_plank, crisscross_crunches, plank_seesaw, warrior_twists, freestyle_plank,
+finish_crunches, victory_plank, plank_hip_pulls, side_lying_leg_lifts, knee_to_chest_raises, reverse_lunge_knee_up, plank_hip_raises, sumo_squat_pulses,
+lying_knee_pulls, marching_bridge, lunge_with_twist, side_bridge_hip_lifts, wide_stance_squats, support_leg_raises, side_hip_lifts, squat_arm_raises,
+lunge_back_raises, body_waves, lunge_floor_touch, standing_hip_lifts, spring_squats, seated_spinal_twists, seated_forward_fold, lying_spinal_twists,
+gentle_cobra, gentle_neck_rolls, standing_forward_fold, meditative_movements, gentle_rocking, grounding_exercise, integration_moment, intention_setting

@@ -1,0 +1,6 @@
+# УПРАЖНЕНИЯ КАТЕГОРИИ: ENDURANCE
+# Количество: 15 упражнений
+# Сгенерировано автоматически
+
+hip_thrusts, hip_thrusts_sexual, male_kegels, deep_squats_sexual, cat_cow_sexual, dynamic_bridge_sexual, pulse_lunges_sexual, single_leg_bridge_sexual,
+hold_squats_sexual, pelvic_tilts, pelvic_waves, curtsy_lunges_sexual, pause_hip_thrusts, plank_leg_raises_sexual, single_leg_hip_thrust

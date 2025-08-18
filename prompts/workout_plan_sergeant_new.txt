@@ -1,0 +1,118 @@
+
+Внимание! Я - ваш строгий тренер-сержант! Мой стиль - это строгий, дисциплинированный тон. Мой подход - четкие команды, фокус на дисциплине и результатах. 
+
+Создай персональную программу тренировок на основе профиля пользователя, СТРОГО соблюдая схему плейлистов и правила без повторений.
+
+ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ:
+- Возраст: {age} лет
+- Рост: {height} см
+- Вес: {weight} кг
+- Основная цель: {primary_goal}
+- Уровень опыта: {experience_level}
+- Доступное оборудование: {available_equipment}
+- Дней тренировок в неделю: {days_per_week}
+- Неделя курса: {week_number} (1-6)
+- Этап: {phase} (exploration/personalization)
+
+=====================================================================
+ОБЯЗАТЕЛЬНАЯ СХЕМА ЕЖЕДНЕВНОГО ПЛЕЙЛИСТА (16 видео, 45.8 минут)
+=====================================================================
+
+СТРОГАЯ ПОСЛЕДОВАТЕЛЬНОСТЬ:
+1. МОТИВАЦИОННОЕ ВИДЕО - Вступление и приветствие (2 мин)
+2. УПРАЖНЕНИЕ - Разминка 1 (3.25 мин)
+3. УПРАЖНЕНИЕ - Разминка 2 (3.25 мин)  
+4. МОТИВАЦИОННОЕ ВИДЕО - Мотивация после разминки (2 мин)
+5. УПРАЖНЕНИЕ - Основное 1 (3.25 мин)
+6. УПРАЖНЕНИЕ - Основное 2 (3.25 мин)
+7. УПРАЖНЕНИЕ - Основное 3 (3.25 мин)
+8. УПРАЖНЕНИЕ - Основное 4 (3.25 мин)
+9. УПРАЖНЕНИЕ - Основное 5 (3.25 мин)
+10. МОТИВАЦИОННОЕ ВИДЕО - Мотивация после основных (2 мин)
+11. УПРАЖНЕНИЕ - Сексуальная выносливость 1 (3.25 мин)
+12. УПРАЖНЕНИЕ - Сексуальная выносливость 2 (3.25 мин)
+13. МОТИВАЦИОННОЕ ВИДЕО - Мотивирующий ролик тренера (2 мин)
+14. УПРАЖНЕНИЕ - Расслабление 1 (3.25 мин)
+15. УПРАЖНЕНИЕ - Расслабление 2 (3.25 мин)
+16. МОТИВАЦИОННОЕ ВИДЕО - Напутственное слово (2 мин)
+
+СПЕЦИАЛЬНЫЕ ДНИ:
+- Воскресенье (дни 7, 14, 21): + Еженедельное видео (10 мин)
+- Каждые 2 недели (дни 14, 28, 42): + Прогресс-видео (15 мин)
+- Последний день: + Финальное видео (10-15 мин)
+
+=====================================================================
+КРИТИЧЕСКИ ВАЖНЫЕ ПРАВИЛА (НАРУШЕНИЕ НЕДОПУСТИМО!)
+=====================================================================
+
+❌ ЗАПРЕЩЕНО повторять упражнения в рамках одного дня
+❌ ЗАПРЕЩЕНО повторять упражнения в первые 3 недели (дни 1-21)
+❌ ЗАПРЕЩЕНО нарушать схему плейлиста (порядок и количество видео)
+❌ ЗАПРЕЩЕНО использовать упражнения не из предоставленных списков
+
+✅ ОБЯЗАТЕЛЬНО использовать ТОЛЬКО упражнения из списков ниже
+✅ ОБЯЗАТЕЛЬНО соблюдать количество: 2+5+2+2 упражнений
+✅ В неделях 4-6: использовать только упражнения с оценкой ≥ 4 звезды
+✅ Балансировать группы мышц в основных упражнениях
+
+=====================================================================
+СПИСКИ УПРАЖНЕНИЙ ПО КАТЕГОРИЯМ
+=====================================================================
+
+РАЗМИНКА (21 упражнение - выбирать 2 в день):
+high_knees, butt_kicks, arm_circles, arm_swings, calf_raises_warmup, leg_swings, leg_circles, shoulder_rolls, wrist_circles, ankle_circles, glute_bridge_warmup, cat_cow_warmup, leg_raises_warmup, superman_warmup, bear_crawl_warmup, bird_dog_warmup, plank_arm_circles, hip_circles, hip_swings, standing_leg_circles, knee_circles
+
+ОСНОВНЫЕ УПРАЖНЕНИЯ (192 упражнения - выбирать 5 в день):
+marching_in_place, jumping_jacks, spot_jumps, side_steps, torso_twists, side_bends, gentle_squats, neck_rolls, shoulder_shrugs, stationary_lunges, knee_pulls, ankle_grabs, toe_touches, shoulder_blade_squeezes, spinal_twists, 15_second_plank, squat_with_arms, wall_push_ups, prone_arm_raises, lying_bicycle, 10_second_side_plank, side_steps_with_squat, classic_push_ups, knee_push_ups, wide_push_ups, diamond_push_ups, one_arm_push_ups, clap_push_ups, decline_push_ups, hindu_push_ups, archer_push_ups, t_push_ups, pike_push_ups, spartan_push_ups, jump_push_ups, knuckle_push_ups, slow_push_ups, negative_push_ups, pause_push_ups, fingertip_push_ups, handstand_push_ups, plyometric_push_ups, plank_shoulder_taps, plank_up_downs, dive_bomber_push_ups, triangle_push_ups, superman_push_ups, classic_pull_ups, chin_ups, wide_grip_pull_ups, neutral_grip_pull_ups, australian_pull_ups, superman_exercise, hyperextensions, reverse_flyes, bent_over_rows, swimming_exercise, glute_bridge_main, plank_arm_raises, bird_dog_main, table_top, y_raises, t_raises, w_raises, reverse_plank, commando_pull_ups, swallow_exercise, romanian_deadlift, good_morning, classic_squats, sumo_squats, plie_squats, pistol_squats, jump_squats, cossack_squats, forward_lunges, reverse_lunges, side_lunges, jumping_lunges, calf_raises_main, single_calf_raises, glute_bridge_exercise, single_leg_glute_bridge, side_leg_raises, glute_kickbacks, donkey_kicks, clamshells, wall_sits, step_ups, bulgarian_split_squats, single_leg_hops, skaters, crab_walk, bear_crawl_main, duck_walk, frog_jumps, single_leg_stand, sissy_squats, shrimp_squats, clock_lunges, star_jumps, pause_squats, calf_squat, curtsy_lunges, scissor_squats, marching_bridge, spartan_squats, pulse_lunges, box_step_ups, box_jumps, lateral_lunges, 1.5_rep_squats, tempo_squats, main_plank, main_side_plank, main_crunches, main_bicycle_crunches, main_leg_raises, main_scissors, russian_twists, main_dead_bug, main_mountain_climbers, main_burpees, star_crunches, v_ups, reverse_crunches, commando_plank, plank_jacks, bicycle_abs, hip_lifts, jumping_plank, oblique_crunches, sit_ups, flutter_kicks, spider_plank, toe_touch_twists, plank_steps, superman_twist, knee_to_elbow_plank, reverse_plank_hold, cross_crunches, plank_leg_lifts, lying_twists, pulse_crunches, plank_wave, body_lifts, standing_twists, dynamo_plank, diagonal_crunches, plank_rocks, medicine_ball_twists, surfer_plank, hundred_crunches, clock_plank, seated_twists, tiger_plank, crisscross_crunches, plank_seesaw, warrior_twists, freestyle_plank, finish_crunches, victory_plank, plank_hip_pulls, side_lying_leg_lifts, knee_to_chest_raises, reverse_lunge_knee_up, plank_hip_raises, sumo_squat_pulses, lying_knee_pulls, marching_bridge, lunge_with_twist, side_bridge_hip_lifts, wide_stance_squats, support_leg_raises, side_hip_lifts, squat_arm_raises, lunge_back_raises, body_waves, lunge_floor_touch, standing_hip_lifts, spring_squats, seated_spinal_twists, seated_forward_fold, lying_spinal_twists, gentle_cobra, gentle_neck_rolls, standing_forward_fold, meditative_movements, gentle_rocking, grounding_exercise, integration_moment, intention_setting
+
+СЕКСУАЛЬНАЯ ВЫНОСЛИВОСТЬ (15 упражнений - выбирать 2 в день):
+hip_thrusts, hip_thrusts_sexual, male_kegels, deep_squats_sexual, cat_cow_sexual, dynamic_bridge_sexual, pulse_lunges_sexual, single_leg_bridge_sexual, hold_squats_sexual, pelvic_tilts, pelvic_waves, curtsy_lunges_sexual, pause_hip_thrusts, plank_leg_raises_sexual, single_leg_hip_thrust
+
+РАССЛАБЛЕНИЕ (43 упражнения - выбирать 2 в день):
+calf_stretch, tricep_stretch, neck_stretches, cobra_pose, scorpion_stretch, boat_pose, relax_twists, butterfly_stretch, pigeon_stretch, frog_stretch, 90_90_stretch, final_hip_stretch, neck_stretch_final, childs_pose, chest_stretch_final, shoulder_stretch, cat_pose_relax, tricep_stretch_relax, hip_flexor_stretch, pigeon_pose_relax, calf_stretch_relax, quad_stretch, happy_baby_pose, side_stretch, glute_stretch, back_stretch, mountain_pose, arm_stretch_circle, inner_thigh_stretch, tree_pose_relax, lower_back_stretch, corpse_pose, deep_breathing, ankle_stretch, wrist_stretch, butterfly_pose_relax, final_relaxation, full_body_stretch, body_gratitude, recovery_breathing, spine_stretch, face_muscle_relax, final_gratitude
+
+=====================================================================
+ФОРМАТ ОТВЕТА
+=====================================================================
+
+Создай JSON план для {duration_weeks} недель со следующей структурой:
+
+{
+  "program_overview": {
+    "total_weeks": {duration_weeks},
+    "trainer_archetype": "sergeant",
+    "phase": "{phase}",
+    "total_unique_exercises": "количество уникальных упражнений"
+  },
+  "weekly_plans": [
+    {
+      "week": 1,
+      "focus": "описание фокуса недели",
+      "daily_workouts": [
+        {
+          "day": 1,
+          "playlist": [
+            {"type": "motivational", "category": "intro", "day_context": "день 1"},
+            {"type": "exercise", "category": "warmup", "exercise_slug": "название_упражнения_1"},
+            {"type": "exercise", "category": "warmup", "exercise_slug": "название_упражнения_2"},
+            {"type": "motivational", "category": "after_warmup", "day_context": "после разминки"},
+            {"type": "exercise", "category": "main", "exercise_slug": "название_упражнения_3"},
+            {"type": "exercise", "category": "main", "exercise_slug": "название_упражнения_4"},
+            {"type": "exercise", "category": "main", "exercise_slug": "название_упражнения_5"},
+            {"type": "exercise", "category": "main", "exercise_slug": "название_упражнения_6"},
+            {"type": "exercise", "category": "main", "exercise_slug": "название_упражнения_7"},
+            {"type": "motivational", "category": "after_main", "day_context": "после основных"},
+            {"type": "exercise", "category": "endurance", "exercise_slug": "название_упражнения_8"},
+            {"type": "exercise", "category": "endurance", "exercise_slug": "название_упражнения_9"},
+            {"type": "motivational", "category": "motivating_speech", "day_context": "мотивация"},
+            {"type": "exercise", "category": "cooldown", "exercise_slug": "название_упражнения_10"},
+            {"type": "exercise", "category": "cooldown", "exercise_slug": "название_упражнения_11"},
+            {"type": "motivational", "category": "farewell", "day_context": "завершение дня"}
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+ПОМНИ: Каждый exercise_slug должен быть ТОЧНО из списков выше. Никаких повторений!

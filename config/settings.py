@@ -140,11 +140,29 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
-if DEBUG or os.getenv('RENDER'):
-    # Local media serving (development or Render deployment)
+# Media files and storage configuration
+USE_R2_STORAGE = os.getenv('USE_R2_STORAGE', 'True') == 'True'
+
+if USE_R2_STORAGE:
+    # Cloudflare R2 Configuration
+    R2_ENDPOINT = os.getenv('R2_ENDPOINT', 'https://92568f8b8a15c68a9ece5fe08c66485b.r2.cloudflarestorage.com')
+    R2_PUBLIC_BASE = os.getenv('R2_PUBLIC_BASE', 'https://pub-d620683e68bf49abb422f1bc95810ff7.r2.dev')
+    R2_BUCKET = os.getenv('R2_BUCKET', 'ai-fitness-media')
+    R2_ACCESS_KEY_ID = os.getenv('R2_ACCESS_KEY_ID', '3a9fd5a6b38ec994e057e33c1096874e')
+    R2_SECRET_ACCESS_KEY = os.getenv('R2_SECRET_ACCESS_KEY', '0817f9a3154b63b1968620a966e05e36f80fca0308ba91d9c8bf65e8622baa13')
+    
+    # Override MEDIA_URL for R2
+    MEDIA_URL = f'{R2_PUBLIC_BASE}/'
+    VIDEO_BASE_URL = f'{R2_PUBLIC_BASE}/videos/'
+    
+    # For local development, still use local media root
+    if DEBUG:
+        MEDIA_ROOT = BASE_DIR / 'media'
+elif DEBUG or os.getenv('RENDER'):
+    # Local media serving (development or Render deployment without R2)
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
+    VIDEO_BASE_URL = '/media/videos/'
 else:
     # AWS S3 settings (other production deployments)
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
@@ -160,6 +178,7 @@ else:
     # Media files storage
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+    VIDEO_BASE_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/videos/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

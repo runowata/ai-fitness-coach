@@ -1,0 +1,7 @@
+# УПРАЖНЕНИЯ КАТЕГОРИИ: WARMUP
+# Количество: 21 упражнений
+# Сгенерировано автоматически
+
+high_knees, butt_kicks, arm_circles, arm_swings, calf_raises_warmup, leg_swings, leg_circles, shoulder_rolls,
+wrist_circles, ankle_circles, glute_bridge_warmup, cat_cow_warmup, leg_raises_warmup, superman_warmup, bear_crawl_warmup, bird_dog_warmup,
+plank_arm_circles, hip_circles, hip_swings, standing_leg_circles, knee_circles
