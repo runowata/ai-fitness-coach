@@ -7,11 +7,15 @@ echo "Starting build process..."
 echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Run migrations
+# Reset and recreate database
+echo "Resetting database..."
+python manage.py migrate --fake workouts zero
+python manage.py migrate --fake contenttypes zero
+python manage.py migrate --fake auth zero
+python manage.py migrate --fake sessions zero
+
+# Run all migrations fresh
 echo "Running database migrations..."
-# Mark migration 0003 as already applied since fields don't exist in production
-python manage.py migrate workouts 0002 --fake
-python manage.py migrate workouts 0003 --fake
 python manage.py migrate --verbosity=2
 
 # Debug: Check static files structure
