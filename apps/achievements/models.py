@@ -76,8 +76,8 @@ class XPTransaction(models.Model):
     description = models.CharField(max_length=200)
     
     # Related objects
-    workout_execution = models.ForeignKey(
-        'workouts.WorkoutExecution',
+    daily_workout = models.ForeignKey(
+        'workouts.DailyWorkout',
         on_delete=models.SET_NULL,
         null=True,
         blank=True
