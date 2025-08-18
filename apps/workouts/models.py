@@ -32,12 +32,16 @@ class WorkoutPlan(models.Model):
     # Содержит exercise_slug для каждого дня согласно схеме плейлиста
     plan_data = models.JSONField()
     
+    # AI анализ пользователя (отдельно от плана)
+    ai_analysis = models.JSONField(null=True, blank=True)
+    
     # Длительность плана
     duration_weeks = models.IntegerField(default=6)
     
     # Метаданные
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    is_confirmed = models.BooleanField(default=False)
     
     class Meta:
         db_table = 'workout_plans'
@@ -50,6 +54,11 @@ class DailyWorkout(models.Model):
     """
     plan = models.ForeignKey(WorkoutPlan, on_delete=models.CASCADE, related_name='daily_workouts')
     day_number = models.IntegerField()
+    week_number = models.IntegerField()
+    name = models.CharField(max_length=200)
+    
+    # Список упражнений для дня
+    exercises = models.JSONField()
     
     # Плейлист на день (16 видео в строгой последовательности)
     # Формат: [
@@ -57,11 +66,23 @@ class DailyWorkout(models.Model):
     #   {"type": "exercise", "category": "warmup", "exercise_slug": "high_knees"},
     #   ...
     # ]
-    playlist = models.JSONField()
+    playlist = models.JSONField(default=list)
     
-    # Статус выполнения
+    # Статус выполнения и даты
+    is_rest_day = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
     completed_at = models.DateTimeField(null=True, blank=True)
+    started_at = models.DateTimeField(null=True, blank=True)
+    
+    # Задания на уверенность
+    confidence_task = models.TextField(blank=True)
+    
+    # Обратная связь
+    feedback_rating = models.IntegerField(null=True, blank=True)  # 1-5 звезд
+    feedback_note = models.TextField(blank=True)
+    
+    # Замены упражнений
+    substitutions = models.JSONField(default=dict)
     
     class Meta:
         db_table = 'daily_workouts'

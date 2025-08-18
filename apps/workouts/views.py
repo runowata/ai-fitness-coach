@@ -167,3 +167,78 @@ def workout_history_view(request):
     }
     
     return render(request, 'workouts/history.html', context)
+
+
+@login_required
+def weekly_feedback_view(request, plan_id, week_number):
+    """Show weekly feedback form and handle submission"""
+    from .models import WorkoutPlan
+    
+    plan = get_object_or_404(WorkoutPlan, id=plan_id, user=request.user)
+    week_number = int(week_number)
+    
+    # Get archetype for display
+    archetype = request.user.profile.archetype_name
+    
+    if request.method == 'POST':
+        # Handle feedback submission
+        try:
+            # Import AI integration service
+            from apps.ai_integration.services import WorkoutPlanGenerator
+            
+            # Collect feedback data
+            feedback_data = {
+                'overall_difficulty': request.POST.get('overall_difficulty'),
+                'workout_frequency': request.POST.get('workout_frequency'),
+                'energy_level': request.POST.get('energy_level'),
+                'enjoyed_exercises': request.POST.getlist('enjoyed_exercises'),
+                'challenging_exercises': request.POST.getlist('challenging_exercises'),
+                'equipment_issues': request.POST.getlist('equipment_issues'),
+                'time_management': request.POST.get('time_management'),
+                'motivation_level': request.POST.get('motivation_level'),
+                'body_response': request.POST.get('body_response'),
+                'confidence_tasks': request.POST.get('confidence_tasks'),
+                'weekly_comments': request.POST.get('weekly_comments', ''),
+                'goals_progress': request.POST.get('goals_progress'),
+                'week_number': week_number
+            }
+            
+            # Use AI service to adapt plan based on feedback
+            generator = WorkoutPlanGenerator()
+            adapted_plan = generator.adapt_weekly_plan(plan, feedback_data)
+            
+            # Update plan with adaptations
+            if adapted_plan:
+                plan.plan_data = adapted_plan
+                plan.save()
+                
+                messages.success(request, 'Спасибо за отзыв! Ваш план обновлен на основе вашего опыта.')
+            else:
+                messages.success(request, 'Спасибо за отзыв! Ваш план отлично подходит - продолжайте в том же духе.')
+            
+            # Redirect to dashboard
+            return redirect('users:dashboard')
+            
+        except Exception as e:
+            messages.error(request, f'Ошибка при обработке отзыва: {str(e)}')
+    
+    # GET request - show feedback form
+    
+    # Get workouts for this week
+    week_workouts = DailyWorkout.objects.filter(
+        plan=plan,
+        week_number=week_number
+    ).order_by('day_number')
+    
+    # Check if user has existing feedback for this week
+    existing_feedback = {}  # Could be implemented later if needed
+    
+    context = {
+        'plan': plan,
+        'week_number': week_number,
+        'archetype': archetype,
+        'week_workouts': week_workouts,
+        'feedback': existing_feedback,
+    }
+    
+    return render(request, 'workouts/weekly_feedback.html', context)

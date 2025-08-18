@@ -10,15 +10,27 @@ class OnboardingQuestion(models.Model):
         ('multiple_choice', 'Multiple Choice'),
         ('number', 'Number Input'),
         ('text', 'Text Input'),
+        ('scale', 'Scale Rating'),
+        ('body_map', 'Body Map Selection'),
     ]
     
     order = models.PositiveIntegerField(unique=True)
     question_text = models.TextField()
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPE_CHOICES)
     
-    # For number inputs
+    # Block organization
+    block_name = models.CharField(max_length=200, blank=True)
+    block_order = models.PositiveIntegerField(null=True, blank=True)
+    is_block_separator = models.BooleanField(default=False)
+    separator_text = models.TextField(blank=True)
+    
+    # For number inputs and scales
     min_value = models.IntegerField(null=True, blank=True)
     max_value = models.IntegerField(null=True, blank=True)
+    
+    # For scale questions
+    scale_min_label = models.CharField(max_length=100, blank=True)
+    scale_max_label = models.CharField(max_length=100, blank=True)
     
     # Additional context
     help_text = models.TextField(blank=True)
