@@ -11,11 +11,6 @@ pip install -r requirements.txt
 echo "Running database migrations..."
 python manage.py migrate --verbosity=2
 
-# Force apply workouts migrations
-echo "Force applying workouts migrations..."
-python manage.py migrate workouts 0001 --fake
-python manage.py migrate workouts --verbosity=2
-
 # Debug: Check static files structure
 echo "Checking static files..."
 ls -la static/ || echo "No static directory found"

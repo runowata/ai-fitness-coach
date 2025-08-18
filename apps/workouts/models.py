@@ -34,9 +34,6 @@ class Exercise(models.Model):
     # Exercise alternatives (for substitution feature)
     alternatives = models.ManyToManyField('self', blank=True, symmetrical=True)
     
-    # Video references
-    technique_video_url = models.URLField(blank=True)
-    mistake_video_url = models.URLField(blank=True)
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
