@@ -1,0 +1,9 @@
+📊 CURRENT R2 STRUCTURE AFTER REDISTRIBUTION
+================================================================================
+
+Total video files: 160
+
+FOLDER BREAKDOWN:
+----------------------------------------
+videos/exercises/: 56 files
+videos/exercises/explain/: 104 files

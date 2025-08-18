@@ -1,0 +1,59 @@
+# ПОЛНЫЙ СПИСОК EXERCISE_SLUG ДЛЯ AI ПРОМПТОВ
+# Всего упражнений: 270
+# Сгенерировано автоматически из EXERCISES_271_VIDEOS.csv
+
+## ПОПУЛЯРНЫЕ УПРАЖНЕНИЯ (ДЛЯ ОСНОВНЫХ ПРОМПТОВ):
+1.5_rep_squats, archer_push_ups, australian_pull_ups, bear_crawl_main, bent_over_rows, body_gratitude, body_lifts, body_waves, box_jumps, box_step_ups, bulgarian_split_squats, calf_raises_main, calf_squat, cat_cow_sexual, chin_ups, butt_kicks, high_knees, jumping_jacks, jumping_lunges, main_burpees, main_mountain_climbers, mountain_pose, 10_second_side_plank, 15_second_plank, ankle_grabs, bicycle_abs, bird_dog_main, ankle_circles, arm_circles
+
+## ВСЕ УПРАЖНЕНИЯ ПО КАТЕГОРИЯМ:
+
+### WARMUP:
+ankle_circles, arm_circles, arm_swings, bear_crawl_warmup, bird_dog_warmup, calf_raises_warmup, cat_cow_warmup, gentle_cobra, gentle_neck_rolls, gentle_rocking, gentle_squats, glute_bridge_warmup, hip_circles, hip_swings, knee_circles, leg_circles, leg_raises_warmup, leg_swings, marching_bridge, marching_in_place, neck_rolls, plank_arm_circles, shoulder_rolls, standing_leg_circles, superman_warmup, wrist_circles
+
+### MAIN_STRENGTH:
+1.5_rep_squats, archer_push_ups, australian_pull_ups, bear_crawl_main, bent_over_rows, body_gratitude, body_lifts, body_waves, box_jumps, box_step_ups, bulgarian_split_squats, calf_raises_main, calf_squat, cat_cow_sexual, chin_ups, clamshells, clap_push_ups, classic_pull_ups, classic_push_ups, classic_squats, clock_lunges, commando_pull_ups, cossack_squats, crab_walk, curtsy_lunges, curtsy_lunges_sexual, decline_push_ups, deep_breathing, deep_squats_sexual, diamond_push_ups, dive_bomber_push_ups, donkey_kicks, duck_walk, dynamic_bridge_sexual, face_muscle_relax, final_gratitude, final_relaxation, fingertip_push_ups, flutter_kicks, forward_lunges, frog_jumps, glute_bridge_exercise, glute_bridge_main, glute_kickbacks, good_morning, grounding_exercise, handstand_push_ups, hindu_push_ups, hip_lifts, hip_thrusts, hip_thrusts_sexual, hold_squats_sexual, hyperextensions, integration_moment, intention_setting, jump_push_ups, jump_squats, knee_pulls, knee_push_ups, knee_to_chest_raises, knuckle_push_ups, lateral_lunges, lunge_back_raises, lunge_floor_touch, lunge_with_twist, lying_knee_pulls, lying_spinal_twists, lying_twists, main_leg_raises, main_scissors, male_kegels, medicine_ball_twists, meditative_movements, negative_push_ups, neutral_grip_pull_ups, one_arm_push_ups, pause_hip_thrusts, pause_push_ups, pause_squats, pelvic_tilts, pelvic_waves, pike_push_ups, pistol_squats, plie_squats, plyometric_push_ups, prone_arm_raises, pulse_lunges, pulse_lunges_sexual, recovery_breathing, relax_twists, reverse_flyes, reverse_lunge_knee_up, reverse_lunges, romanian_deadlift, scissor_squats, seated_forward_fold, seated_spinal_twists, seated_twists, shoulder_blade_squeezes, shoulder_shrugs, shrimp_squats, side_bends, side_bridge_hip_lifts, side_hip_lifts, side_leg_raises, side_lunges, side_lying_leg_lifts, side_steps, side_steps_with_squat, single_calf_raises, single_leg_bridge_sexual, single_leg_glute_bridge, single_leg_hip_thrust, single_leg_hops, single_leg_stand, sissy_squats, sit_ups, skaters, slow_push_ups, spartan_push_ups, spartan_squats, spinal_twists, spot_jumps, spring_squats, squat_arm_raises, squat_with_arms, standing_forward_fold, standing_hip_lifts, standing_twists, star_jumps, stationary_lunges, step_ups, sumo_squat_pulses, sumo_squats, superman_exercise, superman_push_ups, superman_twist, support_leg_raises, swallow_exercise, swimming_exercise, t_push_ups, t_raises, table_top, tempo_squats, toe_touch_twists, toe_touches, torso_twists, triangle_push_ups, v_ups, w_raises, wall_push_ups, wall_sits, warrior_twists, wide_grip_pull_ups, wide_push_ups, wide_stance_squats, y_raises
+
+### CARDIO:
+butt_kicks, high_knees, jumping_jacks, jumping_lunges, main_burpees, main_mountain_climbers, mountain_pose
+
+### CORE:
+10_second_side_plank, 15_second_plank, ankle_grabs, bicycle_abs, bird_dog_main, clock_plank, commando_plank, crisscross_crunches, cross_crunches, diagonal_crunches, dynamo_plank, finish_crunches, freestyle_plank, hundred_crunches, jumping_plank, knee_to_elbow_plank, lying_bicycle, main_bicycle_crunches, main_crunches, main_dead_bug, main_plank, main_side_plank, oblique_crunches, plank_arm_raises, plank_hip_pulls, plank_hip_raises, plank_jacks, plank_leg_lifts, plank_leg_raises_sexual, plank_rocks, plank_seesaw, plank_shoulder_taps, plank_steps, plank_up_downs, plank_wave, pulse_crunches, reverse_crunches, reverse_plank, reverse_plank_hold, russian_twists, spider_plank, star_crunches, surfer_plank, tiger_plank, victory_plank
+
+### FLEXIBILITY:
+90_90_stretch, ankle_stretch, arm_stretch_circle, back_stretch, boat_pose, butterfly_pose_relax, butterfly_stretch, calf_stretch, calf_stretch_relax, cat_pose_relax, chest_stretch_final, childs_pose, cobra_pose, corpse_pose, final_hip_stretch, frog_stretch, full_body_stretch, glute_stretch, happy_baby_pose, hip_flexor_stretch, inner_thigh_stretch, lower_back_stretch, neck_stretch_final, neck_stretches, pigeon_pose_relax, pigeon_stretch, quad_stretch, scorpion_stretch, shoulder_stretch, side_stretch, spine_stretch, tree_pose_relax, tricep_stretch, tricep_stretch_relax, wrist_stretch
+
+## ВСЕ УПРАЖНЕНИЯ (АЛФАВИТНЫЙ ПОРЯДОК):
+1.5_rep_squats, 10_second_side_plank, 15_second_plank, 90_90_stretch, ankle_circles, ankle_grabs, ankle_stretch, archer_push_ups,
+arm_circles, arm_stretch_circle, arm_swings, australian_pull_ups, back_stretch, bear_crawl_main, bear_crawl_warmup, bent_over_rows,
+bicycle_abs, bird_dog_main, bird_dog_warmup, boat_pose, body_gratitude, body_lifts, body_waves, box_jumps,
+box_step_ups, bulgarian_split_squats, butt_kicks, butterfly_pose_relax, butterfly_stretch, calf_raises_main, calf_raises_warmup, calf_squat,
+calf_stretch, calf_stretch_relax, cat_cow_sexual, cat_cow_warmup, cat_pose_relax, chest_stretch_final, childs_pose, chin_ups,
+clamshells, clap_push_ups, classic_pull_ups, classic_push_ups, classic_squats, clock_lunges, clock_plank, cobra_pose,
+commando_plank, commando_pull_ups, corpse_pose, cossack_squats, crab_walk, crisscross_crunches, cross_crunches, curtsy_lunges,
+curtsy_lunges_sexual, decline_push_ups, deep_breathing, deep_squats_sexual, diagonal_crunches, diamond_push_ups, dive_bomber_push_ups, donkey_kicks,
+duck_walk, dynamic_bridge_sexual, dynamo_plank, face_muscle_relax, final_gratitude, final_hip_stretch, final_relaxation, fingertip_push_ups,
+finish_crunches, flutter_kicks, forward_lunges, freestyle_plank, frog_jumps, frog_stretch, full_body_stretch, gentle_cobra,
+gentle_neck_rolls, gentle_rocking, gentle_squats, glute_bridge_exercise, glute_bridge_main, glute_bridge_warmup, glute_kickbacks, glute_stretch,
+good_morning, grounding_exercise, handstand_push_ups, happy_baby_pose, high_knees, hindu_push_ups, hip_circles, hip_flexor_stretch,
+hip_lifts, hip_swings, hip_thrusts, hip_thrusts_sexual, hold_squats_sexual, hundred_crunches, hyperextensions, inner_thigh_stretch,
+integration_moment, intention_setting, jump_push_ups, jump_squats, jumping_jacks, jumping_lunges, jumping_plank, knee_circles,
+knee_pulls, knee_push_ups, knee_to_chest_raises, knee_to_elbow_plank, knuckle_push_ups, lateral_lunges, leg_circles, leg_raises_warmup,
+leg_swings, lower_back_stretch, lunge_back_raises, lunge_floor_touch, lunge_with_twist, lying_bicycle, lying_knee_pulls, lying_spinal_twists,
+lying_twists, main_bicycle_crunches, main_burpees, main_crunches, main_dead_bug, main_leg_raises, main_mountain_climbers, main_plank,
+main_scissors, main_side_plank, male_kegels, marching_bridge, marching_in_place, medicine_ball_twists, meditative_movements, mountain_pose,
+neck_rolls, neck_stretch_final, neck_stretches, negative_push_ups, neutral_grip_pull_ups, oblique_crunches, one_arm_push_ups, pause_hip_thrusts,
+pause_push_ups, pause_squats, pelvic_tilts, pelvic_waves, pigeon_pose_relax, pigeon_stretch, pike_push_ups, pistol_squats,
+plank_arm_circles, plank_arm_raises, plank_hip_pulls, plank_hip_raises, plank_jacks, plank_leg_lifts, plank_leg_raises_sexual, plank_rocks,
+plank_seesaw, plank_shoulder_taps, plank_steps, plank_up_downs, plank_wave, plie_squats, plyometric_push_ups, prone_arm_raises,
+pulse_crunches, pulse_lunges, pulse_lunges_sexual, quad_stretch, recovery_breathing, relax_twists, reverse_crunches, reverse_flyes,
+reverse_lunge_knee_up, reverse_lunges, reverse_plank, reverse_plank_hold, romanian_deadlift, russian_twists, scissor_squats, scorpion_stretch,
+seated_forward_fold, seated_spinal_twists, seated_twists, shoulder_blade_squeezes, shoulder_rolls, shoulder_shrugs, shoulder_stretch, shrimp_squats,
+side_bends, side_bridge_hip_lifts, side_hip_lifts, side_leg_raises, side_lunges, side_lying_leg_lifts, side_steps, side_steps_with_squat,
+side_stretch, single_calf_raises, single_leg_bridge_sexual, single_leg_glute_bridge, single_leg_hip_thrust, single_leg_hops, single_leg_stand, sissy_squats,
+sit_ups, skaters, slow_push_ups, spartan_push_ups, spartan_squats, spider_plank, spinal_twists, spine_stretch,
+spot_jumps, spring_squats, squat_arm_raises, squat_with_arms, standing_forward_fold, standing_hip_lifts, standing_leg_circles, standing_twists,
+star_crunches, star_jumps, stationary_lunges, step_ups, sumo_squat_pulses, sumo_squats, superman_exercise, superman_push_ups,
+superman_twist, superman_warmup, support_leg_raises, surfer_plank, swallow_exercise, swimming_exercise, t_push_ups, t_raises,
+table_top, tempo_squats, tiger_plank, toe_touch_twists, toe_touches, torso_twists, tree_pose_relax, triangle_push_ups,
+tricep_stretch, tricep_stretch_relax, v_ups, victory_plank, w_raises, wall_push_ups, wall_sits, warrior_twists,
+wide_grip_pull_ups, wide_push_ups, wide_stance_squats, wrist_circles, wrist_stretch, y_raises

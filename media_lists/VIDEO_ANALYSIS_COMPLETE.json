@@ -1,0 +1,289 @@
+{
+  "timestamp": "2025-08-18T01:00:27.704433",
+  "video_usage": {
+    "technique": {
+      "description": "Видео демонстрации техники выполнения упражнений",
+      "naming_pattern": "{exercise_slug}_technique_{model}.mp4",
+      "model_requirement": "mod1 (основная модель для техники)",
+      "duration_target": "30-60 секунд",
+      "content": "Демонстрация правильной техники выполнения упражнения",
+      "needed_per_exercise": 1,
+      "total_needed": 144
+    },
+    "instruction": {
+      "description": "Инструктаж от тренеров разных архетипов",
+      "naming_pattern": "{exercise_slug}_instruction_{archetype}_{model}.mp4",
+      "archetypes": [
+        "bro",
+        "sergeant",
+        "intellectual"
+      ],
+      "models": [
+        "mod1",
+        "mod2",
+        "mod3"
+      ],
+      "duration_target": "20-40 секунд",
+      "content": "Мотивирующие инструкции для выполнения упражнения",
+      "needed_per_exercise": 9,
+      "total_needed": 1296
+    },
+    "reminder": {
+      "description": "Напоминания и подбадривания во время выполнения",
+      "naming_pattern": "{exercise_slug}_reminder_{archetype}_{number}.mp4",
+      "archetypes": [
+        "bro",
+        "sergeant",
+        "intellectual"
+      ],
+      "duration_target": "10-20 секунд",
+      "content": "Короткие мотивирующие фразы и напоминания",
+      "needed_per_exercise": 9,
+      "total_needed": 1296
+    },
+    "weekly": {
+      "description": "Еженедельные мотивационные видео",
+      "naming_pattern": "weekly_{archetype}_week{number}.mp4",
+      "archetypes": [
+        "bro",
+        "sergeant",
+        "intellectual"
+      ],
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "duration_target": "2-5 минут",
+      "content": "Мотивация и поздравления за прогресс",
+      "needed_per_archetype": 8,
+      "total_needed": 24
+    },
+    "final": {
+      "description": "Финальные поздравления по завершению программы",
+      "naming_pattern": "final_{archetype}.mp4",
+      "archetypes": [
+        "bro",
+        "sergeant",
+        "intellectual"
+      ],
+      "duration_target": "3-7 минут",
+      "content": "Торжественное поздравление с завершением программы",
+      "needed_per_archetype": 1,
+      "total_needed": 3
+    }
+  },
+  "available_materials": {
+    "trainer_1": {
+      "path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos",
+      "count": 429,
+      "format": "mp4",
+      "naming": "timestamp format (20200430_192750.mp4)",
+      "description": "Модель 1 - архетип 'bro' (братский подход)"
+    },
+    "trainer_2": {
+      "path": "/Volumes/Z9/материалы для ai fitnes/trainer 2",
+      "count": 294,
+      "format": "mp4",
+      "naming": "Dennis Dillon series",
+      "description": "Модель 2 - архетип 'sergeant' (сержантский подход)"
+    },
+    "trainer_3": {
+      "path": "/Volumes/Z9/материалы для ai fitnes/trainer 3",
+      "count": 65,
+      "format": "mp4",
+      "naming": "GromBurja series",
+      "description": "Модель 3 - архетип 'intellectual' (интеллектуальный подход)"
+    },
+    "long_videos": {
+      "path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos",
+      "count": 245,
+      "format": "mp4",
+      "naming": "descriptive names",
+      "description": "Длинные видео для еженедельных и финальных мотиваций"
+    },
+    "exercises_content": {
+      "path": "/Volumes/Z9/материалы для ai fitnes/exercises",
+      "note": "Не подходит для упражнений - это контент для взрослых, используется как заглушки",
+      "description": "Тестовые видео моделей из соцсетей"
+    }
+  },
+  "mapping_plan": {
+    "archetype_mapping": {
+      "bro": {
+        "source": "trainer_1",
+        "personality": "Дружелюбный, поддерживающий, как лучший друг",
+        "tone": "Неформальный, мотивирующий",
+        "examples": [
+          "Давай, братан!",
+          "Ты можешь!",
+          "Отличная работа!"
+        ]
+      },
+      "sergeant": {
+        "source": "trainer_2",
+        "personality": "Строгий, требовательный, дисциплинированный",
+        "tone": "Четкий, командный",
+        "examples": [
+          "Выполняй!",
+          "Без поблажек!",
+          "Дисциплина!"
+        ]
+      },
+      "intellectual": {
+        "source": "trainer_3",
+        "personality": "Мудрый, объясняющий, научный подход",
+        "tone": "Спокойный, образовательный",
+        "examples": [
+          "Помни о технике",
+          "Научно доказано",
+          "Осознанное движение"
+        ]
+      }
+    },
+    "video_duration_requirements": {
+      "technique": "30-60 сек - демонстрация упражнения",
+      "instruction": "20-40 сек - мотивирующий инструктаж",
+      "reminder": "10-20 сек - короткие подбадривания",
+      "weekly": "2-5 мин - еженедельная мотивация",
+      "final": "3-7 мин - финальное поздравление"
+    },
+    "prioritization": {
+      "phase_1": {
+        "focus": "Базовые упражнения с техникой (mod1)",
+        "videos_needed": 144,
+        "source": "trainer_1 (429 доступно)",
+        "pattern": "{exercise_slug}_technique_mod1.mp4"
+      },
+      "phase_2": {
+        "focus": "Инструкции от всех архетипов",
+        "videos_needed": 432,
+        "source": "все тренеры",
+        "pattern": "{exercise_slug}_instruction_{archetype}_mod{1-3}.mp4"
+      },
+      "phase_3": {
+        "focus": "Напоминания",
+        "videos_needed": 432,
+        "source": "все тренеры",
+        "pattern": "{exercise_slug}_reminder_{archetype}_{1-3}.mp4"
+      },
+      "phase_4": {
+        "focus": "Еженедельные мотивации",
+        "videos_needed": 24,
+        "source": "long_videos",
+        "pattern": "weekly_{archetype}_week{1-8}.mp4"
+      },
+      "phase_5": {
+        "focus": "Финальные поздравления",
+        "videos_needed": 3,
+        "source": "long_videos",
+        "pattern": "final_{archetype}.mp4"
+      }
+    }
+  },
+  "requirements": {
+    "total_exercises": 144,
+    "video_types": {
+      "technique": {
+        "per_exercise": 1,
+        "total": 144,
+        "duration_each": "30-60 сек"
+      },
+      "instruction": {
+        "per_exercise": 9,
+        "total": 1296,
+        "duration_each": "20-40 сек"
+      },
+      "reminder": {
+        "per_exercise": 9,
+        "total": 1296,
+        "duration_each": "10-20 сек"
+      },
+      "weekly": {
+        "per_week": 3,
+        "weeks": 8,
+        "total": 24,
+        "duration_each": "2-5 мин"
+      },
+      "final": {
+        "per_archetype": 1,
+        "total": 3,
+        "duration_each": "3-7 мин"
+      }
+    },
+    "grand_total": 2763,
+    "available_materials": {
+      "trainer_1": 429,
+      "trainer_2": 294,
+      "trainer_3": 65,
+      "long_videos": 245,
+      "total_available": 1033
+    },
+    "coverage_analysis": {
+      "sufficient_for_phase_1": true,
+      "sufficient_for_full_system": false,
+      "recommended_approach": "Поэтапное внедрение с приоритизацией"
+    }
+  },
+  "naming_system": {
+    "principles": [
+      "Понятные названия для ChatGPT",
+      "Структурированный формат",
+      "Легкая автоматизация",
+      "Соответствие базе упражнений"
+    ],
+    "patterns": {
+      "technique": {
+        "format": "{exercise_slug}_technique_mod1.mp4",
+        "example": "quality-push-up_technique_mod1.mp4",
+        "chatgpt_description": "Видео демонстрации техники упражнения"
+      },
+      "instruction": {
+        "format": "{exercise_slug}_instruction_{archetype}_mod{number}.mp4",
+        "example": "quality-push-up_instruction_bro_mod1.mp4",
+        "chatgpt_description": "Инструктаж от тренера определенного архетипа"
+      },
+      "reminder": {
+        "format": "{exercise_slug}_reminder_{archetype}_{number}.mp4",
+        "example": "quality-push-up_reminder_bro_1.mp4",
+        "chatgpt_description": "Мотивирующее напоминание во время упражнения"
+      },
+      "weekly": {
+        "format": "weekly_{archetype}_week{number}.mp4",
+        "example": "weekly_bro_week3.mp4",
+        "chatgpt_description": "Еженедельная мотивация от тренера"
+      },
+      "final": {
+        "format": "final_{archetype}.mp4",
+        "example": "final_intellectual.mp4",
+        "chatgpt_description": "Финальное поздравление с завершением программы"
+      }
+    },
+    "archetype_codes": {
+      "bro": "Дружелюбный тренер-приятель",
+      "sergeant": "Строгий тренер-сержант",
+      "intellectual": "Мудрый тренер-интеллектуал"
+    },
+    "model_codes": {
+      "mod1": "Основная модель (trainer_1)",
+      "mod2": "Вторая модель (trainer_2)",
+      "mod3": "Третья модель (trainer_3)"
+    },
+    "cloudflare_integration": {
+      "base_url": "https://ai-fitness-media.r2.cloudflarestorage.com",
+      "folder_structure": {
+        "exercises": "videos/exercises/",
+        "instructions": "videos/instructions/",
+        "reminders": "videos/reminders/",
+        "weekly": "videos/weekly/",
+        "final": "videos/final/"
+      },
+      "example_full_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/quality-push-up_technique_mod1.mp4"
+    }
+  }
+}

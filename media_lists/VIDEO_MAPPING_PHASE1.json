@@ -1,0 +1,696 @@
+{
+  "phase_1_exercises": [
+    {
+      "exercise_slug": "breathing-activation",
+      "exercise_name": "Breathing Activation",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20201103_153943.mp4",
+      "original_name": "20201103_153943.mp4",
+      "new_name": "breathing-activation_technique_mod1.mp4",
+      "size_mb": 20.43,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/breathing-activation_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/breathing-activation_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "neuromuscular-warm-up",
+      "exercise_name": "Neuromuscular Warm-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200621_090912.mp4",
+      "original_name": "20200621_090912.mp4",
+      "new_name": "neuromuscular-warm-up_technique_mod1.mp4",
+      "size_mb": 20.55,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/neuromuscular-warm-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/neuromuscular-warm-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "spinal-wave",
+      "exercise_name": "Spinal Wave",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200624_131314.mp4",
+      "original_name": "20200624_131314.mp4",
+      "new_name": "spinal-wave_technique_mod1.mp4",
+      "size_mb": 20.65,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/spinal-wave_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/spinal-wave_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "glute-activation-flow",
+      "exercise_name": "Glute Activation Flow",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20210223_184022.mp4",
+      "original_name": "20210223_184022.mp4",
+      "new_name": "glute-activation-flow_technique_mod1.mp4",
+      "size_mb": 18.97,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/glute-activation-flow_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/glute-activation-flow_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "shoulder-mobility-flow",
+      "exercise_name": "Shoulder Mobility Flow",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200518_065651.mp4",
+      "original_name": "20200518_065651.mp4",
+      "new_name": "shoulder-mobility-flow_technique_mod1.mp4",
+      "size_mb": 21.06,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/shoulder-mobility-flow_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/shoulder-mobility-flow_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "foot-activation",
+      "exercise_name": "Foot Activation",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200901_145204.mp4",
+      "original_name": "20200901_145204.mp4",
+      "new_name": "foot-activation_technique_mod1.mp4",
+      "size_mb": 18.94,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/foot-activation_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/foot-activation_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "fascial-wake-up",
+      "exercise_name": "Fascial Wake-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20210707_214417.mp4",
+      "original_name": "20210707_214417.mp4",
+      "new_name": "fascial-wake-up_technique_mod1.mp4",
+      "size_mb": 21.77,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/fascial-wake-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/fascial-wake-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "coordination-primer",
+      "exercise_name": "Coordination Primer",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20231224_185945.mp4",
+      "original_name": "20231224_185945.mp4",
+      "new_name": "coordination-primer_technique_mod1.mp4",
+      "size_mb": 21.87,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/coordination-primer_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/coordination-primer_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "rhythmic-synchronization",
+      "exercise_name": "Rhythmic Synchronization",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200430_213008.mp4",
+      "original_name": "20200430_213008.mp4",
+      "new_name": "rhythmic-synchronization_technique_mod1.mp4",
+      "size_mb": 18.09,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/rhythmic-synchronization_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/rhythmic-synchronization_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "joint-mobility-sequence",
+      "exercise_name": "Joint Mobility Sequence",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20240407_174848.mp4",
+      "original_name": "20240407_174848.mp4",
+      "new_name": "joint-mobility-sequence_technique_mod1.mp4",
+      "size_mb": 17.92,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/joint-mobility-sequence_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/joint-mobility-sequence_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "core-connection",
+      "exercise_name": "Core Connection",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20231202_181258.mp4",
+      "original_name": "20231202_181258.mp4",
+      "new_name": "core-connection_technique_mod1.mp4",
+      "size_mb": 22.09,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/core-connection_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/core-connection_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "movement-integration",
+      "exercise_name": "Movement Integration",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20240515_183832.mp4",
+      "original_name": "20240515_183832.mp4",
+      "new_name": "movement-integration_technique_mod1.mp4",
+      "size_mb": 22.16,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/movement-integration_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/movement-integration_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "assessment-squat",
+      "exercise_name": "Assessment Squat",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20221008_133849.mp4",
+      "original_name": "20221008_133849.mp4",
+      "new_name": "assessment-squat_technique_mod1.mp4",
+      "size_mb": 22.37,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/assessment-squat_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/assessment-squat_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "goblet-squat-hold",
+      "exercise_name": "Goblet Squat Hold",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20240406_183614.mp4",
+      "original_name": "20240406_183614.mp4",
+      "new_name": "goblet-squat-hold_technique_mod1.mp4",
+      "size_mb": 17.39,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/goblet-squat-hold_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/goblet-squat-hold_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "single-leg-squat",
+      "exercise_name": "Single Leg Squat",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20201121_220655.mp4",
+      "original_name": "20201121_220655.mp4",
+      "new_name": "single-leg-squat_technique_mod1.mp4",
+      "size_mb": 22.9,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/single-leg-squat_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/single-leg-squat_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "squat-to-rotation",
+      "exercise_name": "Squat to Rotation",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20221217_072027.mp4",
+      "original_name": "20221217_072027.mp4",
+      "new_name": "squat-to-rotation_technique_mod1.mp4",
+      "size_mb": 23.05,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/squat-to-rotation_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/squat-to-rotation_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "reactive-squat",
+      "exercise_name": "Reactive Squat",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20201009_202046.mp4",
+      "original_name": "20201009_202046.mp4",
+      "new_name": "reactive-squat_technique_mod1.mp4",
+      "size_mb": 16.2,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/reactive-squat_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/reactive-squat_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "transition-squat",
+      "exercise_name": "Transition Squat",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200609_111303.mp4",
+      "original_name": "20200609_111303.mp4",
+      "new_name": "transition-squat_technique_mod1.mp4",
+      "size_mb": 23.91,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/transition-squat_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/transition-squat_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "breathing-squat",
+      "exercise_name": "Breathing Squat",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200504_203118.mp4",
+      "original_name": "20200504_203118.mp4",
+      "new_name": "breathing-squat_technique_mod1.mp4",
+      "size_mb": 24.11,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/breathing-squat_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/breathing-squat_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "cossack-squat",
+      "exercise_name": "Cossack Squat",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20230329_185646.mp4",
+      "original_name": "20230329_185646.mp4",
+      "new_name": "cossack-squat_technique_mod1.mp4",
+      "size_mb": 24.26,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/cossack-squat_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/cossack-squat_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "quality-push-up",
+      "exercise_name": "Quality Push-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20221207_190830.mp4",
+      "original_name": "20221207_190830.mp4",
+      "new_name": "quality-push-up_technique_mod1.mp4",
+      "size_mb": 24.46,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/quality-push-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/quality-push-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "single-arm-push-up-progression",
+      "exercise_name": "Single Arm Push-up Progression",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20240523_181031.mp4",
+      "original_name": "20240523_181031.mp4",
+      "new_name": "single-arm-push-up-progression_technique_mod1.mp4",
+      "size_mb": 24.57,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/single-arm-push-up-progression_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/single-arm-push-up-progression_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "multi-planar-push-up",
+      "exercise_name": "Multi-planar Push-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20230510_180554.mp4",
+      "original_name": "20230510_180554.mp4",
+      "new_name": "multi-planar-push-up_technique_mod1.mp4",
+      "size_mb": 25.21,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/multi-planar-push-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/multi-planar-push-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "push-up-flow",
+      "exercise_name": "Push-up Flow",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200601_080334.mp4",
+      "original_name": "20200601_080334.mp4",
+      "new_name": "push-up-flow_technique_mod1.mp4",
+      "size_mb": 25.26,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/push-up-flow_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/push-up-flow_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "pike-push-up",
+      "exercise_name": "Pike Push-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200501_061943.mp4",
+      "original_name": "20200501_061943.mp4",
+      "new_name": "pike-push-up_technique_mod1.mp4",
+      "size_mb": 25.3,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/pike-push-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/pike-push-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "hindu-push-up",
+      "exercise_name": "Hindu Push-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200602_061113.mp4",
+      "original_name": "20200602_061113.mp4",
+      "new_name": "hindu-push-up_technique_mod1.mp4",
+      "size_mb": 25.56,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/hindu-push-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/hindu-push-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "archer-push-up",
+      "exercise_name": "Archer Push-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20220119_192844.mp4",
+      "original_name": "20220119_192844.mp4",
+      "new_name": "archer-push-up_technique_mod1.mp4",
+      "size_mb": 26.05,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/archer-push-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/archer-push-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "breathing-push-up",
+      "exercise_name": "Breathing Push-up",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20221109_201043.mp4",
+      "original_name": "20221109_201043.mp4",
+      "new_name": "breathing-push-up_technique_mod1.mp4",
+      "size_mb": 26.21,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/breathing-push-up_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/breathing-push-up_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "australian-pull-ups",
+      "exercise_name": "Australian Pull-ups",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20240404_181138.mp4",
+      "original_name": "20240404_181138.mp4",
+      "new_name": "australian-pull-ups_technique_mod1.mp4",
+      "size_mb": 26.61,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/australian-pull-ups_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/australian-pull-ups_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "prone-pull",
+      "exercise_name": "Prone Pull",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20220420_110126.mp4",
+      "original_name": "20220420_110126.mp4",
+      "new_name": "prone-pull_technique_mod1.mp4",
+      "size_mb": 26.91,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/prone-pull_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/prone-pull_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "dynamic-superman",
+      "exercise_name": "Dynamic Superman",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20211027_201620.mp4",
+      "original_name": "20211027_201620.mp4",
+      "new_name": "dynamic-superman_technique_mod1.mp4",
+      "size_mb": 26.93,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/dynamic-superman_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/dynamic-superman_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "scapular-retraction",
+      "exercise_name": "Scapular Retraction",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200430_202543.mp4",
+      "original_name": "20200430_202543.mp4",
+      "new_name": "scapular-retraction_technique_mod1.mp4",
+      "size_mb": 27.22,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/scapular-retraction_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/scapular-retraction_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "swimming-pattern",
+      "exercise_name": "Swimming Pattern",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200507_153948.mp4",
+      "original_name": "20200507_153948.mp4",
+      "new_name": "swimming-pattern_technique_mod1.mp4",
+      "size_mb": 27.64,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/swimming-pattern_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/swimming-pattern_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "pull-up-progression",
+      "exercise_name": "Pull-up Progression",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20221029_182345.mp4",
+      "original_name": "20221029_182345.mp4",
+      "new_name": "pull-up-progression_technique_mod1.mp4",
+      "size_mb": 27.86,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/pull-up-progression_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/pull-up-progression_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "romanian-deadlift",
+      "exercise_name": "Romanian Deadlift",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20240526_174029.mp4",
+      "original_name": "20240526_174029.mp4",
+      "new_name": "romanian-deadlift_technique_mod1.mp4",
+      "size_mb": 27.96,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/romanian-deadlift_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/romanian-deadlift_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "good-morning",
+      "exercise_name": "Good Morning",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20240427_174327.mp4",
+      "original_name": "20240427_174327.mp4",
+      "new_name": "good-morning_technique_mod1.mp4",
+      "size_mb": 28.02,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/good-morning_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/good-morning_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "hip-bridge-flow",
+      "exercise_name": "Hip Bridge Flow",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20220608_092356.mp4",
+      "original_name": "20220608_092356.mp4",
+      "new_name": "hip-bridge-flow_technique_mod1.mp4",
+      "size_mb": 28.7,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/hip-bridge-flow_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/hip-bridge-flow_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "table-top-hold",
+      "exercise_name": "Table Top Hold",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20210105_181843.mp4",
+      "original_name": "20210105_181843.mp4",
+      "new_name": "table-top-hold_technique_mod1.mp4",
+      "size_mb": 29.83,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/table-top-hold_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/table-top-hold_technique_mod1.mp4"
+    },
+    {
+      "exercise_slug": "hip-hinge-kick",
+      "exercise_name": "Hip Hinge Kick",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/trainer 1/Videos/20200505_190405.mp4",
+      "original_name": "20200505_190405.mp4",
+      "new_name": "hip-hinge-kick_technique_mod1.mp4",
+      "size_mb": 30.0,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/exercises/hip-hinge-kick_technique_mod1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/exercises/hip-hinge-kick_technique_mod1.mp4"
+    }
+  ],
+  "motivational_videos": [
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 1,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/0gmgx0wbcfwiy1lch8f44_source.mp4",
+      "original_name": "0gmgx0wbcfwiy1lch8f44_source.mp4",
+      "new_name": "weekly_bro_week1.mp4",
+      "size_mb": 49.49,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week1.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 1,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/5d8b7ecf204bdf057f7e8.mp4",
+      "original_name": "5d8b7ecf204bdf057f7e8.mp4",
+      "new_name": "weekly_sergeant_week1.mp4",
+      "size_mb": 49.37,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week1.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 1,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/XOkm9RDygDlkijMbP85NvaYknUpPfXyP.mp4",
+      "original_name": "XOkm9RDygDlkijMbP85NvaYknUpPfXyP.mp4",
+      "new_name": "weekly_intellectual_week1.mp4",
+      "size_mb": 49.21,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week1.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week1.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 2,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/0glohebwels9826nbjy69_source.mp4",
+      "original_name": "0glohebwels9826nbjy69_source.mp4",
+      "new_name": "weekly_bro_week2.mp4",
+      "size_mb": 51.26,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week2.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week2.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 2,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/5vsWERXiUJBn3VHZCdziNfxS6qss8TNr.mp4",
+      "original_name": "5vsWERXiUJBn3VHZCdziNfxS6qss8TNr.mp4",
+      "new_name": "weekly_sergeant_week2.mp4",
+      "size_mb": 48.68,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week2.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week2.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 2,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/Дачный дрочер.mp4",
+      "original_name": "Дачный дрочер.mp4",
+      "new_name": "weekly_intellectual_week2.mp4",
+      "size_mb": 51.51,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week2.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week2.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 3,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/IKEA wanking.mp4",
+      "original_name": "IKEA wanking.mp4",
+      "new_name": "weekly_bro_week3.mp4",
+      "size_mb": 51.94,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week3.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week3.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 3,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/Myakinino - Molodyoznaya.mp4",
+      "original_name": "Myakinino - Molodyoznaya.mp4",
+      "new_name": "weekly_sergeant_week3.mp4",
+      "size_mb": 47.93,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week3.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week3.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 3,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/Butt plug.mp4",
+      "original_name": "Butt plug.mp4",
+      "new_name": "weekly_intellectual_week3.mp4",
+      "size_mb": 52.52,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week3.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week3.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 4,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/[720] Вперед в СССР.mp4",
+      "original_name": "[720] Вперед в СССР.mp4",
+      "new_name": "weekly_bro_week4.mp4",
+      "size_mb": 52.6,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week4.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week4.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 4,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/5fbbaacac8aed059a50ea_source.mp4",
+      "original_name": "5fbbaacac8aed059a50ea_source.mp4",
+      "new_name": "weekly_sergeant_week4.mp4",
+      "size_mb": 53.07,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week4.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week4.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 4,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/5ef9e07ca970e81106803_source.mp4",
+      "original_name": "5ef9e07ca970e81106803_source.mp4",
+      "new_name": "weekly_intellectual_week4.mp4",
+      "size_mb": 46.73,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week4.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week4.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 5,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/[720] Улетный трах на парковке.mp4",
+      "original_name": "[720] Улетный трах на парковке.mp4",
+      "new_name": "weekly_bro_week5.mp4",
+      "size_mb": 46.31,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week5.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week5.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 5,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/[720] Спортмастер отличается.mp4",
+      "original_name": "[720] Спортмастер отличается.mp4",
+      "new_name": "weekly_sergeant_week5.mp4",
+      "size_mb": 54.76,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week5.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week5.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 5,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/[720] Дроч в сауне.mp4",
+      "original_name": "[720] Дроч в сауне.mp4",
+      "new_name": "weekly_intellectual_week5.mp4",
+      "size_mb": 44.84,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week5.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week5.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 6,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/Yard jerk.mp4",
+      "original_name": "Yard jerk.mp4",
+      "new_name": "weekly_bro_week6.mp4",
+      "size_mb": 43.97,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week6.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week6.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 6,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/5f6c8bf62df79df8b8c25_source.mp4",
+      "original_name": "5f6c8bf62df79df8b8c25_source.mp4",
+      "new_name": "weekly_sergeant_week6.mp4",
+      "size_mb": 43.69,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week6.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week6.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 6,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/H&M fitting room.mp4",
+      "original_name": "H&M fitting room.mp4",
+      "new_name": "weekly_intellectual_week6.mp4",
+      "size_mb": 43.48,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week6.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week6.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 7,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/[720] Голые на парковке.mp4",
+      "original_name": "[720] Голые на парковке.mp4",
+      "new_name": "weekly_bro_week7.mp4",
+      "size_mb": 56.56,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week7.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week7.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 7,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/Behind a field.mp4",
+      "original_name": "Behind a field.mp4",
+      "new_name": "weekly_sergeant_week7.mp4",
+      "size_mb": 56.98,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week7.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week7.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 7,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/WC meet.mp4",
+      "original_name": "WC meet.mp4",
+      "new_name": "weekly_intellectual_week7.mp4",
+      "size_mb": 57.6,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week7.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week7.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "bro",
+      "week": 8,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/[720] Горячая сауна снова.mp4",
+      "original_name": "[720] Горячая сауна снова.mp4",
+      "new_name": "weekly_bro_week8.mp4",
+      "size_mb": 41.97,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_bro_week8.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_bro_week8.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "sergeant",
+      "week": 8,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/5f6c97ee9d66330a2c799_source.mp4",
+      "original_name": "5f6c97ee9d66330a2c799_source.mp4",
+      "new_name": "weekly_sergeant_week8.mp4",
+      "size_mb": 58.66,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_sergeant_week8.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_sergeant_week8.mp4"
+    },
+    {
+      "type": "weekly",
+      "archetype": "intellectual",
+      "week": 8,
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/a4681a527b.720.mp4",
+      "original_name": "a4681a527b.720.mp4",
+      "new_name": "weekly_intellectual_week8.mp4",
+      "size_mb": 58.67,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/weekly/weekly_intellectual_week8.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/weekly/weekly_intellectual_week8.mp4"
+    },
+    {
+      "type": "final",
+      "archetype": "bro",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/5d89ed4c75e01cf3ee78b.mp4",
+      "original_name": "5d89ed4c75e01cf3ee78b.mp4",
+      "new_name": "final_bro.mp4",
+      "size_mb": 41.0,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/final/final_bro.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/final/final_bro.mp4"
+    },
+    {
+      "type": "final",
+      "archetype": "sergeant",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/extremalchiki/pznb8pgXlLQhVW6ZJhAzKcEY2toD6IXs.mp4",
+      "original_name": "pznb8pgXlLQhVW6ZJhAzKcEY2toD6IXs.mp4",
+      "new_name": "final_sergeant.mp4",
+      "size_mb": 59.77,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/final/final_sergeant.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/final/final_sergeant.mp4"
+    },
+    {
+      "type": "final",
+      "archetype": "intellectual",
+      "original_path": "/Volumes/Z9/материалы для ai fitnes/long and weekly videos/Heating main.mp4",
+      "original_name": "Heating main.mp4",
+      "new_name": "final_intellectual.mp4",
+      "size_mb": 59.78,
+      "target_path": "/Volumes/Z9/AI_FITNESS_COACH_VIDEOS/final/final_intellectual.mp4",
+      "cloudflare_url": "https://ai-fitness-media.r2.cloudflarestorage.com/videos/final/final_intellectual.mp4"
+    }
+  ],
+  "summary": {
+    "total_exercise_videos": 39,
+    "total_motivational_videos": 27,
+    "total_videos": 66,
+    "total_size_gb": 2.24740234375
+  }
+}
