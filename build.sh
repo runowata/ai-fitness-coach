@@ -11,6 +11,11 @@ pip install -r requirements.txt
 echo "Running database migrations..."
 python manage.py migrate --verbosity=2
 
+# Force apply workouts migrations
+echo "Force applying workouts migrations..."
+python manage.py migrate workouts 0001 --fake
+python manage.py migrate workouts --verbosity=2
+
 # Debug: Check static files structure
 echo "Checking static files..."
 ls -la static/ || echo "No static directory found"
@@ -26,6 +31,7 @@ ls -la staticfiles/ || echo "No staticfiles directory found"
 ls -la staticfiles/css/ || echo "No CSS files collected"
 
 # Load fixtures
+python manage.py loaddata fixtures/exercises.json
 python manage.py loaddata fixtures/onboarding_questions.json
 python manage.py loaddata fixtures/motivational_cards.json
 python manage.py loaddata fixtures/stories.json
