@@ -9,8 +9,6 @@
       "difficulty": "beginner",
       "muscle_groups": ["chest", "arms"],
       "equipment_needed": [],
-      "technique_video_url": "",
-      "mistake_video_url": "",
       "is_active": true
     }
   },
@@ -24,8 +22,6 @@
       "difficulty": "beginner",
       "muscle_groups": ["legs"],
       "equipment_needed": [],
-      "technique_video_url": "",
-      "mistake_video_url": "",
       "is_active": true
     }
   },
@@ -39,8 +35,6 @@
       "difficulty": "beginner",
       "muscle_groups": ["core"],
       "equipment_needed": [],
-      "technique_video_url": "",
-      "mistake_video_url": "",
       "is_active": true
     }
   }
