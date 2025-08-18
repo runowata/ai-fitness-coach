@@ -4,41 +4,16 @@
     "pk": 1,
     "fields": {
       "order": 1,
-      "question_text": "Какой у тебя основной фитнес-опыт?",
-      "question_type": "single_choice",
-      "help_text": "Выбери наиболее подходящий вариант",
+      "question_text": "Привет! Я твой AI-тренер. Чтобы наше путешествие было максимально эффективным и безопасным, мне нужно узнать тебя получше. Для начала, как тебя называть в приложении?",
+      "question_type": "text",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_block_separator": false,
       "is_required": true,
-      "ai_field_name": "experience_level"
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 1,
-    "fields": {
-      "question": 1,
-      "option_text": "Новичок (никогда серьезно не тренировался)",
-      "option_value": "beginner",
-      "order": 1
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 2,
-    "fields": {
-      "question": 1,
-      "option_text": "Базовый уровень (тренируюсь время от времени)",
-      "option_value": "intermediate",
-      "order": 2
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 3,
-    "fields": {
-      "question": 1,
-      "option_text": "Продвинутый (регулярно тренируюсь)",
-      "option_value": "advanced",
-      "order": 3
+      "ai_field_name": "user_name",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -46,51 +21,17 @@
     "pk": 2,
     "fields": {
       "order": 2,
-      "question_text": "Какая твоя основная цель тренировок?",
-      "question_type": "single_choice",
-      "help_text": "Выбери главную мотивацию",
+      "question_text": "Сколько тебе лет?",
+      "question_type": "number",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "min_value": 18,
+      "max_value": 100,
       "is_required": true,
-      "ai_field_name": "primary_goal"
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 4,
-    "fields": {
-      "question": 2,
-      "option_text": "Улучшить физическую форму",
-      "option_value": "fitness",
-      "order": 1
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 5,
-    "fields": {
-      "question": 2,
-      "option_text": "Набрать мышечную массу",
-      "option_value": "muscle_gain",
-      "order": 2
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 6,
-    "fields": {
-      "question": 2,
-      "option_text": "Сбросить вес",
-      "option_value": "weight_loss",
-      "order": 3
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 7,
-    "fields": {
-      "question": 2,
-      "option_text": "Повысить выносливость",
-      "option_value": "endurance",
-      "order": 4
+      "ai_field_name": "age",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -98,41 +39,17 @@
     "pk": 3,
     "fields": {
       "order": 3,
-      "question_text": "Сколько дней в неделю ты можешь тренироваться?",
-      "question_type": "single_choice",
-      "help_text": "Будь реалистичен",
+      "question_text": "Твой рост (в см)?",
+      "question_type": "number",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "min_value": 140,
+      "max_value": 220,
       "is_required": true,
-      "ai_field_name": "days_per_week"
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 8,
-    "fields": {
-      "question": 3,
-      "option_text": "2-3 дня",
-      "option_value": "3",
-      "order": 1
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 9,
-    "fields": {
-      "question": 3,
-      "option_text": "4-5 дней",
-      "option_value": "5",
-      "order": 2
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 10,
-    "fields": {
-      "question": 3,
-      "option_text": "6-7 дней",
-      "option_value": "7",
-      "order": 3
+      "ai_field_name": "height",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -140,51 +57,17 @@
     "pk": 4,
     "fields": {
       "order": 4,
-      "question_text": "Какое оборудование у тебя есть?",
-      "question_type": "multiple_choice",
-      "help_text": "Можешь выбрать несколько вариантов",
+      "question_text": "Твой текущий вес (в кг)? (Эта цифра — лишь отправная точка, не более того).",
+      "question_type": "number",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "min_value": 40,
+      "max_value": 200,
       "is_required": true,
-      "ai_field_name": "available_equipment"
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 11,
-    "fields": {
-      "question": 4,
-      "option_text": "Только собственное тело",
-      "option_value": "bodyweight",
-      "order": 1
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 12,
-    "fields": {
-      "question": 4,
-      "option_text": "Гантели",
-      "option_value": "dumbbells",
-      "order": 2
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 13,
-    "fields": {
-      "question": 4,
-      "option_text": "Штанга",
-      "option_value": "barbell",
-      "order": 3
-    }
-  },
-  {
-    "model": "onboarding.answeroption",
-    "pk": 14,
-    "fields": {
-      "question": 4,
-      "option_text": "Турник",
-      "option_value": "pullup_bar",
-      "order": 4
+      "ai_field_name": "weight",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
@@ -192,41 +75,842 @@
     "pk": 5,
     "fields": {
       "order": 5,
-      "question_text": "Сколько времени ты можешь уделить одной тренировке?",
+      "question_text": "Твоя безопасность — наш главный приоритет. Следующие 10 вопросов — самые важные. Пожалуйста, отнесись к ним максимально серьезно и честно. Эта информация позволит мне создать программу, которая укрепит твое тело, а не навредит ему. Все данные строго конфиденциальны.",
       "question_type": "single_choice",
-      "help_text": "Включая разминку и заминку",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_block_separator": false,
+      "separator_text": "",
       "is_required": true,
-      "ai_field_name": "workout_duration"
+      "ai_field_name": "safety_acknowledged",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
-    "model": "onboarding.answeroption",
+    "model": "onboarding.onboardingquestion",
+    "pk": 6,
+    "fields": {
+      "order": 6,
+      "question_text": "Были ли у тебя когда-либо диагностированы следующие сердечно-сосудистые состояния?",
+      "question_type": "multiple_choice",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": true,
+      "ai_field_name": "cardiovascular_conditions",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 7,
+    "fields": {
+      "order": 7,
+      "question_text": "Есть ли у тебя диагностированный диабет 2 типа или предиабет?",
+      "question_type": "single_choice",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": true,
+      "ai_field_name": "diabetes_status",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 8,
+    "fields": {
+      "order": 8,
+      "question_text": "Испытываешь ли ты хроническую боль или регулярный дискомфорт в каких-либо из этих областей?",
+      "question_type": "body_map",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": true,
+      "ai_field_name": "chronic_pain_areas",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 9,
+    "fields": {
+      "order": 9,
+      "question_text": "Были ли у тебя серьезные травмы или операции за последние 2 года, о которых мне следует знать?",
+      "question_type": "text",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "help_text": "Опиши кратко травмы или операции, если были",
+      "is_required": false,
+      "ai_field_name": "recent_injuries",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 10,
+    "fields": {
+      "order": 10,
+      "question_text": "Как бы ты оценил гибкость своего тела?",
+      "question_type": "scale",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "scale_min_label": "Очень негибкий",
+      "scale_max_label": "Очень гибкий",
+      "is_required": true,
+      "ai_field_name": "flexibility_level",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 11,
+    "fields": {
+      "order": 11,
+      "question_text": "Есть ли у тебя ВИЧ-статус, который требует особого подхода к нагрузкам и восстановлению? (Ответ строго конфиденциален и используется только для адаптации плана).",
+      "question_type": "single_choice",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": false,
+      "ai_field_name": "hiv_status",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 12,
+    "fields": {
+      "order": 12,
+      "question_text": "Принимаешь ли ты на постоянной основе какие-либо медикаменты, которые могут влиять на сердечный ритм или давление?",
+      "question_type": "single_choice",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": true,
+      "ai_field_name": "heart_medications",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 13,
+    "fields": {
+      "order": 13,
+      "question_text": "Чувствуешь ли ты головокружение или сильную одышку при умеренной физической нагрузке (например, быстрый подъем по лестнице)?",
+      "question_type": "single_choice",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": true,
+      "ai_field_name": "exercise_symptoms",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 14,
+    "fields": {
+      "order": 14,
+      "question_text": "Есть ли у тебя какие-либо другие заболевания или ограничения, которые не были упомянуты?",
+      "question_type": "text",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": false,
+      "ai_field_name": "other_conditions",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
     "pk": 15,
     "fields": {
-      "question": 5,
-      "option_text": "30-45 минут",
-      "option_value": "45",
-      "order": 1
+      "order": 15,
+      "question_text": "Ты куришь?",
+      "question_type": "single_choice",
+      "block_name": "Фундамент: Основные данные и безопасность",
+      "block_order": 1,
+      "is_required": true,
+      "ai_field_name": "smoking_status",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
-    "model": "onboarding.answeroption",
+    "model": "onboarding.onboardingquestion",
     "pk": 16,
     "fields": {
-      "question": 5,
-      "option_text": "45-60 минут",
-      "option_value": "60",
-      "order": 2
+      "order": 16,
+      "question_text": "Давай заглянем в будущее. Когда ты достигнешь своей цели, что изменится в твоей жизни в первую очередь?",
+      "question_type": "text",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "primary_life_change",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   },
   {
-    "model": "onboarding.answeroption",
+    "model": "onboarding.onboardingquestion",
     "pk": 17,
     "fields": {
-      "question": 5,
-      "option_text": "Больше часа",
-      "option_value": "90",
-      "order": 3
+      "order": 17,
+      "question_text": "Что для тебя сейчас важнее?",
+      "question_type": "single_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "appearance_vs_feeling",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 18,
+    "fields": {
+      "order": 18,
+      "question_text": "Многие парни в сообществе стремятся к \"рельефной мускулистости\". Насколько это созвучно тебе?",
+      "question_type": "scale",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "scale_min_label": "Не важно",
+      "scale_max_label": "Очень важно",
+      "is_required": true,
+      "ai_field_name": "muscle_definition_importance",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 19,
+    "fields": {
+      "order": 19,
+      "question_text": "А что насчет общего размера и массы?",
+      "question_type": "single_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "size_preference",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 20,
+    "fields": {
+      "order": 20,
+      "question_text": "Чувствуешь ли ты иногда давление (со стороны соцсетей, приложений для знакомств, окружения) выглядеть определенным образом?",
+      "question_type": "single_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "social_pressure",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 21,
+    "fields": {
+      "order": 21,
+      "question_text": "Что обычно мешает тебе тренироваться регулярно?",
+      "question_type": "multiple_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "workout_barriers",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 22,
+    "fields": {
+      "order": 22,
+      "question_text": "Были ли у тебя в прошлом (например, в школе) негативные опыты, связанные с физкультурой или спортом, которые до сих пор вызывают дискомфорт?",
+      "question_type": "single_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "negative_pe_experience",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 23,
+    "fields": {
+      "order": 23,
+      "question_text": "Насколько для тебя важно видеть быстрые результаты, чтобы сохранять мотивацию?",
+      "question_type": "scale",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "scale_min_label": "Не важно",
+      "scale_max_label": "Критически важно",
+      "is_required": true,
+      "ai_field_name": "quick_results_importance",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 24,
+    "fields": {
+      "order": 24,
+      "question_text": "Представь, что у тебя был тяжелый день. Тренировка для тебя — это:",
+      "question_type": "single_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "workout_as_stress_relief",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 25,
+    "fields": {
+      "order": 25,
+      "question_text": "Что тебя вдохновляет больше?",
+      "question_type": "multiple_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "inspiration_sources",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 26,
+    "fields": {
+      "order": 26,
+      "question_text": "Насколько ты доволен своим телом прямо сейчас?",
+      "question_type": "scale",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "scale_min_label": "Совсем не доволен",
+      "scale_max_label": "Полностью доволен",
+      "is_required": true,
+      "ai_field_name": "body_satisfaction",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 27,
+    "fields": {
+      "order": 27,
+      "question_text": "Какая конечная цель для тебя важнее всего?",
+      "question_type": "single_choice",
+      "block_name": "Твоя мотивация: Что движет тобой?",
+      "block_order": 2,
+      "is_required": true,
+      "ai_field_name": "ultimate_goal",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 28,
+    "fields": {
+      "order": 28,
+      "question_text": "Твоя работа или учеба в основном:",
+      "question_type": "single_choice",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "is_required": true,
+      "ai_field_name": "work_activity_level",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 29,
+    "fields": {
+      "order": 29,
+      "question_text": "Сколько часов в среднем ты спишь ночью?",
+      "question_type": "number",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "min_value": 1,
+      "max_value": 12,
+      "is_required": true,
+      "ai_field_name": "sleep_hours",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 30,
+    "fields": {
+      "order": 30,
+      "question_text": "Как бы ты оценил качество своего сна?",
+      "question_type": "scale",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "scale_min_label": "Очень плохое",
+      "scale_max_label": "Отличное",
+      "is_required": true,
+      "ai_field_name": "sleep_quality",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 31,
+    "fields": {
+      "order": 31,
+      "question_text": "Как бы ты оценил свой средний уровень стресса за последний месяц?",
+      "question_type": "scale",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "scale_min_label": "Минимальный",
+      "scale_max_label": "Максимальный",
+      "is_required": true,
+      "ai_field_name": "stress_level",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 32,
+    "fields": {
+      "order": 32,
+      "question_text": "Как обычно выглядит твой завтрак?",
+      "question_type": "text",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "is_required": true,
+      "ai_field_name": "breakfast_description",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 33,
+    "fields": {
+      "order": 33,
+      "question_text": "Сколько раз в день ты полноценно ешь (не считая перекусов)?",
+      "question_type": "number",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "min_value": 1,
+      "max_value": 6,
+      "is_required": true,
+      "ai_field_name": "meal_frequency",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 34,
+    "fields": {
+      "order": 34,
+      "question_text": "Как часто в твоем рационе присутствует фастфуд или обработанная пища?",
+      "question_type": "single_choice",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "is_required": true,
+      "ai_field_name": "fastfood_frequency",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 35,
+    "fields": {
+      "order": 35,
+      "question_text": "Сколько чистой воды ты выпиваешь в день?",
+      "question_type": "single_choice",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "is_required": true,
+      "ai_field_name": "water_intake",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 36,
+    "fields": {
+      "order": 36,
+      "question_text": "Употребляешь ли ты алкоголь?",
+      "question_type": "single_choice",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "is_required": true,
+      "ai_field_name": "alcohol_consumption",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 37,
+    "fields": {
+      "order": 37,
+      "question_text": "Есть ли у тебя дома какой-либо спортивный инвентарь?",
+      "question_type": "multiple_choice",
+      "block_name": "Твой образ жизни: Контекст и реальность",
+      "block_order": 3,
+      "is_required": true,
+      "ai_field_name": "home_equipment",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 38,
+    "fields": {
+      "order": 38,
+      "question_text": "Фитнес и сексуальное здоровье тесно связаны. Что было бы наиболее ценным для тебя?",
+      "question_type": "multiple_choice",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "is_required": true,
+      "ai_field_name": "sexual_health_goals",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 39,
+    "fields": {
+      "order": 39,
+      "question_text": "Как бы ты оценил свою текущую сексуальную выносливость?",
+      "question_type": "scale",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "scale_min_label": "Низкая",
+      "scale_max_label": "Высокая",
+      "is_required": true,
+      "ai_field_name": "sexual_stamina",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 40,
+    "fields": {
+      "order": 40,
+      "question_text": "Насколько важна для тебя гибкость для исследования новых сексуальных поз?",
+      "question_type": "scale",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "scale_min_label": "Не важна",
+      "scale_max_label": "Очень важна",
+      "is_required": true,
+      "ai_field_name": "flexibility_for_sex",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 41,
+    "fields": {
+      "order": 41,
+      "question_text": "Хотел бы ты, чтобы в твоей программе были упражнения, целенаправленно улучшающие сексуальную функцию (например, упражнения Кегеля)?",
+      "question_type": "single_choice",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "is_required": true,
+      "ai_field_name": "kegel_interest",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 42,
+    "fields": {
+      "order": 42,
+      "question_text": "Чувствуешь ли ты, что стресс или усталость негативно влияют на твое либидо?",
+      "question_type": "single_choice",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "is_required": true,
+      "ai_field_name": "stress_affects_libido",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 43,
+    "fields": {
+      "order": 43,
+      "question_text": "Какая роль для тебя более привычна в сексе?",
+      "question_type": "single_choice",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "is_required": false,
+      "ai_field_name": "sexual_role",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 44,
+    "fields": {
+      "order": 44,
+      "question_text": "Насколько уверенно ты себя чувствуешь в интимной обстановке?",
+      "question_type": "scale",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "scale_min_label": "Не уверенно",
+      "scale_max_label": "Очень уверенно",
+      "is_required": true,
+      "ai_field_name": "intimacy_confidence",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 45,
+    "fields": {
+      "order": 45,
+      "question_text": "Главная цель в сексе для тебя — это:",
+      "question_type": "single_choice",
+      "block_name": "Твоя сексуальность: Энергия и уверенность",
+      "block_order": 4,
+      "is_required": true,
+      "ai_field_name": "sex_goal",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 46,
+    "fields": {
+      "order": 46,
+      "question_text": "В какое время суток у тебя обычно больше всего энергии для тренировок?",
+      "question_type": "single_choice",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": true,
+      "ai_field_name": "preferred_workout_time",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 47,
+    "fields": {
+      "order": 47,
+      "question_text": "Что тебе нравится больше?",
+      "question_type": "single_choice",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": true,
+      "ai_field_name": "workout_intensity_preference",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 48,
+    "fields": {
+      "order": 48,
+      "question_text": "Есть ли виды упражнений, которые ты терпеть не можешь?",
+      "question_type": "text",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": false,
+      "ai_field_name": "disliked_exercises",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 49,
+    "fields": {
+      "order": 49,
+      "question_text": "Как ты относишься к кардио (бег, прыжки)?",
+      "question_type": "single_choice",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": true,
+      "ai_field_name": "cardio_attitude",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 50,
+    "fields": {
+      "order": 50,
+      "question_text": "Что для тебя важнее в приложении?",
+      "question_type": "multiple_choice",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": true,
+      "ai_field_name": "app_features_importance",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 51,
+    "fields": {
+      "order": 51,
+      "question_text": "Как ты обычно восстанавливаешься после нагрузок?",
+      "question_type": "text",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": false,
+      "ai_field_name": "recovery_methods",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 52,
+    "fields": {
+      "order": 52,
+      "question_text": "Готов ли ты пробовать новые, необычные упражнения?",
+      "question_type": "single_choice",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": true,
+      "ai_field_name": "openness_to_new_exercises",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 53,
+    "fields": {
+      "order": 53,
+      "question_text": "Насколько для тебя важна музыка во время тренировки?",
+      "question_type": "scale",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "scale_min_label": "Не важна",
+      "scale_max_label": "Критически важна",
+      "is_required": true,
+      "ai_field_name": "music_importance",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 54,
+    "fields": {
+      "order": 54,
+      "question_text": "Как ты хочешь отслеживать свой прогресс?",
+      "question_type": "single_choice",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": true,
+      "ai_field_name": "progress_tracking_preference",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
+    }
+  },
+  {
+    "model": "onboarding.onboardingquestion",
+    "pk": 55,
+    "fields": {
+      "order": 55,
+      "question_text": "И последний вопрос. Ты готов начать свой путь к лучшей версии себя?",
+      "question_type": "single_choice",
+      "block_name": "Твои предпочтения и опыт",
+      "block_order": 5,
+      "is_required": true,
+      "ai_field_name": "ready_to_start",
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20.258190",
+      "updated_at": "2025-08-01T00:36:20.258190"
     }
   }
 ]
