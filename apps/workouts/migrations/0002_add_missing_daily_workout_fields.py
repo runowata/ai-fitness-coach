@@ -14,12 +14,30 @@ class Migration(migrations.Migration):
             database_operations=[
                 migrations.RunSQL(
                     sql="""
-                        ALTER TABLE workouts_workoutplan
-                        ADD COLUMN IF NOT EXISTS ai_analysis JSONB;
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.workout_plans') IS NOT NULL THEN
+                            ALTER TABLE workout_plans
+                            ADD COLUMN IF NOT EXISTS ai_analysis JSONB;
+                        ELSIF to_regclass('public.workouts_workoutplan') IS NOT NULL THEN
+                            ALTER TABLE workouts_workoutplan
+                            ADD COLUMN IF NOT EXISTS ai_analysis JSONB;
+                        END IF;
+                    END
+                    $$;
                     """,
                     reverse_sql="""
-                        ALTER TABLE workouts_workoutplan
-                        DROP COLUMN IF EXISTS ai_analysis;
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.workout_plans') IS NOT NULL THEN
+                            ALTER TABLE workout_plans
+                            DROP COLUMN IF EXISTS ai_analysis;
+                        ELSIF to_regclass('public.workouts_workoutplan') IS NOT NULL THEN
+                            ALTER TABLE workouts_workoutplan
+                            DROP COLUMN IF EXISTS ai_analysis;
+                        END IF;
+                    END
+                    $$;
                     """,
                 ),
             ],
