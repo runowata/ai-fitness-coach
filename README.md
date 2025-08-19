@@ -62,6 +62,51 @@ python manage.py import_media  # Реальный импорт
 python manage.py runserver
 ```
 
+## Redis Setup
+
+Приложение поддерживает Redis для кэширования, сессий и очередей Celery с автоматическим фолбэком на локальную память.
+
+### Конфигурация через ENV
+
+```bash
+# Основной Redis URL (обязательный для включения Redis)
+REDIS_URL=redis://default:password@host:port/0
+
+# Опциональные настройки
+CACHE_TIMEOUT_SECONDS=300  # TTL кэша (по умолчанию 5 минут)
+CELERY_BROKER_URL=redis://host:port/2  # Если отличается от REDIS_URL/2
+CELERY_RESULT_BACKEND=redis://host:port/3  # Если отличается от REDIS_URL/3
+```
+
+### Поведение фолбэка
+
+- **Без REDIS_URL**: используется LocMemCache, DB-сессии, локальные задачи
+- **С REDIS_URL**: Redis для кэша и сессий, Celery через Redis
+- **При сбоях Redis**: graceful degradation с `IGNORE_EXCEPTIONS=True`
+
+### Health Check
+
+```bash
+# Проверка доступности Redis/кэша
+python manage.py redis_check
+
+# Ожидаемый вывод при работающем Redis:
+# Redis cache OK
+
+# При фолбэке на LocMem:
+# Cache set/get mismatch (likely fallback)
+```
+
+### Safe Cache Utils
+
+```python
+from apps.core.cache_utils import cache_safe_get, cache_safe_set
+
+# Безопасное использование кэша с автоматическим фолбэком
+value = cache_safe_get('my_key', default='fallback')
+success = cache_safe_set('my_key', 'value', timeout=300)
+```
+
 ## Структура проекта
 
 ```

@@ -190,10 +190,22 @@ If migration fails in production:
 | `User` | `users` |
 | `UserProfile` | `user_profiles` |
 
+## Redis and Cache Considerations
+
+**Important**: Migrations should never depend on Redis availability:
+
+- ✅ **Safe**: Use database-only operations in migrations
+- ❌ **Unsafe**: Don't call cache or Redis operations in migration code
+- ✅ **Pattern**: Test migrations with both Redis enabled and disabled
+- ✅ **Fallback**: Migrations work with LocMemCache fallback
+
+Cache operations belong in views, management commands, or data migrations - not schema migrations.
+
 ## Questions?
 
 When in doubt:
 1. Check existing migrations for patterns
 2. Test with both fresh and existing schemas locally
 3. Use `SeparateDatabaseAndState` + `IF NOT EXISTS` for safety
-4. Ask for review if unsure about complex schema changes
+4. Test with and without Redis connection
+5. Ask for review if unsure about complex schema changes

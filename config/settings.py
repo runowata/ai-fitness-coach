@@ -99,16 +99,39 @@ DATABASES = {
     )
 }
 
-# Cache
-CACHES = {
-    "default": (
-        {"BACKEND": "django_redis.cache.RedisCache",
-         "LOCATION": os.getenv("REDIS_URL", ""),
-         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"}}
-        if os.getenv("REDIS_URL")
-        else {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "local"}
-    )
-}
+# Cache Configuration
+REDIS_URL = os.getenv("REDIS_URL", "").strip()
+CACHE_TIMEOUT = int(os.getenv("CACHE_TIMEOUT_SECONDS", "300"))
+
+if REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": REDIS_URL,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "IGNORE_EXCEPTIONS": True,  # не валим приложение при сбоях Redis
+            },
+            "TIMEOUT": CACHE_TIMEOUT,
+            "KEY_PREFIX": "afc",  # namespace ключей проекта
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-afc",
+            "TIMEOUT": CACHE_TIMEOUT,
+            "KEY_PREFIX": "afc",
+        }
+    }
+
+# Redis Sessions Configuration
+USE_REDIS_SESSIONS = bool(REDIS_URL)
+if USE_REDIS_SESSIONS:
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_CACHE_ALIAS = "default"
+    SESSION_COOKIE_AGE = 60 * 60 * 24 * 14  # 14 дней
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -242,6 +265,19 @@ OPENAI_TEMPERATURE = float(os.getenv('OPENAI_TEMPERATURE', '0.7'))
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 ANTHROPIC_MODEL = os.getenv('ANTHROPIC_MODEL', 'claude-3-opus-20240229')
 ANTHROPIC_MAX_TOKENS = int(os.getenv('ANTHROPIC_MAX_TOKENS', '4000'))
+
+# Celery Configuration with Redis
+def _redis_db_url(base_url: str, db_suffix: str) -> str:
+    if not base_url:
+        return ""
+    # если в конце нет /N — добавим /{db_suffix}
+    tail = base_url.rsplit("/", 1)[-1]
+    if not tail.isdigit():
+        return base_url.rstrip("/") + f"/{db_suffix}"
+    return base_url
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL") or _redis_db_url(REDIS_URL, "2")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND") or _redis_db_url(REDIS_URL, "3")
 
 # Rate limiting
 RATELIMIT_ENABLE = True
