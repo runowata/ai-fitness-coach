@@ -88,39 +88,277 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.AddField(
-            model_name='dailyworkout',
-            name='week_number',
-            field=models.IntegerField(default=1),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS week_number INTEGER NOT NULL DEFAULT 1;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS week_number INTEGER NOT NULL DEFAULT 1;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS week_number;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS week_number;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='dailyworkout',
+                    name='week_number',
+                    field=models.IntegerField(default=1),
+                ),
+            ],
         ),
-        migrations.AddField(
-            model_name='dailyworkout',
-            name='name',
-            field=models.CharField(max_length=200, default=''),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS name VARCHAR(200) NOT NULL DEFAULT '';
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS name VARCHAR(200) NOT NULL DEFAULT '';
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS name;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS name;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='dailyworkout',
+                    name='name',
+                    field=models.CharField(max_length=200, default=''),
+                ),
+            ],
         ),
-        migrations.AddField(
-            model_name='dailyworkout',
-            name='is_rest_day',
-            field=models.BooleanField(default=False),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS is_rest_day BOOLEAN NOT NULL DEFAULT FALSE;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS is_rest_day BOOLEAN NOT NULL DEFAULT FALSE;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS is_rest_day;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS is_rest_day;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='dailyworkout',
+                    name='is_rest_day',
+                    field=models.BooleanField(default=False),
+                ),
+            ],
         ),
-        migrations.AddField(
-            model_name='dailyworkout',
-            name='feedback_rating',
-            field=models.IntegerField(null=True, blank=True),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS feedback_rating INTEGER;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS feedback_rating INTEGER;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS feedback_rating;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS feedback_rating;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='dailyworkout',
+                    name='feedback_rating',
+                    field=models.IntegerField(null=True, blank=True),
+                ),
+            ],
         ),
-        migrations.AddField(
-            model_name='dailyworkout',
-            name='feedback_note',
-            field=models.TextField(blank=True, default=''),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS feedback_note TEXT NOT NULL DEFAULT '';
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS feedback_note TEXT NOT NULL DEFAULT '';
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS feedback_note;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS feedback_note;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='dailyworkout',
+                    name='feedback_note',
+                    field=models.TextField(blank=True, default=''),
+                ),
+            ],
         ),
-        migrations.AddField(
-            model_name='dailyworkout',
-            name='confidence_task',
-            field=models.TextField(blank=True, default=''),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS confidence_task TEXT NOT NULL DEFAULT '';
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS confidence_task TEXT NOT NULL DEFAULT '';
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS confidence_task;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS confidence_task;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='dailyworkout',
+                    name='confidence_task',
+                    field=models.TextField(blank=True, default=''),
+                ),
+            ],
         ),
-        migrations.AddField(
-            model_name='dailyworkout',
-            name='substitutions',
-            field=models.JSONField(default=dict),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS substitutions JSONB NOT NULL DEFAULT '{}';
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS substitutions JSONB NOT NULL DEFAULT '{}';
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS substitutions;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS substitutions;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='dailyworkout',
+                    name='substitutions',
+                    field=models.JSONField(default=dict),
+                ),
+            ],
         ),
     ]
