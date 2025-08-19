@@ -117,7 +117,7 @@ class Command(BaseCommand):
         # Upload to storage
         try:
             with open(file_path, 'rb') as f:
-                storage_path = f'{category}/{file_name}'  # Removed 'media/' prefix
+                storage_path = f'media/{category}/{file_name}'  # Consistent media/ prefix
                 stored_path = default_storage.save(storage_path, f)
                 
                 # Store only the path, URL will be generated via media_service

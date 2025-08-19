@@ -163,12 +163,14 @@ if USE_R2_STORAGE and all([
     
     # File storage settings
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    AWS_DEFAULT_ACL = 'public-read'
+    AWS_DEFAULT_ACL = None  # Публичность через политику бакета
+    AWS_QUERYSTRING_AUTH = False  # Не добавлять подписи к URL
+    AWS_S3_ADDRESSING_STYLE = "virtual"
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_FILE_OVERWRITE = False
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
     
     # Set MEDIA_URL based on environment
     if R2_PUBLIC_BASE:

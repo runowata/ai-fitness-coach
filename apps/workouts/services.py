@@ -54,9 +54,15 @@ class VideoPlaylistBuilder:
                 if 'path' in exercise_data:
                     return public_url(exercise_data['path'])
                 elif 'cloudflare_url' in exercise_data:
-                    # Extract path from URL for migration purposes
-                    url_path = exercise_data['cloudflare_url'].split('/')[-1]
-                    return public_url(f'videos/exercises/{url_path}')
+                    # Extract full path from URL after domain
+                    raw = exercise_data['cloudflare_url']
+                    if '.dev/' in raw:
+                        url_path = raw.split('.dev/', 1)[-1]
+                    elif '.com/' in raw:
+                        url_path = raw.split('.com/', 1)[-1]
+                    else:
+                        url_path = raw
+                    return public_url(url_path.lstrip('/'))
         return None
     
     def _get_motivational_video(self, category: str, day_number: int, archetype: str) -> str:
@@ -77,8 +83,14 @@ class VideoPlaylistBuilder:
             if 'path' in video_data:
                 return public_url(video_data['path'])
             elif 'cloudflare_url' in video_data:
-                # Extract path from URL for migration purposes
-                url_path = video_data['cloudflare_url'].split('/')[-1]
-                return public_url(f'videos/motivation/{url_path}')
+                # Extract full path from URL after domain
+                raw = video_data['cloudflare_url']
+                if '.dev/' in raw:
+                    url_path = raw.split('.dev/', 1)[-1]
+                elif '.com/' in raw:
+                    url_path = raw.split('.com/', 1)[-1]
+                else:
+                    url_path = raw
+                return public_url(url_path.lstrip('/'))
         
         return None
