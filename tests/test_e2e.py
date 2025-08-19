@@ -47,8 +47,7 @@ class EndToEndUserFlowTest(TestCase):
             name="Отжимания",
             description="Базовое упражнение",
             difficulty="beginner",
-            muscle_groups=["chest", "arms"],
-            equipment_needed=[]
+            muscle_groups=["chest", "arms"]
         )
         
         # Create achievement
@@ -292,7 +291,6 @@ class EndToEndUserFlowTest(TestCase):
             description="Упрощенная версия",
             difficulty="beginner",
             muscle_groups=["chest", "arms"],
-            equipment_needed=[]
         )
         
         # Link as alternative

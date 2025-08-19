@@ -34,7 +34,6 @@ def create_sample_exercises():
             'description': 'Подготовительное дыхательное упражнение',
             'difficulty': 'beginner',
             'muscle_groups': ['breathing'],
-            'equipment_needed': [],
             'is_active': True
         },
         {
@@ -44,7 +43,6 @@ def create_sample_exercises():
             'description': 'Классические отжимания для укрепления груди и рук',
             'difficulty': 'beginner',
             'muscle_groups': ['chest', 'arms'],
-            'equipment_needed': [],
             'is_active': True
         },
         {
@@ -54,7 +52,6 @@ def create_sample_exercises():
             'description': 'Высокоинтенсивное кардио упражнение',
             'difficulty': 'intermediate',
             'muscle_groups': ['cardio'],
-            'equipment_needed': [],
             'is_active': True
         },
         {
@@ -64,7 +61,6 @@ def create_sample_exercises():
             'description': 'Завершающая растяжка для восстановления',
             'difficulty': 'beginner',
             'muscle_groups': ['flexibility'],
-            'equipment_needed': [],
             'is_active': True
         }
     ]

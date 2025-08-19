@@ -55,7 +55,6 @@ class ExerciseModelTest(TestCase):
             description='Базовое упражнение',
             difficulty='beginner',
             muscle_groups=['chest', 'arms'],
-            equipment_needed=[]
         )
     
     def test_exercise_creation(self):
@@ -73,7 +72,6 @@ class ExerciseModelTest(TestCase):
             description='Упрощенная версия',
             difficulty='beginner',
             muscle_groups=['chest', 'arms'],
-            equipment_needed=[]
         )
         
         self.exercise.alternatives.add(alt_exercise)
