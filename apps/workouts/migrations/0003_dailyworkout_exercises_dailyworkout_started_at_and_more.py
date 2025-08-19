@@ -10,15 +10,83 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name="dailyworkout",
-            name="exercises",
-            field=models.JSONField(default=list),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS exercises JSONB NOT NULL DEFAULT '[]';
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS exercises JSONB NOT NULL DEFAULT '[]';
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS exercises;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS exercises;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name="dailyworkout",
+                    name="exercises",
+                    field=models.JSONField(default=list),
+                ),
+            ],
         ),
-        migrations.AddField(
-            model_name="dailyworkout",
-            name="started_at",
-            field=models.DateTimeField(blank=True, null=True),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.daily_workouts') IS NOT NULL THEN
+                            ALTER TABLE daily_workouts
+                            DROP COLUMN IF EXISTS started_at;
+                        ELSIF to_regclass('public.workouts_dailyworkout') IS NOT NULL THEN
+                            ALTER TABLE workouts_dailyworkout
+                            DROP COLUMN IF EXISTS started_at;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name="dailyworkout",
+                    name="started_at",
+                    field=models.DateTimeField(blank=True, null=True),
+                ),
+            ],
         ),
         migrations.AlterField(
             model_name="dailyworkout",
