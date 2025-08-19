@@ -9,12 +9,6 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    replaces = [
-        ("workouts", "0001_initial"),
-        ("workouts", "0002_add_missing_daily_workout_fields"),
-        ("workouts", "0003_dailyworkout_exercises_dailyworkout_started_at_and_more"),
-    ]
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]

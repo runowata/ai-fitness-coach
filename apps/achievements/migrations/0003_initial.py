@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("achievements", "0002_initial"),
-        ("workouts", "0001_initial"),
+        ("workouts", "0001_initial_squashed_0003_dailyworkout_exercises_dailyworkout_started_at_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
