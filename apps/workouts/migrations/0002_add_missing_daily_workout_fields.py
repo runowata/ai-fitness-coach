@@ -10,10 +10,26 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='workoutplan',
-            name='ai_analysis',
-            field=models.JSONField(null=True, blank=True),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                        ALTER TABLE workouts_workoutplan
+                        ADD COLUMN IF NOT EXISTS ai_analysis JSONB;
+                    """,
+                    reverse_sql="""
+                        ALTER TABLE workouts_workoutplan
+                        DROP COLUMN IF EXISTS ai_analysis;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='workoutplan',
+                    name='ai_analysis',
+                    field=models.JSONField(null=True, blank=True),
+                ),
+            ],
         ),
         migrations.AddField(
             model_name='workoutplan',
