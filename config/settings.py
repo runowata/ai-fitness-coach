@@ -56,10 +56,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'apps.core.middleware.DatabaseSetupMiddleware',  # Auto-setup database on first request
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -101,10 +102,13 @@ DATABASES = {
 
 # Cache
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
-    }
+    "default": (
+        {"BACKEND": "django_redis.cache.RedisCache",
+         "LOCATION": os.getenv("REDIS_URL", ""),
+         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"}}
+        if os.getenv("REDIS_URL")
+        else {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "local"}
+    )
 }
 
 # Password validation
@@ -148,6 +152,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MAX_AGE = 60 * 60 * 24 * 30  # 30d для статики
 
 # Media files and storage configuration
 USE_R2_STORAGE = os.getenv('USE_R2_STORAGE', 'True') == 'True'

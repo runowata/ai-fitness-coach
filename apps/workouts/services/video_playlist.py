@@ -1,7 +1,7 @@
 import json
 import os
 from typing import List, Dict
-from .models import Exercise, DailyWorkout
+from ..models import Exercise, DailyWorkout
 from apps.content.media_service import public_url
 
 

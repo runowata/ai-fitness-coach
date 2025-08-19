@@ -6,17 +6,18 @@ User = get_user_model()
 
 
 class Story(models.Model):
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, db_index=True)
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
     description = models.TextField()
     cover_image_url = models.URLField()  # This will be migrated to use paths instead of full URLs
+    genre = models.CharField(max_length=50, default='romance')
     
     # Story metadata
     total_chapters = models.PositiveIntegerField()
     is_published = models.BooleanField(default=False)
     
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -36,26 +37,31 @@ class Story(models.Model):
 
 class StoryChapter(models.Model):
     story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='chapters')
-    chapter_number = models.PositiveIntegerField()
+    order = models.PositiveIntegerField()
     title = models.CharField(max_length=200)
     content = models.TextField()
     
+    # Video/media URLs
+    video_url = models.URLField(blank=True)
+    thumbnail_url = models.URLField(blank=True)
+    
     # Reading time estimate
-    estimated_reading_time = models.PositiveIntegerField(help_text="In minutes")
+    estimated_reading_time = models.PositiveIntegerField(help_text="In minutes", default=5)
     
     # Chapter image (optional)
     image_url = models.URLField(blank=True)
     
     is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = 'story_chapters'
-        unique_together = [['story', 'chapter_number']]
-        ordering = ['chapter_number']
+        unique_together = [['story', 'order']]
+        ordering = ['order']
     
     def __str__(self):
-        return f"{self.story.title} - Chapter {self.chapter_number}: {self.title}"
+        return f"{self.story.title} - Chapter {self.order}: {self.title}"
     
     def get_image_url(self):
         """Get chapter image URL using media_service if it's a path, otherwise return as-is"""

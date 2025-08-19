@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Story, StoryChapter, MediaAsset
+from .models import Story, StoryChapter, MediaAsset, UserStoryAccess
 
 
 @admin.register(MediaAsset)
@@ -63,47 +63,46 @@ class MediaAssetAdmin(admin.ModelAdmin):
     preview_large.short_description = "Preview"
 
 
+class StoryChapterInline(admin.TabularInline):
+    model = StoryChapter
+    extra = 1
+    fields = ("order", "title", "video_url", "thumbnail_url", "is_published")
+    ordering = ("order",)
+
 @admin.register(Story)
 class StoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'total_chapters', 'is_published', 'created_at')
-    list_filter = ('is_published', 'created_at')
-    search_fields = ('title', 'author', 'description')
-    prepopulated_fields = {'slug': ('title',)}
-    
+    list_display = ("title", "author", "genre", "is_published", "created_at", "thumb")
+    list_filter = ("is_published", "genre", "created_at")
+    search_fields = ("title", "author", "slug")
+    prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("created_at", "updated_at", "cover_preview")
+    inlines = [StoryChapterInline]
     fieldsets = (
-        ('Basic Information', {
-            'fields': ('title', 'slug', 'author', 'description')
-        }),
-        ('Media', {
-            'fields': ('cover_image_url',)
-        }),
-        ('Publishing', {
-            'fields': ('total_chapters', 'is_published')
-        })
+        (None, {"fields": ("title", "slug", "author", "description", "genre", "is_published")}),
+        ("Обложка", {"fields": ("cover_image_url", "cover_preview")}),
+        ("Служебные", {"fields": ("created_at", "updated_at")}),
     )
+    def thumb(self, obj):
+        if obj.cover_image_url:
+            return format_html('<img src="{}" style="height:40px;border-radius:6px;" />', obj.cover_image_url)
+        return "—"
+    thumb.short_description = "Обложка"
+    def cover_preview(self, obj):
+        if obj.cover_image_url:
+            return format_html('<img src="{}" style="height:140px;border-radius:10px;" />', obj.cover_image_url)
+        return "—"
 
 
 @admin.register(StoryChapter)
 class StoryChapterAdmin(admin.ModelAdmin):
-    list_display = ('story', 'chapter_number', 'title', 'estimated_reading_time', 'is_published')
-    list_filter = ('story', 'is_published')
-    search_fields = ('title', 'content')
-    ordering = ('story', 'chapter_number')
-    
-    fieldsets = (
-        ('Chapter Information', {
-            'fields': ('story', 'chapter_number', 'title')
-        }),
-        ('Content', {
-            'fields': ('content', 'estimated_reading_time')
-        }),
-        ('Media', {
-            'fields': ('image_url',)
-        }),
-        ('Publishing', {
-            'fields': ('is_published',)
-        })
-    )
-    
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('story')
+    list_display = ("story", "order", "title", "is_published", "created_at")
+    list_filter = ("is_published", "created_at")
+    search_fields = ("title", "story__title")
+    ordering = ("story", "order")
+    readonly_fields = ("created_at", "updated_at")
+
+@admin.register(UserStoryAccess)
+class UserStoryAccessAdmin(admin.ModelAdmin):
+    list_display = ("user", "chapter", "unlocked_at")
+    search_fields = ("user__email", "chapter__story__title")
+    readonly_fields = ("unlocked_at",)

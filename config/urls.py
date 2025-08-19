@@ -10,9 +10,19 @@ from django.http import JsonResponse
 def healthz(_):
     return JsonResponse({"ok": True}, status=200)
 
+def readyz(_):
+    from django.core.cache import cache
+    try:
+        cache.set("readyz_ping", "1", 5)
+        ok = cache.get("readyz_ping") == "1"
+    except Exception:
+        ok = False
+    return JsonResponse({"ok": ok}, status=200 if ok else 503)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('healthz', healthz),
+    path('readyz', readyz),
     path('', include('apps.core.urls')),
     path('users/', include('apps.users.urls')),
     path('workouts/', include('apps.workouts.urls')),

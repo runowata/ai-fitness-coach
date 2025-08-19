@@ -3,15 +3,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views.decorators.http import condition
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import is_naive, make_aware
 
 from .models import Story, StoryChapter, UserStoryAccess
 
+def _stories_last_modified(request, *args, **kwargs):
+    obj = Story.objects.filter(is_published=True).order_by("-updated_at").first()
+    return obj.updated_at if obj else None
+
 
 @login_required
+@condition(last_modified_func=_stories_last_modified)
 def stories_list(request):
     """List all available stories"""
     # Get all published stories
-    stories = Story.objects.filter(is_published=True).order_by('title')
+    stories = (Story.objects
+               .filter(is_published=True)
+               .select_related()
+               .prefetch_related("chapters")
+               .order_by("-created_at"))
     
     # Get user's accessible chapters
     accessible_chapters = UserStoryAccess.objects.filter(
