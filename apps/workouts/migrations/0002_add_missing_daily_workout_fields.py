@@ -49,10 +49,44 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.AddField(
-            model_name='workoutplan',
-            name='is_confirmed',
-            field=models.BooleanField(default=False),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunSQL(
+                    sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.workout_plans') IS NOT NULL THEN
+                            ALTER TABLE workout_plans
+                            ADD COLUMN IF NOT EXISTS is_confirmed BOOLEAN NOT NULL DEFAULT FALSE;
+                        ELSIF to_regclass('public.workouts_workoutplan') IS NOT NULL THEN
+                            ALTER TABLE workouts_workoutplan
+                            ADD COLUMN IF NOT EXISTS is_confirmed BOOLEAN NOT NULL DEFAULT FALSE;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                    reverse_sql="""
+                    DO $$
+                    BEGIN
+                        IF to_regclass('public.workout_plans') IS NOT NULL THEN
+                            ALTER TABLE workout_plans
+                            DROP COLUMN IF EXISTS is_confirmed;
+                        ELSIF to_regclass('public.workouts_workoutplan') IS NOT NULL THEN
+                            ALTER TABLE workouts_workoutplan
+                            DROP COLUMN IF EXISTS is_confirmed;
+                        END IF;
+                    END
+                    $$;
+                    """,
+                ),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='workoutplan',
+                    name='is_confirmed',
+                    field=models.BooleanField(default=False),
+                ),
+            ],
         ),
         migrations.AddField(
             model_name='dailyworkout',
