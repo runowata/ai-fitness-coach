@@ -58,7 +58,7 @@ class DailyWorkout(models.Model):
     name = models.CharField(max_length=200)
     
     # Список упражнений для дня
-    exercises = models.JSONField()
+    exercises = models.JSONField(default=list)
     
     # Плейлист на день (16 видео в строгой последовательности)
     # Формат: [
