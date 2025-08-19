@@ -41,7 +41,7 @@
                             <!-- Trainer Avatar with glow effect -->
                             <div class="trainer-avatar-container">
                                 <div class="avatar-glow"></div>
-                                <img src="{{ motivational_card.image_url }}" 
+                                <img src="{{ motivational_card.get_image_url }}" 
                                      alt="Тренер" 
                                      class="trainer-avatar"
                                      onerror="this.src='{% static 'images/avatars/default-avatar.png' %}'">

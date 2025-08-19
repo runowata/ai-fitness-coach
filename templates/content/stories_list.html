@@ -30,7 +30,7 @@
     {% for story_data in stories_data %}
     <div class="col-md-6 col-lg-4 mb-4">
         <div class="card story-card h-100">
-            <img src="{{ story_data.story.cover_image_url }}" 
+            <img src="{{ story_data.story.get_cover_image_url }}" 
                  class="card-img-top story-cover" 
                  alt="{{ story_data.story.title }}"
                  onerror="this.src='/static/images/story-placeholder.jpg'">

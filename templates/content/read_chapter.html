@@ -44,7 +44,7 @@
     <!-- Chapter Image -->
     {% if chapter.image_url %}
     <div class="chapter-image mb-4">
-        <img src="{{ chapter.image_url }}" 
+        <img src="{{ chapter.get_image_url }}" 
              class="img-fluid rounded" 
              alt="{{ chapter.title }}"
              style="width: 100%; max-height: 300px; object-fit: cover;">

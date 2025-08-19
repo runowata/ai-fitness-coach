@@ -2,6 +2,7 @@ import json
 import os
 from typing import List, Dict
 from .models import Exercise, DailyWorkout
+from apps.content.media_service import public_url
 
 
 class VideoPlaylistBuilder:
@@ -49,7 +50,13 @@ class VideoPlaylistBuilder:
         """Get exercise video URL from SYSTEM_616_VIDEOS.json"""
         for exercise_data in self.video_data.get('exercises_by_category', {}).get(category, []):
             if exercise_data['exercise_slug'] == exercise_slug:
-                return exercise_data['cloudflare_url']
+                # Convert from absolute URL to path and use media_service
+                if 'path' in exercise_data:
+                    return public_url(exercise_data['path'])
+                elif 'cloudflare_url' in exercise_data:
+                    # Extract path from URL for migration purposes
+                    url_path = exercise_data['cloudflare_url'].split('/')[-1]
+                    return public_url(f'videos/exercises/{url_path}')
         return None
     
     def _get_motivational_video(self, category: str, day_number: int, archetype: str) -> str:
@@ -64,6 +71,14 @@ class VideoPlaylistBuilder:
         if archetype_videos:
             # Return video for this day (cycling through available)
             index = (day_number - 1) % len(archetype_videos)
-            return archetype_videos[index]['cloudflare_url']
+            video_data = archetype_videos[index]
+            
+            # Convert from absolute URL to path and use media_service
+            if 'path' in video_data:
+                return public_url(video_data['path'])
+            elif 'cloudflare_url' in video_data:
+                # Extract path from URL for migration purposes
+                url_path = video_data['cloudflare_url'].split('/')[-1]
+                return public_url(f'videos/motivation/{url_path}')
         
         return None

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from .media_service import public_url
 
 User = get_user_model()
 
@@ -9,7 +10,7 @@ class Story(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
     description = models.TextField()
-    cover_image_url = models.URLField()
+    cover_image_url = models.URLField()  # This will be migrated to use paths instead of full URLs
     
     # Story metadata
     total_chapters = models.PositiveIntegerField()
@@ -25,6 +26,12 @@ class Story(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def get_cover_image_url(self):
+        """Get cover image URL using media_service if it's a path, otherwise return as-is"""
+        if self.cover_image_url.startswith('http'):
+            return self.cover_image_url  # Already a full URL
+        return public_url(self.cover_image_url)  # Convert path to URL
 
 
 class StoryChapter(models.Model):
@@ -49,6 +56,14 @@ class StoryChapter(models.Model):
     
     def __str__(self):
         return f"{self.story.title} - Chapter {self.chapter_number}: {self.title}"
+    
+    def get_image_url(self):
+        """Get chapter image URL using media_service if it's a path, otherwise return as-is"""
+        if not self.image_url:
+            return ''
+        if self.image_url.startswith('http'):
+            return self.image_url  # Already a full URL
+        return public_url(self.image_url)  # Convert path to URL
 
 
 class UserStoryAccess(models.Model):
@@ -166,4 +181,8 @@ class MediaAsset(models.Model):
         return f"{self.get_category_display()} - {self.file_name}"
     
     def get_serving_url(self):
-        return self.cdn_url if self.cdn_url else self.file_url
+        """Get the public URL for this media asset using media_service"""
+        if self.cdn_url:
+            return self.cdn_url
+        # Use media_service to generate URL from stored path
+        return public_url(self.file_url)

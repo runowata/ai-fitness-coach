@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from apps.content.media_service import public_url
 
 User = get_user_model()
 
@@ -103,6 +104,12 @@ class MotivationalCard(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def get_image_url(self):
+        """Get image URL using media_service if it's a path, otherwise return as-is"""
+        if self.image_url.startswith('http'):
+            return self.image_url  # Already a full URL
+        return public_url(self.image_url)  # Convert path to URL
 
 
 class UserOnboardingResponse(models.Model):

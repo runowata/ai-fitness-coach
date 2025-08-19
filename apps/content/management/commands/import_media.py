@@ -117,21 +117,19 @@ class Command(BaseCommand):
         # Upload to storage
         try:
             with open(file_path, 'rb') as f:
-                storage_path = f'media/{category}/{file_name}'
-                file_url = default_storage.save(storage_path, f)
+                storage_path = f'{category}/{file_name}'  # Removed 'media/' prefix
+                stored_path = default_storage.save(storage_path, f)
                 
-                if settings.DEBUG:
-                    full_url = f'{settings.MEDIA_URL}{file_url}'
-                else:
-                    full_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{file_url}'
+                # Store only the path, URL will be generated via media_service
+                file_url = stored_path
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'Upload failed for {file_name}: {e}'))
             return
         
-        # Create MediaAsset record
+        # Create MediaAsset record with path, not full URL
         asset = MediaAsset.objects.create(
             file_name=file_name,
-            file_url=full_url,
+            file_url=file_url,  # This is now a path, not a full URL
             file_size=file_path.stat().st_size,
             asset_type=asset_type,
             category=category,
