@@ -9,7 +9,9 @@
       "help_text": "Выберите наиболее важную для вас цель",
       "is_required": true,
       "ai_field_name": "primary_goal",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -73,7 +75,9 @@
       "max_value": 80,
       "is_required": true,
       "ai_field_name": "age",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -88,7 +92,9 @@
       "help_text": "Укажите рост в сантиметрах",
       "is_required": true,
       "ai_field_name": "height",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -103,7 +109,9 @@
       "help_text": "Укажите вес в килограммах",
       "is_required": true,
       "ai_field_name": "weight",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -115,7 +123,9 @@
       "question_type": "single_choice",
       "is_required": true,
       "ai_field_name": "experience_level",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -157,7 +167,9 @@
       "question_type": "single_choice",
       "is_required": true,
       "ai_field_name": "days_per_week",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -209,7 +221,9 @@
       "question_type": "single_choice",
       "is_required": true,
       "ai_field_name": "workout_duration",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -262,7 +276,9 @@
       "help_text": "Выберите все доступное оборудование",
       "is_required": true,
       "ai_field_name": "available_equipment",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -335,7 +351,9 @@
       "help_text": "Выберите все, что применимо к вам",
       "is_required": false,
       "ai_field_name": "health_limitations",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -397,7 +415,9 @@
       "question_type": "single_choice",
       "is_required": true,
       "ai_field_name": "recent_activity_level",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -450,7 +470,9 @@
       "help_text": "Выберите все, что вам интересно",
       "is_required": false,
       "ai_field_name": "preferred_exercise_types",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -512,7 +534,9 @@
       "question_type": "single_choice",
       "is_required": true,
       "ai_field_name": "preferred_workout_time",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -565,7 +589,9 @@
       "help_text": "Это поможет настроить задания на уверенность",
       "is_required": true,
       "ai_field_name": "gym_comfort_level",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -617,7 +643,9 @@
       "question_type": "single_choice",
       "is_required": true,
       "ai_field_name": "motivation_style",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
@@ -669,7 +697,9 @@
       "question_type": "single_choice",
       "is_required": true,
       "ai_field_name": "duration_weeks",
-      "is_active": true
+      "is_active": true,
+      "created_at": "2025-08-01T00:36:20+00:00",
+      "updated_at": "2025-08-01T00:36:20+00:00"
     }
   },
   {
