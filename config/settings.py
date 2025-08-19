@@ -7,6 +7,15 @@ import os, secrets
 from dotenv import load_dotenv
 import dj_database_url
 
+SENTRY_DSN = os.getenv("SENTRY_DSN", "")
+if SENTRY_DSN:
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.django import DjangoIntegration
+        sentry_sdk.init(dsn=SENTRY_DSN, integrations=[DjangoIntegration()], traces_sample_rate=0.0)
+    except Exception:
+        pass
+
 # Load environment variables
 load_dotenv()
 
