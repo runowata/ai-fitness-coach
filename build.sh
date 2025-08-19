@@ -25,8 +25,8 @@ echo "Checking collected static files..."
 ls -la staticfiles/ || echo "No staticfiles directory found"
 ls -la staticfiles/css/ || echo "No CSS files collected"
 
-# Load fixtures safely (idempotent) - TEMPORARILY DISABLED
-echo "Skipping fixtures loading (will load manually after deploy)"
-# python manage.py seed_safe
+# Load fixtures safely (idempotent) with error handling
+echo "Loading base fixtures..."
+python manage.py seed_safe
 
 echo "Build completed successfully!"

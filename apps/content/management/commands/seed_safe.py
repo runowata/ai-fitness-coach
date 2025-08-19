@@ -3,17 +3,30 @@ from django.core.management import call_command
 from django.db import transaction
 
 SAFE_FIXTURES = [
+    "exercises.json",
+    "onboarding_questions.json", 
+    "motivational_cards.json",
     "stories.json",
     "achievements.json",
-    "motivational_cards.json",
 ]
 
 class Command(BaseCommand):
-    help = "Load core fixtures idempotently; skips on-existing pk conflicts"
+    help = "Load core fixtures safely (idempotent); skips broken fixtures"
 
     def handle(self, *args, **kwargs):
-        with transaction.atomic():
-            for fx in SAFE_FIXTURES:
-                self.stdout.write(self.style.MIGRATE_HEADING(f"-> {fx}"))
+        loaded = 0
+        errors = 0
+        
+        for fx in SAFE_FIXTURES:
+            self.stdout.write(self.style.MIGRATE_HEADING(f"-> {fx}"))
+            try:
                 call_command("loaddata", f"fixtures/{fx}", verbosity=1)
-        self.stdout.write(self.style.SUCCESS("Seed complete"))
+                loaded += 1
+            except Exception as e:
+                self.stderr.write(self.style.WARNING(f"Skipping {fx}: {e}"))
+                errors += 1
+        
+        if errors > 0:
+            self.stdout.write(self.style.WARNING(f"Loaded {loaded} fixtures, {errors} failed"))
+        else:
+            self.stdout.write(self.style.SUCCESS(f"All {loaded} fixtures loaded successfully"))
