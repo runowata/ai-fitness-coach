@@ -159,7 +159,7 @@ if USE_R2_STORAGE and all([
     # Public domain configuration
     R2_PUBLIC_BASE = os.getenv('R2_PUBLIC_BASE')
     if R2_PUBLIC_BASE:
-        AWS_S3_CUSTOM_DOMAIN = R2_PUBLIC_BASE.replace('https://', '').replace('http://', '')
+        AWS_S3_CUSTOM_DOMAIN = R2_PUBLIC_BASE.replace('https://', '').replace('http://', '').rstrip('/')
     
     # File storage settings
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -174,7 +174,7 @@ if USE_R2_STORAGE and all([
     
     # Set MEDIA_URL based on environment
     if R2_PUBLIC_BASE:
-        MEDIA_URL = f'{R2_PUBLIC_BASE}/'
+        MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
     else:
         MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
         
