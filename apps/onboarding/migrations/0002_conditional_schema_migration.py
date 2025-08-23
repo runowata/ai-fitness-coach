@@ -1,37 +1,56 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-SQL = """
-ALTER TABLE public.onboarding_questions
-    ADD COLUMN IF NOT EXISTS block_name varchar(100),
-    ADD COLUMN IF NOT EXISTS block_order integer,
-    ADD COLUMN IF NOT EXISTS depends_on_answer varchar(100),
-    ADD COLUMN IF NOT EXISTS depends_on_question_id integer,
-    ADD COLUMN IF NOT EXISTS is_block_separator boolean,
-    ADD COLUMN IF NOT EXISTS scale_max_label varchar(50),
-    ADD COLUMN IF NOT EXISTS scale_min_label varchar(50),
-    ADD COLUMN IF NOT EXISTS separator_text text;
-
-ALTER TABLE public.user_onboarding_responses
-    ADD COLUMN IF NOT EXISTS answer_body_map jsonb,
-    ADD COLUMN IF NOT EXISTS answer_scale integer;
-"""
-
-REVERSE_SQL = """
-ALTER TABLE public.user_onboarding_responses
-    DROP COLUMN IF EXISTS answer_scale,
-    DROP COLUMN IF EXISTS answer_body_map;
-
-ALTER TABLE public.onboarding_questions
-    DROP COLUMN IF EXISTS separator_text,
-    DROP COLUMN IF EXISTS scale_min_label,
-    DROP COLUMN IF EXISTS scale_max_label,
-    DROP COLUMN IF EXISTS is_block_separator,
-    DROP COLUMN IF EXISTS depends_on_question_id,
-    DROP COLUMN IF EXISTS depends_on_answer,
-    DROP COLUMN IF EXISTS block_order,
-    DROP COLUMN IF EXISTS block_name;
-"""
+def safe_add_columns(apps, schema_editor):
+    """Safely add columns with cross-database compatibility"""
+    Question = apps.get_model('onboarding', 'OnboardingQuestion')
+    Response = apps.get_model('onboarding', 'UserOnboardingResponse')
+    question_table = Question._meta.db_table
+    response_table = Response._meta.db_table
+    
+    # Define columns to add
+    columns = [
+        (question_table, "block_name", "varchar(100)"),
+        (question_table, "block_order", "integer"),
+        (question_table, "depends_on_answer", "varchar(100)"),
+        (question_table, "depends_on_question_id", "integer"),
+        (question_table, "is_block_separator", "boolean"),
+        (question_table, "scale_max_label", "varchar(50)"),
+        (question_table, "scale_min_label", "varchar(50)"),
+        (question_table, "separator_text", "text"),
+        (response_table, "answer_body_map", "jsonb"),
+        (response_table, "answer_scale", "integer"),
+    ]
+    
+    with schema_editor.connection.cursor() as cursor:
+        for table, column, sql_type in columns:
+            # Check if column exists (cross-database compatible)
+            if schema_editor.connection.vendor == 'postgresql':
+                cursor.execute("""
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = 'public'
+                      AND table_name = %s
+                      AND column_name = %s
+                """, [table, column])
+            else:  # SQLite
+                cursor.execute("""
+                    SELECT 1
+                    FROM pragma_table_info(?)
+                    WHERE name = ?
+                """, [table, column])
+            
+            exists = cursor.fetchone() is not None
+            if exists:
+                continue
+                
+            # Add column safely
+            if schema_editor.connection.vendor == 'postgresql':
+                cursor.execute(f'ALTER TABLE {table} ADD COLUMN {column} {sql_type};')
+            else:  # SQLite doesn't support jsonb, use json
+                if sql_type == 'jsonb':
+                    sql_type = 'json'
+                cursor.execute(f'ALTER TABLE {table} ADD COLUMN {column} {sql_type};')
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -39,7 +58,10 @@ class Migration(migrations.Migration):
     ]
     
     operations = [
-        migrations.RunSQL(sql=SQL, reverse_sql=REVERSE_SQL),
+        migrations.RunPython(
+            code=safe_add_columns,
+            reverse_code=migrations.RunPython.noop,
+        ),
     ]
     
     # Tell Django about the state changes so it doesn't try to create new migrations

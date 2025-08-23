@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             sql=("""
                 CREATE UNIQUE INDEX IF NOT EXISTS uq_mcard_q_a_notnull
-                ON public.motivational_cards (question_id, answer_option_id)
+                ON motivational_cards (question_id, answer_option_id)
                 WHERE question_id IS NOT NULL AND answer_option_id IS NOT NULL;
             """),
             reverse_sql=("DROP INDEX IF EXISTS uq_mcard_q_a_notnull;"),

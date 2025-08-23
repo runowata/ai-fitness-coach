@@ -1,5 +1,24 @@
-# apps/onboarding/migrations/0002b_backfill_and_defaults.py
 from django.db import migrations
+
+def backfill_defaults(apps, schema_editor):
+    """Backfill NULL values and set defaults (database-agnostic)"""
+    with schema_editor.connection.cursor() as cursor:
+        # Backfill NULLs
+        cursor.execute("""
+            UPDATE onboarding_questions
+            SET block_order = 1
+            WHERE block_order IS NULL;
+        """)
+        cursor.execute("""
+            UPDATE onboarding_questions
+            SET is_block_separator = 0
+            WHERE is_block_separator IS NULL;
+        """)
+        
+        # Set defaults only for PostgreSQL
+        if schema_editor.connection.vendor == 'postgresql':
+            cursor.execute("ALTER TABLE onboarding_questions ALTER COLUMN block_order SET DEFAULT 1;")
+            cursor.execute("ALTER TABLE onboarding_questions ALTER COLUMN is_block_separator SET DEFAULT false;")
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -8,30 +27,8 @@ class Migration(migrations.Migration):
     atomic = False  # allow chunked updates if needed
 
     operations = [
-        # Backfill NULLs
-        migrations.RunSQL(
-            """
-            UPDATE public.onboarding_questions
-            SET block_order = 1
-            WHERE block_order IS NULL;
-            """,
-            reverse_sql=None,
-        ),
-        migrations.RunSQL(
-            """
-            UPDATE public.onboarding_questions
-            SET is_block_separator = false
-            WHERE is_block_separator IS NULL;
-            """,
-            reverse_sql=None,
-        ),
-        # Establish lightweight defaults for new inserts (no NOT NULL here)
-        migrations.RunSQL(
-            "ALTER TABLE public.onboarding_questions ALTER COLUMN block_order SET DEFAULT 1;",
-            reverse_sql="ALTER TABLE public.onboarding_questions ALTER COLUMN block_order DROP DEFAULT;",
-        ),
-        migrations.RunSQL(
-            "ALTER TABLE public.onboarding_questions ALTER COLUMN is_block_separator SET DEFAULT false;",
-            reverse_sql="ALTER TABLE public.onboarding_questions ALTER COLUMN is_block_separator DROP DEFAULT;",
+        migrations.RunPython(
+            code=backfill_defaults,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
