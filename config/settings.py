@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.core.middleware.StrictAccessMiddleware',  # Protect pages until user is ready
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -267,6 +268,14 @@ USE_JSON_MODE = os.getenv('USE_JSON_MODE', 'False') == 'True'
 
 # Performance mode toggle
 AI_FAST_MODE = os.getenv('AI_FAST_MODE', 'False') == 'True'  # Enable for quick testing with reduced tokens
+
+# Strict Mode Settings
+# Enable strict validation for playlist generation and video access
+PLAYLIST_STRICT_MODE = os.getenv('PLAYLIST_STRICT_MODE', 'False') == 'True'
+PLAYLIST_FAIL_ON_MISSING_VIDEOS = os.getenv('PLAYLIST_FAIL_ON_MISSING_VIDEOS', 'False') == 'True'
+
+# StrictAccessMiddleware settings
+STRICT_ACCESS_MIDDLEWARE_ENABLED = os.getenv('STRICT_ACCESS_MIDDLEWARE_ENABLED', 'True') == 'True'
 
 # Video generation flags
 STRICT_ALLOWED_ONLY = os.getenv('STRICT_ALLOWED_ONLY', 'False') == 'True'

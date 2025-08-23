@@ -2,7 +2,8 @@
 Playlist builder v2 - Clean implementation for video playlist generation
 """
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
+from django.conf import settings
 
 from django.db.models import Q
 
@@ -13,6 +14,148 @@ logger = logging.getLogger(__name__)
 
 # Порядок попыток подбора (fallback): точный архетип → generic → любой другой
 FALLBACK_ARCHETYPES = [None, "mentor", "professional", "peer"]
+
+
+class StrictPlaylistValidator:
+    """
+    Строгая валидация плейлистов с поддержкой fallback режима
+    
+    В обычном режиме - позволяет fallback'и и выдает предупреждения
+    В строгом режиме - падает при отсутствии обязательных элементов
+    """
+    
+    def __init__(self, strict_mode: bool = None):
+        if strict_mode is None:
+            strict_mode = getattr(settings, 'PLAYLIST_STRICT_MODE', False)
+        self.strict_mode = strict_mode
+        self.validation_errors = []
+        self.validation_warnings = []
+    
+    def validate_exercise_exists(self, ex_slug: str) -> bool:
+        """
+        Проверка существования упражнения в базе данных
+        
+        Args:
+            ex_slug: ID упражнения
+            
+        Returns:
+            bool: True если упражнение найдено
+            
+        Raises:
+            ValueError: В строгом режиме при отсутствии упражнения
+        """
+        if not ex_slug:
+            error_msg = "EXERCISE_SLUG_EMPTY"
+            if self.strict_mode:
+                raise ValueError(error_msg)
+            self.validation_warnings.append(error_msg)
+            return False
+        
+        exists = CSVExercise.objects.filter(id=ex_slug, is_active=True).exists()
+        
+        if not exists:
+            error_msg = f"EXERCISE_SLUG_UNKNOWN: '{ex_slug}'"
+            if self.strict_mode:
+                raise ValueError(error_msg)
+            self.validation_warnings.append(error_msg)
+            return False
+            
+        return True
+    
+    def validate_video_availability(self, ex_slug: str, kind: str, archetype: str) -> bool:
+        """
+        Проверка доступности видео для упражнения
+        
+        Args:
+            ex_slug: ID упражнения
+            kind: Тип видео (instruction, technique, mistake)
+            archetype: Архетип тренера
+            
+        Returns:
+            bool: True если видео найдено
+            
+        Raises:
+            ValueError: В строгом режиме при отсутствии критичного видео
+        """
+        clip = _resolve_clip(ex_slug, kind, archetype)
+        
+        if not clip:
+            error_msg = f"VIDEO_MISSING: {ex_slug}/{kind}/{archetype}"
+            # Критичные видео (instruction) обязательны в строгом режиме
+            if self.strict_mode and kind == "instruction":
+                raise ValueError(error_msg)
+            if kind == "instruction":
+                self.validation_warnings.append(error_msg)
+            return False
+            
+        # Проверка что у клипа есть реальный файл
+        if not clip.has_video:
+            error_msg = f"VIDEO_FILE_MISSING: {ex_slug}/{kind}/{archetype} (clip_id: {clip.id})"
+            fail_on_missing = getattr(settings, 'PLAYLIST_FAIL_ON_MISSING_VIDEOS', False)
+            if self.strict_mode and fail_on_missing:
+                raise ValueError(error_msg)
+            self.validation_warnings.append(error_msg)
+            return False
+            
+        return True
+    
+    def validate_playlist_completeness(self, playlist: List[Dict], is_rest_day: bool = False) -> bool:
+        """
+        Проверка полноты плейлиста на наличие обязательных сегментов
+        
+        Args:
+            playlist: Список элементов плейлиста
+            is_rest_day: Флаг дня отдыха
+            
+        Returns:
+            bool: True если плейлист полный
+            
+        Raises:
+            ValueError: В строгом режиме при неполном плейлисте
+        """
+        if not self.strict_mode:
+            return True
+            
+        # Собираем типы элементов в плейлисте
+        playlist_types: Set[str] = set()
+        for item in playlist:
+            item_type = item.get('type') or item.get('block', '')
+            playlist_types.add(item_type)
+        
+        # Обязательные сегменты для обычного дня
+        required_types = set()
+        if not is_rest_day:
+            # Для тренировочных дней нужны инструкции к упражнениям
+            has_instructions = any(
+                item.get('kind') == 'instruction' 
+                for item in playlist 
+                if item.get('kind')
+            )
+            if not has_instructions:
+                required_types.add('instruction')
+        
+        # Проверка недостающих типов
+        missing_types = required_types - playlist_types
+        if missing_types:
+            error_msg = f"PLAYLIST_INCOMPLETE: Missing segments: {missing_types}"
+            if self.strict_mode:
+                raise ValueError(error_msg)
+            self.validation_warnings.append(error_msg)
+            return False
+            
+        return True
+    
+    def get_validation_report(self) -> Dict[str, List[str]]:
+        """
+        Получить отчет о валидации
+        
+        Returns:
+            Dict с ошибками и предупреждениями
+        """
+        return {
+            'errors': self.validation_errors,
+            'warnings': self.validation_warnings
+        }
 
 
 def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip]:
@@ -68,22 +211,30 @@ def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip
     return clip
 
 
-def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
+def build_playlist(plan_json: Dict, archetype: str, strict_mode: bool = None) -> List[Dict]:
     """
     Build video playlist from workout plan JSON
     
     Args:
         plan_json: V2 schema workout plan
         archetype: User's trainer archetype (mentor/professional/peer)
+        strict_mode: Enable strict validation (None = use settings default)
         
     Returns:
         List of playlist items with signed URLs and metadata
+        
+    Raises:
+        ValueError: In strict mode when validation fails
     """
+    # Initialize validator
+    validator = StrictPlaylistValidator(strict_mode)
     out: List[Dict] = []
     weeks = plan_json.get("weeks", [])
     
     for w_idx, week in enumerate(weeks, start=1):
         for d_idx, day in enumerate(week.get("days", []), start=1):
+            is_rest_day = day.get("is_rest_day", False)
+            
             for block in day.get("blocks", []):
                 btype = block.get("type")
                 
@@ -91,8 +242,15 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                     # Process exercise blocks
                     for ex in block.get("exercises", []):
                         slug = ex.get("exercise_slug") or ex.get("slug")  # Support both new and legacy formats
+                        
+                        # Validate exercise exists (strict mode may raise ValueError)
+                        validator.validate_exercise_exists(slug)
+                        
                         if not slug:
                             continue
+                            
+                        # Validate video availability (strict mode may raise ValueError)
+                        validator.validate_video_availability(slug, "instruction", archetype)
                             
                         # Get instruction video for the exercise
                         clip = _resolve_clip(slug, "instruction", archetype)
@@ -131,6 +289,9 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                         
                         # Add technique/mistake videos if available (for UI hints)
                         for aux_kind in ("technique", "mistake"):
+                            # Validate auxiliary videos (non-critical)
+                            validator.validate_video_availability(slug, aux_kind, archetype)
+                            
                             clip = _resolve_clip(slug, aux_kind, archetype)
                             if clip:
                                 # Safe handling of file fields that might be None or invalid
@@ -172,12 +333,21 @@ def build_playlist(plan_json: Dict, archetype: str) -> List[Dict]:
                         "text": block.get("text", ""),
                         "description": block.get("description", "")
                     })
+                    
+            # Validate playlist completeness for this day (strict mode may raise ValueError)
+            day_items = [item for item in out if item.get("week") == w_idx and item.get("day") == d_idx]
+            validator.validate_playlist_completeness(day_items, is_rest_day)
+    
+    # Log validation results
+    report = validator.get_validation_report()
+    if report['warnings']:
+        logger.warning(f"Playlist validation warnings: {report['warnings']}")
     
     logger.info(f"Built playlist with {len(out)} items for archetype {archetype}")
     return out
 
 
-def get_daily_playlist(plan_json: Dict, archetype: str, week: int, day: int) -> List[Dict]:
+def get_daily_playlist(plan_json: Dict, archetype: str, week: int, day: int, strict_mode: bool = None) -> List[Dict]:
     """
     Get playlist for a specific day
     
@@ -186,11 +356,15 @@ def get_daily_playlist(plan_json: Dict, archetype: str, week: int, day: int) -> 
         archetype: User's trainer archetype
         week: Week number (1-based)
         day: Day number (1-based)
+        strict_mode: Enable strict validation (None = use settings default)
         
     Returns:
         Filtered playlist for the specific day
+        
+    Raises:
+        ValueError: In strict mode when validation fails
     """
-    full_playlist = build_playlist(plan_json, archetype)
+    full_playlist = build_playlist(plan_json, archetype, strict_mode)
     day_items = [
         item for item in full_playlist 
         if item.get("week") == week and item.get("day") == day

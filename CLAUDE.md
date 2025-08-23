@@ -212,7 +212,93 @@ python manage.py import_media /path --category exercise_technique
 
 # Database cleanup
 python manage.py cleanup_legacy_columns              # Remove deprecated columns
+
+# Strict Mode & Validation (NEW)
+python manage.py audit_video_clips                  # Audit video files against R2 storage
+python manage.py audit_video_clips --archetype mentor --verbose  # Audit specific archetype
+python manage.py sync_exercise_slugs --dry-run      # Check exercise ID/filename mismatches
+python manage.py sync_exercise_slugs --fix          # Fix mismatched exercise IDs
 ```
+
+## Strict Mode System (NEW FEATURE)
+
+The production system now includes comprehensive strict mode validation that can be enabled via environment variables.
+
+### Strict Mode Settings
+
+Environment variables to control strict validation:
+```bash
+# Playlist strict mode - fail on missing exercises/videos
+PLAYLIST_STRICT_MODE=True  # Default: False
+
+# Fail when video files are missing from R2 storage  
+PLAYLIST_FAIL_ON_MISSING_VIDEOS=True  # Default: False
+
+# Enable/disable middleware that protects incomplete user access
+STRICT_ACCESS_MIDDLEWARE_ENABLED=True  # Default: True
+```
+
+### StrictAccessMiddleware
+
+Automatically redirects users to onboarding if they try to access protected pages before completing setup:
+- **Protected paths:** `/workouts/`, `/api/workout/`, `/dashboard/`
+- **Safe paths:** `/`, `/healthz/`, `/onboarding/`, `/accounts/`, `/admin/`, `/static/`, `/media/`
+- **User readiness check:** Has active workout plan with valid exercises
+
+### StrictPlaylistValidator 
+
+New validation class integrated into playlist generation:
+- **Normal mode:** Logs warnings, uses fallback system
+- **Strict mode:** Raises ValueError on validation failures
+- **Validations:** Exercise existence, video availability, playlist completeness
+
+Usage in code:
+```python
+from apps.workouts.services.playlist_v2 import build_playlist
+
+# Normal mode (with fallbacks)
+playlist = build_playlist(plan_json, archetype, strict_mode=False)
+
+# Strict mode (fails on missing content)  
+try:
+    playlist = build_playlist(plan_json, archetype, strict_mode=True)
+except ValueError as e:
+    # Handle validation failure
+    pass
+```
+
+### New Management Commands
+
+#### audit_video_clips
+Comprehensive audit of VideoClip records against R2 storage:
+```bash
+# Basic audit
+python manage.py audit_video_clips
+
+# Detailed audit with specific filters
+python manage.py audit_video_clips --archetype mentor --kind instruction --verbose
+
+# Fail CI/CD on missing videos
+python manage.py audit_video_clips --fail-on-missing
+```
+
+#### sync_exercise_slugs  
+Detect and fix mismatches between exercise IDs and video filenames:
+```bash
+# Check for mismatches
+python manage.py sync_exercise_slugs --dry-run --verbose
+
+# Fix mismatches automatically
+python manage.py sync_exercise_slugs --fix
+```
+
+### Hybrid Approach Benefits
+
+The system maintains **backward compatibility** while adding **optional strictness**:
+- **Production default:** Normal mode with fallbacks (no breaking changes)
+- **CI/CD validation:** Strict mode for catching content gaps  
+- **Development flexibility:** Easy toggle between modes
+- **Comprehensive reporting:** Detailed CSV reports for content audits
 
 ## Testing Strategy
 - Unit tests in `tests/` directory
