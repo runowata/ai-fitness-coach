@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('onboarding', '0002_onboardingquestion_block_name_and_more'),
+        ('onboarding', '0002_conditional_schema_migration'),
     ]
 
     operations = [
