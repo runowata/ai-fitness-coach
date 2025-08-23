@@ -52,5 +52,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(check_and_add_columns, reverse_migration),
+        migrations.RunPython(
+            code=check_and_add_columns,
+            reverse_code=migrations.RunPython.noop,
+        ),
     ]
