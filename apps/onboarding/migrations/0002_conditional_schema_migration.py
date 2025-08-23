@@ -1,79 +1,48 @@
-# Generated to conditionally apply schema changes based on current database state
-
-import django.db.models.deletion
-from django.db import migrations, models, connection
-
+from django.db import migrations
 
 def check_and_add_columns(apps, schema_editor):
-    """Conditionally add columns only if they don't exist"""
-    
-    def column_exists(table_name, column_name):
-        with connection.cursor() as cursor:
+    # Получаем таблицы из метаданных модели, а не хардкодом
+    Question = apps.get_model('onboarding', 'OnboardingQuestion')
+    Response = apps.get_model('onboarding', 'UserOnboardingResponse')
+    question_table = Question._meta.db_table
+    response_table = Response._meta.db_table
+    qn = schema_editor.connection.ops.quote_name
+
+    # Колонки которые нам потенциально нужны
+    columns = [
+        (question_table, "block_name", "varchar(100)"),
+        (question_table, "block_order", "integer DEFAULT 1"),
+        (question_table, "depends_on_answer", "varchar(100)"),
+        (question_table, "depends_on_question_id", "integer"),
+        (question_table, "is_block_separator", "boolean DEFAULT false"),
+        (question_table, "scale_max_label", "varchar(50)"),
+        (question_table, "scale_min_label", "varchar(50)"),
+        (question_table, "separator_text", "text"),
+        (response_table, "answer_body_map", "jsonb"),
+        (response_table, "answer_scale", "integer"),
+    ]
+
+    with schema_editor.connection.cursor() as cursor:
+        for table, column, sql_type in columns:
+            # проверяем, есть ли колонка
             cursor.execute("""
-                SELECT EXISTS (
-                    SELECT FROM information_schema.columns 
-                    WHERE table_name = %s AND column_name = %s
-                );
-            """, [table_name, column_name])
-            return cursor.fetchone()[0]
-    
-    # Get model classes
-    OnboardingQuestion = apps.get_model('onboarding', 'OnboardingQuestion')
-    UserOnboardingResponse = apps.get_model('onboarding', 'UserOnboardingResponse')
-    
-    # Add columns only if they don't exist
-    columns_to_add = [
-        ('onboarding_onboardingquestion', 'block_name', 'VARCHAR(100)'),
-        ('onboarding_onboardingquestion', 'block_order', 'INTEGER DEFAULT 1'),
-        ('onboarding_onboardingquestion', 'depends_on_answer', 'VARCHAR(100)'),
-        ('onboarding_onboardingquestion', 'depends_on_question_id', 'INTEGER'),
-        ('onboarding_onboardingquestion', 'is_block_separator', 'BOOLEAN DEFAULT false'),
-        ('onboarding_onboardingquestion', 'scale_max_label', 'VARCHAR(50)'),
-        ('onboarding_onboardingquestion', 'scale_min_label', 'VARCHAR(50)'),
-        ('onboarding_onboardingquestion', 'separator_text', 'TEXT'),
-        ('onboarding_useronboardingresponse', 'answer_body_map', 'JSONB'),
-        ('onboarding_useronboardingresponse', 'answer_scale', 'INTEGER'),
-    ]
-    
-    with connection.cursor() as cursor:
-        for table, column, definition in columns_to_add:
-            if not column_exists(table, column):
-                cursor.execute(f'ALTER TABLE {table} ADD COLUMN {column} {definition};')
-                print(f"Added column {column} to {table}")
-            else:
-                print(f"Column {column} already exists in {table}")
-    
-    # Update question_type choices if needed
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            UPDATE onboarding_onboardingquestion 
-            SET question_type = question_type 
-            WHERE question_type IN ('single_choice', 'multiple_choice', 'number', 'text', 'scale', 'body_map');
-        """)
+                SELECT 1
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = %s
+                  AND column_name = %s
+            """, [table, column])
+            exists = cursor.fetchone() is not None
+            if exists:
+                # уже есть — пропускаем
+                continue
 
+            # добавляем как NULL без дефолта (безопасно и без долгих locks)
+            ddl = f'ALTER TABLE {qn(table)} ADD COLUMN {qn(column)} {sql_type};'
+            cursor.execute(ddl)
 
-def reverse_migration(apps, schema_editor):
-    """Reverse the migration - remove added columns"""
-    
-    columns_to_remove = [
-        ('onboarding_onboardingquestion', 'block_name'),
-        ('onboarding_onboardingquestion', 'block_order'),
-        ('onboarding_onboardingquestion', 'depends_on_answer'),
-        ('onboarding_onboardingquestion', 'depends_on_question_id'),
-        ('onboarding_onboardingquestion', 'is_block_separator'),
-        ('onboarding_onboardingquestion', 'scale_max_label'),
-        ('onboarding_onboardingquestion', 'scale_min_label'),
-        ('onboarding_onboardingquestion', 'separator_text'),
-        ('onboarding_useronboardingresponse', 'answer_body_map'),
-        ('onboarding_useronboardingresponse', 'answer_scale'),
-    ]
-    
-    with connection.cursor() as cursor:
-        for table, column in columns_to_remove:
-            try:
-                cursor.execute(f'ALTER TABLE {table} DROP COLUMN {column};')
-            except Exception:
-                pass  # Column might not exist
+def noop(*args, **kwargs):
+    pass
 
 
 class Migration(migrations.Migration):
