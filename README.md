@@ -212,8 +212,41 @@ GET /healthz/
 ```
 Системный мониторинг (база данных, Redis, AI интеграция).
 
-### Authentication
-Все API endpoints требуют аутентификации. Используется Django сессионная аутентификация.
+### API Authentication
+
+Все API endpoints требуют аутентификации через `IsAuthenticated` permission класс Django REST Framework.
+
+**Методы аутентификации:**
+- **Session Authentication** (основной) - используется Django сессии
+- **Token Authentication** (альтернативный) - для мобильных приложений
+
+**Примеры использования:**
+
+```bash
+# Аутентификация через сессию (после логина в браузере)
+curl -H "Cookie: sessionid=your_session_id" \
+     -H "X-CSRFToken: your_csrf_token" \
+     http://localhost:8000/api/weekly/current/
+
+# Аутентификация через токен (если настроена)
+curl -H "Authorization: Token your_token_here" \
+     http://localhost:8000/api/weekly/current/
+```
+
+**Endpoints без аутентификации:**
+- `GET /healthz/` - системный мониторинг
+- `GET /` - главная страница
+- `POST /accounts/login/` - форма логина
+- `POST /accounts/register/` - регистрация
+- Django Admin (`/admin/`)
+
+**Ошибки аутентификации:**
+```json
+{
+  "detail": "Authentication credentials were not provided."
+}
+```
+Статус код: `401 Unauthorized`
 
 ## Команда и роли
 
