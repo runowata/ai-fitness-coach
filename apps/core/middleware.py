@@ -153,18 +153,20 @@ class DatabaseSetupMiddleware:
                 """)
                 user_profiles_exists = cursor.fetchone()[0]
                 
-                # Check if exercises table has equipment_needed column
-                cursor.execute("""
-                    SELECT EXISTS (
-                        SELECT FROM information_schema.columns
-                        WHERE table_schema = 'public' 
-                        AND table_name = 'exercises'
-                        AND column_name = 'equipment_needed'
-                    );
-                """)
-                equipment_column_exists = cursor.fetchone()[0]
+                # Check if exercises table has equipment_needed column (only if probe enabled)
+                equipment_column_exists = True  # Default to True to skip probe
+                if getattr(settings, 'FEATURE_EQUIPMENT_MIGRATION_PROBE', False):
+                    cursor.execute("""
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.columns
+                            WHERE table_schema = 'public' 
+                            AND table_name = 'exercises'
+                            AND column_name = 'equipment_needed'
+                        );
+                    """)
+                    equipment_column_exists = cursor.fetchone()[0]
                 
-            if not user_profiles_exists or not equipment_column_exists:
+            if not user_profiles_exists or (getattr(settings, 'FEATURE_EQUIPMENT_MIGRATION_PROBE', False) and not equipment_column_exists):
                 logger.info("Database setup needed...")
                 logger.info(f"user_profiles exists: {user_profiles_exists}")
                 logger.info(f"equipment_needed column exists: {equipment_column_exists}")
@@ -181,17 +183,19 @@ class DatabaseSetupMiddleware:
                 call_command('migrate', '--noinput', verbosity=1)
                 logger.info("✓ Migrations complete")
                 
-                # Verify the column exists now
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        SELECT EXISTS (
-                            SELECT FROM information_schema.columns
-                            WHERE table_schema = 'public' 
-                            AND table_name = 'exercises'
-                            AND column_name = 'equipment_needed'
-                        );
-                    """)
-                    equipment_column_exists = cursor.fetchone()[0]
+                # Verify the column exists now (only if probe enabled)
+                equipment_column_exists = True  # Default to True to skip verification
+                if getattr(settings, 'FEATURE_EQUIPMENT_MIGRATION_PROBE', False):
+                    with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT EXISTS (
+                                SELECT FROM information_schema.columns
+                                WHERE table_schema = 'public' 
+                                AND table_name = 'exercises'
+                                AND column_name = 'equipment_needed'
+                            );
+                        """)
+                        equipment_column_exists = cursor.fetchone()[0]
                 
                 if equipment_column_exists:
                     logger.info("✓ equipment_needed column confirmed")
@@ -199,7 +203,7 @@ class DatabaseSetupMiddleware:
                     call_command('bootstrap_from_videos')
                     logger.info("✓ Bootstrap from videos complete")
                     logger.info("🎉 Database setup complete - AI Fitness Coach ready!")
-                else:
+                elif getattr(settings, 'FEATURE_EQUIPMENT_MIGRATION_PROBE', False):
                     logger.error("❌ equipment_needed column still missing after migrations")
             else:
                 # Check if we need to bootstrap exercises

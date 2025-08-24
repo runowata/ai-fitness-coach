@@ -383,6 +383,9 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # Render.com detection
 RENDER = os.getenv('RENDER', 'false').lower() == 'true'
 
+# Feature Flags
+FEATURE_EQUIPMENT_MIGRATION_PROBE = os.getenv('FEATURE_EQUIPMENT_MIGRATION_PROBE', 'false').lower() == 'true'
+
 # Celery Configuration
 CELERY_BROKER_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_RESULT_BACKEND = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
