@@ -50,49 +50,61 @@ def dashboard_view(request):
     """Main dashboard showing today's workout"""
     user = request.user
     
-    # Get or create user profile if it doesn't exist
-    try:
-        profile = user.profile
-    except UserProfile.DoesNotExist:
-        profile = UserProfile.objects.create(user=user)
-        messages.info(request, 'Создан профиль пользователя. Пройдите онбординг для настройки!')
+    # Safe guard: Get or create user profile
+    profile, _ = UserProfile.objects.get_or_create(user=user)
     
-    # Get active workout plan
+    # Get active workout plan with safe handling
     workout_plan = user.workout_plans.filter(is_active=True).first()
     
-    if not workout_plan:
-        messages.info(request, 'У вас пока нет активного плана тренировок. Пройдите онбординг!')
-        return redirect('onboarding:start')
+    # Safe variables for template
+    today_workout = None
+    current_week = 1
+    new_achievements = []
     
-    # CRITICAL FIX: Set started_at if it's missing (for old plans)
-    if not workout_plan.started_at:
-        workout_plan.started_at = timezone.now()
-        workout_plan.save()
+    if workout_plan:
+        try:
+            # CRITICAL FIX: Set started_at if it's missing (for old plans)
+            if not workout_plan.started_at:
+                workout_plan.started_at = timezone.now()
+                workout_plan.save()
+            
+            # Get today's workout with error handling
+            current_week = workout_plan.get_current_week()
+            days_since_start = (timezone.now() - workout_plan.started_at).days if workout_plan.started_at else 0
+            current_day = (days_since_start % 7) + 1
+            
+            today_workout = workout_plan.daily_workouts.filter(
+                week_number=current_week,
+                day_number=current_day
+            ).first()
+        except Exception as e:
+            # Log error but don't crash
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error processing workout plan {workout_plan.id}: {e}")
+            messages.warning(request, 'Есть проблемы с планом тренировок. Попробуйте обновить страницу.')
     
-    # Get today's workout
-    current_week = workout_plan.get_current_week()
-    days_since_start = (timezone.now() - workout_plan.started_at).days if workout_plan.started_at else 0
-    current_day = (days_since_start % 7) + 1
+    # Safe achievement checking
+    try:
+        from apps.achievements.services import AchievementChecker
+        checker = AchievementChecker()
+        new_achievements = checker.check_user_achievements(user)
+    except Exception as e:
+        # Log error but continue without achievements
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error checking achievements for user {user.id}: {e}")
     
-    today_workout = workout_plan.daily_workouts.filter(
-        week_number=current_week,
-        day_number=current_day
-    ).first()
-    
-    # Check achievements
-    from apps.achievements.services import AchievementChecker
-    checker = AchievementChecker()
-    new_achievements = checker.check_user_achievements(user)
-    
+    # Safe context building
     context = {
         'profile': profile,
         'workout_plan': workout_plan,
         'today_workout': today_workout,
         'current_week': current_week,
         'new_achievements': new_achievements,
-        'streak': profile.current_streak,
-        'xp': profile.experience_points,
-        'level': profile.level,
+        'streak': getattr(profile, 'current_streak', 0),
+        'xp': getattr(profile, 'experience_points', 0),
+        'level': getattr(profile, 'level', 1),
     }
     
     return render(request, 'users/dashboard.html', context)
@@ -101,7 +113,8 @@ def dashboard_view(request):
 @login_required
 def profile_settings_view(request):
     """User profile settings"""
-    profile = request.user.profile
+    # Safe guard: Get or create user profile
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
