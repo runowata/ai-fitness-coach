@@ -1,5 +1,6 @@
 """System monitoring and alerting for AI Fitness Coach"""
 import logging
+import os
 import time
 from typing import Dict, List
 
@@ -10,6 +11,31 @@ from django.db import connection
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
+
+
+def get_git_sha():
+    """
+    Get current Git SHA from environment or git command
+    """
+    # First try environment variable (set by CI/CD)
+    git_sha = os.getenv('GIT_SHA', os.getenv('RENDER_GIT_COMMIT', ''))
+    
+    if not git_sha:
+        # Fallback to git command if available
+        try:
+            import subprocess
+            result = subprocess.run(
+                ['git', 'rev-parse', '--short', 'HEAD'], 
+                capture_output=True, 
+                text=True, 
+                timeout=5
+            )
+            if result.returncode == 0:
+                git_sha = result.stdout.strip()
+        except Exception:
+            pass
+    
+    return git_sha or 'unknown'
 
 
 class RedisHealthMonitor:
@@ -364,7 +390,8 @@ class HealthEndpoint:
             response = {
                 'status': health_results['overall_status'],
                 'timestamp': health_results['timestamp'],
-                'version': getattr(settings, 'APP_VERSION', 'unknown')
+                'version': getattr(settings, 'APP_VERSION', 'unknown'),
+                'git_sha': get_git_sha()
             }
             
             if include_details:
@@ -386,5 +413,6 @@ class HealthEndpoint:
             return {
                 'status': 'error',
                 'error': str(e),
-                'timestamp': timezone.now().isoformat()
+                'timestamp': timezone.now().isoformat(),
+                'git_sha': get_git_sha()
             }

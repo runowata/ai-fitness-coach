@@ -1,4 +1,5 @@
 import logging
+import os
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -7,6 +8,31 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 logger = logging.getLogger(__name__)
+
+
+def get_git_sha():
+    """
+    Get current Git SHA from environment or git command
+    """
+    # First try environment variable (set by CI/CD)
+    git_sha = os.getenv('GIT_SHA', os.getenv('RENDER_GIT_COMMIT', ''))
+    
+    if not git_sha:
+        # Fallback to git command if available
+        try:
+            import subprocess
+            result = subprocess.run(
+                ['git', 'rev-parse', '--short', 'HEAD'], 
+                capture_output=True, 
+                text=True, 
+                timeout=5
+            )
+            if result.returncode == 0:
+                git_sha = result.stdout.strip()
+        except Exception:
+            pass
+    
+    return git_sha or 'unknown'
 
 
 def home_view(request):
@@ -46,6 +72,7 @@ def health_check(request):
         'status': 'healthy',
         'timestamp': None,
         'version': '1.0.0',
+        'git_sha': get_git_sha(),
         'checks': {}
     }
     
@@ -213,6 +240,7 @@ def healthz_view(request):
             "status": "healthy" if is_healthy else "unhealthy",
             "timestamp": timezone.now().isoformat(),
             "version": "0.9.0-rc1",
+            "git_sha": get_git_sha(),
             "components": {
                 "database": db_status,
                 "redis": redis_status,
