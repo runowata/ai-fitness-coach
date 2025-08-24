@@ -462,28 +462,18 @@ class VideoPlaylistBuilder:
         return None
     
     def get_substitution_options(self, exercise_slug: str, user_equipment: List[str]) -> List[CSVExercise]:
-        """Get possible exercise substitutions based on user's equipment"""
+        """Get possible exercise substitutions (equipment checking removed)"""
         try:
             exercise = CSVExercise.objects.get(id=exercise_slug)
             
-            # Get alternatives that match user's equipment
+            # Get all active alternatives (equipment filtering removed)
             alternatives = exercise.alternatives.filter(
                 is_active=True
             ).all()
             
-            # Filter by equipment availability
-            suitable_alternatives = []
-            for alt in alternatives:
-                required_equipment = set(alt.equipment_needed)
-                user_equipment_set = set(user_equipment)
-                
-                # Check if user has all required equipment
-                if required_equipment.issubset(user_equipment_set) or not required_equipment:
-                    suitable_alternatives.append(alt)
+            return list(alternatives)
             
-            return suitable_alternatives
-            
-        except Exercise.DoesNotExist:
+        except CSVExercise.DoesNotExist:
             return []
     
     # Contextual Video Selection Methods

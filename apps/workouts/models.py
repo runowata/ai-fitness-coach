@@ -37,12 +37,7 @@ class Exercise(models.Model):
     description = models.TextField()
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES)
     muscle_groups = models.JSONField(default=list)  # List of muscle groups
-    equipment_needed = models.JSONField(default=list)  # List of equipment
-    equipment = models.CharField(
-        max_length=50,
-        default="bodyweight",
-        help_text="Основной инвентарь: bodyweight | dumbbell | barbell …",
-    )
+    # Equipment fields removed - not used in application
     
     # Exercise alternatives (for substitution feature)
     alternatives = models.ManyToManyField('self', blank=True, symmetrical=True)

@@ -1,0 +1,153 @@
+{
+  "db_connection": {
+    "host": "masked-render-postgres-host",
+    "db": "ai_fitness_coach", 
+    "user": "masked-user",
+    "note": "Cannot directly connect - analysis based on code inspection"
+  },
+  "applied_migrations": [
+    {"app":"onboarding","name":"0001_initial"},
+    {"app":"onboarding","name":"0002_conditional_schema_migration"},
+    {"app":"onboarding","name":"0003_motivationalcard_answer_option_and_more"},
+    {"app":"onboarding","name":"0004_motivationalcard_image"},
+    {"app":"onboarding","name":"0005_motivationalcard_path_alter_motivationalcard_image_and_more"},
+    {"app":"onboarding","name":"0006_populate_path_from_image_url"},
+    {"app":"onboarding","name":"0007_backfill_and_defaults"},
+    {"app":"onboarding","name":"0008_enforce_unique_pair_when_set"},
+    {"app":"workouts","name":"0001_initial"},
+    {"app":"workouts","name":"0002_alter_videoclip_type"},
+    {"app":"workouts","name":"0008_csvexercise_explainervideo"},
+    {"app":"workouts","name":"0010_weeklynotification"},
+    {"app":"workouts","name":"0011_safe_equipment_field_and_models"},
+    {"app":"workouts","name":"0012_add_duration_sec_field"},
+    {"app":"workouts","name":"0013_v2_schema"},
+    {"app":"workouts","name":"0014_state_only"},
+    {"app":"workouts","name":"0015_merge_state_only_and_0012"},
+    {"app":"workouts","name":"0016_add_video_provider_fields"},
+    {"app":"workouts","name":"0017_add_provider_constraints"},
+    {"app":"workouts","name":"0018_fix_unique_constraint_archetype_field"},
+    {"app":"workouts","name":"0019_remove_videoclip_provider_storage_consistency_and_more"},
+    {"app":"workouts","name":"0020_add_is_active_to_csvexercise"},
+    {"app":"workouts","name":"0021_sync_model_state"},
+    {"app":"workouts","name":"0022_add_contextual_video_fields"},
+    {"app":"workouts","name":"0023_alter_videoclip_exercise"},
+    {"app":"workouts","name":"0024_expand_exercise_name_lengths"},
+    {"app":"workouts","name":"0025_widen_charfields"}
+  ],
+  "schema": {
+    "tables": ["onboarding_questions","user_onboarding_responses","motivational_cards","answer_options","onboarding_sessions","workouts_csvexercise","workouts_videoclip","workouts_explainervideo","workouts_workoutplan","workouts_dailyworkout","workouts_workoutexercise","final_videos","weekly_lessons","users_user","users_userprofile","achievements_achievement","achievements_userachievement"],
+    "columns": {
+      "onboarding_questions": [
+        {"name":"id","type":"bigint","nullable":false,"default":"nextval('onboarding_questions_id_seq'::regclass)"},
+        {"name":"order","type":"integer","nullable":false,"default":null},
+        {"name":"question_text","type":"text","nullable":false,"default":null},
+        {"name":"question_type","type":"character varying(20)","nullable":false,"default":null},
+        {"name":"block_name","type":"character varying(100)","nullable":true,"default":null},
+        {"name":"block_order","type":"integer","nullable":false,"default":"1"},
+        {"name":"is_block_separator","type":"boolean","nullable":false,"default":"false"},
+        {"name":"separator_text","type":"text","nullable":true,"default":null},
+        {"name":"min_value","type":"integer","nullable":true,"default":null},
+        {"name":"max_value","type":"integer","nullable":true,"default":null},
+        {"name":"scale_min_label","type":"character varying(50)","nullable":true,"default":null},
+        {"name":"scale_max_label","type":"character varying(50)","nullable":true,"default":null},
+        {"name":"help_text","type":"text","nullable":true,"default":null},
+        {"name":"is_required","type":"boolean","nullable":false,"default":"true"},
+        {"name":"depends_on_question_id","type":"bigint","nullable":true,"default":null},
+        {"name":"depends_on_answer","type":"character varying(100)","nullable":true,"default":null},
+        {"name":"ai_field_name","type":"character varying(50)","nullable":false,"default":null},
+        {"name":"created_at","type":"timestamp with time zone","nullable":false,"default":"now()"},
+        {"name":"updated_at","type":"timestamp with time zone","nullable":false,"default":"now()"},
+        {"name":"is_active","type":"boolean","nullable":false,"default":"true"}
+      ],
+      "user_onboarding_responses": [
+        {"name":"id","type":"bigint","nullable":false,"default":"nextval('user_onboarding_responses_id_seq'::regclass)"},
+        {"name":"user_id","type":"bigint","nullable":false,"default":null},
+        {"name":"question_id","type":"bigint","nullable":false,"default":null},
+        {"name":"answer_text","type":"text","nullable":true,"default":null},
+        {"name":"answer_number","type":"integer","nullable":true,"default":null},
+        {"name":"answer_scale","type":"integer","nullable":true,"default":null},
+        {"name":"answer_body_map","type":"jsonb","nullable":true,"default":null},
+        {"name":"created_at","type":"timestamp with time zone","nullable":false,"default":"now()"}
+      ],
+      "motivational_cards": [
+        {"name":"id","type":"bigint","nullable":false,"default":"nextval('motivational_cards_id_seq'::regclass)"},
+        {"name":"title","type":"character varying(200)","nullable":true,"default":null},
+        {"name":"message","type":"text","nullable":false,"default":null},
+        {"name":"image_url","type":"character varying(200)","nullable":true,"default":null,"note":"deprecated"},
+        {"name":"image","type":"character varying(100)","nullable":true,"default":null,"note":"deprecated"},
+        {"name":"path","type":"character varying(500)","nullable":true,"default":null},
+        {"name":"question_id","type":"bigint","nullable":true,"default":null},
+        {"name":"answer_option_id","type":"bigint","nullable":true,"default":null},
+        {"name":"is_default_for_question","type":"boolean","nullable":false,"default":"false"},
+        {"name":"category","type":"character varying(50)","nullable":false,"default":"'response'"},
+        {"name":"created_at","type":"timestamp with time zone","nullable":false,"default":"now()"},
+        {"name":"is_active","type":"boolean","nullable":false,"default":"true"}
+      ],
+      "answer_options": [
+        {"name":"id","type":"bigint","nullable":false,"default":"nextval('answer_options_id_seq'::regclass)"},
+        {"name":"question_id","type":"bigint","nullable":false,"default":null},
+        {"name":"option_text","type":"character varying(200)","nullable":false,"default":null},
+        {"name":"option_value","type":"character varying(100)","nullable":false,"default":null},
+        {"name":"order","type":"integer","nullable":false,"default":"0"},
+        {"name":"motivational_card_id","type":"bigint","nullable":true,"default":null}
+      ]
+    },
+    "constraints": {
+      "unique": [
+        {"table":"onboarding_questions","columns":["order"]},
+        {"table":"answer_options","columns":["question_id","order"]},
+        {"table":"motivational_cards","columns":["question_id","answer_option_id"],"note":"partial unique index where both NOT NULL"},
+        {"table":"user_onboarding_responses","columns":["user_id","question_id"]}
+      ],
+      "fkeys": [
+        {"table":"answer_options","column":"question_id","ref_table":"onboarding_questions","on_delete":"CASCADE"},
+        {"table":"answer_options","column":"motivational_card_id","ref_table":"motivational_cards","on_delete":"SET_NULL"},
+        {"table":"motivational_cards","column":"question_id","ref_table":"onboarding_questions","on_delete":"CASCADE"},
+        {"table":"motivational_cards","column":"answer_option_id","ref_table":"answer_options","on_delete":"CASCADE"},
+        {"table":"user_onboarding_responses","column":"user_id","ref_table":"users_user","on_delete":"CASCADE"},
+        {"table":"user_onboarding_responses","column":"question_id","ref_table":"onboarding_questions","on_delete":"CASCADE"},
+        {"table":"onboarding_questions","column":"depends_on_question_id","ref_table":"onboarding_questions","on_delete":"SET_NULL"}
+      ]
+    }
+  },
+  "sanity_checks": {
+    "onboarding_questions_order_unique_ok": "should_be_true",
+    "answer_options_pair_duplicates": "should_be_0", 
+    "motivational_cards_pair_duplicates": "should_be_0",
+    "missing_expected_columns": {
+      "onboarding_questions": [],
+      "user_onboarding_responses": [],
+      "motivational_cards": []
+    }
+  },
+  "model_vs_db_diffs": {
+    "missing_in_db": [],
+    "extra_in_db": [],
+    "type_mismatches": [],
+    "nullability_mismatches": [],
+    "expected_schema_matches_models": true
+  },
+  "notes": [
+    "0002 migration adds columns conditionally - should be safe noop if columns exist",
+    "Migration 0008 adds partial unique index on motivational_cards (question_id, answer_option_id) WHERE both NOT NULL",
+    "Path field added to motivational_cards in migration 0005, replaces deprecated image_url and image fields",
+    "Workouts app has complex V2 schema with CSVExercise and VideoClip models",
+    "Migration 0011 in workouts adds equipment field and creates final_videos and weekly_lessons tables",
+    "All expected columns from models should exist in production after migrations",
+    "Cannot verify actual production state without database connection",
+    "Analysis based on Django models and migration history - production may differ"
+  ],
+  "overall_status": "analysis_based_on_code_inspection",
+  "limitations": [
+    "Cannot connect to production database directly",
+    "No MCP render tools available for database access", 
+    "Analysis assumes all migrations applied successfully",
+    "Cannot verify actual data integrity or constraints in production"
+  ],
+  "critical_findings": [
+    "Migration 0002 is conditional and may be noop in production",
+    "Motivational cards model has deprecated fields (image_url, image) alongside new path field",
+    "Complex unique constraint on motivational_cards requires both question_id and answer_option_id to be NOT NULL",
+    "Workouts app has undergone significant schema evolution through v2 migrations"
+  ]
+}

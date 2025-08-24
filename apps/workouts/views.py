@@ -35,13 +35,12 @@ def daily_workout_view(request, workout_id):
     playlist_builder = VideoPlaylistBuilder(archetype=archetype)
     video_playlist = playlist_builder.build_workout_playlist(workout, archetype)
     
-    # Get substitution options for each exercise
+    # Get substitution options for each exercise (equipment checking removed)
     substitutions = {}
-    user_equipment = request.user.profile.goals.get('equipment', [])
     
     for exercise_data in workout.exercises:
         exercise_slug = exercise_data.get('exercise_slug')
-        alternatives = playlist_builder.get_substitution_options(exercise_slug, user_equipment)
+        alternatives = playlist_builder.get_substitution_options(exercise_slug, [])
         if alternatives:
             substitutions[exercise_slug] = alternatives
     

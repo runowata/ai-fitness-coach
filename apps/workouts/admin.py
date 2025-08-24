@@ -7,7 +7,7 @@ from .video_storage import get_storage
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'difficulty', 'muscle_groups_display', 'equipment_display', 'is_active')
+    list_display = ('name', 'slug', 'difficulty', 'muscle_groups_display', 'is_active')
     list_filter = ('difficulty', 'is_active')
     search_fields = ('name', 'slug', 'description')
     prepopulated_fields = {'slug': ('name',)}
@@ -18,7 +18,7 @@ class ExerciseAdmin(admin.ModelAdmin):
             'fields': ('name', 'slug', 'description')
         }),
         ('Classification', {
-            'fields': ('difficulty', 'muscle_groups', 'equipment_needed')
+            'fields': ('difficulty', 'muscle_groups')
         }),
         ('Alternatives', {
             'fields': ('alternatives',),
@@ -36,9 +36,7 @@ class ExerciseAdmin(admin.ModelAdmin):
         return ', '.join(obj.muscle_groups)
     muscle_groups_display.short_description = 'Muscle Groups'
     
-    def equipment_display(self, obj):
-        return ', '.join(obj.equipment_needed) if obj.equipment_needed else 'None'
-    equipment_display.short_description = 'Equipment'
+    # Equipment display removed - field no longer exists
 
 
 @admin.register(CSVExercise)
