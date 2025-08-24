@@ -8,6 +8,8 @@ from typing import Optional
 from django.conf import settings
 from django.core.cache import cache
 
+from apps.content.path_normalizer import normalize_media_path, normalize_video_path
+
 logger = logging.getLogger(__name__)
 
 # Constants
@@ -109,7 +111,8 @@ class MediaService:
                 # Check if it's exercise-specific or general instruction
                 if clip.exercise:
                     # Exercise instructions: /videos/instructions/{slug}_instruction_{archetype}_{model}.mp4
-                    file_path = f"videos/instructions/{clip.exercise.id}_instruction_{clip.r2_archetype}_{clip.model_name}.mp4"
+                    normalized_slug = normalize_media_path(clip.exercise.id)
+                    file_path = f"videos/instructions/{normalized_slug}_instruction_{clip.r2_archetype}_{clip.model_name}.mp4"
                 else:
                     # General instructions (closing, intro, etc): /videos/instructions/{model}.mp4
                     file_path = f"videos/instructions/{clip.model_name}.mp4"
@@ -117,13 +120,17 @@ class MediaService:
                 # Exercises: /videos/exercises/{slug}_{kind}_{model}.mp4
                 if not clip.exercise:
                     return ''  # Need exercise link
-                file_path = f"videos/exercises/{clip.exercise.id}_{clip.r2_kind}_{clip.model_name}.mp4"
+                normalized_slug = normalize_media_path(clip.exercise.id)
+                file_path = f"videos/exercises/{normalized_slug}_{clip.r2_kind}_{clip.model_name}.mp4"
             elif clip.r2_kind in ['weekly', 'closing', 'intro']:
                 # General videos: /videos/{kind}/{model}.mp4
                 file_path = f"videos/{clip.r2_kind}/{clip.model_name}.mp4"
             else:
                 # Fallback for other kinds
                 file_path = f"videos/{clip.r2_kind}/{clip.model_name}.mp4"
+            
+            # Normalize the entire path
+            file_path = normalize_media_path(file_path)
             
             # Use public CDN URL
             return MediaService.get_public_cdn_url(file_path)
@@ -154,7 +161,8 @@ class MediaService:
         # Handle string path
         if isinstance(file_field_or_name, str):
             if R2_PUBLIC_BASE:
-                return f"{R2_PUBLIC_BASE}/{file_field_or_name.lstrip('/')}"
+                normalized_path = normalize_media_path(file_field_or_name.lstrip('/'))
+                return f"{R2_PUBLIC_BASE}/{normalized_path}"
             return ''
             
         # Handle file field
