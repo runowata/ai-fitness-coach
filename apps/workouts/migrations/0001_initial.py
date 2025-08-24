@@ -16,6 +16,25 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='CSVExercise',
+            fields=[
+                ('id', models.CharField(max_length=20, primary_key=True, serialize=False)),
+                ('name_ru', models.CharField(max_length=120)),
+                ('name_en', models.CharField(blank=True, max_length=120)),
+                ('level', models.CharField(max_length=20)),
+                ('description', models.TextField(blank=True)),
+                ('muscle_group', models.CharField(blank=True, max_length=120)),
+                ('exercise_type', models.CharField(blank=True, max_length=120)),
+                ('ai_tags', models.JSONField(blank=True, default=list)),
+                ('is_active', models.BooleanField(default=True)),
+            ],
+            options={
+                'verbose_name': 'Упражнение CSV',
+                'verbose_name_plural': 'Упражнения CSV',
+                'db_table': 'csv_exercises',
+            },
+        ),
+        migrations.CreateModel(
             name='DailyWorkout',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -45,11 +64,9 @@ class Migration(migrations.Migration):
                 ('description', models.TextField()),
                 ('difficulty', models.CharField(choices=[('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')], max_length=20)),
                 ('muscle_groups', models.JSONField(default=list)),
-                ('equipment_needed', models.JSONField(default=list)),
-                ('technique_video_url', models.URLField(blank=True)),
-                ('mistake_video_url', models.URLField(blank=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('poster_image', models.ImageField(blank=True, help_text='Poster image for video player', null=True, upload_to='photos/workout/')),
+                ('created_at', models.DateTimeField(auto_now_add=True, blank=True, null=True)),
+                ('updated_at', models.DateTimeField(auto_now=True, blank=True, null=True)),
                 ('is_active', models.BooleanField(default=True)),
                 ('alternatives', models.ManyToManyField(blank=True, to='workouts.exercise')),
             ],
@@ -59,21 +76,111 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='FinalVideo',
+            fields=[
+                ('arch', models.CharField(choices=[('111', 'Н'), ('222', 'П'), ('333', 'Р')], max_length=3, primary_key=True, serialize=False)),
+                ('locale', models.CharField(default='ru', max_length=5)),
+                ('script', models.TextField()),
+            ],
+            options={
+                'db_table': 'final_videos',
+            },
+        ),
+        migrations.CreateModel(
+            name='WeeklyLesson',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('week', models.PositiveSmallIntegerField()),
+                ('archetype', models.CharField(choices=[('111', 'Н'), ('222', 'П'), ('333', 'Р')], max_length=3)),
+                ('locale', models.CharField(default='ru', max_length=5)),
+                ('title', models.CharField(max_length=120)),
+                ('script', models.TextField()),
+                ('duration_sec', models.PositiveIntegerField(default=180, help_text='Estimated reading time in seconds')),
+            ],
+            options={
+                'db_table': 'weekly_lessons',
+                'ordering': ['week'],
+            },
+        ),
+        migrations.CreateModel(
+            name='WeeklyTheme',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('week_number', models.PositiveIntegerField(help_text='Week number in the course (1-8)', unique=True, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(8)])),
+                ('theme_title', models.CharField(help_text='Title of the weekly theme', max_length=100)),
+                ('focus_area', models.CharField(help_text='Main focus area for the week', max_length=200)),
+                ('description', models.TextField(blank=True, help_text='Detailed description of weekly objectives')),
+                ('mentor_content', models.TextField(blank=True, help_text='Content adapted for mentor archetype')),
+                ('professional_content', models.TextField(blank=True, help_text='Content adapted for professional archetype')),
+                ('peer_content', models.TextField(blank=True, help_text='Content adapted for peer archetype')),
+                ('is_active', models.BooleanField(default=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+            ],
+            options={
+                'db_table': 'weekly_themes',
+                'ordering': ['week_number'],
+            },
+        ),
+        migrations.CreateModel(
+            name='ExplainerVideo',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('archetype', models.CharField(choices=[('111', 'Наставник'), ('222', 'Профессионал'), ('333', 'Ровесник')], max_length=3)),
+                ('script', models.TextField()),
+                ('locale', models.CharField(default='ru', max_length=5)),
+                ('exercise', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='videos', to='workouts.csvexercise')),
+            ],
+            options={
+                'verbose_name': 'Видео-объяснение',
+                'verbose_name_plural': 'Видео-объяснения',
+                'db_table': 'explainer_videos',
+            },
+        ),
+        migrations.CreateModel(
             name='VideoClip',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('technique', 'Technique'), ('mistake', 'Common Mistake'), ('instruction', 'Instruction'), ('reminder', 'Reminder'), ('weekly', 'Weekly Motivation'), ('final', 'Final Congratulation')], max_length=20)),
-                ('archetype', models.CharField(choices=[('bro', 'Бро'), ('sergeant', 'Сержант'), ('intellectual', 'Интеллектуал')], max_length=20)),
+                ('archetype', models.CharField(choices=[('peer', 'Ровесник'), ('professional', 'Успешный профессионал'), ('mentor', 'Мудрый наставник')], max_length=20)),
                 ('model_name', models.CharField(max_length=50)),
-                ('url', models.URLField()),
                 ('duration_seconds', models.PositiveIntegerField()),
+                ('r2_file', models.FileField(blank=True, help_text='Video file in R2 storage', null=True, upload_to='videos/')),
+                ('r2_kind', models.CharField(choices=[('technique', 'Technique'), ('mistake', 'Mistake'), ('instruction', 'Instruction'), ('intro', 'Intro'), ('weekly', 'Weekly'), ('closing', 'Closing'), ('reminder', 'Reminder'), ('explain', 'Explain'), ('contextual_intro', 'Contextual_Intro'), ('contextual_outro', 'Contextual_Outro'), ('mid_workout', 'Mid_Workout'), ('theme_based', 'Theme_Based'), ('motivational_break', 'Motivational_Break')], default='instruction', help_text='Video type for R2 organization', max_length=20)),
+                ('r2_archetype', models.CharField(blank=True, choices=[('peer', 'Ровесник'), ('professional', 'Успешный профессионал'), ('mentor', 'Мудрый наставник')], help_text='Archetype for R2 videos', max_length=20)),
+                ('provider', models.CharField(choices=[('r2', 'Cloudflare R2'), ('stream', 'Cloudflare Stream'), ('external', 'External URL')], default='r2', help_text='Video storage provider', max_length=16)),
+                ('stream_uid', models.CharField(blank=True, help_text='Cloudflare Stream UID', max_length=64, null=True)),
+                ('playback_id', models.CharField(blank=True, help_text='Stream playback ID', max_length=64, null=True)),
+                ('script_text', models.TextField(blank=True, help_text='Video script or content')),
                 ('reminder_text', models.CharField(blank=True, max_length=200)),
+                ('mood_type', models.CharField(blank=True, choices=[('energetic', 'Энергичное'), ('philosophical', 'Философское'), ('business', 'Деловое'), ('encouraging', 'Ободряющее'), ('calm', 'Спокойное')], help_text='Настроение/тон видео', max_length=20)),
+                ('content_theme', models.CharField(blank=True, choices=[('week_start', 'Начало недели'), ('overcoming', 'Преодоление'), ('gratitude', 'Благодарность'), ('motivation', 'Мотивация'), ('recovery', 'Восстановление'), ('achievement', 'Достижение'), ('consistency', 'Постоянство'), ('challenge', 'Вызов')], help_text='Тематика контента', max_length=30)),
+                ('position_in_workout', models.CharField(blank=True, choices=[('intro', 'Вступление'), ('mid', 'Середина'), ('outro', 'Завершение')], help_text='Позиция в тренировке', max_length=15)),
+                ('week_context', models.PositiveIntegerField(blank=True, help_text='Номер недели курса (1-8)', null=True, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(8)])),
+                ('variation_number', models.PositiveIntegerField(default=1, help_text='Номер вариации (для множественных intro/outro)', validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(99)])),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('is_active', models.BooleanField(default=True)),
-                ('exercise', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='video_clips', to='workouts.exercise')),
+                ('is_placeholder', models.BooleanField(default=False)),
+                ('exercise', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='video_clips', to='workouts.csvexercise')),
             ],
             options={
                 'db_table': 'video_clips',
+            },
+        ),
+        migrations.CreateModel(
+            name='WeeklyNotification',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('week', models.PositiveSmallIntegerField()),
+                ('archetype', models.CharField(choices=[('111', 'Н'), ('222', 'П'), ('333', 'Р')], max_length=3)),
+                ('lesson_title', models.CharField(max_length=120)),
+                ('lesson_script', models.TextField()),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('read_at', models.DateTimeField(blank=True, null=True)),
+                ('is_read', models.BooleanField(default=False)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='weekly_notifications', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'db_table': 'weekly_notifications',
+                'ordering': ['-week', '-created_at'],
             },
         ),
         migrations.CreateModel(
@@ -86,7 +193,6 @@ class Migration(migrations.Migration):
                 ('calories_burned', models.PositiveIntegerField(blank=True, null=True)),
                 ('xp_earned', models.PositiveIntegerField(default=0)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='workout_executions', to=settings.AUTH_USER_MODEL)),
-                ('workout', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='executions', to='workouts.dailyworkout')),
             ],
             options={
                 'db_table': 'workout_executions',
@@ -101,6 +207,7 @@ class Migration(migrations.Migration):
                 ('duration_weeks', models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(4), django.core.validators.MaxValueValidator(8)])),
                 ('goal', models.CharField(max_length=100)),
                 ('plan_data', models.JSONField()),
+                ('ai_analysis', models.JSONField(blank=True, null=True)),
                 ('last_adaptation_date', models.DateTimeField(blank=True, null=True)),
                 ('adaptation_count', models.PositiveIntegerField(default=0)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
@@ -120,6 +227,11 @@ class Migration(migrations.Migration):
             name='plan',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='daily_workouts', to='workouts.workoutplan'),
         ),
+        migrations.AddField(
+            model_name='workoutexecution',
+            name='workout',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='executions', to='workouts.dailyworkout'),
+        ),
         migrations.AddIndex(
             model_name='exercise',
             index=models.Index(fields=['slug'], name='exercises_slug_eadfaa_idx'),
@@ -130,14 +242,42 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='videoclip',
-            index=models.Index(fields=['exercise', 'type', 'archetype'], name='video_clips_exercis_cde9f7_idx'),
+            index=models.Index(fields=['exercise', 'r2_kind', 'archetype'], name='video_clips_exercis_1e5613_idx'),
         ),
-        migrations.AlterUniqueTogether(
-            name='videoclip',
-            unique_together={('exercise', 'type', 'archetype', 'model_name', 'reminder_text')},
+        migrations.AddIndex(
+            model_name='videoclip',
+            index=models.Index(fields=['r2_kind', 'archetype'], name='video_clips_r2_kind_d2e4dd_idx'),
+        ),
+        migrations.AddIndex(
+            model_name='videoclip',
+            index=models.Index(fields=['is_active', 'r2_kind'], name='video_clips_is_acti_9705f9_idx'),
+        ),
+        migrations.AddIndex(
+            model_name='weeklynotification',
+            index=models.Index(fields=['user', 'is_read'], name='weekly_noti_user_id_ddf0af_idx'),
+        ),
+        migrations.AddIndex(
+            model_name='weeklynotification',
+            index=models.Index(fields=['week'], name='weekly_noti_week_45b255_idx'),
         ),
         migrations.AlterUniqueTogether(
             name='dailyworkout',
             unique_together={('plan', 'day_number')},
+        ),
+        migrations.AlterUniqueTogether(
+            name='explainervideo',
+            unique_together={('exercise', 'archetype', 'locale')},
+        ),
+        migrations.AlterUniqueTogether(
+            name='videoclip',
+            unique_together={('exercise', 'r2_kind', 'archetype', 'model_name', 'reminder_text')},
+        ),
+        migrations.AlterUniqueTogether(
+            name='weeklylesson',
+            unique_together={('week', 'archetype', 'locale')},
+        ),
+        migrations.AlterUniqueTogether(
+            name='weeklynotification',
+            unique_together={('user', 'week')},
         ),
     ]
