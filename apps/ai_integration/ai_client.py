@@ -180,12 +180,13 @@ IMPORTANT: The weeks array must contain the full number of weeks specified in du
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": prompt}
                 ],
-                'timeout': 240  # 4 minutes - safe buffer before gunicorn timeout
+                'timeout': 600  # 10 minutes for GPT-5 comprehensive generation
             }
             
             # GPT-5 models use different parameters than legacy models
             if self.default_model.startswith('gpt-5'):
-                api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+                # GPT-5 supports much larger outputs - use increased limits
+                api_params['max_completion_tokens'] = min(max_tokens, getattr(settings, 'OPENAI_MAX_TOKENS', 32768))
                 # GPT-5 only supports default temperature (1.0) in chat completions
                 if temperature != 1.0:
                     logger.warning(f"GPT-5 only supports temperature=1.0, ignoring temperature={temperature}")
@@ -320,12 +321,13 @@ IMPORTANT: Each field must contain meaningful content appropriate to the archety
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": prompt}
                 ],
-                'timeout': 300  # 5 minutes for comprehensive reports
+                'timeout': 600  # 10 minutes for comprehensive reports
             }
             
             # GPT-5 models use different parameters than legacy models
             if self.default_model.startswith('gpt-5'):
-                api_params['max_completion_tokens'] = min(max_tokens, settings.OPENAI_MAX_TOKENS)
+                # GPT-5 supports much larger outputs - use increased limits
+                api_params['max_completion_tokens'] = min(max_tokens, getattr(settings, 'OPENAI_MAX_TOKENS', 32768))
                 # GPT-5 only supports default temperature (1.0) in chat completions
                 if temperature != 1.0:
                     logger.warning(f"GPT-5 only supports temperature=1.0, ignoring temperature={temperature}")

@@ -253,6 +253,10 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-5')  # Full GPT-5 for best quality
 OPENAI_MODEL_MINI = os.getenv('OPENAI_MODEL_MINI', 'gpt-5-mini')  # Fast GPT-5 for quick tasks
 
+# GPT-5 specific settings for 1M+ token context
+OPENAI_MAX_TOKENS = int(os.getenv('OPENAI_MAX_OUTPUT_TOKENS', '32768'))  # Increased for comprehensive reports
+OPENAI_TIMEOUT = int(os.getenv('OPENAI_TIMEOUT', '600'))  # 10 minutes for complex generation
+
 # Token limits (configurable for different scenarios)
 OPENAI_MAX_OUTPUT_TOKENS = max(512, min(32000, int(os.getenv('OPENAI_MAX_OUTPUT_TOKENS', '12288'))))  # Production comprehensive reports
 OPENAI_MAX_OUTPUT_TOKENS_FAST = max(256, min(8000, int(os.getenv('OPENAI_MAX_OUTPUT_TOKENS_FAST', '4096'))))  # Fast mode for testing

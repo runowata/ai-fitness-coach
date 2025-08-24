@@ -39,7 +39,7 @@
                                 <img src="{{ archetype.image }}" 
                                      alt="{{ archetype.name }}" 
                                      class="trainer-image"
-                                     onerror="this.src='{% static 'images/avatars/bro-avatar.png' %}'">
+                                     onerror="this.src='{% static 'images/avatars/peer-avatar.png' %}'">
                                 <div class="trainer-selection-indicator">
                                     <i class="fas fa-check-circle"></i>
                                 </div>
@@ -56,17 +56,17 @@
                                 
                                 <!-- Style Preview -->
                                 <div class="trainer-preview">
-                                    {% if archetype.key == 'bro' %}
+                                    {% if archetype.key == 'peer' %}
                                         <div class="preview-bubble">
                                             <i class="fas fa-quote-left"></i>
                                             <p>"Йо, братан! Сегодня качаем грудь и трицепс. Помни - техника прежде всего!"</p>
                                         </div>
-                                    {% elif archetype.key == 'sergeant' %}
+                                    {% elif archetype.key == 'professional' %}
                                         <div class="preview-bubble">
                                             <i class="fas fa-quote-left"></i>
                                             <p>"Внимание! Сегодня 3 подхода по 12 повторений. Никаких поблажек!"</p>
                                         </div>
-                                    {% elif archetype.key == 'intellectual' %}
+                                    {% elif archetype.key == 'mentor' %}
                                         <div class="preview-bubble">
                                             <i class="fas fa-quote-left"></i>
                                             <p>"Активируем грудные мышцы через горизонтальную аддукцию плеча."</p>

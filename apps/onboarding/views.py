@@ -368,24 +368,24 @@ def select_archetype(request):
     
     archetypes = [
         {
-            'key': 'bro',
+            'key': 'peer',
             'name': 'Бро',
             'description': 'Дружелюбный и мотивирующий. Всегда поддержит и подскажет. Говорит простым языком.',
-            'image': '/static/images/avatars/bro-avatar.png',
+            'image': '/static/images/avatars/peer-avatar.png',
             'style': 'Casual и расслабленный'
         },
         {
-            'key': 'sergeant',
+            'key': 'professional',
             'name': 'Сержант',
             'description': 'Строгий и требовательный. Поможет вам превзойти себя. Четкие команды и дисциплина.',
-            'image': '/static/images/avatars/sergeant-avatar.png',
+            'image': '/static/images/avatars/professional-avatar.png',
             'style': 'Военный стиль'
         },
         {
-            'key': 'intellectual',
+            'key': 'mentor',
             'name': 'Интеллектуал',
             'description': 'Научный подход к тренировкам. Детальные объяснения и обоснования.',
-            'image': '/static/images/avatars/intellectual-avatar.png',
+            'image': '/static/images/avatars/mentor-avatar.png',
             'style': 'Научный подход'
         }
     ]
