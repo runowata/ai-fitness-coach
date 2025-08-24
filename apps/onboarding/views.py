@@ -127,31 +127,31 @@ def question_view(request, question_id):
     """Display single onboarding question"""
     question = get_object_or_404(OnboardingQuestion, id=question_id, is_active=True)
     
-    # EMERGENCY FIX: Force question 5 to be normal question with options
+    # FIX: Ensure question 5 is always a normal question with simple options
     if question.order == 5:
-        print(f"DEBUG Q5: is_block_separator={question.is_block_separator}, type={question.question_type}")
-        # Force fix question 5 if still broken
+        from apps.onboarding.models import AnswerOption
+        
+        # Always make it a normal single choice question
         if question.is_block_separator:
-            from apps.onboarding.models import AnswerOption
             question.is_block_separator = False
             question.separator_text = ""
             question.question_type = "single_choice"
             question.save()
-            
-            # Ensure options exist
-            if not question.answer_options.exists():
-                defaults = [
-                    {"option_text": "Я понял, теперь я спокоен", "option_value": "understood_calm", "order": 1},
-                    {"option_text": "Понятно, продолжим", "option_value": "understood_continue", "order": 2},
-                    {"option_text": "Хорошо, я буду честен", "option_value": "understood_honest", "order": 3},
-                ]
-                for item in defaults:
-                    AnswerOption.objects.get_or_create(
-                        question=question, 
-                        option_text=item["option_text"],
-                        defaults={"option_value": item["option_value"], "order": item["order"]}
-                    )
-            print("Q5 EMERGENCY FIXED!")
+        
+        # Ensure we have simple options (create only if not exists)
+        if question.answer_options.count() == 0:
+            AnswerOption.objects.create(
+                question=question,
+                option_text="Понятно, продолжаем",
+                option_value="continue",
+                order=1
+            )
+            AnswerOption.objects.create(
+                question=question,
+                option_text="Хочу узнать больше о безопасности",
+                option_value="more_info",
+                order=2
+            )
     
     # Get user's existing response
     try:
