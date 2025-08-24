@@ -21,8 +21,8 @@
             },
             {
               "exercise_slug": "cx002",
-              "sets": 3,
-              "reps": "8-12",
+              "sets": 2,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
@@ -36,7 +36,7 @@
             {
               "exercise_slug": "cx004",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -50,29 +50,29 @@
           "exercises": [
             {
               "exercise_slug": "cx005",
-              "sets": 3,
-              "reps": "8-12",
-              "rest_seconds": 60,
-              "duration_seconds": null
-            },
-            {
-              "exercise_slug": "cx006",
               "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
-              "exercise_slug": "cx007",
+              "exercise_slug": "cx006",
               "sets": 3,
               "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
+              "exercise_slug": "cx007",
+              "sets": 2,
+              "reps": "8-12",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
               "exercise_slug": "cx008",
-              "sets": 3,
-              "reps": "5-8",
+              "sets": 2,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -93,7 +93,7 @@
             },
             {
               "exercise_slug": "cx010",
-              "sets": 3,
+              "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -123,13 +123,13 @@
             {
               "exercise_slug": "cx001",
               "sets": 2,
-              "reps": "5-8",
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx002",
-              "sets": 3,
+              "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -137,14 +137,14 @@
             {
               "exercise_slug": "cx003",
               "sets": 3,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx004",
               "sets": 3,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -180,7 +180,7 @@
             {
               "exercise_slug": "cx008",
               "sets": 3,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -215,14 +215,14 @@
             {
               "exercise_slug": "cx001",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx002",
-              "sets": 3,
-              "reps": "8-12",
+              "sets": 2,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
@@ -236,7 +236,7 @@
             {
               "exercise_slug": "cx004",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -251,14 +251,14 @@
             {
               "exercise_slug": "cx005",
               "sets": 2,
-              "reps": "5-8",
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx006",
-              "sets": 3,
-              "reps": "8-12",
+              "sets": 2,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
@@ -271,8 +271,8 @@
             },
             {
               "exercise_slug": "cx008",
-              "sets": 2,
-              "reps": "5-8",
+              "sets": 3,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -300,8 +300,8 @@
             },
             {
               "exercise_slug": "cx011",
-              "sets": 3,
-              "reps": "8-12",
+              "sets": 2,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
@@ -323,28 +323,28 @@
             {
               "exercise_slug": "cx001",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx002",
               "sets": 2,
-              "reps": "5-8",
-              "rest_seconds": 60,
-              "duration_seconds": null
-            },
-            {
-              "exercise_slug": "cx003",
-              "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
-              "exercise_slug": "cx004",
+              "exercise_slug": "cx003",
               "sets": 3,
               "reps": "5-8",
+              "rest_seconds": 60,
+              "duration_seconds": null
+            },
+            {
+              "exercise_slug": "cx004",
+              "sets": 2,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -358,7 +358,7 @@
           "exercises": [
             {
               "exercise_slug": "cx005",
-              "sets": 2,
+              "sets": 3,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -373,14 +373,14 @@
             {
               "exercise_slug": "cx007",
               "sets": 3,
-              "reps": "5-8",
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx008",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -414,21 +414,21 @@
           "exercises": [
             {
               "exercise_slug": "cx001",
-              "sets": 3,
-              "reps": "8-12",
+              "sets": 2,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx002",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx003",
-              "sets": 2,
+              "sets": 3,
               "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -436,7 +436,7 @@
             {
               "exercise_slug": "cx004",
               "sets": 3,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -458,13 +458,13 @@
             {
               "exercise_slug": "cx006",
               "sets": 3,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx007",
-              "sets": 2,
+              "sets": 3,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -487,7 +487,7 @@
             {
               "exercise_slug": "cx009",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
@@ -501,14 +501,14 @@
             {
               "exercise_slug": "cx011",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx012",
               "sets": 3,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -522,22 +522,22 @@
           "exercises": [
             {
               "exercise_slug": "cx001",
-              "sets": 2,
-              "reps": "5-8",
+              "sets": 3,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx002",
               "sets": 3,
-              "reps": "5-8",
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx003",
-              "sets": 3,
-              "reps": "5-8",
+              "sets": 2,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
@@ -558,21 +558,21 @@
           "exercises": [
             {
               "exercise_slug": "cx005",
-              "sets": 3,
-              "reps": "8-12",
+              "sets": 2,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx006",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx007",
-              "sets": 3,
+              "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -580,7 +580,7 @@
             {
               "exercise_slug": "cx008",
               "sets": 2,
-              "reps": "5-8",
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -614,7 +614,7 @@
           "exercises": [
             {
               "exercise_slug": "cx001",
-              "sets": 2,
+              "sets": 3,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -635,8 +635,8 @@
             },
             {
               "exercise_slug": "cx004",
-              "sets": 3,
-              "reps": "5-8",
+              "sets": 2,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -651,27 +651,27 @@
             {
               "exercise_slug": "cx005",
               "sets": 2,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx006",
-              "sets": 3,
-              "reps": "5-8",
+              "sets": 2,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx007",
               "sets": 3,
-              "reps": "8-12",
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx008",
-              "sets": 2,
+              "sets": 3,
               "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -686,14 +686,14 @@
           "exercises": [
             {
               "exercise_slug": "cx009",
-              "sets": 3,
-              "reps": "5-8",
+              "sets": 2,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx010",
-              "sets": 3,
+              "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
@@ -722,29 +722,29 @@
           "exercises": [
             {
               "exercise_slug": "cx001",
-              "sets": 2,
-              "reps": "8-12",
+              "sets": 3,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx002",
-              "sets": 3,
+              "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx003",
-              "sets": 3,
+              "sets": 2,
               "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx004",
-              "sets": 2,
-              "reps": "5-8",
+              "sets": 3,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             }
@@ -758,15 +758,15 @@
           "exercises": [
             {
               "exercise_slug": "cx005",
-              "sets": 3,
+              "sets": 2,
               "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             },
             {
               "exercise_slug": "cx006",
-              "sets": 2,
-              "reps": "8-12",
+              "sets": 3,
+              "reps": "5-8",
               "rest_seconds": 60,
               "duration_seconds": null
             },
@@ -779,8 +779,8 @@
             },
             {
               "exercise_slug": "cx008",
-              "sets": 2,
-              "reps": "5-8",
+              "sets": 3,
+              "reps": "8-12",
               "rest_seconds": 60,
               "duration_seconds": null
             }
