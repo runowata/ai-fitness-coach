@@ -127,31 +127,6 @@ def question_view(request, question_id):
     """Display single onboarding question"""
     question = get_object_or_404(OnboardingQuestion, id=question_id, is_active=True)
     
-    # FIX: Ensure question 5 is always a normal question with simple options
-    if question.order == 5:
-        from apps.onboarding.models import AnswerOption
-        
-        # Always make it a normal single choice question
-        if question.is_block_separator:
-            question.is_block_separator = False
-            question.separator_text = ""
-            question.question_type = "single_choice"
-            question.save()
-        
-        # Ensure we have simple options (create only if not exists)
-        if question.answer_options.count() == 0:
-            AnswerOption.objects.create(
-                question=question,
-                option_text="Понятно, продолжаем",
-                option_value="continue",
-                order=1
-            )
-            AnswerOption.objects.create(
-                question=question,
-                option_text="Хочу узнать больше о безопасности",
-                option_value="more_info",
-                order=2
-            )
     
     # Get user's existing response
     try:
