@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.workouts.models import WorkoutPlan
 
+logger = logging.getLogger(__name__)
+
 from .models import (
     AnswerOption,
     MotivationalCard,
@@ -347,24 +349,35 @@ def select_archetype(request):
     """Archetype selection page"""
     if request.method == 'POST':
         archetype = request.POST.get('archetype')
-        # Map UI values to proper archetype names
+        logger.info(f"Received archetype selection: {archetype}")
+        # Map UI values to proper archetype names - updated for V2 consistency
         archetype_map = {
-            'bro': 'peer',           # Best Mate
-            'sergeant': 'professional',      # Pro Coach  
-            'intellectual': 'mentor',  # Wise Mentor
+            # V2 keys (current form sends these)
+            'peer': 'peer',           # Best Mate / Бро
+            'professional': 'professional',  # Pro Coach / Сержант
+            'mentor': 'mentor',       # Wise Mentor / Интеллектуал
+            # Legacy keys for backward compatibility
+            'bro': 'peer',           # Best Mate (legacy)
+            'sergeant': 'professional',      # Pro Coach (legacy) 
+            'intellectual': 'mentor',  # Wise Mentor (legacy)
         }
         
         if archetype in archetype_map:
             from apps.core.utils.archetypes import validate_archetype
             profile = request.user.profile
             # Save normalized archetype name instead of numeric code
-            profile.archetype = validate_archetype(archetype_map[archetype])
+            mapped_archetype = archetype_map[archetype]
+            validated_archetype = validate_archetype(mapped_archetype)
+            profile.archetype = validated_archetype
             profile.save()
+            
+            logger.info(f"Successfully saved archetype: {archetype} -> {mapped_archetype} -> {validated_archetype} for user {request.user.email}")
             
             # Generate workout plan with real AI analysis
             return redirect('onboarding:generate_plan')
         else:
-            messages.error(request, 'Выберите корректный архетип тренера')
+            logger.error(f"Invalid archetype received: '{archetype}' not in {list(archetype_map.keys())}")
+            messages.error(request, f'Выберите корректный архетип тренера. Получен: {archetype}')
     
     archetypes = [
         {
