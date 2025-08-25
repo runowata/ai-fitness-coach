@@ -74,6 +74,15 @@ jobs:
         # Run linter
         flake8 --max-line-length=100
     
+    - name: Check migrations are up to date
+      run: |
+        # This will fail if models and migrations are out of sync
+        python manage.py makemigrations --check --dry-run
+
+    - name: Block unsafe migration edits (compare to origin/main)
+      run: |
+        bash scripts/ci/block_migration_edits_ci.sh
+    
     - name: Run migrations
       run: |
         python manage.py migrate --settings=config.settings

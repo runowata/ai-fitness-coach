@@ -44,6 +44,18 @@ repos:
 
   - repo: local
     hooks:
+      - id: django-makemigrations-check
+        name: Django makemigrations --check
+        entry: bash -lc 'SECRET_KEY=test-key python manage.py makemigrations --check'
+        language: system
+        pass_filenames: false
+
+      - id: block-migration-edits
+        name: Block edits to existing migration files
+        entry: bash scripts/git-hooks/block_migration_edits.sh
+        language: system
+        pass_filenames: false
+
       - id: pytest
         name: pytest
         entry: pytest
