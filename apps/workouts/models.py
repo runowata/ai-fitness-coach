@@ -411,7 +411,6 @@ class CSVExercise(models.Model):
     level = models.CharField(max_length=20)                         # beginner / intermediate / advanced
     muscle_group = models.CharField(max_length=120, blank=True)     # Все тело / Грудь / Спина / Ноги / и т.д.
     exercise_type = models.CharField(max_length=120, blank=True)    # strength / mobility / cardio / flexibility
-    category = models.CharField(max_length=20, blank=True)          # warmup / main / endurance / relaxation
     
     # AI integration fields
     ai_tags = models.JSONField(blank=True, default=list)

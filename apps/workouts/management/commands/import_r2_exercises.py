@@ -120,9 +120,9 @@ class Command(BaseCommand):
         self.stdout.write(f'   Updated: {updated_count} exercises')
         self.stdout.write(f'   Errors: {error_count} rows')
         
-        # Show breakdown by category
+        # Show exercise type breakdown
         if not self.dry_run and created_count > 0:
-            self._show_category_breakdown()
+            self._show_exercise_type_breakdown()
 
     def _parse_csv_row(self, row: dict) -> dict:
         """Parse CSV row into exercise data"""
@@ -138,17 +138,7 @@ class Command(BaseCommand):
                 # If parsing fails, treat as single tag
                 ai_tags = [row['ai_tags']]
         
-        # Determine category from ID pattern
         exercise_id = row['id']
-        category = 'unknown'
-        if exercise_id.startswith('warmup_'):
-            category = 'warmup'
-        elif exercise_id.startswith('main_'):
-            category = 'main'
-        elif exercise_id.startswith('endurance_'):
-            category = 'endurance'
-        elif exercise_id.startswith('relaxation_'):
-            category = 'relaxation'
         
         return {
             'id': exercise_id,
@@ -158,32 +148,15 @@ class Command(BaseCommand):
             'level': row.get('level', 'intermediate').strip(),
             'muscle_group': row.get('muscle_group', '').strip(),
             'exercise_type': row.get('exercise_type', 'strength').strip(),
-            'category': category,
             'ai_tags': ai_tags,
             'r2_slug': exercise_id,  # Store original R2 slug
             'is_active': True
         }
 
-    def _show_category_breakdown(self):
-        """Show breakdown of exercises by category"""
+    def _show_exercise_type_breakdown(self):
+        """Show breakdown of exercises by exercise type"""
         from django.db.models import Count
         
-        self.stdout.write(f'\n📊 CATEGORY BREAKDOWN:')
-        
-        breakdown = CSVExercise.objects.values('category').annotate(
-            count=Count('id')
-        ).order_by('category')
-        
-        total = 0
-        for item in breakdown:
-            category = item['category'] or 'unknown'
-            count = item['count']
-            total += count
-            self.stdout.write(f'   {category}: {count} exercises')
-        
-        self.stdout.write(f'   TOTAL: {total} exercises')
-        
-        # Show exercise type breakdown too
         self.stdout.write(f'\n📊 EXERCISE TYPE BREAKDOWN:')
         
         type_breakdown = CSVExercise.objects.values('exercise_type').annotate(
