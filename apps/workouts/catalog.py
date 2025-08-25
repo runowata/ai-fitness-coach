@@ -78,20 +78,40 @@ class ExerciseCatalog:
         
         # Build catalog from database
         catalog = {}
+        # Use actual CSVExercise fields that exist in the model and CSV
         exercises = CSVExercise.objects.filter(is_active=True).values(
-            'slug', 'name', 'muscle_group', 'equipment', 
-            'difficulty', 'is_compound', 'is_cardio'
+            'id', 'name_ru', 'muscle_group', 'exercise_type', 'level', 'ai_tags'
         )
         
         for ex in exercises:
-            catalog[ex['slug']] = ExerciseAttributes(
-                slug=ex['slug'],
-                name=ex['name'],
-                muscle_group=ex['muscle_group'] or 'general',
-                equipment=ex['equipment'] or 'none',
-                difficulty=ex['difficulty'] or 'beginner',
-                is_compound=ex.get('is_compound', False),
-                is_cardio=ex.get('is_cardio', False)
+            # Map level to difficulty for backward compatibility
+            raw_level = (ex.get('level') or '').strip().lower()
+            difficulty = {
+                'начальный': 'beginner',
+                'средний': 'intermediate', 
+                'продвинутый': 'advanced',
+                'beginner': 'beginner',
+                'intermediate': 'intermediate',
+                'advanced': 'advanced'
+            }.get(raw_level, raw_level or 'beginner')
+            
+            # Derive missing fields from available data
+            ai_tags = ex.get('ai_tags') or []
+            exercise_type = (ex.get('exercise_type') or '').strip().lower()
+            
+            # Safe defaults for fields that don't exist in CSVExercise
+            equipment = 'none'  # No equipment field in CSV/model
+            is_compound = 'compound' in str(ai_tags).lower()
+            is_cardio = exercise_type == 'cardio'
+            
+            catalog[ex['id']] = ExerciseAttributes(
+                slug=ex['id'],  # Use id as slug
+                name=ex['name_ru'],  # Use Russian name
+                muscle_group=(ex['muscle_group'] or 'general').strip().lower(),
+                equipment=equipment,
+                difficulty=difficulty,
+                is_compound=is_compound,
+                is_cardio=is_cardio
             )
         
         # Cache the catalog
