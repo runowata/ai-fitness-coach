@@ -83,20 +83,18 @@ jobs:
         SECRET_KEY: test-fresh-migration-key
         DEBUG: False
         METRICS_BACKEND: logging
+        DJANGO_SETTINGS_MODULE: config.settings_sqlite
       run: |
         echo "🚀 Testing migrations on fresh SQLite database..."
         
-        # Use temporary SQLite database
-        export DATABASE_URL="sqlite:///$(mktemp).db"
-        
-        # Run all migrations from scratch
-        python manage.py migrate --settings=config.settings --verbosity=2
+        # Run all migrations from scratch using SQLite settings
+        python manage.py migrate --settings=config.settings_sqlite --verbosity=2
         
         # Test constraint functionality
         python scripts/test_weekly_lesson_constraints.py
         
         # Test Django checks
-        python manage.py check --settings=config.settings
+        python manage.py check --settings=config.settings_sqlite
     
     - name: Test migration rollback (PostgreSQL only)
       if: matrix.db-engine == 'postgresql'
