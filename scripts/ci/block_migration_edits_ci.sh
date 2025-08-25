@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Сравниваем PR/коммит с origin/main (или origin/master)
-BASE_BRANCH="origin/main"
-git fetch origin main >/dev/null 2>&1 || true
+# Определяем дефолтную ветку origin (main/master)
+BASE_BRANCH=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@' || echo main)
+git fetch origin "$BASE_BRANCH" >/dev/null 2>&1 || true
 
 # Список изменённых файлов
-CHANGED=$(git diff --name-status "$BASE_BRANCH"...HEAD | grep -E "migrations/.*\.py" || true)
+CHANGED=$(git diff --name-status "origin/${BASE_BRANCH}"...HEAD | grep -E "migrations/.*\.py" || true)
 
 # Если миграций нет — ок
 [ -z "$CHANGED" ] && exit 0

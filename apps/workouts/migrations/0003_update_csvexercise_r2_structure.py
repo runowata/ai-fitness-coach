@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workouts', '0002_add_csvexercise_model'),
+        ('workouts', '0006_merge_0002_branches'),
     ]
 
     operations = [

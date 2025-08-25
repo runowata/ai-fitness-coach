@@ -75,6 +75,8 @@ jobs:
         flake8 --max-line-length=100
     
     - name: Check migrations are up to date
+      env:
+        SECRET_KEY: test-key
       run: |
         # This will fail if models and migrations are out of sync
         python manage.py makemigrations --check --dry-run
