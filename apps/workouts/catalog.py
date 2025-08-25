@@ -2,6 +2,7 @@
 Exercise catalog service for fast lookups and similarity matching
 """
 
+import json
 import logging
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Set
@@ -84,25 +85,34 @@ class ExerciseCatalog:
         )
         
         for ex in exercises:
-            # Map level to difficulty for backward compatibility
+            # Map level to difficulty with comprehensive support
             raw_level = (ex.get('level') or '').strip().lower()
-            difficulty = {
-                'начальный': 'beginner',
-                'средний': 'intermediate', 
-                'продвинутый': 'advanced',
-                'beginner': 'beginner',
-                'intermediate': 'intermediate',
-                'advanced': 'advanced'
-            }.get(raw_level, raw_level or 'beginner')
+            lvl_map = {
+                'начальный': 'beginner', 'начальный уровень': 'beginner',
+                'средний': 'intermediate', 'средний уровень': 'intermediate',  
+                'продвинутый': 'advanced', 'продвинутый уровень': 'advanced',
+                'beginner': 'beginner', 'intermediate': 'intermediate', 'advanced': 'advanced'
+            }
+            difficulty = lvl_map.get(raw_level, 'beginner')
             
-            # Derive missing fields from available data
-            ai_tags = ex.get('ai_tags') or []
+            # Safe parsing of ai_tags (can be string from CSV or list from Django)
+            raw_tags = ex.get('ai_tags')
+            if isinstance(raw_tags, str):
+                try:
+                    ai_tags = json.loads(raw_tags)
+                except (json.JSONDecodeError, ValueError):
+                    ai_tags = []
+            elif isinstance(raw_tags, (list, tuple)):
+                ai_tags = list(raw_tags)
+            else:
+                ai_tags = []
+                
             exercise_type = (ex.get('exercise_type') or '').strip().lower()
             
             # Safe defaults for fields that don't exist in CSVExercise
             equipment = 'none'  # No equipment field in CSV/model
-            is_compound = 'compound' in str(ai_tags).lower()
-            is_cardio = exercise_type == 'cardio'
+            is_compound = any('compound' in str(t).lower() for t in ai_tags)
+            is_cardio = (exercise_type == 'cardio')
             
             catalog[ex['id']] = ExerciseAttributes(
                 slug=ex['id'],  # Use id as slug
