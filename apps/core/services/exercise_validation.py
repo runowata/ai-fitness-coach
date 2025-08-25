@@ -39,87 +39,35 @@ class ExerciseValidationService:
     def get_allowed_exercise_slugs(archetype: Optional[str] = None, locale: Optional[str] = None) -> Set[str]:
         """
         Get set of exercise slugs that have complete video coverage
-        Uses provider-agnostic video availability check
+        
+        Note: Exercise videos are archetype-agnostic (all users see same exercises).
+        Archetype is used only for motivational/speech videos, not exercises.
         
         Args:
-            archetype: Filter by specific archetype (peer/professional/mentor)
+            archetype: Ignored for exercises (kept for API compatibility)
             locale: Filter by locale (default: all locales)
         
         Returns:
             Set of exercise slugs that can be safely used in workout plans
         """
-        # Build cache key with parameters
-        cache_parts = ['allowed_exercise_slugs_v4']
-        if archetype:
-            cache_parts.append(f'arch_{archetype}')
+        # Build cache key (archetype doesn't affect exercise availability)
+        cache_key = 'allowed_exercise_slugs_v5_unified'
         if locale:
-            cache_parts.append(f'loc_{locale}')
+            cache_key += f'_loc_{locale}'
         
-        cache_key = ':'.join(cache_parts)
         cached_slugs = cache.get(cache_key)
-        
         if cached_slugs is not None:
             return cached_slugs
             
         try:
             from apps.core.metrics import MetricNames, incr
 
-            # Build query with optional filters
+            # Get all exercise videos regardless of archetype
+            # Exercises are universal - archetype affects only motivational videos
             query = ExerciseValidationService.get_clips_with_video().filter(
                 r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
                 exercise__is_active=True
             )
-            
-            # Apply archetype filter with fallback logic
-            if archetype:
-                from apps.workouts.constants import ARCHETYPE_FALLBACK_ORDER
-                from apps.core.utils.archetypes import normalize_archetype
-                
-                # Normalize archetype to standard string name
-                normalized_archetype = normalize_archetype(archetype)
-                if not normalized_archetype:
-                    from django.core.exceptions import ValidationError
-                    raise ValidationError(f"Invalid archetype: {archetype!r}")
-                
-                # Get fallback order for this archetype
-                fallback_archetypes = ARCHETYPE_FALLBACK_ORDER.get(normalized_archetype, [normalized_archetype])
-                
-                # Try each archetype in fallback order until we find exercises that have complete coverage
-                final_query = None
-                for arch in fallback_archetypes:
-                    arch_query = query.filter(archetype=arch)
-                    
-                    # Check if this archetype produces complete exercise coverage
-                    test_slugs = (arch_query
-                        .values('exercise__id')
-                        .annotate(
-                            kinds_count=Count(
-                                'r2_kind', 
-                                filter=Q(r2_kind__in=ExerciseValidationService.REQUIRED_KINDS),
-                                distinct=True
-                            )
-                        )
-                        .filter(kinds_count=len(ExerciseValidationService.REQUIRED_KINDS))
-                        .values_list('exercise__id', flat=True)
-                    )
-                    
-                    if test_slugs.exists():
-                        final_query = arch_query
-                        if arch != normalized_archetype:
-                            logger.info(f"Using fallback archetype '{arch}' for '{archetype}' (found {test_slugs.count()} exercises)")
-                        break
-                
-                if final_query:
-                    query = final_query
-                else:
-                    # No archetype worked - this is a data configuration error
-                    from django.core.exceptions import ValidationError
-                    msg = (
-                        f"No exercises with video coverage for archetype '{archetype}' (normalized: '{normalized_archetype}') or its fallbacks. "
-                        "Refusing to fallback to other archetypes. Check video data integrity."
-                    )
-                    logger.error(msg)
-                    raise ValidationError(msg)
             
             # Apply locale filter if specified (future: when locale field exists)
             # if locale:
@@ -147,7 +95,7 @@ class ExerciseValidationService:
             # Cache results
             cache.set(cache_key, slugs, ExerciseValidationService.CACHE_TIMEOUT)
             
-            logger.info(f"Found {len(slugs)} exercises with complete video coverage")
+            logger.info(f"Found {len(slugs)} exercises with complete video coverage (archetype-agnostic)")
             return slugs
             
         except Exception as e:

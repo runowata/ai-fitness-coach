@@ -15,7 +15,8 @@ from .schemas import (
     validate_ai_plan_response,
     validate_comprehensive_ai_report,
 )
-from .schemas_json import WORKOUT_PLAN_JSON_SCHEMA
+from .schemas_simple import SimpleWorkoutPlan, validate_simple_ai_plan
+from .schemas_json_simple import WORKOUT_PLAN_JSON_SCHEMA_SIMPLE
 
 logger = logging.getLogger(__name__)
 
@@ -40,9 +41,9 @@ class OpenAIClient:
             raise AIClientError("OPENAI_API_KEY not configured")
         
         # Set comprehensive timeouts (prevent hanging)
-        self.connect_timeout = getattr(settings, 'OPENAI_CONNECT_TIMEOUT', 10)
-        self.read_timeout = getattr(settings, 'OPENAI_READ_TIMEOUT', 180)  # < 600 gunicorn timeout
-        self.total_timeout = getattr(settings, 'OPENAI_TOTAL_TIMEOUT', 240)  # overall limit
+        self.connect_timeout = getattr(settings, 'OPENAI_CONNECT_TIMEOUT', 15)
+        self.read_timeout = getattr(settings, 'OPENAI_READ_TIMEOUT', 600)  # GPT-5 needs more time for large plans
+        self.total_timeout = getattr(settings, 'OPENAI_TOTAL_TIMEOUT', 720)  # overall limit
         self.max_retries = getattr(settings, 'OPENAI_MAX_RETRIES', 3)
         
         # Create httpx client with connection pooling and limits
@@ -112,7 +113,7 @@ class OpenAIClient:
             logger.error(f"GPT-5 completion generation failed: {str(e)}")
             raise AIClientError(f"Failed to generate GPT-5 response: {str(e)}")
     
-    def generate_workout_plan(self, prompt: str, max_tokens: int = 4000, temperature: float = 0.7) -> WorkoutPlan:
+    def generate_workout_plan(self, prompt: str, max_tokens: int = 6000, temperature: float = 0.7) -> SimpleWorkoutPlan:
         """Generate and validate workout plan using GPT-5 with Structured Outputs"""
         try:
             logger.info(f"Generating workout plan with {self.default_model} using {'Responses API' if self.default_model.startswith('gpt-5') else 'Chat Completions API'}")
@@ -121,8 +122,8 @@ class OpenAIClient:
             # Convert dict back to JSON string for validation
             raw_json = json.dumps(response)
             
-            # Validate with strict schema
-            validated_plan = validate_ai_plan_response(raw_json)
+            # Validate with simple schema
+            validated_plan = validate_simple_ai_plan(raw_json)
             
             logger.info(f"Successfully validated GPT-5 workout plan: {validated_plan.plan_name}, "
                        f"{validated_plan.duration_weeks} weeks, "
@@ -140,7 +141,7 @@ class OpenAIClient:
         prompt: str, 
         user_id: str = None, 
         archetype: str = None,
-        max_tokens: int = 15000,  # Optimal for 8-week comprehensive reports 
+        max_tokens: int = 32000,  # Maximum for comprehensive reports 
         temperature: float = 0.7
     ) -> ComprehensiveAIReport:
         """Generate comprehensive report using GPT-5 with higher reasoning"""
@@ -188,7 +189,16 @@ class OpenAIClient:
                 # Extract content
                 content = None
                 for item in response.output:
-                    if hasattr(item, 'content') and item.content:
+                    # Look for message type (contains actual response)
+                    if item.type == 'message' and hasattr(item, 'content') and item.content:
+                        for content_item in item.content:
+                            if hasattr(content_item, 'text'):
+                                content = content_item.text
+                                break
+                        if content:
+                            break
+                    # Fallback: also check text type
+                    elif item.type == 'text' and hasattr(item, 'content') and item.content:
                         for content_item in item.content:
                             if hasattr(content_item, 'text'):
                                 content = content_item.text
@@ -236,7 +246,7 @@ class OpenAIClient:
                 model=self.default_model,
                 max_tokens=max_tokens,
                 temperature=temperature,
-                schema=WORKOUT_PLAN_JSON_SCHEMA,
+                schema=WORKOUT_PLAN_JSON_SCHEMA_SIMPLE,
             )
 
             # Add retry logic
@@ -263,7 +273,16 @@ class OpenAIClient:
             # Extract content from Responses API (GPT-5 only)
             content = None
             for item in response.output:
-                if hasattr(item, 'content') and item.content:
+                # Look for message type (contains actual response)
+                if item.type == 'message' and hasattr(item, 'content') and item.content:
+                    for content_item in item.content:
+                        if hasattr(content_item, 'text'):
+                            content = content_item.text
+                            break
+                    if content:
+                        break
+                # Fallback: also check text type  
+                elif item.type == 'text' and hasattr(item, 'content') and item.content:
                     for content_item in item.content:
                         if hasattr(content_item, 'text'):
                             content = content_item.text
@@ -298,9 +317,17 @@ class OpenAIClient:
                 
                 # Log token usage if available
                 if hasattr(response, 'usage'):
-                    efficiency = response.usage.completion_tokens / duration if duration > 0 else 0
-                    logger.info(f"💰 Tokens: {response.usage.prompt_tokens}→{response.usage.completion_tokens} "
-                               f"(total: {response.usage.total_tokens}, {efficiency:.1f} tokens/sec)")
+                    # GPT-5 Responses API has different usage structure
+                    prompt_tokens = getattr(response.usage, 'prompt_tokens', 0)
+                    output_tokens = getattr(response.usage, 'output_tokens', 0) or getattr(response.usage, 'completion_tokens', 0)
+                    total_tokens = getattr(response.usage, 'total_tokens', prompt_tokens + output_tokens)
+                    
+                    if duration > 0 and output_tokens > 0:
+                        efficiency = output_tokens / duration
+                        logger.info(f"💰 Tokens: {prompt_tokens}→{output_tokens} "
+                                   f"(total: {total_tokens}, {efficiency:.1f} tokens/sec)")
+                    else:
+                        logger.info(f"💰 Tokens: {prompt_tokens}→{output_tokens} (total: {total_tokens})")
                 
                 return parsed_json
             except json.JSONDecodeError as e:

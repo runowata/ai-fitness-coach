@@ -59,7 +59,7 @@ class Archetype(StrEnum):
 
 
 # Required video kinds for exercise validation
-REQUIRED_VIDEO_KINDS = [VideoKind.INSTRUCTION, VideoKind.TECHNIQUE]
+REQUIRED_VIDEO_KINDS = [VideoKind.TECHNIQUE]
 
 # Exercise fallback priority for substitutions
 EXERCISE_FALLBACK_PRIORITY = {

@@ -41,7 +41,7 @@ class OnboardingDataProcessor:
                 'equipment_list': OnboardingDataProcessor._format_equipment(profile),
                 'workout_frequency': getattr(profile, 'workout_frequency', 3),
                 'workout_duration': getattr(profile, 'workout_duration', 45),
-                'duration_weeks': getattr(profile, 'duration_weeks', 8),
+                'duration_weeks': getattr(profile, 'duration_weeks', 3),
                 
                 # Advanced preferences
                 'preferred_workout_time': getattr(profile, 'preferred_workout_time', 'morning'),
@@ -159,7 +159,7 @@ class OnboardingDataProcessor:
             'equipment_list': 'dumbbells, bodyweight',
             'workout_frequency': 3,
             'workout_duration': 45,
-            'duration_weeks': 8,
+            'duration_weeks': 3,
             'preferred_workout_time': 'morning',
             'training_experience': 'beginner',
             'motivation_level': 'medium',

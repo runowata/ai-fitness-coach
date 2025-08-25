@@ -6,15 +6,17 @@ WORKOUT_PLAN_JSON_SCHEMA = {
     "title": "WorkoutPlan",
     "type": "object",
     "additionalProperties": False,
-    "required": ["name", "duration_weeks", "weeks"],
+    "required": ["plan_name", "duration_weeks", "weeks", "goal"],
     "properties": {
-        "name": {
+        "plan_name": {
             "type": "string",
+            "minLength": 5,
+            "maxLength": 200,
             "description": "Name of the workout plan"
         },
         "duration_weeks": {
             "type": "integer",
-            "minimum": 4,
+            "minimum": 2,
             "maximum": 12,
             "description": "Total number of weeks in the plan"
         },
@@ -24,7 +26,7 @@ WORKOUT_PLAN_JSON_SCHEMA = {
         },
         "weeks": {
             "type": "array",
-            "minItems": 4,
+            "minItems": 2,
             "maxItems": 12,
             "items": {"$ref": "#/$defs/Week"}
         }
@@ -79,7 +81,7 @@ WORKOUT_PLAN_JSON_SCHEMA = {
         "Block": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["type"],
+            "required": ["type", "name", "exercises", "text", "description"],
             "properties": {
                 "type": {
                     "type": "string",
@@ -110,7 +112,7 @@ WORKOUT_PLAN_JSON_SCHEMA = {
         "Exercise": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["exercise_slug", "sets", "reps"],
+            "required": ["exercise_slug", "sets", "reps", "name", "rest_seconds", "duration_seconds"],
             "properties": {
                 "exercise_slug": {
                     "type": "string",

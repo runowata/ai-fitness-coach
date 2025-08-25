@@ -264,7 +264,7 @@ OPENAI_TEMPERATURE = float(os.getenv('OPENAI_TEMPERATURE', '0.7'))
 
 # GPT-5 specific parameters
 OPENAI_REASONING_EFFORT = os.getenv('OPENAI_REASONING_EFFORT', 'medium')  # minimal | medium | high
-OPENAI_TEXT_VERBOSITY = os.getenv('OPENAI_TEXT_VERBOSITY', 'low')  # low | medium | high
+OPENAI_TEXT_VERBOSITY = os.getenv('OPENAI_TEXT_VERBOSITY', 'medium')  # low | medium | high
 
 # Legacy setting for backward compatibility
 OPENAI_MAX_TOKENS = OPENAI_MAX_OUTPUT_TOKENS

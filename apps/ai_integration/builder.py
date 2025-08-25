@@ -7,7 +7,7 @@ from typing import Dict
 
 from django.conf import settings
 
-from .schemas_json import WORKOUT_PLAN_JSON_SCHEMA
+from .schemas_json_simple import WORKOUT_PLAN_JSON_SCHEMA_SIMPLE
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def build_responses_payload(prompt: str, model: str, max_tokens: int, temperatur
 def build_comprehensive_payload(
     prompt: str,
     system_message: str = None,
-    max_tokens: int = 12288,
+    max_tokens: int = 32000,
     temperature: float = 0.7,
     model: str = None
 ) -> Dict:
