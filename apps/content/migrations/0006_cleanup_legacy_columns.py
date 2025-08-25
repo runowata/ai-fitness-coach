@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('content', '0005_auto_20241201_1200'),  # Update this to your latest migration
+        ('content', '0002_landingcontent_trainerpersona'),  # Updated to actual latest migration
     ]
 
     operations = [

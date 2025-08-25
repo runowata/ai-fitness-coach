@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('onboarding', '0005_auto_20241201_1200'),  # Update this to your latest migration
+        ('onboarding', '0002_squashed_compat'),  # Updated to actual latest migration
     ]
 
     operations = [
