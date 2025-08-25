@@ -96,3 +96,6 @@ fixtures/onboarding_questions_old.json
 
 # Virtual environments for data processing
 .venv/
+
+# Development tools (not for production)
+dev_tools/

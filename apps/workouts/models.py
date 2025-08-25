@@ -302,10 +302,10 @@ class WeeklyTheme(models.Model):
 class WorkoutPlan(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workout_plans')
     
-    # Plan details
+    # Plan details  
     name = models.CharField(max_length=200)
     duration_weeks = models.PositiveIntegerField(validators=[MinValueValidator(4), MaxValueValidator(8)])
-    goal = models.CharField(max_length=100)
+    # goal field removed - data stored in plan_data JSON and user onboarding data
     
     # AI-generated plan data
     plan_data = models.JSONField()  # Complete plan structure
@@ -398,17 +398,33 @@ class WorkoutExecution(models.Model):
 
 class CSVExercise(models.Model):
     """
-    Базовое упражнение, импортируется из data/clean/exercises.csv
+    Базовое упражнение, импортируется из data/clean/exercises_complete_r2.csv
+    Обновлено под реальную структуру R2 (271 упражнение)
     """
-    id = models.CharField(primary_key=True, max_length=20)          # EX027_v2
+    # Primary fields matching R2 structure
+    id = models.CharField(primary_key=True, max_length=20)          # warmup_01, main_001, endurance_01, relaxation_01
     name_ru = models.CharField(max_length=120)
     name_en = models.CharField(max_length=120, blank=True)
-    level = models.CharField(max_length=20)                         # beginner / intermediate / advanced
     description = models.TextField(blank=True)
-    muscle_group = models.CharField(max_length=120, blank=True)
-    exercise_type = models.CharField(max_length=120, blank=True)     # strength / stretch / cardio
+    
+    # Classification fields
+    level = models.CharField(max_length=20)                         # beginner / intermediate / advanced
+    muscle_group = models.CharField(max_length=120, blank=True)     # Все тело / Грудь / Спина / Ноги / и т.д.
+    exercise_type = models.CharField(max_length=120, blank=True)    # strength / mobility / cardio / flexibility
+    category = models.CharField(max_length=20, blank=True)          # warmup / main / endurance / relaxation
+    
+    # AI integration fields
     ai_tags = models.JSONField(blank=True, default=list)
+    
+    # R2 structure support 
+    r2_slug = models.CharField(max_length=50, blank=True, help_text='Original R2 slug format')
+    
+    # Status
     is_active = models.BooleanField(default=True)
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         verbose_name = "Упражнение CSV"

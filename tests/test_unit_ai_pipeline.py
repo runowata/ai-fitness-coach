@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 import pytest
 from django.test import TestCase, override_settings
 
-from apps.ai_integration.ai_client import AIClientFactory
+from apps.ai_integration.ai_client_gpt5 import AIClientFactory
 from apps.ai_integration.services import WorkoutPlanGenerator
 
 

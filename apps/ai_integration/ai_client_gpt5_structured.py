@@ -204,6 +204,6 @@ if __name__ == "__main__":
     
     # Test connection
     if client.test_connection():
-        print("✅ GPT-5 client test successful")
+        logger.info("✅ GPT-5 client test successful")
     else:
-        print("❌ GPT-5 client test failed")
+        logger.error("❌ GPT-5 client test failed")

@@ -163,7 +163,7 @@ class TestWorkoutPlanCreation:
         validated_plan = WorkoutPlanSchema.model_validate(valid_ai_plan_data)
         mock_generate_plan.return_value = validated_plan
         
-        from apps.ai_integration.ai_client import OpenAIClient
+        from apps.ai_integration.ai_client_gpt5 import OpenAIClient
         
         client = OpenAIClient()
         result = client.generate_workout_plan("Generate a 6-week plan")
@@ -185,7 +185,7 @@ class TestWorkoutPlanCreation:
         }
         mock_api_call.return_value = invalid_data
         
-        from apps.ai_integration.ai_client import AIClientError, OpenAIClient
+        from apps.ai_integration.ai_client_gpt5 import AIClientError, OpenAIClient
         
         client = OpenAIClient()
         
@@ -356,7 +356,7 @@ class TestErrorHandling:
     
     def test_ai_client_error_handling(self):
         """Test AI client error handling"""
-        from apps.ai_integration.ai_client import AIClientError
+        from apps.ai_integration.ai_client_gpt5 import AIClientError
 
         # Test custom exception
         error = AIClientError("Test error")

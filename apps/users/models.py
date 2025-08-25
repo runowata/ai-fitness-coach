@@ -118,20 +118,35 @@ class UserProfile(models.Model):
     
     @property
     def archetype_name(self):
-        """Convert numeric archetype code to string name for AI integration"""
-        archetype_map = {
+        """Return archetype name for AI integration (already normalized)"""
+        # New format: archetype field already stores normalized names
+        if self.archetype in ['mentor', 'professional', 'peer']:
+            return self.archetype
+        
+        # Legacy support for numeric codes (migration compatibility)
+        legacy_map = {
             '111': 'mentor',        # Wise Mentor
-            '112': 'professional',  # Pro Coach
-            '113': 'peer',          # Best Mate
+            '222': 'professional',  # Pro Coach 
+            '333': 'peer',          # Best Mate
         }
-        return archetype_map.get(self.archetype, 'mentor')  # Default to mentor
+        return legacy_map.get(self.archetype, 'mentor')  # Default to mentor
     
     @property
     def archetype_display_name(self):
-        """Convert numeric archetype code to display name for UI"""
-        display_map = {
+        """Convert archetype to display name for UI"""
+        # New format display names
+        if self.archetype in ['mentor', 'professional', 'peer']:
+            display_map = {
+                'mentor': 'Мудрый наставник',
+                'professional': 'Профессиональный тренер', 
+                'peer': 'Лучший друг',
+            }
+            return display_map.get(self.archetype, 'Мудрый наставник')
+        
+        # Legacy support for numeric codes
+        legacy_display_map = {
             '111': 'Мудрый наставник',
-            '112': 'Профессиональный тренер',
-            '113': 'Лучший друг',
+            '222': 'Профессиональный тренер',
+            '333': 'Лучший друг',
         }
-        return display_map.get(self.archetype, 'Мудрый наставник')
+        return legacy_display_map.get(self.archetype, 'Мудрый наставник')

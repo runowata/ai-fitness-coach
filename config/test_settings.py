@@ -1,6 +1,14 @@
 """
 Test settings - disable cache and external dependencies
+Extended for CSV import testing with SQLite
 """
+
+# Import main settings as base
+from .settings import *
+
+# Override with test-specific settings
+SECRET_KEY = 'test-key-for-csv-import-testing-12345'
+DEBUG = True
 
 # Disable cache for tests
 CACHES = {
@@ -13,11 +21,11 @@ CACHES = {
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 
-# Test database
+# Test database - use file instead of memory for CSV import testing
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        'NAME': 'test_csv_import.sqlite3',  # File DB for persistence during testing
     }
 }
 

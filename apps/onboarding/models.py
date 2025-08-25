@@ -93,16 +93,6 @@ class MotivationalCard(models.Model):
     title = models.CharField(max_length=200, blank=True)
     message = models.TextField()
     
-    # DEPRECATED: Keep for backward compatibility during migration
-    image_url = models.URLField(blank=True, help_text='DEPRECATED: Use path field instead')
-    
-    # New image field for R2/S3 storage (DEPRECATED: Use path field instead)
-    image = models.ImageField(
-        upload_to='photos/quotes/',
-        blank=True,
-        null=True,
-        help_text='DEPRECATED: Use path field instead'
-    )
     
     # NEW: Relative path for R2 storage (e.g., "photos/quotes/card_quotes_0170.jpg")
     path = models.CharField(
@@ -166,47 +156,7 @@ class MotivationalCard(models.Model):
             from apps.onboarding.utils import public_r2_url
             return public_r2_url(self.path)
         
-        # LEGACY fallback for migration period
-        if self.image:
-            # Use Django's default storage mechanism (same as videos)
-            from django.core.files.storage import default_storage
-            try:
-                image_url = default_storage.url(self.image.name)
-                # In development (USE_R2_STORAGE=False), this returns /media/path
-                # In production (USE_R2_STORAGE=True), this returns signed R2 URL
-                
-                # Check if it's a local path (dev environment)
-                if image_url.startswith('/media/'):
-                    return ''  # Return empty in development
-                else:
-                    # Production: return signed URL
-                    return image_url
-            except Exception as e:
-                import logging
-                logger = logging.getLogger(__name__)
-                logger.warning(f"Failed to get URL for image {self.image.name}: {e}")
-                return ''
-        
-        # For legacy image_url fields, use signed URLs
-        if self.image_url:
-            # If it's already a full URL with pub-*.r2.dev domain, extract path and create signed URL
-            if self.image_url.startswith('http'):
-                from apps.onboarding.utils import extract_path_from_r2_url, public_r2_url
-                file_path = extract_path_from_r2_url(self.image_url)
-                if file_path:
-                    return public_r2_url(file_path)
-                else:
-                    return ''  # Pattern doesn't match, return empty
-            
-            # If it's a relative path, use default storage
-            from django.core.files.storage import default_storage
-            try:
-                url = default_storage.url(self.image_url)
-                return '' if url.startswith('/media/') else url
-            except Exception:
-                return ''
-        
-        return ''  # No image available
+        return ''  # No legacy fields available
 
 
 class UserOnboardingResponse(models.Model):

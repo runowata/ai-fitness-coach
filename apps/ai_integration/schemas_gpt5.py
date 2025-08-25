@@ -132,7 +132,9 @@ if __name__ == "__main__":
     
     # Print schema for inspection
     import json
-    print(json.dumps(schema, indent=2))
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"Schema generated: {json.dumps(schema, indent=2)}")
     
     # Test validation with sample data
     sample_day = DailyWorkout(
@@ -156,4 +158,4 @@ if __name__ == "__main__":
         weeks=[sample_week]
     )
     
-    print("Schema validation successful!")
+    logger.info("Schema validation successful!")

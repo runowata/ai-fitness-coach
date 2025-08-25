@@ -1,4 +1,5 @@
 from datetime import timedelta
+import logging
 
 import pytz
 from celery import shared_task
@@ -9,6 +10,8 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from .models import UserProfile
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -56,7 +59,7 @@ def send_daily_workout_reminders():
                     
         except Exception as e:
             # Log error but continue with other users
-            print(f"Error sending reminder to {profile.user.email}: {str(e)}")
+            logger.error(f"Error sending reminder to {profile.user.email}: {str(e)}")
             continue
     
     return f"Sent {sent_count} workout reminders"
@@ -205,7 +208,7 @@ def send_weekly_progress_summary():
             sent_count += 1
             
         except Exception as e:
-            print(f"Error sending weekly summary to {profile.user.email}: {str(e)}")
+            logger.error(f"Error sending weekly summary to {profile.user.email}: {str(e)}")
             continue
     
     return f"Sent {sent_count} weekly summaries"

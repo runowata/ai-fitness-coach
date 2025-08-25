@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'apps.core.middleware.DatabaseSetupMiddleware',  # Auto-setup database on first request
+    'apps.core.middleware.DatabaseSetupMiddleware',  # Auto-setup database (controlled by ENABLE_DB_SETUP_MW)
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -317,6 +317,9 @@ RATELIMIT_VIEW = 'apps.core.views.ratelimit_exceeded'
 # Age verification
 MINIMUM_AGE = 18
 
+# Middleware control
+ENABLE_DB_SETUP_MW = os.getenv('ENABLE_DB_SETUP_MW', 'False') == 'True'  # Disabled by default for safety
+
 # Push Notifications
 ONESIGNAL_APP_ID = os.getenv('ONESIGNAL_APP_ID', '')
 ONESIGNAL_REST_API_KEY = os.getenv('ONESIGNAL_REST_API_KEY', '')
@@ -404,12 +407,11 @@ from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
     'enqueue-weekly-lesson': {
         'task': 'apps.workouts.tasks.enqueue_weekly_lesson',
-        'schedule': crontab(minute='*/5'),  # TEMP: Every 5 minutes for testing
-        # 'schedule': crontab(hour=8, minute=0, day_of_week=1),  # Production: Every Monday at 8:00 AM
+        'schedule': crontab(hour=8, minute=0, day_of_week=1),  # Production: Every Monday at 8:00 AM
     },
     'send-amplitude-events-batch': {
         'task': 'apps.analytics.tasks.batch_send_events_to_amplitude_task',
-        'schedule': crontab(minute='*/5'),  # Every 5 minutes
+        'schedule': crontab(minute='*/15'),  # Every 15 minutes (production)
     },
     'calculate-daily-metrics': {
         'task': 'apps.analytics.tasks.calculate_daily_metrics_task',
@@ -421,6 +423,6 @@ CELERY_BEAT_SCHEDULE = {
     },
     'system-health-monitor': {
         'task': 'apps.core.tasks.system_health_monitor_task',
-        'schedule': crontab(minute='*/5'),  # Every 5 minutes
+        'schedule': crontab(minute='*/10'),  # Every 10 minutes (production)
     },
 }

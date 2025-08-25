@@ -183,3 +183,74 @@ def unlock_preview(request, chapter_id):
             'story_title': chapter.story.title
         }
     })
+
+
+@login_required
+def get_next_chapter(request):
+    """API endpoint to get next available chapter for the user"""
+    # Get user's accessible chapters
+    accessible_chapters = UserStoryAccess.objects.filter(
+        user=request.user
+    ).select_related('chapter', 'chapter__story').order_by('-unlocked_at')
+    
+    if not accessible_chapters.exists():
+        return JsonResponse({'error': 'У вас пока нет доступных глав'}, status=404)
+    
+    # Get the most recently unlocked chapter
+    latest_access = accessible_chapters.first()
+    latest_chapter = latest_access.chapter
+    
+    # Try to find next chapter in the same story
+    next_chapter = latest_chapter.story.chapters.filter(
+        chapter_number__gt=latest_chapter.chapter_number,
+        is_published=True
+    ).order_by('chapter_number').first()
+    
+    # Check if user has access to next chapter
+    if next_chapter:
+        try:
+            UserStoryAccess.objects.get(user=request.user, chapter=next_chapter)
+            # User has access to next chapter
+            return JsonResponse({
+                'success': True,
+                'next_chapter': {
+                    'story_slug': next_chapter.story.slug,
+                    'chapter_number': next_chapter.chapter_number,
+                    'title': next_chapter.title,
+                    'story_title': next_chapter.story.title,
+                    'estimated_reading_time': next_chapter.estimated_reading_time,
+                    'url': f'/content/stories/{next_chapter.story.slug}/{next_chapter.chapter_number}/'
+                }
+            })
+        except UserStoryAccess.DoesNotExist:
+            pass
+    
+    # If no next chapter in same story, find first available chapter in any story
+    for access in accessible_chapters:
+        chapter = access.chapter
+        if not access.first_read_at:  # Unread chapter
+            return JsonResponse({
+                'success': True,
+                'next_chapter': {
+                    'story_slug': chapter.story.slug,
+                    'chapter_number': chapter.chapter_number,
+                    'title': chapter.title,
+                    'story_title': chapter.story.title,
+                    'estimated_reading_time': chapter.estimated_reading_time,
+                    'url': f'/content/stories/{chapter.story.slug}/{chapter.chapter_number}/'
+                }
+            })
+    
+    # If all accessible chapters are read, return the latest one
+    return JsonResponse({
+        'success': True,
+        'next_chapter': {
+            'story_slug': latest_chapter.story.slug,
+            'chapter_number': latest_chapter.chapter_number,
+            'title': latest_chapter.title,
+            'story_title': latest_chapter.story.title,
+            'estimated_reading_time': latest_chapter.estimated_reading_time,
+            'url': f'/content/stories/{latest_chapter.story.slug}/{latest_chapter.chapter_number}/',
+            'is_reread': True
+        }
+    })

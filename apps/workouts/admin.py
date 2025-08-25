@@ -129,14 +129,14 @@ class VideoClipAdmin(admin.ModelAdmin):
 
 @admin.register(WorkoutPlan)
 class WorkoutPlanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'user', 'duration_weeks', 'goal', 'created_at', 'is_active')
+    list_display = ('name', 'user', 'duration_weeks', 'created_at', 'is_active')
     list_filter = ('is_active', 'duration_weeks', 'created_at')
-    search_fields = ('name', 'user__email', 'goal')
+    search_fields = ('name', 'user__email')
     readonly_fields = ('created_at', 'started_at', 'completed_at', 'get_current_week')
     
     fieldsets = (
         ('Plan Information', {
-            'fields': ('user', 'name', 'duration_weeks', 'goal')
+            'fields': ('user', 'name', 'duration_weeks')
         }),
         ('Plan Data', {
             'fields': ('plan_data',),

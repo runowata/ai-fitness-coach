@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 
 import pytz
 from celery import shared_task
@@ -10,6 +11,8 @@ from django.utils import timezone
 from apps.users.models import User
 
 from .models import WeeklyLesson, WeeklyNotification
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -66,7 +69,7 @@ def send_weekly_lesson():
                 
         except Exception as e:
             # Логируем ошибку, но продолжаем отправку остальным
-            print(f"Error sending weekly lesson to {user.email}: {e}")
+            logger.error(f"Error sending weekly lesson to {user.email}: {e}")
             continue
     
     return f"Weekly lesson sent to {sent_count} users (week {week_number})"
@@ -127,16 +130,16 @@ def enqueue_weekly_lesson():
                     from apps.notifications.tasks import send_weekly_lesson_push_task
                     send_weekly_lesson_push_task.delay(weekly_notification.id)
                 except ImportError:
-                    print(f"Push notification service not available for user {user.email}")
+                    logger.info(f"Push notification service not available for user {user.email}")
                 except Exception as push_e:
-                    print(f"Error queuing push notification for {user.email}: {push_e}")
+                    logger.error(f"Error queuing push notification for {user.email}: {push_e}")
             else:
-                print(f"No lesson found for week {week_number}, archetype {archetype}")
+                logger.warning(f"No lesson found for week {week_number}, archetype {archetype}")
                 skipped_count += 1
                 
         except Exception as e:
             # Логируем ошибку, но продолжаем создание для остальных
-            print(f"Error creating weekly notification for {user.email}: {e}")
+            logger.error(f"Error creating weekly notification for {user.email}: {e}")
             skipped_count += 1
             continue
     

@@ -124,8 +124,9 @@ class DatabaseSetupMiddleware:
         self.setup_completed = False
         
     def __call__(self, request):
-        # Only run setup once and only in production
-        if not self.setup_completed and getattr(settings, 'RENDER', False):
+        # Only run setup once and only if enabled (disabled by default for safety)
+        enable_db_setup = getattr(settings, 'ENABLE_DB_SETUP_MW', False)
+        if not self.setup_completed and enable_db_setup and getattr(settings, 'RENDER', False):
             try:
                 self.setup_database()
                 self.setup_completed = True

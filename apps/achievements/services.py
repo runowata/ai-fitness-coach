@@ -211,7 +211,7 @@ class WorkoutCompletionService:
     
     def _analyze_workout_with_ai(self, user, workout, feedback_rating, feedback_note):
         """Анализ тренировки с помощью AI"""
-        from apps.ai_integration.ai_client import AIClientFactory
+        from apps.ai_integration.ai_client_gpt5 import AIClientFactory
 
         # Создаем AI клиент
         ai_client = AIClientFactory.create_client()

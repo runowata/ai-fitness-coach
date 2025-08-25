@@ -249,6 +249,6 @@ if __name__ == "__main__":
     generator = create_gpt5_generator()
     
     if generator.test_generation():
-        print("✅ GPT-5 generator test successful")
+        logger.info("✅ GPT-5 generator test successful")
     else:
-        print("❌ GPT-5 generator test failed")
+        logger.error("❌ GPT-5 generator test failed")

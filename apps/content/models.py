@@ -117,9 +117,9 @@ class MediaAsset(models.Model):
     archetype = models.CharField(
         max_length=20,
         choices=[
-            ('bro', 'Бро'),
-            ('sergeant', 'Сержант'),
-            ('intellectual', 'Интеллектуал'),
+            ('peer', 'Лучший друг'),
+            ('professional', 'Профессиональный тренер'),
+            ('mentor', 'Мудрый наставник'),
         ],
         blank=True
     )
@@ -195,7 +195,6 @@ class TrainerPersona(models.Model):
         null=True,
         help_text='Trainer avatar image'
     )
-    avatar_url = models.URLField(blank=True)  # Legacy field
     
     # Order for display
     display_order = models.PositiveIntegerField(default=0)
@@ -217,7 +216,7 @@ class TrainerPersona(models.Model):
         if self.avatar:
             from apps.core.services import MediaService
             return MediaService.get_public_cdn_url(self.avatar)
-        return self.avatar_url
+        return ''
 
 
 class LandingContent(models.Model):

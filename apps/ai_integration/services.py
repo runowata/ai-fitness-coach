@@ -61,7 +61,7 @@ class WorkoutPlanGenerator:
         self.ai_client = AIClientFactory.create_client()
         self.prompt_manager = PromptManagerV2()
     
-    def create_plan(self, user, user_data: Dict) -> 'WorkoutPlan':
+    def create_plan(self, user, user_data: Dict, use_comprehensive: bool = True) -> 'WorkoutPlan':
         """Create a complete workout plan for user"""
 
         from apps.workouts.models import WorkoutPlan
@@ -82,7 +82,7 @@ class WorkoutPlanGenerator:
             logger.info(f"User data type: {type(user_data)}, keys: {list(user_data.keys()) if isinstance(user_data, dict) else 'not dict'}")
             
             # Generate plan with AI
-            plan_data = self.generate_plan(user_data)
+            plan_data = self.generate_plan(user_data, use_comprehensive=use_comprehensive)
             logger.info(f"Plan generation completed, type: {type(plan_data)}")
             
             # Validate that plan_data is a dictionary
@@ -106,7 +106,7 @@ class WorkoutPlanGenerator:
                 user=user,
                 name=plan_details.get('plan_name', plan_details.get('operation_name', plan_details.get('study_name', 'Персональный план'))),
                 duration_weeks=12,  # 90 days ≈ 12 weeks  
-                goal=user_data.get('primary_goal', 'general_fitness'),
+                # goal field removed - data stored in plan_data JSON
                 plan_data=plan_data,  # Store full AI response including analysis
                 ai_analysis=analysis_data,  # Store analysis separately for easier access
                 started_at=timezone.now()
@@ -311,7 +311,7 @@ class WorkoutPlanGenerator:
             logger.warning("Using legacy flow for plan generation")
             return self._generate_plan_legacy(user_data)
         
-        archetype = user_data.get('archetype', 'bro')
+        archetype = self.prompt_manager.normalize_archetype(user_data.get('archetype', 'peer'))
         
         # Get allowed exercises for this archetype
         allowed_slugs = ExerciseValidationService.get_allowed_exercise_slugs(archetype=archetype)
@@ -615,7 +615,7 @@ class WorkoutPlanGenerator:
     def _generate_plan_legacy(self, user_data: Dict) -> Dict:
         """Legacy plan generation without strict validation"""
         prompt = self._build_prompt(user_data)
-        archetype = user_data.get('archetype', 'bro')
+        archetype = self.prompt_manager.normalize_archetype(user_data.get('archetype', 'peer'))
         
         try:
             system_prompt = self._get_system_prompt(archetype)
@@ -750,10 +750,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
     
     def _build_prompt(self, user_data: Dict) -> str:
         """Build the prompt for plan generation using archetype-specific template"""
-        archetype = user_data.get('archetype', 'bro')
-        
-        # Normalize archetype from legacy to new naming
-        archetype = self.prompt_manager.normalize_archetype(archetype)
+        archetype = self.prompt_manager.normalize_archetype(user_data.get('archetype', 'peer'))
         
         try:
             # Get v2 prompts (system + user)
@@ -785,7 +782,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         - Workout Duration: {user_data.get('workout_duration', 45)} minutes
         - Available Equipment: {user_data.get('available_equipment', 'bodyweight_only')}
         - Health Limitations: {user_data.get('health_limitations', 'none')}
-        - Trainer Archetype: {user_data.get('archetype', 'bro')}
+        - Trainer Archetype: {self.prompt_manager.normalize_archetype(user_data.get('archetype', 'peer'))}
         
         Create a {user_data.get('duration_weeks', 6)}-week progressive workout plan.
         
@@ -955,7 +952,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         
         # Add metadata
         cleaned_plan['generated_at'] = timezone.now().isoformat()
-        cleaned_plan['user_archetype'] = user_data.get('archetype', 'bro')
+        cleaned_plan['user_archetype'] = self.prompt_manager.normalize_archetype(user_data.get('archetype', 'peer'))
         
         return cleaned_plan
     
