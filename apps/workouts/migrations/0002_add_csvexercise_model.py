@@ -10,25 +10,33 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='CSVExercise',
-            fields=[
-                ('id', models.CharField(primary_key=True, max_length=20)),
-                ('name', models.CharField(max_length=200)),
-                ('description', models.TextField(blank=True)),
-                ('difficulty', models.CharField(max_length=20, default='beginner')),
-                ('muscle_groups', models.JSONField(default=list)),
-                ('equipment_needed', models.JSONField(default=list)),
-                ('ai_tags', models.JSONField(default=list)),
-                ('category', models.CharField(max_length=20, blank=True)),
-                ('r2_slug', models.CharField(max_length=50, blank=True, help_text='Original R2 slug format')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-            ],
-            options={
-                'db_table': 'csv_exercises',
-                'verbose_name': 'CSV Exercise',
-                'verbose_name_plural': 'CSV Exercises',
-            },
+        # Table csv_exercises already exists in production, so we'll use CreateModel
+        # with state_operations to register the model without creating the table
+        migrations.RunSQL(
+            "-- csv_exercises table already exists in production",
+            reverse_sql="-- reverse: csv_exercises table already exists",
+            state_operations=[
+                migrations.CreateModel(
+                    name='CSVExercise',
+                    fields=[
+                        ('id', models.CharField(primary_key=True, max_length=20)),
+                        ('name', models.CharField(max_length=200)),
+                        ('description', models.TextField(blank=True)),
+                        ('difficulty', models.CharField(max_length=20, default='beginner')),
+                        ('muscle_groups', models.JSONField(default=list)),
+                        ('equipment_needed', models.JSONField(default=list)),
+                        ('ai_tags', models.JSONField(default=list)),
+                        ('category', models.CharField(max_length=20, blank=True)),
+                        ('r2_slug', models.CharField(max_length=50, blank=True, help_text='Original R2 slug format')),
+                        ('created_at', models.DateTimeField(auto_now_add=True)),
+                        ('updated_at', models.DateTimeField(auto_now=True)),
+                    ],
+                    options={
+                        'db_table': 'csv_exercises',
+                        'verbose_name': 'CSV Exercise',
+                        'verbose_name_plural': 'CSV Exercises',
+                    },
+                ),
+            ]
         ),
     ]
