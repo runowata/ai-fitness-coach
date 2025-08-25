@@ -10,7 +10,7 @@ import time
 def test_production_import():
     """Test R2 import in production environment"""
     
-    base_url = "https://ai-fitness-coach-fcpd.onrender.com"
+    base_url = "https://ai-fitness-coach-ttzf.onrender.com"
     
     print("🚀 Testing R2 Import in Production")
     print("=" * 50)
