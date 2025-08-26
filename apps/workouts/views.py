@@ -38,11 +38,48 @@ def daily_workout_view(request, workout_id):
     # Get substitution options for each exercise (equipment checking removed)
     substitutions = {}
     
+    # Get detailed exercise information for display
+    exercise_details = {}
+    
     for exercise_data in workout.exercises:
         exercise_slug = exercise_data.get('exercise_slug')
+        
+        # Get substitution alternatives
         alternatives = playlist_builder.get_substitution_options(exercise_slug, [])
         if alternatives:
             substitutions[exercise_slug] = alternatives
+        
+        # Get detailed exercise info from database
+        try:
+            exercise = CSVExercise.objects.get(id=exercise_slug)
+            exercise_details[exercise_slug] = {
+                'id': exercise.id,
+                'name_ru': exercise.name_ru,
+                'name_en': exercise.name_en,
+                'description': exercise.description,
+                'muscle_group': exercise.muscle_group,
+                'level': exercise.level,
+                'exercise_type': exercise.exercise_type,
+                'sets': exercise_data.get('sets'),
+                'reps': exercise_data.get('reps'),
+                'rest_seconds': exercise_data.get('rest_seconds'),
+                'duration_seconds': exercise_data.get('duration_seconds'),
+            }
+        except CSVExercise.DoesNotExist:
+            # Fallback for missing exercises
+            exercise_details[exercise_slug] = {
+                'id': exercise_slug,
+                'name_ru': exercise_slug.replace('_', ' ').replace('-', ' ').title(),
+                'name_en': '',
+                'description': 'Описание упражнения будет добавлено позже.',
+                'muscle_group': '',
+                'level': 'beginner',
+                'exercise_type': 'strength',
+                'sets': exercise_data.get('sets'),
+                'reps': exercise_data.get('reps'),
+                'rest_seconds': exercise_data.get('rest_seconds'),
+                'duration_seconds': exercise_data.get('duration_seconds'),
+            }
     
     # Check if workout is already started
     if not workout.started_at and not workout.is_rest_day:
@@ -52,7 +89,10 @@ def daily_workout_view(request, workout_id):
     context = {
         'workout': workout,
         'video_playlist': video_playlist,
+        'video_playlist_json': json.dumps(video_playlist),
         'substitutions': substitutions,
+        'exercise_details': exercise_details,
+        'exercise_details_json': json.dumps(exercise_details),
         'is_completed': workout.completed_at is not None,
         'can_substitute': bool(substitutions)
     }

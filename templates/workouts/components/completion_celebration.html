@@ -1,0 +1,572 @@
+<!-- Workout Completion Celebration Modal -->
+<div class="modal fade" id="completionCelebrationModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content celebration-modal">
+            <div class="celebration-header">
+                <div class="celebration-animation">
+                    <div class="confetti"></div>
+                    <div class="trophy-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+                
+                <h2 class="celebration-title">Поздравляем! 🎉</h2>
+                <p class="celebration-subtitle">Тренировка завершена успешно!</p>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Workout Stats -->
+                <div class="workout-stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-workout-time">--:--</div>
+                            <div class="stat-label">Общее время</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-dumbbell"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="exercises-completed">{{ workout.exercises|length }}</div>
+                            <div class="stat-label">Упражнений</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-star"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="xp-earned">+50</div>
+                            <div class="stat-label">XP получено</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="streak-count">3</div>
+                            <div class="stat-label">Дней подряд</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Random Motivational Image -->
+                <div class="completion-motivation-card">
+                    <div class="motivation-image-container">
+                        <img id="completion-motivation-image" src="" alt="Мотивация" class="completion-motivation-img">
+                        <div class="motivation-overlay">
+                            <h5 id="completion-motivation-title">Отлично поработали!</h5>
+                            <p id="completion-motivation-message">Каждая тренировка делает вас сильнее!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feedback Section -->
+                <div class="feedback-section">
+                    <h6 class="feedback-title">Как прошла тренировка?</h6>
+                    <div class="feedback-emoji-grid">
+                        <button class="feedback-emoji-btn" data-rating="fire" title="Отлично">
+                            <span class="emoji">🔥</span>
+                            <span class="label">Отлично</span>
+                        </button>
+                        <button class="feedback-emoji-btn" data-rating="smile" title="Хорошо">
+                            <span class="emoji">🙂</span>
+                            <span class="label">Хорошо</span>
+                        </button>
+                        <button class="feedback-emoji-btn" data-rating="neutral" title="Нормально">
+                            <span class="emoji">😐</span>
+                            <span class="label">Нормально</span>
+                        </button>
+                        <button class="feedback-emoji-btn" data-rating="tired" title="Тяжело">
+                            <span class="emoji">🤕</span>
+                            <span class="label">Тяжело</span>
+                        </button>
+                    </div>
+                    
+                    <div class="feedback-note-section" style="display: none;">
+                        <textarea id="completionFeedbackNote" class="form-control" rows="3" 
+                                  placeholder="Расскажите подробнее о своих ощущениях (необязательно)"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Next Steps -->
+                <div class="next-steps">
+                    <h6 class="next-steps-title">Что дальше?</h6>
+                    <div class="next-actions">
+                        <div class="next-action-item">
+                            <i class="fas fa-calendar-day"></i>
+                            <span>Следующая тренировка завтра</span>
+                        </div>
+                        <div class="next-action-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Просмотрите прогресс в дашборде</span>
+                        </div>
+                        <div class="next-action-item">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Поделитесь достижением</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer celebration-footer">
+                <button type="button" class="btn btn-outline-secondary" onclick="shareWorkout()">
+                    <i class="fas fa-share-alt me-2"></i>Поделиться
+                </button>
+                <button type="button" class="btn btn-primary celebration-finish-btn" onclick="submitCompletionFeedback()">
+                    <i class="fas fa-check me-2"></i>Завершить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Celebration Modal Styles */
+.celebration-modal {
+    border: none;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+}
+
+.celebration-header {
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.celebration-animation {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.trophy-icon {
+    font-size: 4rem;
+    color: #ffd700;
+    animation: trophyBounce 2s infinite;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.celebration-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.celebration-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0.5rem 0 0 0;
+}
+
+/* Confetti Animation */
+.confetti {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.confetti::before,
+.confetti::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #ffd700;
+    animation: confettiFall 3s infinite linear;
+}
+
+.confetti::before {
+    left: 20%;
+    animation-delay: -1s;
+}
+
+.confetti::after {
+    left: 80%;
+    animation-delay: -2s;
+    background: #ff6b6b;
+}
+
+/* Workout Stats Grid */
+.workout-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(78, 205, 196, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(78, 205, 196, 0.2);
+}
+
+.stat-icon {
+    color: #4ecdc4;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Completion Motivation Card */
+.completion-motivation-card {
+    margin: 1.5rem 0;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.motivation-image-container {
+    position: relative;
+    height: 200px;
+}
+
+.completion-motivation-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.motivation-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+    padding: 1.5rem;
+}
+
+.motivation-overlay h5 {
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.motivation-overlay p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Feedback Section */
+.feedback-section {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.feedback-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.feedback-emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.feedback-emoji-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #ecf0f1;
+    border-radius: 15px;
+    padding: 1rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feedback-emoji-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.2);
+    border-color: #4ecdc4;
+}
+
+.feedback-emoji-btn.selected {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    border-color: #4ecdc4;
+    color: white;
+    transform: scale(1.05);
+}
+
+.feedback-emoji-btn .emoji {
+    font-size: 1.5rem;
+}
+
+.feedback-emoji-btn .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.feedback-note-section {
+    margin-top: 1rem;
+    animation: slideDown 0.3s ease;
+}
+
+/* Next Steps */
+.next-steps {
+    background: rgba(78, 205, 196, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(78, 205, 196, 0.1);
+}
+
+.next-steps-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.next-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.next-action-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #34495e;
+    font-size: 0.9rem;
+}
+
+.next-action-item i {
+    color: #4ecdc4;
+    width: 20px;
+    text-align: center;
+}
+
+/* Footer */
+.celebration-footer {
+    border: none;
+    padding: 1.5rem 2rem;
+    background: rgba(248, 249, 250, 0.8);
+}
+
+.celebration-finish-btn {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    border: none;
+    border-radius: 15px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+}
+
+.celebration-finish-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+}
+
+/* Animations */
+@keyframes trophyBounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .feedback-emoji-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .workout-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .celebration-title {
+        font-size: 1.5rem;
+    }
+    
+    .trophy-icon {
+        font-size: 3rem;
+    }
+    
+    .motivation-image-container {
+        height: 160px;
+    }
+    
+    .next-actions {
+        font-size: 0.85rem;
+    }
+}
+</style>
+
+<script>
+// Completion Celebration Logic
+const celebrationModal = {
+    modalElement: null,
+    selectedRating: null,
+    
+    init() {
+        this.modalElement = new bootstrap.Modal(document.getElementById('completionCelebrationModal'));
+        this.bindEvents();
+    },
+    
+    show(workoutData = {}) {
+        this.loadMotivationalContent();
+        this.updateStats(workoutData);
+        this.modalElement.show();
+    },
+    
+    bindEvents() {
+        // Feedback emoji buttons
+        document.querySelectorAll('.feedback-emoji-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.selectFeedback(e.currentTarget);
+            });
+        });
+    },
+    
+    selectFeedback(button) {
+        // Clear previous selection
+        document.querySelectorAll('.feedback-emoji-btn').forEach(btn => 
+            btn.classList.remove('selected'));
+        
+        // Select current
+        button.classList.add('selected');
+        this.selectedRating = button.dataset.rating;
+        
+        // Show note section
+        const noteSection = document.querySelector('.feedback-note-section');
+        noteSection.style.display = 'block';
+    },
+    
+    loadMotivationalContent() {
+        const motivationImage = document.getElementById('completion-motivation-image');
+        const motivationTitle = document.getElementById('completion-motivation-title');
+        const motivationMessage = document.getElementById('completion-motivation-message');
+        
+        // Completion-specific motivational messages
+        const messages = [
+            { title: "Миссия выполнена! 🎯", message: "Ваша целеустремленность вдохновляет!" },
+            { title: "Чемпион дня! 👑", message: "Сегодня вы превзошли себя!" },
+            { title: "Железная воля! 💪", message: "Каждая тренировка - шаг к лучшей версии себя!" },
+            { title: "Легенда в деле! ⚡", message: "Ваша трансформация уже началась!" },
+            { title: "Идеальное исполнение! ⭐", message: "Результаты не заставят себя ждать!" }
+        ];
+        
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        
+        // Random completion image
+        const imageCategories = ['progress', 'quotes'];
+        const selectedCategory = imageCategories[Math.floor(Math.random() * imageCategories.length)];
+        const imageNumber = Math.floor(Math.random() * 300) + 1;
+        const paddedNumber = imageNumber.toString().padStart(4, '0');
+        
+        motivationTitle.textContent = randomMessage.title;
+        motivationMessage.textContent = randomMessage.message;
+        motivationImage.src = `{{ R2_PUBLIC_BASE|default:'/media' }}/photos/${selectedCategory}/card_${selectedCategory}_${paddedNumber}.jpg`;
+    },
+    
+    updateStats(workoutData) {
+        // Update workout time
+        if (workoutData.duration) {
+            document.getElementById('total-workout-time').textContent = workoutData.duration;
+        }
+        
+        // Update XP earned
+        if (workoutData.xpEarned) {
+            document.getElementById('xp-earned').textContent = `+${workoutData.xpEarned}`;
+        }
+        
+        // Update streak
+        if (workoutData.streak) {
+            document.getElementById('streak-count').textContent = workoutData.streak;
+        }
+    }
+};
+
+// Global functions for modal actions
+function submitCompletionFeedback() {
+    const rating = celebrationModal.selectedRating;
+    const note = document.getElementById('completionFeedbackNote').value;
+    
+    if (!rating) {
+        alert('Пожалуйста, оцените тренировку');
+        return;
+    }
+    
+    // Submit feedback via AJAX
+    const formData = new FormData();
+    formData.append('workout_id', '{{ workout.id }}');
+    formData.append('rating', rating);
+    formData.append('note', note);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+    fetch('{% url "workouts:complete_workout" workout.id %}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirect to dashboard
+            window.location.href = '{% url "users:dashboard" %}';
+        } else {
+            alert('Ошибка при сохранении отзыва');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ошибка сети');
+    });
+}
+
+function shareWorkout() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'AI Fitness Coach - Тренировка завершена!',
+            text: 'Только что завершил отличную тренировку с AI Fitness Coach! 💪',
+            url: window.location.href
+        });
+    } else {
+        // Fallback to copy to clipboard
+        navigator.clipboard.writeText('Только что завершил отличную тренировку с AI Fitness Coach! 💪 ' + window.location.href);
+        alert('Ссылка скопирована в буфер обмена!');
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    celebrationModal.init();
+});
+</script>

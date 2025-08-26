@@ -140,6 +140,36 @@ class MediaService:
             return ''
     
     @staticmethod
+    def get_signed_url_from_key(r2_key: str, expiry: int = None) -> str:
+        """
+        Get a signed URL directly from R2 key/path
+        
+        Args:
+            r2_key: R2 storage key/path
+            expiry: URL expiry time in seconds (default from settings)
+            
+        Returns:
+            Signed URL string
+        """
+        if not r2_key:
+            return ''
+        
+        try:
+            # For now, use public CDN if available
+            if R2_PUBLIC_BASE:
+                normalized_path = normalize_media_path(r2_key.lstrip('/'))
+                return f"{R2_PUBLIC_BASE}/{normalized_path}"
+            
+            # TODO: Implement signed URL generation directly from R2 key
+            # This would require initializing boto3 client and calling generate_presigned_url
+            logger.warning(f"No R2_PUBLIC_BASE configured for key: {r2_key}")
+            return ''
+            
+        except Exception as e:
+            logger.error(f"Error generating signed URL for key {r2_key}: {e}")
+            return ''
+    
+    @staticmethod
     def get_public_cdn_url(file_field_or_name) -> str:
         """
         Get public CDN URL for a file (if R2 public access is configured)

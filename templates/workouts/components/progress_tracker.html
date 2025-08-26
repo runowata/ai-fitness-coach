@@ -1,0 +1,680 @@
+<!-- Interactive Exercise Progress Tracker -->
+<div class="exercise-progress-tracker">
+    <div class="progress-header">
+        <div class="progress-info">
+            <h4 class="progress-title">Прогресс тренировки</h4>
+            <div class="progress-stats">
+                <span class="current-exercise">Упражнение <span id="current-ex-num">1</span> из <span id="total-exercises">{{ workout.exercises|length }}</span></span>
+                <span class="time-info">
+                    <i class="fas fa-clock me-1"></i>
+                    <span id="workout-timer">00:00</span>
+                </span>
+            </div>
+        </div>
+        <div class="progress-percentage">
+            <div class="circular-progress">
+                <svg class="progress-circle" viewBox="0 0 36 36">
+                    <path class="circle-bg"
+                          d="M18 2.0845
+                           a 15.9155 15.9155 0 0 1 0 31.831
+                           a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path class="circle-fill"
+                          d="M18 2.0845
+                           a 15.9155 15.9155 0 0 1 0 31.831
+                           a 15.9155 15.9155 0 0 1 0 -31.831"
+                          style="stroke-dasharray: 0, 100;"
+                          id="progress-circle"
+                    />
+                </svg>
+                <div class="progress-text">
+                    <span id="progress-percent">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exercise List with Interactive Checkboxes -->
+    <div class="exercise-checklist">
+        {% for exercise_data in workout.exercises %}
+        <div class="exercise-check-item" data-exercise-index="{{ forloop.counter0 }}">
+            <div class="check-wrapper">
+                <input type="checkbox" 
+                       id="ex-{{ forloop.counter0 }}" 
+                       class="exercise-checkbox"
+                       data-exercise-slug="{{ exercise_data.exercise_slug }}"
+                       {% if exercise_data.completed %}checked{% endif %}>
+                <label for="ex-{{ forloop.counter0 }}" class="check-label">
+                    <div class="check-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </label>
+            </div>
+            <div class="exercise-details">
+                <div class="exercise-name">{{ exercise_data.exercise_name|default:exercise_data.exercise_slug }}</div>
+                <div class="exercise-specs">
+                    {% if exercise_data.sets and exercise_data.reps %}
+                        {{ exercise_data.sets }} подходов × {{ exercise_data.reps }} повторений
+                    {% elif exercise_data.duration_seconds %}
+                        {{ exercise_data.duration_seconds }}сек
+                    {% endif %}
+                    {% if exercise_data.rest_seconds %}
+                        • {{ exercise_data.rest_seconds }}сек отдых
+                    {% endif %}
+                </div>
+            </div>
+            <div class="exercise-status">
+                <span class="status-badge pending">Ожидает</span>
+                <span class="status-badge in-progress" style="display: none;">В процессе</span>
+                <span class="status-badge completed" style="display: none;">Выполнено</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Motivational Card Section -->
+    <div class="motivational-section" id="motivational-card" style="display: none;">
+        <div class="motivational-card">
+            <div class="card-image-container">
+                <img id="motivation-image" src="" alt="Мотивация" class="motivation-image">
+                <div class="card-overlay">
+                    <div class="motivation-text">
+                        <h5 id="motivation-title">Отличная работа! 🔥</h5>
+                        <p id="motivation-message">Вы на правильном пути к своей цели!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="progress-actions">
+        <button class="btn btn-outline-primary" id="mark-current-complete">
+            <i class="fas fa-check-circle me-2"></i>
+            Отметить текущее как выполненное
+        </button>
+        <button class="btn btn-outline-secondary" id="skip-exercise">
+            <i class="fas fa-forward me-2"></i>
+            Пропустить упражнение
+        </button>
+        <button class="btn btn-outline-success" id="get-motivation" style="display: none;">
+            <i class="fas fa-bolt me-2"></i>
+            Получить мотивацию
+        </button>
+    </div>
+</div>
+
+<style>
+/* Progress Tracker Styles */
+.exercise-progress-tracker {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.progress-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: #2c3e50;
+}
+
+.progress-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.current-exercise, .time-info {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+/* Circular Progress */
+.circular-progress {
+    width: 60px;
+    height: 60px;
+    position: relative;
+}
+
+.progress-circle {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #ecf0f1;
+    stroke-width: 2;
+}
+
+.circle-fill {
+    fill: none;
+    stroke: #4ecdc4;
+    stroke-width: 2;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+/* Exercise Checklist */
+.exercise-checklist {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.exercise-check-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.exercise-check-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.exercise-check-item.completed {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(102, 126, 234, 0.1));
+    border-color: #4ecdc4;
+}
+
+.exercise-check-item.current {
+    background: linear-gradient(135deg, rgba(255, 206, 84, 0.2), rgba(255, 118, 117, 0.2));
+    border-color: #ffce54;
+    box-shadow: 0 0 20px rgba(255, 206, 84, 0.3);
+}
+
+/* Custom Checkbox */
+.check-wrapper {
+    margin-right: 1rem;
+}
+
+.exercise-checkbox {
+    display: none;
+}
+
+.check-label {
+    display: block;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    position: relative;
+}
+
+.check-icon {
+    width: 100%;
+    height: 100%;
+    background: #ecf0f1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.exercise-checkbox:checked + .check-label .check-icon {
+    background: #4ecdc4;
+    border-color: #4ecdc4;
+    transform: scale(1.1);
+}
+
+.check-icon i {
+    color: white;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.exercise-checkbox:checked + .check-label .check-icon i {
+    opacity: 1;
+}
+
+.exercise-details {
+    flex: 1;
+}
+
+.exercise-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.exercise-specs {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge.pending {
+    background: rgba(149, 165, 166, 0.2);
+    color: #95a5a6;
+}
+
+.status-badge.in-progress {
+    background: rgba(255, 206, 84, 0.2);
+    color: #f39c12;
+}
+
+.status-badge.completed {
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ecdc4;
+}
+
+/* Actions */
+.progress-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.progress-actions .btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+}
+
+/* Animations */
+@keyframes checkmark {
+    0% { transform: scale(0) rotate(45deg); }
+    50% { transform: scale(1.2) rotate(45deg); }
+    100% { transform: scale(1) rotate(45deg); }
+}
+
+.exercise-checkbox:checked + .check-label .check-icon {
+    animation: checkmark 0.3s ease;
+}
+
+/* Motivational Card Styles */
+.motivational-section {
+    margin: 1.5rem 0;
+    animation: slideInUp 0.6s ease;
+}
+
+.motivational-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    max-height: 200px;
+}
+
+.card-image-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+}
+
+.motivation-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 1.5rem;
+    color: white;
+}
+
+.motivation-text h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.motivation-text p {
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Show motivation button when appropriate */
+.show-motivation-btn #get-motivation {
+    display: inline-block !important;
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    border-color: #4ecdc4;
+    color: white;
+}
+
+.show-motivation-btn #get-motivation:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes motivationPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.motivational-card:hover {
+    animation: motivationPulse 2s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .progress-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .progress-actions {
+        flex-direction: column;
+    }
+    
+    .progress-actions .btn {
+        width: 100%;
+    }
+    
+    .card-image-container {
+        height: 160px;
+    }
+    
+    .card-overlay {
+        padding: 1rem;
+    }
+    
+    .motivation-text h5 {
+        font-size: 1rem;
+    }
+    
+    .motivation-text p {
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Progress Tracker Logic
+    const progressTracker = {
+        exercises: document.querySelectorAll('.exercise-check-item'),
+        checkboxes: document.querySelectorAll('.exercise-checkbox'),
+        progressCircle: document.getElementById('progress-circle'),
+        progressPercent: document.getElementById('progress-percent'),
+        currentExNum: document.getElementById('current-ex-num'),
+        totalExercises: document.getElementById('total-exercises'),
+        workoutTimer: document.getElementById('workout-timer'),
+        
+        currentIndex: 0,
+        startTime: Date.now(),
+        timerInterval: null,
+        
+        init() {
+            this.updateUI();
+            this.bindEvents();
+            this.startTimer();
+            this.highlightCurrent();
+        },
+        
+        bindEvents() {
+            this.checkboxes.forEach((checkbox, index) => {
+                checkbox.addEventListener('change', () => {
+                    this.handleExerciseComplete(index, checkbox.checked);
+                });
+            });
+            
+            document.getElementById('mark-current-complete')?.addEventListener('click', () => {
+                this.markCurrentComplete();
+            });
+            
+            document.getElementById('skip-exercise')?.addEventListener('click', () => {
+                this.skipCurrent();
+            });
+            
+            document.getElementById('get-motivation')?.addEventListener('click', () => {
+                this.showMotivation();
+            });
+        },
+        
+        handleExerciseComplete(index, completed) {
+            const item = this.exercises[index];
+            const statusBadges = item.querySelectorAll('.status-badge');
+            
+            if (completed) {
+                item.classList.add('completed');
+                this.showStatusBadge(statusBadges, 'completed');
+                
+                // Move to next exercise if this was current
+                if (index === this.currentIndex) {
+                    this.moveToNext();
+                }
+            } else {
+                item.classList.remove('completed');
+                this.showStatusBadge(statusBadges, 'pending');
+            }
+            
+            this.updateProgress();
+        },
+        
+        markCurrentComplete() {
+            if (this.currentIndex < this.checkboxes.length) {
+                const currentCheckbox = this.checkboxes[this.currentIndex];
+                currentCheckbox.checked = true;
+                currentCheckbox.dispatchEvent(new Event('change'));
+            }
+        },
+        
+        skipCurrent() {
+            this.moveToNext();
+            this.updateProgress();
+        },
+        
+        moveToNext() {
+            // Remove current highlighting
+            this.exercises[this.currentIndex]?.classList.remove('current');
+            
+            // Find next uncompleted exercise
+            for (let i = this.currentIndex + 1; i < this.exercises.length; i++) {
+                if (!this.checkboxes[i].checked) {
+                    this.currentIndex = i;
+                    break;
+                }
+            }
+            
+            this.highlightCurrent();
+            this.updateUI();
+        },
+        
+        highlightCurrent() {
+            // Clear all current highlights
+            this.exercises.forEach(item => item.classList.remove('current'));
+            
+            // Highlight current exercise
+            if (this.currentIndex < this.exercises.length) {
+                const currentItem = this.exercises[this.currentIndex];
+                currentItem.classList.add('current');
+                
+                const statusBadges = currentItem.querySelectorAll('.status-badge');
+                if (!this.checkboxes[this.currentIndex].checked) {
+                    this.showStatusBadge(statusBadges, 'in-progress');
+                }
+            }
+        },
+        
+        showStatusBadge(badges, type) {
+            badges.forEach(badge => badge.style.display = 'none');
+            const targetBadge = [...badges].find(badge => badge.classList.contains(type));
+            if (targetBadge) targetBadge.style.display = 'inline-block';
+        },
+        
+        updateProgress() {
+            const completed = document.querySelectorAll('.exercise-checkbox:checked').length;
+            const total = this.checkboxes.length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            // Update circular progress
+            this.progressCircle.style.strokeDasharray = `${percentage}, 100`;
+            this.progressPercent.textContent = `${percentage}%`;
+        },
+        
+        updateUI() {
+            this.currentExNum.textContent = this.currentIndex + 1;
+            this.totalExercises.textContent = this.exercises.length;
+        },
+        
+        startTimer() {
+            this.timerInterval = setInterval(() => {
+                const elapsed = Date.now() - this.startTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                this.workoutTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Show motivation button every 5 minutes or at 25%, 50%, 75% progress
+                const completed = document.querySelectorAll('.exercise-checkbox:checked').length;
+                const total = this.checkboxes.length;
+                const percentage = (completed / total) * 100;
+                
+                if (minutes > 0 && (minutes % 5 === 0 || percentage >= 25)) {
+                    this.enableMotivationButton();
+                }
+            }, 1000);
+        },
+        
+        enableMotivationButton() {
+            const actionsContainer = document.querySelector('.progress-actions');
+            actionsContainer.classList.add('show-motivation-btn');
+        },
+        
+        async showMotivation() {
+            const motivationCard = document.getElementById('motivational-card');
+            const motivationImage = document.getElementById('motivation-image');
+            const motivationTitle = document.getElementById('motivation-title');
+            const motivationMessage = document.getElementById('motivation-message');
+            
+            // Get current progress for context
+            const completed = document.querySelectorAll('.exercise-checkbox:checked').length;
+            const total = this.checkboxes.length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            // Get motivational content
+            const motivationalContent = this.getMotivationalContent(percentage, completed);
+            
+            // Update card content
+            motivationTitle.textContent = motivationalContent.title;
+            motivationMessage.textContent = motivationalContent.message;
+            motivationImage.src = motivationalContent.imageUrl;
+            
+            // Show the card with animation
+            motivationCard.style.display = 'block';
+            
+            // Hide after 8 seconds
+            setTimeout(() => {
+                motivationCard.style.display = 'none';
+            }, 8000);
+            
+            // Hide motivation button temporarily
+            const actionsContainer = document.querySelector('.progress-actions');
+            actionsContainer.classList.remove('show-motivation-btn');
+        },
+        
+        getMotivationalContent(percentage, completed) {
+            const motivationalMessages = {
+                early: [
+                    { title: "Отличное начало! 🚀", message: "Каждый шаг приближает вас к цели!" },
+                    { title: "Ты можешь это! 💪", message: "Сила приходит к тем, кто не сдается!" },
+                    { title: "Продолжай! 🔥", message: "Твое тело станет сильнее с каждым повторением!" }
+                ],
+                middle: [
+                    { title: "Уже на полпути! 🎯", message: "Ты делаешь невероятную работу!" },
+                    { title: "Не останавливайся! ⚡", message: "Самые сильные результаты ждут впереди!" },
+                    { title: "Ты герой! 🏆", message: "Каждая капля пота - это инвестиция в лучшую версию себя!" }
+                ],
+                final: [
+                    { title: "Финишная прямая! 🏁", message: "Ты почти у цели! Дай все что у тебя есть!" },
+                    { title: "Легенда в деле! 👑", message: "Только самые сильные доходят так далеко!" },
+                    { title: "Последний рывок! 🚀", message: "Твоя трансформация уже началась!" }
+                ]
+            };
+            
+            let messageGroup;
+            if (percentage < 30) {
+                messageGroup = motivationalMessages.early;
+            } else if (percentage < 70) {
+                messageGroup = motivationalMessages.middle;
+            } else {
+                messageGroup = motivationalMessages.final;
+            }
+            
+            const randomMessage = messageGroup[Math.floor(Math.random() * messageGroup.length)];
+            
+            // Select appropriate image category based on progress
+            const imageCategories = ['workout', 'progress', 'quotes'];
+            const selectedCategory = imageCategories[Math.floor(Math.random() * imageCategories.length)];
+            
+            // Generate random image number (R2 has numbered images)
+            const imageNumber = Math.floor(Math.random() * 500) + 1;
+            const paddedNumber = imageNumber.toString().padStart(4, '0');
+            
+            const imageUrl = `{{ R2_PUBLIC_BASE|default:'/media' }}/photos/${selectedCategory}/card_${selectedCategory}_${paddedNumber}.jpg`;
+            
+            return {
+                title: randomMessage.title,
+                message: randomMessage.message,
+                imageUrl: imageUrl
+            };
+        }
+    };
+    
+    // Initialize progress tracker
+    progressTracker.init();
+});
+</script>

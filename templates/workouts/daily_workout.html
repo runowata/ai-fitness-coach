@@ -297,6 +297,11 @@
                     <h1 class="workout-title">{{ workout.name }}</h1>
                     <span class="workout-badge">День {{ workout.day_number }} • Неделя {{ workout.week_number }}</span>
                 </div>
+                
+                <!-- Interactive Progress Tracker -->
+                {% if not workout.is_rest_day %}
+                    {% include 'workouts/components/progress_tracker.html' %}
+                {% endif %}
             
                 <div class="card-body p-4">
                     {% if workout.is_rest_day %}
@@ -321,6 +326,12 @@
                         </button>
                     </div>
                 {% else %}
+                    <!-- Exercise Information & Video Player -->
+                    {% if video_playlist %}
+                        <!-- Exercise Info Panel (Above Video) -->
+                        {% include 'workouts/components/exercise_info_panel.html' %}
+                    {% endif %}
+                    
                     <!-- Video Player -->
                     <div class="video-container mb-4">
                         {% if video_playlist and video_playlist.0.url %}
@@ -444,28 +455,8 @@
     </div>
 </div>
 
-<!-- Feedback Modal -->
-<div class="modal fade" id="feedbackModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Как прошла тренировка?</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p>Оцените свои ощущения после тренировки:</p>
-                <div class="feedback-buttons">
-                    <button class="feedback-btn" onclick="submitFeedback('fire')" title="Отлично">🔥</button>
-                    <button class="feedback-btn" onclick="submitFeedback('smile')" title="Хорошо">🙂</button>
-                    <button class="feedback-btn" onclick="submitFeedback('neutral')" title="Нормально">😐</button>
-                    <button class="feedback-btn" onclick="submitFeedback('tired')" title="Тяжело">🤕</button>
-                </div>
-                <textarea id="feedbackNote" class="form-control mt-3" 
-                          placeholder="Дополнительные комментарии (необязательно)"></textarea>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Enhanced Completion Celebration Modal -->
+{% include 'workouts/components/completion_celebration.html' %}
 
 <!-- Substitution Modal -->
 {% if substitutions %}
@@ -584,6 +575,11 @@ function playNextVideo() {
             document.getElementById('currentTitle').textContent = videoTitle;
         }
         
+        // Update exercise info panel
+        if (window.exerciseInfoPanel) {
+            window.exerciseInfoPanel.updateFromVideoIndex(currentVideoIndex);
+        }
+        
         // Update playlist states
         playlistItems.forEach((item, index) => {
             item.classList.remove('active', 'playing');
@@ -631,6 +627,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update title
             if (document.getElementById('currentTitle')) {
                 document.getElementById('currentTitle').textContent = videoTitle;
+            }
+            
+            // Update exercise info panel
+            if (window.exerciseInfoPanel) {
+                window.exerciseInfoPanel.updateFromVideoIndex(index);
             }
             
             // Update playlist states
@@ -984,7 +985,15 @@ function closeFinalVideo() {
 }
 
 function completeWorkout() {
-    submitFeedback('smile');
+    // Gather workout statistics
+    const workoutData = {
+        duration: document.getElementById('workout-timer')?.textContent || '00:00',
+        xpEarned: 50, // Base XP, can be calculated based on exercises
+        streak: 3 // This should come from backend
+    };
+    
+    // Show enhanced celebration modal
+    celebrationModal.show(workoutData);
 }
 
 function showAIAnalysis(analysis) {

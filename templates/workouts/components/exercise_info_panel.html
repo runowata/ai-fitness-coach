@@ -1,0 +1,651 @@
+<!-- Exercise Information Panel -->
+<div class="exercise-info-panel" id="exerciseInfoPanel">
+    <!-- Exercise Title Section (Above Video) -->
+    <div class="exercise-title-section">
+        <div class="exercise-header">
+            <h3 class="exercise-title" id="exerciseTitle">
+                {% if video_playlist.0.exercise_name %}
+                    {{ video_playlist.0.exercise_name }}
+                {% else %}
+                    {{ video_playlist.0.title }}
+                {% endif %}
+            </h3>
+            <div class="exercise-badges">
+                <span class="badge exercise-type-badge" id="exerciseTypeBadge">Техника</span>
+                <span class="badge muscle-group-badge" id="muscleGroupBadge">Все тело</span>
+                <span class="badge level-badge" id="levelBadge">Начинающий</span>
+            </div>
+        </div>
+        
+        <!-- Exercise Parameters -->
+        <div class="exercise-parameters" id="exerciseParameters">
+            {% if video_playlist.0.sets %}
+            <div class="parameter-item">
+                <i class="fas fa-redo"></i>
+                <span class="parameter-label">Подходы:</span>
+                <span class="parameter-value" id="exerciseSets">{{ video_playlist.0.sets }}</span>
+            </div>
+            {% endif %}
+            
+            {% if video_playlist.0.reps %}
+            <div class="parameter-item">
+                <i class="fas fa-sync-alt"></i>
+                <span class="parameter-label">Повторения:</span>
+                <span class="parameter-value" id="exerciseReps">{{ video_playlist.0.reps }}</span>
+            </div>
+            {% endif %}
+            
+            {% if video_playlist.0.rest %}
+            <div class="parameter-item">
+                <i class="fas fa-clock"></i>
+                <span class="parameter-label">Отдых:</span>
+                <span class="parameter-value" id="exerciseRest">{{ video_playlist.0.rest }}с</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Exercise Description Section (Below Video) -->
+<div class="exercise-description-panel" id="exerciseDescriptionPanel">
+    <div class="description-header">
+        <h5 class="description-title">
+            <i class="fas fa-info-circle me-2"></i>
+            Как выполнять упражнение
+        </h5>
+    </div>
+    
+    <div class="description-content">
+        <div class="exercise-description" id="exerciseDescription">
+            <p>Выберите упражнение из плейлиста чтобы увидеть подробное описание техники выполнения.</p>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="exercise-tips" id="exerciseTips" style="display: none;">
+            <h6 class="tips-title">
+                <i class="fas fa-lightbulb me-2"></i>
+                Полезные советы
+            </h6>
+            <ul class="tips-list" id="tipsList">
+                <li>Следите за правильной техникой выполнения</li>
+                <li>Контролируйте дыхание во время упражнения</li>
+                <li>Не спешите, делайте упражнение медленно и осознанно</li>
+            </ul>
+        </div>
+        
+        <!-- Common Mistakes Section -->
+        <div class="exercise-mistakes" id="exerciseMistakes" style="display: none;">
+            <h6 class="mistakes-title">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Распространенные ошибки
+            </h6>
+            <div class="mistakes-content" id="mistakesContent">
+                <p>Избегайте рывковых движений и следите за правильной формой.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="description-actions">
+        <button class="btn btn-outline-primary btn-sm" id="toggleTips">
+            <i class="fas fa-lightbulb me-1"></i>
+            Показать советы
+        </button>
+        <button class="btn btn-outline-warning btn-sm" id="toggleMistakes">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            Частые ошибки
+        </button>
+        <button class="btn btn-outline-info btn-sm" id="slowMotionBtn" style="display: none;">
+            <i class="fas fa-turtle me-1"></i>
+            Замедленное воспроизведение
+        </button>
+    </div>
+</div>
+
+<style>
+/* Exercise Info Panel Styles */
+.exercise-info-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+    margin-bottom: 0;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.exercise-title-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.exercise-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    flex: 1;
+}
+
+.exercise-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.exercise-badges .badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.exercise-type-badge {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+}
+
+.muscle-group-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.level-badge {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+}
+
+.exercise-parameters {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.parameter-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(78, 205, 196, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(78, 205, 196, 0.2);
+}
+
+.parameter-item i {
+    color: #4ecdc4;
+    font-size: 0.9rem;
+}
+
+.parameter-label {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.parameter-value {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Exercise Description Panel */
+.exercise-description-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: none;
+    border-radius: 0 0 15px 15px;
+    padding: 1.5rem;
+    margin-top: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.description-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(78, 205, 196, 0.2);
+}
+
+.description-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.description-title i {
+    color: #4ecdc4;
+}
+
+.description-content {
+    margin-bottom: 1.5rem;
+}
+
+.exercise-description {
+    color: #34495e;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.exercise-description p {
+    margin-bottom: 1rem;
+}
+
+/* Tips and Mistakes Sections */
+.exercise-tips, .exercise-mistakes {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 10px;
+    animation: slideDown 0.3s ease;
+}
+
+.exercise-tips {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(68, 160, 141, 0.05));
+    border: 1px solid rgba(78, 205, 196, 0.2);
+}
+
+.exercise-mistakes {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 193, 7, 0.05));
+    border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.tips-title, .mistakes-title {
+    color: #2c3e50;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.tips-title i {
+    color: #4ecdc4;
+}
+
+.mistakes-title i {
+    color: #ff6b6b;
+}
+
+.tips-list {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.tips-list li {
+    color: #34495e;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.mistakes-content {
+    color: #34495e;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Description Actions */
+.description-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.description-actions .btn {
+    border-radius: 12px;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.description-actions .btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    border-color: #4ecdc4;
+    color: #4ecdc4;
+}
+
+.btn-outline-primary:hover {
+    background: #4ecdc4;
+    border-color: #4ecdc4;
+    box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+}
+
+.btn-outline-warning {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.btn-outline-warning:hover {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-outline-info {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.btn-outline-info:hover {
+    background: #667eea;
+    border-color: #667eea;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .exercise-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .exercise-badges {
+        justify-content: flex-start;
+    }
+    
+    .exercise-title {
+        font-size: 1.25rem;
+    }
+    
+    .exercise-parameters {
+        gap: 1rem;
+    }
+    
+    .parameter-item {
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .description-actions {
+        flex-direction: column;
+    }
+    
+    .description-actions .btn {
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .exercise-info-panel, 
+    .exercise-description-panel {
+        padding: 1rem;
+    }
+    
+    .exercise-parameters {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .parameter-item {
+        justify-content: space-between;
+    }
+}
+</style>
+
+<script>
+// Exercise Info Panel Logic
+document.addEventListener('DOMContentLoaded', function() {
+    const exerciseInfoPanel = {
+        // Store exercise details from backend
+        exerciseDetails: {{ exercise_details_json|safe }},
+        
+        // Current video/exercise tracking
+        currentExerciseSlug: null,
+        
+        // DOM elements
+        elements: {
+            title: document.getElementById('exerciseTitle'),
+            typeBadge: document.getElementById('exerciseTypeBadge'),
+            muscleGroupBadge: document.getElementById('muscleGroupBadge'),
+            levelBadge: document.getElementById('levelBadge'),
+            sets: document.getElementById('exerciseSets'),
+            reps: document.getElementById('exerciseReps'),
+            rest: document.getElementById('exerciseRest'),
+            parameters: document.getElementById('exerciseParameters'),
+            description: document.getElementById('exerciseDescription'),
+            tips: document.getElementById('exerciseTips'),
+            mistakes: document.getElementById('exerciseMistakes'),
+            tipsList: document.getElementById('tipsList'),
+            mistakesContent: document.getElementById('mistakesContent')
+        },
+        
+        init() {
+            this.bindEvents();
+            this.updateFromFirstVideo();
+        },
+        
+        bindEvents() {
+            // Tips toggle
+            document.getElementById('toggleTips')?.addEventListener('click', () => {
+                const tips = this.elements.tips;
+                const btn = document.getElementById('toggleTips');
+                
+                if (tips.style.display === 'none' || !tips.style.display) {
+                    tips.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-lightbulb me-1"></i>Скрыть советы';
+                } else {
+                    tips.style.display = 'none';
+                    btn.innerHTML = '<i class="fas fa-lightbulb me-1"></i>Показать советы';
+                }
+            });
+            
+            // Mistakes toggle
+            document.getElementById('toggleMistakes')?.addEventListener('click', () => {
+                const mistakes = this.elements.mistakes;
+                const btn = document.getElementById('toggleMistakes');
+                
+                if (mistakes.style.display === 'none' || !mistakes.style.display) {
+                    mistakes.style.display = 'block';
+                    btn.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Скрыть ошибки';
+                } else {
+                    mistakes.style.display = 'none';
+                    btn.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Частые ошибки';
+                }
+            });
+            
+            // Slow motion toggle
+            document.getElementById('slowMotionBtn')?.addEventListener('click', () => {
+                const video = document.getElementById('mainVideo');
+                if (video) {
+                    if (video.playbackRate === 1) {
+                        video.playbackRate = 0.5;
+                        document.getElementById('slowMotionBtn').innerHTML = '<i class="fas fa-play me-1"></i>Обычная скорость';
+                    } else {
+                        video.playbackRate = 1;
+                        document.getElementById('slowMotionBtn').innerHTML = '<i class="fas fa-turtle me-1"></i>Замедленное воспроизведение';
+                    }
+                }
+            });
+        },
+        
+        updateFromFirstVideo() {
+            // Initialize with first video if available
+            const videoPlaylist = {{ video_playlist_json|safe }};
+            if (videoPlaylist && videoPlaylist.length > 0) {
+                this.updateFromVideoItem(videoPlaylist[0]);
+            }
+        },
+        
+        updateFromVideoItem(videoItem) {
+            // Update exercise info when video changes
+            if (videoItem.exercise_slug && this.exerciseDetails[videoItem.exercise_slug]) {
+                this.updateFromExerciseData(this.exerciseDetails[videoItem.exercise_slug], videoItem);
+            } else {
+                // Fallback for videos without exercise data
+                this.updateFromVideoData(videoItem);
+            }
+        },
+        
+        updateFromExerciseData(exerciseData, videoItem) {
+            this.currentExerciseSlug = exerciseData.id;
+            
+            // Update title
+            if (this.elements.title) {
+                this.elements.title.textContent = exerciseData.name_ru || exerciseData.id;
+            }
+            
+            // Update badges
+            if (this.elements.typeBadge) {
+                const typeMap = {
+                    'technique': 'Техника',
+                    'mistake': 'Ошибки',
+                    'instruction': 'Инструкция',
+                    'intro': 'Вступление'
+                };
+                this.elements.typeBadge.textContent = typeMap[videoItem.type] || videoItem.type || 'Упражнение';
+            }
+            
+            if (this.elements.muscleGroupBadge) {
+                this.elements.muscleGroupBadge.textContent = exerciseData.muscle_group || 'Все тело';
+            }
+            
+            if (this.elements.levelBadge) {
+                const levelMap = {
+                    'beginner': 'Начинающий',
+                    'intermediate': 'Средний',
+                    'advanced': 'Продвинутый'
+                };
+                this.elements.levelBadge.textContent = levelMap[exerciseData.level] || 'Начинающий';
+            }
+            
+            // Update parameters
+            this.updateParameters(exerciseData);
+            
+            // Update description
+            if (this.elements.description) {
+                this.elements.description.innerHTML = `<p>${exerciseData.description || 'Описание упражнения скоро будет добавлено.'}</p>`;
+            }
+            
+            // Generate contextual tips
+            this.generateTips(exerciseData);
+        },
+        
+        updateFromVideoData(videoItem) {
+            // Fallback for videos without detailed exercise data
+            if (this.elements.title) {
+                this.elements.title.textContent = videoItem.title || 'Упражнение';
+            }
+            
+            if (this.elements.typeBadge) {
+                const typeMap = {
+                    'technique': 'Техника',
+                    'mistake': 'Ошибки', 
+                    'instruction': 'Инструкция',
+                    'intro': 'Вступление'
+                };
+                this.elements.typeBadge.textContent = typeMap[videoItem.type] || 'Видео';
+            }
+            
+            // Update parameters from video data
+            const params = {
+                sets: videoItem.sets,
+                reps: videoItem.reps,
+                rest_seconds: videoItem.rest
+            };
+            this.updateParameters(params);
+            
+            // Generic description
+            if (this.elements.description) {
+                this.elements.description.innerHTML = '<p>Следуйте инструкциям в видео для правильного выполнения упражнения.</p>';
+            }
+        },
+        
+        updateParameters(data) {
+            if (this.elements.sets && data.sets) {
+                this.elements.sets.textContent = data.sets;
+                this.elements.sets.parentElement.style.display = 'flex';
+            } else if (this.elements.sets) {
+                this.elements.sets.parentElement.style.display = 'none';
+            }
+            
+            if (this.elements.reps && data.reps) {
+                this.elements.reps.textContent = data.reps;
+                this.elements.reps.parentElement.style.display = 'flex';
+            } else if (this.elements.reps) {
+                this.elements.reps.parentElement.style.display = 'none';
+            }
+            
+            if (this.elements.rest && data.rest_seconds) {
+                this.elements.rest.textContent = data.rest_seconds + 'с';
+                this.elements.rest.parentElement.style.display = 'flex';
+            } else if (this.elements.rest) {
+                this.elements.rest.parentElement.style.display = 'none';
+            }
+        },
+        
+        generateTips(exerciseData) {
+            // Generate contextual tips based on exercise type and muscle group
+            const tips = [];
+            
+            if (exerciseData.exercise_type === 'strength') {
+                tips.push('Контролируйте вес на протяжении всего движения');
+                tips.push('Выполняйте упражнение в полной амплитуде движения');
+            }
+            
+            if (exerciseData.exercise_type === 'cardio') {
+                tips.push('Поддерживайте устойчивый темп дыхания');
+                tips.push('Следите за интенсивностью нагрузки');
+            }
+            
+            if (exerciseData.muscle_group?.includes('Спина')) {
+                tips.push('Сохраняйте естественный изгиб позвоночника');
+                tips.push('Сведите лопатки и удерживайте их в этом положении');
+            }
+            
+            // Add general tips
+            tips.push('Сосредоточьтесь на правильной технике, а не на скорости');
+            tips.push('Делайте паузу в пиковой точке сокращения мышцы');
+            
+            if (this.elements.tipsList) {
+                this.elements.tipsList.innerHTML = tips.map(tip => `<li>${tip}</li>`).join('');
+            }
+        },
+        
+        // Public method to update from external video changes
+        updateFromVideoIndex(videoIndex) {
+            const videoPlaylist = {{ video_playlist_json|safe }};
+            if (videoPlaylist && videoPlaylist[videoIndex]) {
+                this.updateFromVideoItem(videoPlaylist[videoIndex]);
+                
+                // Show slow motion button for technique videos
+                const slowMotionBtn = document.getElementById('slowMotionBtn');
+                if (slowMotionBtn) {
+                    if (videoPlaylist[videoIndex].type === 'technique') {
+                        slowMotionBtn.style.display = 'inline-block';
+                    } else {
+                        slowMotionBtn.style.display = 'none';
+                    }
+                }
+            }
+        }
+    };
+    
+    // Initialize exercise info panel
+    exerciseInfoPanel.init();
+    
+    // Make it globally available for video player integration
+    window.exerciseInfoPanel = exerciseInfoPanel;
+});
+</script>

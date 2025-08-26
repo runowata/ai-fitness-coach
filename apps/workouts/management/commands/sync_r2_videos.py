@@ -261,23 +261,23 @@ class Command(BaseCommand):
         """
         
         patterns = [
-            # Exercise technique/mistake videos
+            # Exercise technique/mistake videos (archetype-neutral)
             (r'videos/exercises/([^_]+)_(technique|mistake)_([^/]+)\.mp4$', 'exercise_basic'),
             
-            # Instruction videos  
-            (r'videos/instructions/([^_]+)_instruction_(mentor|professional|peer)_([^/]+)\.mp4$', 'exercise_instruction'),
+            # Instruction videos with R2 archetype names
+            (r'videos/instructions/([^_]+)_instruction_(wise_mentor|pro_coach|best_mate)_([^/]+)\.mp4$', 'exercise_instruction'),
             
-            # Reminder videos
-            (r'videos/reminders/([^_]+)_reminder_(mentor|professional|peer)_(\d+)\.mp4$', 'exercise_reminder'),
+            # Reminder videos with R2 archetype names
+            (r'videos/reminders/([^_]+)_reminder_(wise_mentor|pro_coach|best_mate)_(\d+)\.mp4$', 'exercise_reminder'),
             
-            # Weekly motivation
-            (r'videos/motivation/weekly_(mentor|professional|peer)_week(\d+)\.mp4$', 'weekly_motivation'),
+            # Weekly motivation with R2 archetype names
+            (r'videos/motivation/weekly_(wise_mentor|pro_coach|best_mate)_week(\d+)\.mp4$', 'weekly_motivation'),
             
-            # Contextual intro/outro
-            (r'videos/(intro|outro)/(mentor|professional|peer)_(intro|outro)_(\d+)\.mp4$', 'contextual'),
+            # Contextual intro/outro with R2 archetype names
+            (r'videos/(intro|outro)/(wise_mentor|pro_coach|best_mate)_(intro|outro)_(\d+)\.mp4$', 'contextual'),
             
-            # Mid-workout motivation  
-            (r'videos/mid_workout/(mentor|professional|peer)_mid_(\d+)\.mp4$', 'mid_workout'),
+            # Mid-workout motivation with R2 archetype names
+            (r'videos/mid_workout/(wise_mentor|pro_coach|best_mate)_mid_(\d+)\.mp4$', 'mid_workout'),
         ]
         
         for pattern, video_type in patterns:
@@ -294,34 +294,41 @@ class Command(BaseCommand):
     def _extract_metadata_from_match(self, match, video_type: str, s3_key: str) -> Dict:
         """Extract metadata from regex match based on video type"""
         
+        # Map R2 archetype names to internal ones
+        archetype_mapping = {
+            'wise_mentor': 'mentor',
+            'pro_coach': 'professional', 
+            'best_mate': 'peer'
+        }
+        
         if video_type == 'exercise_basic':
             exercise_slug, kind, model = match.groups()
             return {
                 'exercise_slug': exercise_slug,
                 'r2_kind': kind,
-                'r2_archetype': 'mentor',  # Default for basic exercise videos
+                'r2_archetype': '',  # Exercise videos are archetype-neutral
                 'model_name': model,
                 'video_type': 'exercise',
                 's3_key': s3_key
             }
         
         elif video_type == 'exercise_instruction':
-            exercise_slug, archetype, model = match.groups()
+            exercise_slug, r2_archetype, model = match.groups()
             return {
                 'exercise_slug': exercise_slug,
                 'r2_kind': VideoKind.INSTRUCTION,
-                'r2_archetype': archetype,
+                'r2_archetype': archetype_mapping.get(r2_archetype, r2_archetype),
                 'model_name': model,
                 'video_type': 'exercise',
                 's3_key': s3_key
             }
         
         elif video_type == 'exercise_reminder':
-            exercise_slug, archetype, number = match.groups()
+            exercise_slug, r2_archetype, number = match.groups()
             return {
                 'exercise_slug': exercise_slug,
                 'r2_kind': VideoKind.REMINDER,
-                'r2_archetype': archetype,
+                'r2_archetype': archetype_mapping.get(r2_archetype, r2_archetype),
                 'model_name': f'reminder_{number}',
                 'reminder_text': f'Reminder {number}',
                 'video_type': 'exercise',
@@ -329,11 +336,11 @@ class Command(BaseCommand):
             }
         
         elif video_type == 'weekly_motivation':
-            archetype, week_number = match.groups()
+            r2_archetype, week_number = match.groups()
             return {
                 'exercise_slug': None,
                 'r2_kind': VideoKind.WEEKLY,
-                'r2_archetype': archetype,
+                'r2_archetype': archetype_mapping.get(r2_archetype, r2_archetype),
                 'model_name': f'week_{week_number}',
                 'week_context': int(week_number),
                 'video_type': 'global',
@@ -341,12 +348,12 @@ class Command(BaseCommand):
             }
         
         elif video_type == 'contextual':
-            category, archetype, kind, variation = match.groups()
+            category, r2_archetype, kind, variation = match.groups()
             r2_kind = VideoKind.CONTEXTUAL_INTRO if kind == 'intro' else VideoKind.CONTEXTUAL_OUTRO
             return {
                 'exercise_slug': None,
                 'r2_kind': r2_kind,
-                'r2_archetype': archetype,
+                'r2_archetype': archetype_mapping.get(r2_archetype, r2_archetype),
                 'model_name': f'{kind}_{variation}',
                 'variation_number': int(variation),
                 'position_in_workout': 'intro' if kind == 'intro' else 'outro',
@@ -355,11 +362,11 @@ class Command(BaseCommand):
             }
         
         elif video_type == 'mid_workout':
-            archetype, variation = match.groups()
+            r2_archetype, variation = match.groups()
             return {
                 'exercise_slug': None,
                 'r2_kind': VideoKind.MID_WORKOUT,
-                'r2_archetype': archetype,
+                'r2_archetype': archetype_mapping.get(r2_archetype, r2_archetype),
                 'model_name': f'mid_{variation}',
                 'variation_number': int(variation),
                 'position_in_workout': 'mid',
@@ -378,14 +385,31 @@ class Command(BaseCommand):
             return None
         
         filename = parts[-1]
-        parts[-2] if len(parts) > 1 else 'unknown'
+        directory = parts[-2] if len(parts) > 1 else 'unknown'
+        
+        # Map R2 archetype names to our internal ones
+        archetype_mapping = {
+            'wise_mentor': 'mentor',
+            'pro_coach': 'professional', 
+            'best_mate': 'peer'
+        }
         
         # Try to determine archetype from filename
-        archetype = 'mentor'  # Default
-        for arch in ['mentor', 'professional', 'peer']:
-            if arch in filename.lower():
-                archetype = arch
-                break
+        archetype = None  # Start with None - exercise videos should be archetype-neutral
+        
+        # Only assign archetype for non-exercise videos (instruction, motivation, etc.)
+        if directory not in ['exercises']:
+            for r2_arch, internal_arch in archetype_mapping.items():
+                if r2_arch in filename.lower():
+                    archetype = internal_arch
+                    break
+            
+            # If no specific archetype found and it's not an exercise video, default to mentor
+            if archetype is None and directory in ['instructions', 'motivation', 'intro', 'outro', 'weekly']:
+                archetype = 'mentor'
+        else:
+            # Exercise videos (technique, mistake) should be archetype-neutral
+            archetype = ''  # Empty string for neutral
         
         # Try to determine video kind
         r2_kind = VideoKind.INSTRUCTION  # Default
@@ -473,12 +497,11 @@ class Command(BaseCommand):
             if field in metadata:
                 clip_data[field] = metadata[field]
         
+        # Add R2 key for direct URL access
+        clip_data['r2_key'] = s3_key
+        
         # Create the clip
         clip = VideoClip.objects.create(**clip_data)
-        
-        # Set the r2_file field (this is tricky - we need to create a File instance)
-        # For now, we'll just store the S3 key in a custom field or leave it empty
-        # The video_storage.py will handle URL generation based on the S3 key
         
         return clip
 
@@ -494,6 +517,11 @@ class Command(BaseCommand):
                 if old_value != new_value:
                     setattr(clip, field, new_value)
                     updated_fields.append(field)
+        
+        # Update R2 key if different
+        if clip.r2_key != s3_key:
+            clip.r2_key = s3_key
+            updated_fields.append('r2_key')
         
         if updated_fields:
             clip.save(update_fields=updated_fields)

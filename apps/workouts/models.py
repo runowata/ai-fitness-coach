@@ -103,6 +103,11 @@ class VideoClip(models.Model):
         null=True,
         help_text='Video file in R2 storage'
     )
+    r2_key = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text='R2 storage key/path for direct access'
+    )
     r2_kind = models.CharField(
         max_length=20,
         choices=R2_KIND_CHOICES,
@@ -223,13 +228,17 @@ class VideoClip(models.Model):
         if self.r2_file:
             from apps.core.services.media import MediaService
             return MediaService.get_signed_url(self.r2_file)
+        elif self.r2_key:
+            # Direct R2 key access for synced videos
+            from apps.core.services.media import MediaService
+            return MediaService.get_signed_url_from_key(self.r2_key)
         return ''
     
     @property
     def has_video(self) -> bool:
         """Check if video clip has available video content"""
         if self.provider == VideoProvider.R2:
-            return bool(self.r2_file)
+            return bool(self.r2_file or self.r2_key)
         if self.provider == VideoProvider.STREAM:
             return bool(self.stream_uid or self.playback_id)
         if self.provider == VideoProvider.EXTERNAL:
