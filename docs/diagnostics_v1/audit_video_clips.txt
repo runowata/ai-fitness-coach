@@ -1,0 +1,30 @@
+🔍 Starting VideoClip audit against R2 storage...
+Auditing 0 video clips...
+
+============================================================
+📊 AUDIT SUMMARY
+============================================================
+Total clips audited: 0
+Valid clips: 0
+Missing from R2: 0
+Invalid references: 0
+Traceback (most recent call last):
+  File "/Users/alexbel/Desktop/Проекты/AI Fitness Coach/manage.py", line 22, in <module>
+    main()
+  File "/Users/alexbel/Desktop/Проекты/AI Fitness Coach/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Users/alexbel/.pyenv/versions/3.12.2/lib/python3.12/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "/Users/alexbel/.pyenv/versions/3.12.2/lib/python3.12/site-packages/django/core/management/__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Users/alexbel/.pyenv/versions/3.12.2/lib/python3.12/site-packages/django/core/management/base.py", line 413, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Users/alexbel/.pyenv/versions/3.12.2/lib/python3.12/site-packages/django/core/management/base.py", line 459, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alexbel/Desktop/Проекты/AI Fitness Coach/apps/workouts/management/commands/audit_video_clips.py", line 119, in handle
+    self._generate_report(
+  File "/Users/alexbel/Desktop/Проекты/AI Fitness Coach/apps/workouts/management/commands/audit_video_clips.py", line 196, in _generate_report
+    self.stdout.write(f"Success rate: {(valid_clips/total_clips)*100:.1f}%")
+                                        ~~~~~~~~~~~^~~~~~~~~~~~
+ZeroDivisionError: division by zero

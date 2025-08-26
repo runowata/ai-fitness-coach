@@ -1,0 +1,195 @@
+tests/test_api_endpoints.py:8:from apps.workouts.models import CSVExercise, ExplainerVideo, WeeklyLesson, WeeklyNotification
+tests/test_api_endpoints.py:29:        self.exercise = CSVExercise.objects.create(
+database_schema_analysis.json:134:    "Workouts app has complex V2 schema with CSVExercise and VideoClip models",
+docs/diagnostics_v1/integrity.txt:3:CSVExercise дубликаты slug: -1
+docs/diagnostics_v1/check_counts.py:1:from apps.workouts.models import CSVExercise, VideoClip, WeeklyLesson, FinalVideo, DailyWorkout
+docs/diagnostics_v1/check_counts.py:3:print('CSVExercise:', CSVExercise.objects.count())
+tests/test_ai_whitelist_enforcement.py:18:        from apps.workouts.models import CSVExercise
+tests/test_ai_whitelist_enforcement.py:22:            CSVExercise.objects.create(
+tests/test_ai_whitelist_enforcement.py:30:            CSVExercise.objects.create(
+tests/test_ai_whitelist_enforcement.py:38:            CSVExercise.objects.create(
+tests/test_ai_whitelist_enforcement.py:46:            CSVExercise.objects.create(
+docs/diagnostics_v1/models_list.txt:34:workouts.CSVExercise
+CLAUDE.md:87:- **workouts/** - Exercise catalog (CSVExercise), workout plans, video management 
+tests/test_video_storage_adapters.py:201:        from apps.workouts.models import CSVExercise
+tests/test_video_storage_adapters.py:204:        self.exercise = CSVExercise.objects.create(
+docs/diagnostics_v1/table_counts.txt:1:CSVExercise: 0
+docs/flow_v1.md:16:- CSVExercise (импорт: apps/workouts/management/commands/import_exercises.py) из data/clean/exercises.csv
+docs/flow_v1.md:17:- VideoClip (связь c CSVExercise, archetype, r2_kind, provider, duration_seconds, r2_file/path)
+docs/flow_v1.md:43:- БД: WorkoutPlan / DailyWorkout / CSVExercise / VideoClip / WeeklyLesson / FinalVideo
+tests/factories.py:12:from apps.workouts.models import CSVExercise, DailyWorkout, VideoClip, VideoProvider, WorkoutPlan
+tests/factories.py:27:class CSVExerciseFactory(DjangoModelFactory):
+tests/factories.py:29:        model = CSVExercise
+tests/factories.py:47:    exercise = factory.SubFactory(CSVExerciseFactory)
+tests/factories.py:116:class CompleteExerciseFactory(CSVExerciseFactory):
+tests/factories.py:163:            exercise = CSVExerciseFactory(
+PRODUCTION_MIGRATION_RUNBOOK.md:23:- Fixed `apps/workouts/catalog.py` (uses actual CSVExercise fields)
+PRODUCTION_MIGRATION_RUNBOOK.md:157:- `apps/workouts/catalog.py` - Fixed field mapping to actual CSVExercise model
+tests/test_video_playlist_deterministic.py:11:from apps.workouts.models import CSVExercise, VideoClip, VideoProvider
+tests/test_video_playlist_deterministic.py:25:        self.exercise1 = CSVExercise.objects.create(
+tests/test_video_playlist_deterministic.py:34:        self.exercise2 = CSVExercise.objects.create(
+tests/test_video_playlist_deterministic.py:257:        self.exercise = CSVExercise.objects.create(
+apps/workouts/views.py:18:from .models import CSVExercise, DailyWorkout, ExplainerVideo, WeeklyLesson, WeeklyNotification
+apps/workouts/views.py:118:        original_exercise = CSVExercise.objects.get(id=original_slug)
+apps/workouts/views.py:119:        substitute_exercise = CSVExercise.objects.get(id=substitute_slug)
+apps/workouts/services/playlist_v2.py:11:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/services/playlist_v2.py:54:        exists = CSVExercise.objects.filter(id=ex_slug, is_active=True).exists()
+apps/workouts/services/playlist_v2.py:169:        ex = CSVExercise.objects.get(id=ex_slug)
+apps/workouts/services/playlist_v2.py:170:    except CSVExercise.DoesNotExist:
+tests/test_catalog_build.py:2:Test catalog building from CSVExercise model
+tests/test_catalog_build.py:9:from apps.workouts.models import CSVExercise
+tests/test_catalog_build.py:16:        """Create test CSVExercise instances"""
+tests/test_catalog_build.py:18:        CSVExercise.objects.create(
+tests/test_catalog_build.py:29:        CSVExercise.objects.create(
+tests/test_catalog_build.py:40:        CSVExercise.objects.create(
+tests/test_catalog_build.py:51:        """Test that catalog builds without errors from CSVExercise data"""
+tests/test_catalog_build.py:60:        """Test that fields are mapped correctly from CSVExercise to ExerciseAttributes"""
+apps/workouts/admin.py:4:from .models import CSVExercise, DailyWorkout, Exercise, VideoClip, WorkoutPlan
+apps/workouts/admin.py:42:@admin.register(CSVExercise)
+apps/workouts/admin.py:43:class CSVExerciseAdmin(admin.ModelAdmin):
+tests/test_unit_catalog_whitelist.py:14:from tests.factories import CSVExerciseFactory, VideoClipFactory
+tests/test_unit_catalog_whitelist.py:27:            CSVExerciseFactory(
+tests/test_unit_catalog_whitelist.py:33:            CSVExerciseFactory(
+tests/test_unit_catalog_whitelist.py:39:            CSVExerciseFactory(
+tests/test_unit_catalog_whitelist.py:45:            CSVExerciseFactory(
+tests/test_unit_catalog_whitelist.py:142:        self.exercise_with_videos = CSVExerciseFactory(slug='push-ups')
+tests/test_unit_catalog_whitelist.py:143:        self.exercise_without_videos = CSVExerciseFactory(slug='no-videos')
+tests/test_unit_catalog_whitelist.py:229:            CSVExerciseFactory(slug='new-exercise')
+tests/test_unit_catalog_whitelist.py:236:        exercise = CSVExerciseFactory()
+tests/test_unit_catalog_whitelist.py:253:    CSVExerciseFactory(slug='chest1', muscle_group='chest')
+tests/test_unit_catalog_whitelist.py:254:    CSVExerciseFactory(slug='chest2', muscle_group='chest') 
+tests/test_unit_catalog_whitelist.py:255:    CSVExerciseFactory(slug='legs1', muscle_group='legs')
+apps/workouts/video_services.py:18:from .models import CSVExercise, DailyWorkout
+apps/workouts/video_services.py:35:        from apps.workouts.models import CSVExercise, ExplainerVideo
+apps/workouts/video_services.py:41:                exercise = CSVExercise.objects.filter(id=ex).first()
+apps/workouts/video_services.py:352:            exercise = CSVExercise.objects.get(**exercise_lookup)
+apps/workouts/video_services.py:353:        except CSVExercise.DoesNotExist:
+apps/workouts/video_services.py:464:    def get_substitution_options(self, exercise_slug: str, user_equipment: List[str]) -> List[CSVExercise]:
+apps/workouts/video_services.py:467:            exercise = CSVExercise.objects.get(id=exercise_slug)
+apps/workouts/video_services.py:476:        except CSVExercise.DoesNotExist:
+apps/workouts/emergency_service.py:12:from apps.workouts.models import CSVExercise, DailyWorkout, WorkoutExecution, WorkoutPlan
+apps/workouts/emergency_service.py:84:                    exercise = CSVExercise.objects.get(id=slug)
+apps/workouts/emergency_service.py:93:                except CSVExercise.DoesNotExist:
+apps/workouts/emergency_service.py:100:                            exercise = CSVExercise.objects.get(id=fallback_slug)
+apps/workouts/emergency_service.py:109:                        except CSVExercise.DoesNotExist:
+apps/workouts/migrations/0005_remove_unnecessary_category_field.py:1:# Remove unnecessary category field from CSVExercise
+apps/workouts/catalog.py:13:from .models import CSVExercise
+apps/workouts/catalog.py:82:        # Use actual CSVExercise fields that exist in the model and CSV
+apps/workouts/catalog.py:83:        exercises = CSVExercise.objects.filter(is_active=True).values(
+apps/workouts/catalog.py:112:            # Safe defaults for fields that don't exist in CSVExercise
+apps/workouts/management/commands/import_r2_exercises.py:12:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/management/commands/import_r2_exercises.py:28:            help='Clear existing CSVExercise records before import'
+apps/workouts/management/commands/import_r2_exercises.py:68:        """Clear existing CSVExercise records"""
+apps/workouts/management/commands/import_r2_exercises.py:70:            self.stdout.write('🗑️  Clearing existing CSVExercise records...')
+apps/workouts/management/commands/import_r2_exercises.py:71:            count = CSVExercise.objects.count()
+apps/workouts/management/commands/import_r2_exercises.py:72:            CSVExercise.objects.all().delete()
+apps/workouts/management/commands/import_r2_exercises.py:75:            count = CSVExercise.objects.count()
+apps/workouts/management/commands/import_r2_exercises.py:76:            self.stdout.write(f'🗑️  Would delete {count} existing CSVExercise records')
+apps/workouts/management/commands/import_r2_exercises.py:97:                        exercise, created = CSVExercise.objects.update_or_create(
+apps/workouts/management/commands/import_r2_exercises.py:162:        type_breakdown = CSVExercise.objects.values('exercise_type').annotate(
+apps/workouts/migrations/0002_add_csvexercise_model.py:1:# Generated to add missing CSVExercise model
+apps/workouts/migrations/0002_add_csvexercise_model.py:20:                    name='CSVExercise',
+apps/workouts/management/commands/bootstrap_v2_min.py:5:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/management/commands/bootstrap_v2_min.py:33:            # CSVExercise uses 'id' field, not 'slug'
+apps/workouts/management/commands/bootstrap_v2_min.py:34:            exercise, created = CSVExercise.objects.get_or_create(
+apps/workouts/management/commands/bootstrap_v2_min.py:107:        exercises_count = CSVExercise.objects.filter(is_active=True).count()
+apps/workouts/management/commands/check_catalog_integrity.py:8:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/management/commands/check_catalog_integrity.py:33:        exercises_without_videos = CSVExercise.objects.filter(
+apps/workouts/management/commands/check_catalog_integrity.py:55:        for exercise in CSVExercise.objects.filter(is_active=True):
+apps/workouts/management/commands/check_catalog_integrity.py:80:                        exercise = CSVExercise.objects.get(id=issue['current'])
+apps/workouts/management/commands/check_catalog_integrity.py:82:                        if not CSVExercise.objects.filter(id=issue['expected']).exists():
+apps/workouts/management/commands/check_catalog_integrity.py:128:            total_exercises = CSVExercise.objects.filter(is_active=True).count()
+apps/workouts/management/commands/check_catalog_integrity.py:149:            if CSVExercise.objects.filter(id=target).exists():
+apps/workouts/management/commands/check_catalog_integrity.py:161:        for exercise in CSVExercise.objects.filter(is_active=True)[:20]:  # Sample check
+apps/workouts/management/commands/system_data_audit.py:7:from apps.workouts.models import CSVExercise, DailyWorkout, VideoClip, WorkoutPlan
+apps/workouts/management/commands/system_data_audit.py:45:        total_exercises = CSVExercise.objects.count()
+apps/workouts/management/commands/system_data_audit.py:46:        active_exercises = CSVExercise.objects.filter(is_active=True).count()
+apps/workouts/management/commands/system_data_audit.py:59:            categories = CSVExercise.objects.values('category').distinct()
+apps/workouts/management/commands/system_data_audit.py:61:                count = CSVExercise.objects.filter(category=cat['category']).count()
+apps/workouts/management/commands/system_data_audit.py:65:        sample_exercises = CSVExercise.objects.all()[:5]
+apps/workouts/management/commands/system_data_audit.py:112:        total_exercises = CSVExercise.objects.count()
+apps/workouts/management/commands/system_data_audit.py:217:        exercises_count = CSVExercise.objects.count()
+apps/workouts/management/commands/check_exercise_mapping.py:4:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/management/commands/check_exercise_mapping.py:22:        total_exercises = CSVExercise.objects.count()
+apps/workouts/management/commands/check_exercise_mapping.py:46:                exercise = CSVExercise.objects.get(id=exercise_slug)
+apps/workouts/management/commands/check_exercise_mapping.py:55:            except CSVExercise.DoesNotExist:
+apps/workouts/management/commands/check_exercise_mapping.py:78:                exercise = CSVExercise.objects.get(**exercise_lookup)
+apps/workouts/management/commands/check_exercise_mapping.py:80:            except CSVExercise.DoesNotExist:
+tests/test_e2e_metrics.py:16:    CSVExerciseFactory,
+tests/test_e2e_metrics.py:311:        push_up_exercise = CSVExerciseFactory(slug='push-ups-mixed')
+apps/core/services/exercise_validation.py:115:            from apps.workouts.models import CSVExercise
+apps/core/services/exercise_validation.py:121:            for exercise in CSVExercise.objects.filter(is_active=True):
+apps/workouts/management/commands/extract_exercises_from_r2.py:3:Management command to extract exercises from R2 videos and create CSVExercise records
+apps/workouts/management/commands/extract_exercises_from_r2.py:16:from apps.workouts.models import CSVExercise
+apps/workouts/management/commands/extract_exercises_from_r2.py:20:    help = 'Extract exercises from R2 video filenames and create CSVExercise records'
+apps/workouts/management/commands/extract_exercises_from_r2.py:60:        # Create CSVExercise records
+apps/workouts/management/commands/extract_exercises_from_r2.py:203:        """Create or update CSVExercise record"""
+apps/workouts/management/commands/extract_exercises_from_r2.py:206:            existing = CSVExercise.objects.filter(id=exercise_name).first()
+apps/workouts/management/commands/extract_exercises_from_r2.py:212:        existing_exercise = CSVExercise.objects.filter(id=exercise_name).first()
+apps/workouts/management/commands/extract_exercises_from_r2.py:245:                exercise = CSVExercise.objects.create(**exercise_data)
+apps/workouts/management/commands/sync_r2_videos.py:20:from apps.workouts.models import CSVExercise, VideoClip, VideoProvider
+apps/workouts/management/commands/sync_r2_videos.py:429:                exercise = CSVExercise.objects.get(id=metadata['exercise_slug'])
+apps/workouts/management/commands/sync_r2_videos.py:431:            except CSVExercise.DoesNotExist:
+apps/workouts/management/commands/sync_r2_videos.py:465:                exercise = CSVExercise.objects.get(id=metadata['exercise_slug'])
+apps/workouts/management/commands/sync_r2_videos.py:467:            except CSVExercise.DoesNotExist:
+apps/workouts/models.py:86:        'CSVExercise', 
+apps/workouts/models.py:399:class CSVExercise(models.Model):
+apps/workouts/models.py:448:    exercise = models.ForeignKey(CSVExercise, on_delete=models.CASCADE, related_name="videos")
+apps/workouts/management/commands/import_exercises.py:7:from apps.workouts.models import CSVExercise
+apps/workouts/management/commands/import_exercises.py:27:                if CSVExercise.objects.filter(id=row["id"]).exists() and created > 0:
+apps/workouts/management/commands/import_exercises.py:42:                obj, is_created = CSVExercise.objects.update_or_create(
+apps/workouts/management/commands/sync_exercise_slugs.py:11:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/management/commands/sync_exercise_slugs.py:105:                target_exercise_exists = CSVExercise.objects.filter(
+apps/workouts/management/commands/sync_exercise_slugs.py:230:                target_exercise = CSVExercise.objects.get(id=mismatch['file_exercise_slug'])
+apps/workouts/management/commands/scan_r2_exercises.py:17:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/management/commands/scan_r2_exercises.py:35:            help='Clear existing CSVExercise and VideoClip records before rebuilding',
+apps/workouts/management/commands/scan_r2_exercises.py:262:        """Rebuild CSVExercise and VideoClip models based on R2 structure"""
+apps/workouts/management/commands/scan_r2_exercises.py:269:            CSVExercise.objects.all().delete()
+apps/workouts/management/commands/scan_r2_exercises.py:276:        # Create CSVExercise records
+apps/workouts/management/commands/scan_r2_exercises.py:277:        self.stdout.write(f'📝 Creating {len(all_exercises)} CSVExercise records...')
+apps/workouts/management/commands/scan_r2_exercises.py:292:            exercise, created = CSVExercise.objects.get_or_create(
+apps/workouts/management/commands/scan_r2_exercises.py:323:                    exercise = CSVExercise.objects.get(id=exercise_code)
+apps/workouts/management/commands/scan_r2_exercises.py:324:                except CSVExercise.DoesNotExist:
+test_r2_import_production.py:42:    # 3. Check if CSVExercise model is accessible
+test_r2_import_production.py:48:            print("   ✅ CSVExercise model is accessible")
+test_r2_import_production.py:50:            print(f"   ❌ CSVExercise model returned {model_response.status_code}")
+test_r2_import_production.py:67:    print("python manage.py shell -c \"from apps.workouts.models import CSVExercise; print(f'Exercises: {CSVExercise.objects.count()}')\"")
+apps/workouts/management/commands/import_explainer_videos.py:7:from apps.workouts.models import CSVExercise, ExplainerVideo
+apps/workouts/management/commands/import_explainer_videos.py:64:                if not CSVExercise.objects.filter(id=exercise_id).exists():
+test_full_system.py:20:from apps.workouts.models import WorkoutPlan, CSVExercise, VideoClip
+test_full_system.py:33:    print(f"  Total exercises: {CSVExercise.objects.count()}")
+test_full_system.py:34:    print(f"  Active exercises: {CSVExercise.objects.filter(is_active=True).count()}")
+apps/workouts/management/commands/import_exercises_v2.py:16:from apps.workouts.models import CSVExercise, VideoClip
+apps/workouts/management/commands/import_exercises_v2.py:89:            exercises_count = CSVExercise.objects.filter(is_active=True).count()
+apps/workouts/management/commands/import_exercises_v2.py:138:                    # Note: CSVExercise model doesn't have duration field
+apps/workouts/management/commands/import_exercises_v2.py:148:                    exercise, created = CSVExercise.objects.update_or_create(
+apps/workouts/management/commands/import_exercises_v2.py:210:                    exercise = CSVExercise.objects.get(id=exercise_id)
+apps/workouts/management/commands/import_exercises_v2.py:211:                except CSVExercise.DoesNotExist:
+apps/workouts/management/commands/import_exercises_v2.py:269:                exercise = CSVExercise.objects.get(id=excel_id)
+apps/workouts/management/commands/import_exercises_v2.py:270:            except CSVExercise.DoesNotExist:
+apps/ai_integration/utils/exercise_whitelist.py:9:from apps.workouts.models import CSVExercise, VideoClip
+apps/ai_integration/utils/exercise_whitelist.py:27:    exercises_with_videos = CSVExercise.objects.filter(
+apps/ai_integration/utils/exercise_whitelist.py:53:    exercises = CSVExercise.objects.filter(
+apps/core/management/commands/quick_data_check.py:7:from apps.workouts.models import CSVExercise, VideoClip
+apps/core/management/commands/quick_data_check.py:19:        exercise_count = CSVExercise.objects.count()
+apps/core/management/commands/quick_data_check.py:20:        active_exercises = CSVExercise.objects.filter(is_active=True).count()
+apps/core/management/commands/quick_data_check.py:29:            first_5 = CSVExercise.objects.all()[:5]
+debug_video_system.py:85:    active_exercises = CSVExercise.objects.filter(is_active=True).count()
+debug_video_system.py:92:    for exercise in CSVExercise.objects.filter(is_active=True):
+apps/ai_integration/fallback_service.py:12:from apps.workouts.models import CSVExercise, DailyWorkout, WorkoutExecution, WorkoutPlan
+apps/ai_integration/fallback_service.py:125:        # Use actual CSVExercise IDs from the database
+apps/ai_integration/fallback_service.py:127:            available_exercises = CSVExercise.objects.filter(
+apps/ai_integration/fallback_service.py:176:                    exercise = CSVExercise.objects.get(id=ex_id)
+apps/ai_integration/fallback_service.py:185:                except CSVExercise.DoesNotExist:
+apps/ai_integration/fallback_service.py:202:            # CSVExercise uses 'id' field (e.g., EX001_v2, EX002_v2, etc.)
+apps/ai_integration/fallback_service.py:203:            common_exercises = CSVExercise.objects.filter(
+apps/ai_integration/fallback_service.py:212:                    'equipment': 'bodyweight'  # Default for CSVExercise
+apps/ai_integration/fallback_service.py:269:            available_exercises = list(CSVExercise.objects.filter(
+apps/ai_integration/fallback_service.py:378:            CSVExercise.objects.get(id=exercise_slug)
+apps/ai_integration/fallback_service.py:380:        except CSVExercise.DoesNotExist:
+apps/core/management/commands/smoke_v2_ready.py:10:from apps.workouts.models import CSVExercise, WorkoutPlan
+apps/core/management/commands/smoke_v2_ready.py:56:            total_exercises = CSVExercise.objects.filter(is_active=True).count()
+apps/ai_integration/schemas_json.py:120:                    "description": "Exercise ID from CSVExercise.id (e.g., EX027_v2)"
+apps/ai_integration/services.py:516:            from apps.workouts.models import CSVExercise
+apps/ai_integration/services.py:520:                    CSVExercise.objects.filter(video_clips__isnull=False)
+apps/ai_integration/services.py:532:                        CSVExercise.objects.values_list('id', flat=True)

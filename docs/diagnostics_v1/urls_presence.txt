@@ -1,0 +1,3 @@
+apps/workouts/urls.py:5:app_name = 'workouts'
+apps/onboarding/urls.py:5:app_name = 'onboarding'
+apps/onboarding/urls.py:8:    path('start/', views.start_onboarding, name='start'),

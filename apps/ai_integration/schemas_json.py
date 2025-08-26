@@ -1,6 +1,109 @@
 # JSON Schema for GPT-5 Responses API
 # Compatible with VideoPlaylistBuilder expectations
 
+# New schema with report first, then plan
+PLAN_WITH_REPORT_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "WorkoutPlanWithReport",
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["report", "plan"],
+    "properties": {
+        "report": {
+            "type": "object",
+            "required": ["intro", "analysis", "recommendations", "safety_notes"],
+            "properties": {
+                "intro": {
+                    "type": "string",
+                    "minLength": 100,
+                    "description": "Motivational introduction based on user's goals and context"
+                },
+                "analysis": {
+                    "type": "string",
+                    "minLength": 200,
+                    "description": "Analysis of user's current state and needs"
+                },
+                "recommendations": {
+                    "type": "array",
+                    "minItems": 3,
+                    "items": {
+                        "type": "string",
+                        "description": "Specific recommendations for success"
+                    }
+                },
+                "safety_notes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "description": "Safety considerations based on user's health conditions"
+                    }
+                },
+                "weekly_progression": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                        "type": "object",
+                        "required": ["week", "focus", "explanation"],
+                        "properties": {
+                            "week": {"type": "integer", "minimum": 1, "maximum": 3},
+                            "focus": {"type": "string"},
+                            "explanation": {"type": "string"}
+                        }
+                    }
+                }
+            }
+        },
+        "plan": {
+            "$ref": "#/$defs/SimplePlan"
+        }
+    },
+    "$defs": {
+        "SimplePlan": {
+            "type": "object",
+            "required": ["weeks"],
+            "properties": {
+                "weeks": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                        "type": "object",
+                        "required": ["days"],
+                        "properties": {
+                            "days": {
+                                "type": "array",
+                                "minItems": 7,
+                                "maxItems": 7,
+                                "items": {
+                                    "type": "object",
+                                    "required": ["exercise_slugs", "is_rest_day"],
+                                    "properties": {
+                                        "exercise_slugs": {
+                                            "type": "array",
+                                            "description": "List of exercise slugs for the day",
+                                            "items": {"type": "string"}
+                                        },
+                                        "is_rest_day": {
+                                            "type": "boolean",
+                                            "description": "True if this is a rest/recovery day"
+                                        },
+                                        "confidence_task": {
+                                            "type": "string",
+                                            "description": "Optional confidence-building task for the day"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 WORKOUT_PLAN_JSON_SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "WorkoutPlan",

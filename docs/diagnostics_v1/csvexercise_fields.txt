@@ -1,0 +1,12 @@
+ai_tags
+created_at
+description
+exercise_type
+id
+is_active
+level
+muscle_group
+name_en
+name_ru
+r2_slug
+updated_at

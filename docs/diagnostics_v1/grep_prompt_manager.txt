@@ -1,0 +1,21 @@
+CLAUDE.md:90:- **ai_integration/** - AI service abstraction, prompt management (PromptManagerV2)
+docs/flow_v1.md:9:- Клиент/промпты: apps/ai_integration/ai_client*.py, apps/ai_integration/prompt_manager_v2.py
+tests/test_prompt_manager.py:2:Tests for PromptManagerV2 critical functionality
+tests/test_prompt_manager.py:7:from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
+tests/test_prompt_manager.py:10:class TestPromptManagerV2:
+tests/test_prompt_manager.py:11:    """Test PromptManagerV2 validation and safety features"""
+tests/test_prompt_manager.py:15:        pm = PromptManagerV2()
+tests/test_prompt_manager.py:33:        pm = PromptManagerV2()
+tests/test_prompt_manager.py:53:        pm = PromptManagerV2()
+tests/test_prompt_manager.py:68:        pm = PromptManagerV2()
+tests/test_prompt_manager.py:91:        pm = PromptManagerV2('v2')  # Use v2 profile
+tests/test_prompt_manager.py:115:        pm = PromptManagerV2('v2')
+tests/test_prompt_manager.py:137:        pm = PromptManagerV2('v2')
+tests/test_prompt_manager.py:155:        pm = PromptManagerV2('v2')
+apps/ai_integration/services.py:17:from .prompt_manager_v2 import PromptManagerV2
+apps/ai_integration/services.py:62:        self.prompt_manager = PromptManagerV2()
+apps/ai_integration/prompt_manager_v2.py:36:class PromptManagerV2:
+apps/ai_integration/prompt_manager_v2.py:318:prompt_manager = PromptManagerV2()
+apps/ai_integration/prompt_manager_v2.py:331:    return PromptManagerV2.normalize_archetype(slug)
+apps/core/management/commands/smoke_v2_ready.py:8:from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
+apps/core/management/commands/smoke_v2_ready.py:36:            pm = PromptManagerV2()

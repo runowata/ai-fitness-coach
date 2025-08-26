@@ -1,0 +1,3 @@
+VideoClip без exercise: 0
+VideoClip.exercise_id указывает в никуда: 0
+CSVExercise дубликаты slug: -1

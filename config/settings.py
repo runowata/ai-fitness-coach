@@ -155,39 +155,50 @@ STORAGES = {
     },
 }
 
-# Media files
-USE_R2_STORAGE = os.getenv('USE_R2_STORAGE', 'False') == 'True'
+# --- Cloudflare R2 / AWS S3 compatible storage ---
+USE_R2_STORAGE = os.getenv("USE_R2_STORAGE", "false").lower() in ("1", "true", "yes")
 
+# Берём R2_* если заданы, иначе падение на AWS_* для совместимости
+R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID", os.getenv("AWS_ACCESS_KEY_ID"))
+R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
+R2_ENDPOINT = os.getenv("R2_ENDPOINT", os.getenv("AWS_S3_ENDPOINT_URL"))
+R2_BUCKET = os.getenv("R2_BUCKET", os.getenv("AWS_STORAGE_BUCKET_NAME"))
+
+# Публичная база может называться по-разному: R2_PUBLIC_BASE или R2_PUBLIC_BASE_URL
+R2_PUBLIC_BASE_URL = os.getenv("R2_PUBLIC_BASE_URL", os.getenv("R2_PUBLIC_BASE"))
+
+# Общие настройки для django-storages/boto3
+AWS_ACCESS_KEY_ID = R2_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = R2_SECRET_ACCESS_KEY
+AWS_STORAGE_BUCKET_NAME = R2_BUCKET
+AWS_S3_ENDPOINT_URL = R2_ENDPOINT
+AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME", "auto")
+AWS_S3_SIGNATURE_VERSION = os.getenv("AWS_S3_SIGNATURE_VERSION", "s3v4")
+
+# Адресация: "virtual" если используешь кастомный домен или рекомендуемую схему, иначе "path"
+AWS_S3_ADDRESSING_STYLE = os.getenv("AWS_S3_ADDRESSING_STYLE", "virtual")
+
+# Срок жизни подписанных ссылок (если вдруг используем)
+AWS_QUERYSTRING_EXPIRE = int(os.getenv("AWS_QUERYSTRING_EXPIRE", "3600"))
+
+# Безопасный дефолт: если USE_R2_STORAGE=true, включаем S3 storage backend
 if USE_R2_STORAGE:
-    # Cloudflare R2 Storage Configuration
-    AWS_ACCESS_KEY_ID = os.getenv('R2_ACCESS_KEY_ID', os.getenv('AWS_ACCESS_KEY_ID'))
-    AWS_SECRET_ACCESS_KEY = os.getenv('R2_SECRET_ACCESS_KEY', os.getenv('AWS_SECRET_ACCESS_KEY'))
-    AWS_STORAGE_BUCKET_NAME = os.getenv('R2_BUCKET', os.getenv('AWS_STORAGE_BUCKET_NAME', 'ai-fitness-media'))
-    AWS_S3_ENDPOINT_URL = os.getenv('R2_ENDPOINT', os.getenv('AWS_S3_ENDPOINT_URL'))
-    AWS_S3_REGION_NAME = 'auto'  # критично для R2
-    AWS_S3_ADDRESSING_STYLE = 'virtual'  # критично для R2
-    AWS_S3_SIGNATURE_VERSION = 's3v4'  # критично для R2
     AWS_DEFAULT_ACL = 'private'
     AWS_QUERYSTRING_AUTH = True
-    AWS_QUERYSTRING_EXPIRE = int(os.getenv('AWS_QUERYSTRING_EXPIRE', '7200'))  # 2 hours for videos
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
-    
-    # R2 Public URL (if configured)
-    R2_PUBLIC_BASE = os.getenv('R2_PUBLIC_BASE', '')
-    
-    # R2 CDN and signed URL configuration
-    R2_CDN_BASE_URL = os.getenv('R2_CDN_BASE_URL', '')
-    R2_SIGNED_URLS = os.getenv('R2_SIGNED_URLS', 'False') == 'True'
-    R2_SIGNED_URL_TTL = int(os.getenv('R2_SIGNED_URL_TTL', '3600'))  # 1 hour default
     
     # Update STORAGES for R2
     STORAGES['default'] = {
         'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
     }
     
-    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+    # Set media URL to R2 public URL if available, otherwise use endpoint URL
+    if R2_PUBLIC_BASE_URL:
+        MEDIA_URL = R2_PUBLIC_BASE_URL if R2_PUBLIC_BASE_URL.endswith('/') else R2_PUBLIC_BASE_URL + '/'
+    else:
+        MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
 
 # Cloudflare Stream settings (for future use)
 CF_STREAM_HLS_TEMPLATE = os.getenv('CF_STREAM_HLS_TEMPLATE', 'https://videodelivery.net/{playback_id}/manifest/video.m3u8')
@@ -288,10 +299,7 @@ AI_REPROMPT_MAX_ATTEMPTS = int(os.getenv('AI_REPROMPT_MAX_ATTEMPTS', '2'))
 FALLBACK_TO_LEGACY_FLOW = os.getenv('FALLBACK_TO_LEGACY_FLOW', 'False') == 'True'
 
 # Video storage configuration
-R2_CDN_BASE_URL = os.getenv('R2_CDN_BASE_URL', '')
-R2_PUBLIC_BASE = os.getenv('R2_PUBLIC_BASE', '')  # Public base URL for motivational cards
-R2_SIGNED_URLS = os.getenv('R2_SIGNED_URLS', 'False') == 'True'
-R2_SIGNED_URL_TTL = int(os.getenv('R2_SIGNED_URL_TTL', '3600'))
+# R2 settings moved to main R2 configuration block above
 
 # Playlist generation configuration
 PLAYLIST_MISTAKE_PROB = float(os.getenv('PLAYLIST_MISTAKE_PROB', '0.30'))

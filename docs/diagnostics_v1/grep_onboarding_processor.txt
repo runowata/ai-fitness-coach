@@ -1,0 +1,21 @@
+CLAUDE.md:99:3. **AI Plan Generation** → OnboardingDataProcessor → WorkoutPlanGenerator → GPT-4/Claude
+CLAUDE.md:108:- `OnboardingDataProcessor` - Processes onboarding for AI (apps/onboarding/services.py)
+test_generation.py:15:from apps.onboarding.services import OnboardingDataProcessor
+test_generation.py:36:        processed_data = OnboardingDataProcessor.collect_user_data(user)
+test_full_system.py:21:from apps.onboarding.services import OnboardingDataProcessor
+test_full_system.py:68:    user_data = OnboardingDataProcessor.collect_user_data(profile)
+apps/onboarding/views.py:504:    from apps.onboarding.services import OnboardingDataProcessor
+apps/onboarding/views.py:579:            user_data = OnboardingDataProcessor.collect_user_data(request.user)
+apps/onboarding/services.py:11:class OnboardingDataProcessor:
+apps/onboarding/services.py:41:                'equipment_list': OnboardingDataProcessor._format_equipment(profile),
+apps/onboarding/services.py:53:            onboarding_data = OnboardingDataProcessor._extract_onboarding_data(profile)
+apps/onboarding/services.py:60:            OnboardingDataProcessor._validate_user_data(user_data)
+apps/onboarding/services.py:68:            return OnboardingDataProcessor._get_fallback_data(user)
+apps/ai_integration/services.py:11:from apps.onboarding.services import OnboardingDataProcessor
+apps/ai_integration/services.py:38:        user_data = OnboardingDataProcessor.collect_user_data(user)
+docs/flow_v1.md:6:- Сервис: apps/onboarding/services.py::OnboardingDataProcessor.collect_user_data
+test_ai_generation_full.py:17:from apps.onboarding.services import OnboardingDataProcessor
+test_ai_generation_full.py:54:        user_data = OnboardingDataProcessor.collect_user_data(user)
+tests/test_integration_onboarding.py:274:    @patch('apps.onboarding.services.OnboardingDataProcessor.collect_user_data')
+tests/test_integration_onboarding.py:288:        from apps.onboarding.services import OnboardingDataProcessor
+tests/test_integration_onboarding.py:290:        result = OnboardingDataProcessor.collect_user_data(self.user)

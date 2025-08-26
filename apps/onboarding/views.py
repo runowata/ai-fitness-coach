@@ -713,9 +713,17 @@ def plan_confirmation(request, plan_id=None):
         return redirect('onboarding:generate_plan')
     
     if request.method == 'POST':
-        # User confirmed the plan
-        latest_plan.is_confirmed = True
+        # User confirmed the plan - change status from DRAFT to CONFIRMED
+        latest_plan.status = 'CONFIRMED'
+        latest_plan.is_confirmed = True  # Keep for backward compatibility
         latest_plan.save()
+        
+        # Create daily workouts from plan
+        from apps.workouts.services import materialize_daily_workouts
+        try:
+            materialize_daily_workouts(latest_plan)
+        except Exception as e:
+            logger.warning(f"Could not materialize daily workouts: {e}")
         
         messages.success(request, 'Отлично! Ваш план активирован. Начнем тренироваться!')
         return redirect('users:dashboard')
@@ -779,16 +787,33 @@ def plan_confirmation(request, plan_id=None):
 
 @login_required
 def plan_preview(request):
-    """Show generated plan preview"""
-    latest_plan = request.user.workout_plans.filter(is_active=True).first()
+    """Show generated plan preview with REPORT first"""
+    # Get or create DRAFT plan
+    latest_plan = request.user.workout_plans.filter(
+        status='DRAFT'
+    ).order_by('-created_at').first()
     
     if not latest_plan:
-        messages.error(request, 'План не найден')
-        return redirect('users:dashboard')
+        # Generate new plan if no DRAFT exists
+        from apps.onboarding.services import OnboardingDataProcessor
+        from apps.ai_integration.services import WorkoutPlanGenerator
+        
+        try:
+            user_data = OnboardingDataProcessor.collect_user_data(request.user)
+            latest_plan = WorkoutPlanGenerator(request.user).generate_plan_with_report(user_data)
+        except Exception as e:
+            messages.error(request, f'Ошибка генерации плана: {str(e)}')
+            return redirect('users:dashboard')
+    
+    # Extract report and plan from plan_data
+    report = latest_plan.plan_data.get('report', {}) if latest_plan.plan_data else {}
+    plan = latest_plan.plan_data.get('plan', {}) if latest_plan.plan_data else {}
     
     context = {
-        'plan': latest_plan,
-        'plan_data': latest_plan.plan_data
+        'workout_plan': latest_plan,
+        'report': report,
+        'plan': plan,
+        'can_confirm': latest_plan.status == 'DRAFT'
     }
     
     return render(request, 'onboarding/plan_preview.html', context)

@@ -14,7 +14,7 @@ class OnboardingDataProcessor:
     @staticmethod
     def collect_user_data(user) -> Dict[str, Any]:
         """
-        Collect comprehensive user data from onboarding for AI processing
+        Collect REAL user data from onboarding responses and profile
         
         Args:
             user: User instance with profile and onboarding data
@@ -23,43 +23,78 @@ class OnboardingDataProcessor:
             Dict containing structured user data for AI prompts
         """
         try:
+            from apps.onboarding.models import UserOnboardingResponse
+            
+            user_data = {}
+            
+            # Step 1: Collect actual onboarding responses via ai_field_name
+            responses = UserOnboardingResponse.objects.filter(
+                user=user
+            ).select_related('question')
+            
+            for response in responses:
+                if response.question.ai_field_name:
+                    key = response.question.ai_field_name
+                    value = response.get_answer_value()
+                    user_data[key] = value
+            
+            # Step 2: Add real UserProfile fields (no fake fields!)
             profile = user.profile
             
-            # Basic profile data
-            user_data = {
-                'age': getattr(profile, 'age', None),
-                'height': getattr(profile, 'height', None),
-                'weight': getattr(profile, 'weight', None),
-                'biological_sex': getattr(profile, 'biological_sex', 'male'),
-                'fitness_level': getattr(profile, 'fitness_level', 'beginner'),
-                'primary_goal': getattr(profile, 'primary_goal', 'general_fitness'),
-                'archetype': getattr(profile, 'archetype', 'mentor'),
-                
-                # Onboarding specifics
-                'injuries': getattr(profile, 'injuries', 'none'),
-                'medical_conditions': getattr(profile, 'medical_conditions', 'none'),
-                'equipment_list': OnboardingDataProcessor._format_equipment(profile),
-                'workout_frequency': getattr(profile, 'workout_frequency', 3),
-                'workout_duration': getattr(profile, 'workout_duration', 45),
-                'duration_weeks': getattr(profile, 'duration_weeks', 3),
-                
-                # Advanced preferences
-                'preferred_workout_time': getattr(profile, 'preferred_workout_time', 'morning'),
-                'training_experience': getattr(profile, 'training_experience', 'beginner'),
-                'motivation_level': getattr(profile, 'motivation_level', 'medium'),
-            }
+            # Basic physical data
+            user_data.update({
+                'age': profile.age,
+                'height': profile.height,
+                'weight': profile.weight,
+                'archetype': profile.archetype,
+            })
             
-            # Add onboarding payload if available
-            onboarding_data = OnboardingDataProcessor._extract_onboarding_data(profile)
-            if onboarding_data:
-                user_data['onboarding_payload_json'] = json.dumps(onboarding_data)
-            else:
-                user_data['onboarding_payload_json'] = '{}'
+            # Health data - using REAL fields from UserProfile
+            if profile.health_conditions:
+                user_data['health_conditions'] = profile.health_conditions
+            if profile.chronic_pain_areas:
+                user_data['chronic_pain_areas'] = profile.chronic_pain_areas
+            if profile.injuries_surgeries:
+                user_data['injuries_surgeries'] = profile.injuries_surgeries
+            if profile.exercise_limitations:
+                user_data['exercise_limitations'] = profile.exercise_limitations
             
-            # Validate required fields
+            # Lifestyle data
+            user_data.update({
+                'work_activity_level': profile.work_activity_level,
+                'sleep_hours': profile.sleep_hours,
+                'sleep_quality': profile.sleep_quality,
+                'stress_level': profile.stress_level,
+                'alcohol_consumption': profile.alcohol_consumption,
+                'is_smoker': profile.is_smoker,
+            })
+            
+            # Sexual health preferences (important for this app's context)
+            if profile.sexual_health_goals:
+                user_data['sexual_health_goals'] = profile.sexual_health_goals
+            user_data.update({
+                'sexual_stamina_rating': profile.sexual_stamina_rating,
+                'flexibility_importance': profile.flexibility_importance,
+                'kegel_exercises_interest': profile.kegel_exercises_interest,
+                'intimacy_confidence': profile.intimacy_confidence,
+            })
+            
+            # Goals and limitations
+            if profile.goals:
+                user_data['goals'] = profile.goals
+            if profile.limitations:
+                user_data['limitations'] = profile.limitations
+            
+            # Calculate BMI if height/weight available
+            if profile.height and profile.weight:
+                height_m = profile.height / 100.0
+                bmi = profile.weight / (height_m * height_m)
+                user_data['bmi'] = round(bmi, 1)
+            
+            # Validate and apply minimal defaults only where critical
             OnboardingDataProcessor._validate_user_data(user_data)
             
-            logger.info(f"Collected user data for user {user.id}: {list(user_data.keys())}")
+            logger.info(f"Collected REAL user data for user {user.id}: {list(user_data.keys())}")
             return user_data
             
         except Exception as e:
@@ -113,7 +148,6 @@ class OnboardingDataProcessor:
             'age': 25,
             'height': 175, 
             'weight': 70,
-            'primary_goal': 'general_fitness',
             'archetype': 'mentor'
         }
         

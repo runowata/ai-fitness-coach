@@ -57,9 +57,10 @@ def create_workout_plan_from_onboarding(user):
 class WorkoutPlanGenerator:
     """Service for generating workout plans using AI"""
     
-    def __init__(self):
+    def __init__(self, user=None):
         self.ai_client = AIClientFactory.create_client()
         self.prompt_manager = PromptManagerV2()
+        self.user = user
     
     def create_plan(self, user, user_data: Dict, use_comprehensive: bool = True) -> 'WorkoutPlan':
         """Create a complete workout plan for user"""
@@ -1328,6 +1329,77 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
                 })
         
         return plan_data
+    
+    def generate_plan_with_report(self, user_data: Dict) -> 'WorkoutPlan':
+        """Generate a DRAFT workout plan with AI report for preview/confirmation flow"""
+        from apps.workouts.models import WorkoutPlan
+        from apps.ai_integration.schemas_json import PLAN_WITH_REPORT_SCHEMA
+        
+        if not self.user:
+            raise ValueError("User must be set to generate plan with report")
+        
+        try:
+            logger.info(f"Generating DRAFT plan with report for user {self.user.id}")
+            
+            archetype = self.prompt_manager.normalize_archetype(user_data.get('archetype', 'mentor'))
+            
+            # Build simple prompt for report + plan generation
+            allowed_slugs = ExerciseValidationService.get_allowed_exercise_slugs(archetype=archetype)
+            prompt = self._build_prompt_with_whitelist(user_data, allowed_slugs)
+            
+            # Use the new schema for report + plan structure
+            if hasattr(self.ai_client, 'generate_structured_completion'):
+                # Use structured completion with schema
+                response_data = self.ai_client.generate_structured_completion(
+                    prompt,
+                    schema=PLAN_WITH_REPORT_SCHEMA,
+                    max_tokens=8192,
+                    temperature=0.7
+                )
+            else:
+                # Fallback to regular completion
+                logger.warning("Using regular completion without schema validation")
+                response_data = self.ai_client.generate_completion(
+                    prompt,
+                    max_tokens=8192,
+                    temperature=0.7
+                )
+                
+                # Basic validation that we have expected structure
+                if not isinstance(response_data, dict):
+                    raise ValueError("AI response is not a dictionary")
+                if 'report' not in response_data or 'plan' not in response_data:
+                    raise ValueError("AI response missing report or plan")
+            
+            # Post-process and enforce allowed exercises on the plan part
+            plan_data = response_data.get('plan', {})
+            plan_data, substitutions, unresolved = self._enforce_allowed_exercises(
+                plan_data, allowed_slugs
+            )
+            
+            if unresolved:
+                logger.warning(f"Some exercises could not be resolved: {unresolved}")
+            
+            # Update the response with processed plan
+            response_data['plan'] = plan_data
+            
+            # Create DRAFT WorkoutPlan
+            workout_plan = WorkoutPlan.objects.create(
+                user=self.user,
+                name=plan_data.get('plan_name', 'Персональный план тренировок'),
+                duration_weeks=plan_data.get('duration_weeks', 3),
+                plan_data=response_data,  # Store the full report + plan structure
+                status='DRAFT',  # DRAFT status for confirmation flow
+                is_active=True,
+                is_confirmed=False
+            )
+            
+            logger.info(f"Created DRAFT plan {workout_plan.id} for user {self.user.id}")
+            return workout_plan
+            
+        except Exception as e:
+            logger.error(f"Error generating plan with report for user {self.user.id}: {e}")
+            raise
     
     def _mark_onboarding_complete(self, user):
         """Окончательно помечает онбординг как завершённый"""

@@ -300,6 +300,13 @@ class WeeklyTheme(models.Model):
 
 
 class WorkoutPlan(models.Model):
+    STATUS_CHOICES = [
+        ('DRAFT', 'Draft - awaiting confirmation'),
+        ('CONFIRMED', 'Confirmed - ready to start'),
+        ('ACTIVE', 'Active - in progress'),
+        ('COMPLETED', 'Completed'),
+    ]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workout_plans')
     
     # Plan details  
@@ -308,8 +315,11 @@ class WorkoutPlan(models.Model):
     # goal field removed - data stored in plan_data JSON and user onboarding data
     
     # AI-generated plan data
-    plan_data = models.JSONField()  # Complete plan structure
-    ai_analysis = models.JSONField(blank=True, null=True)  # AI analysis data
+    plan_data = models.JSONField()  # Complete plan structure with report
+    ai_analysis = models.JSONField(blank=True, null=True)  # AI analysis data (deprecated)
+    
+    # Status tracking
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='DRAFT')
     
     # Weekly adaptation
     last_adaptation_date = models.DateTimeField(null=True, blank=True)
@@ -320,7 +330,7 @@ class WorkoutPlan(models.Model):
     started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    is_confirmed = models.BooleanField(default=False)  # User confirmed the plan
+    is_confirmed = models.BooleanField(default=False)  # Legacy, use status instead
     
     class Meta:
         db_table = 'workout_plans'

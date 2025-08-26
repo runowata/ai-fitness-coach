@@ -1,0 +1,49 @@
+extract_full_r2_exercises.py:305:            'exercise_type', 'level', 'ai_tags', 'category'
+extract_full_r2_exercises.py:341:            ai_tags_map = {
+extract_full_r2_exercises.py:356:                ai_tags_map.get(category, '["Тренировка"]'),
+docs/flow_v1.md:37:- equipment_list — ai_tags сохраняются, но **не используются** как фильтр
+docs/flow_v1.md:41:- CSV: data/clean/exercises.csv (id, name_ru/en, level, exercise_type, muscle_group, ai_tags, is_active)
+docs/diagnostics_v1/csvexercise_fields.txt:1:ai_tags
+tests/test_catalog_build.py:24:            ai_tags=['Силовая', 'Compound'],
+tests/test_catalog_build.py:35:            ai_tags='["Кардио", "Выносливость"]',  # String format from CSV
+tests/test_catalog_build.py:46:            ai_tags=None,  # None ai_tags
+tests/test_catalog_build.py:70:        self.assertTrue(test_01.is_compound)  # 'Compound' in ai_tags
+tests/test_catalog_build.py:90:    def test_ai_tags_parsing(self):
+tests/test_catalog_build.py:91:        """Test safe parsing of ai_tags in different formats"""
+tests/test_catalog_build.py:105:        self.assertFalse(test_03.is_compound)  # No ai_tags
+apps/workouts/admin.py:54:            'fields': ('level', 'muscle_group', 'exercise_type', 'ai_tags')
+apps/workouts/schemas.py:14:    ai_tags: List[str] = Field(default_factory=list)
+scripts/import_exercises.py:29:    "klyuchevye_tegi_dlya_ii": "ai_tags"
+tests/factories.py:40:    ai_tags = factory.LazyFunction(lambda: [])
+apps/workouts/models.py:416:    ai_tags = models.JSONField(blank=True, default=list)
+apps/workouts/management/commands/import_r2_exercises.py:131:        ai_tags = []
+apps/workouts/management/commands/import_r2_exercises.py:132:        if row.get('ai_tags'):
+apps/workouts/management/commands/import_r2_exercises.py:134:                ai_tags = json.loads(row['ai_tags'])
+apps/workouts/management/commands/import_r2_exercises.py:135:                if not isinstance(ai_tags, list):
+apps/workouts/management/commands/import_r2_exercises.py:136:                    ai_tags = [str(ai_tags)]
+apps/workouts/management/commands/import_r2_exercises.py:139:                ai_tags = [row['ai_tags']]
+apps/workouts/management/commands/import_r2_exercises.py:151:            'ai_tags': ai_tags,
+apps/workouts/catalog.py:84:            'id', 'name_ru', 'muscle_group', 'exercise_type', 'level', 'ai_tags'
+apps/workouts/catalog.py:98:            # Safe parsing of ai_tags (can be string from CSV or list from Django)
+apps/workouts/catalog.py:99:            raw_tags = ex.get('ai_tags')
+apps/workouts/catalog.py:102:                    ai_tags = json.loads(raw_tags)
+apps/workouts/catalog.py:104:                    ai_tags = []
+apps/workouts/catalog.py:106:                ai_tags = list(raw_tags)
+apps/workouts/catalog.py:108:                ai_tags = []
+apps/workouts/catalog.py:114:            is_compound = any('compound' in str(t).lower() for t in ai_tags)
+apps/workouts/migrations/0002_add_csvexercise_model.py:28:                        ('ai_tags', models.JSONField(default=list)),
+apps/workouts/migrations/0003_update_csvexercise_r2_structure_squashed_0005_remove_unnecessary_category_field.py:91:            name='ai_tags',
+apps/workouts/management/commands/extract_exercises_from_r2.py:229:            'ai_tags': properties['ai_tags'],
+apps/workouts/management/commands/extract_exercises_from_r2.py:351:        ai_tags = [primary_muscle_group, equipment, difficulty, exercise_type]
+apps/workouts/management/commands/extract_exercises_from_r2.py:353:            ai_tags.extend(muscle_groups)
+apps/workouts/management/commands/extract_exercises_from_r2.py:362:            'ai_tags': list(set(ai_tags))  # Remove duplicates
+apps/core/services/exercise_validation.py:219:                    SELECT ai_tags, '', level
+apps/core/services/exercise_validation.py:264:                            (e.ai_tags IS NOT NULL AND e.ai_tags::jsonb ?| %s)  -- Overlapping AI tags
+apps/core/services/exercise_validation.py:268:                            CASE WHEN (e.ai_tags IS NOT NULL AND e.ai_tags::jsonb ?| %s) THEN 1 ELSE 2 END,  -- Prefer tag match
+apps/workouts/management/commands/import_exercises.py:31:                ai_tags_str = row.get("ai_tags", "")
+apps/workouts/management/commands/import_exercises.py:34:                    if ai_tags_str.startswith('[') and ai_tags_str.endswith(']'):
+apps/workouts/management/commands/import_exercises.py:35:                        ai_tags = ast.literal_eval(ai_tags_str)
+apps/workouts/management/commands/import_exercises.py:38:                        ai_tags = [t.strip() for t in ai_tags_str.split(",") if t.strip()]
+apps/workouts/management/commands/import_exercises.py:40:                    ai_tags = [t.strip() for t in ai_tags_str.split(",") if t.strip()]
+apps/workouts/management/commands/import_exercises.py:51:                        "ai_tags": ai_tags,
+data/clean/exercises_complete_r2.csv:1:id,name_ru,name_en,description,muscle_group,exercise_type,level,ai_tags,category

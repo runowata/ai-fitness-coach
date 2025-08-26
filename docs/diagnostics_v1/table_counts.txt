@@ -1,0 +1,6 @@
+CSVExercise: 0
+VideoClip: 0
+WeeklyLesson: 0
+FinalVideo: 0
+WorkoutPlan: 0
+DailyWorkout: 0

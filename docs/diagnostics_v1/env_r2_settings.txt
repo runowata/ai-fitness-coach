@@ -1,0 +1,5 @@
+USE_R2_STORAGE : True
+R2_ENDPOINT : None
+R2_BUCKET : None
+R2_PUBLIC_BASE_URL : None
+AWS_S3_ENDPOINT_URL : https://92568f8b8a15c68a9ece5fe08c66485b.r2.cloudflarestorage.com

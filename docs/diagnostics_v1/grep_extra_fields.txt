@@ -1,0 +1,55 @@
+test_full_system.py:73:    print(f"  Equipment: {user_data.get('equipment_list')}")
+simulate_user_onboarding.py:20:        'biological_sex': 'male',
+simulate_user_onboarding.py:21:        'fitness_level': 'intermediate',
+simulate_user_onboarding.py:30:        'equipment_list': ['dumbbells', 'resistance_bands', 'pull_up_bar'],
+simulate_user_onboarding.py:102:def format_equipment_list(equipment_list):
+simulate_user_onboarding.py:112:    formatted = [equipment_mapping.get(eq, eq) for eq in equipment_list]
+simulate_user_onboarding.py:133:        'equipment_list': format_equipment_list(user_profile['equipment_list']),
+simulate_user_onboarding.py:158:    print(f"Уровень: {user_profile['fitness_level']}")
+simulate_user_onboarding.py:162:    print(f"Оборудование: {', '.join(user_profile['equipment_list'])}")
+docs/flow_v1.md:35:- biological_sex — **не влияет**
+docs/flow_v1.md:36:- fitness_level — есть в моделях, но **не используется** как фильтр
+docs/flow_v1.md:37:- equipment_list — ai_tags сохраняются, но **не используются** как фильтр
+docs/diagnostics_v1/grep_onboarding_processor.txt:10:apps/onboarding/services.py:41:                'equipment_list': OnboardingDataProcessor._format_equipment(profile),
+tests/test_ai_whitelist_enforcement.py:212:        user_data = {'fitness_level': 'beginner'}
+docs/diagnostics_v1/grep_ai_tags.txt:4:docs/flow_v1.md:37:- equipment_list — ai_tags сохраняются, но **не используются** как фильтр
+apps/onboarding/services.py:33:                'biological_sex': getattr(profile, 'biological_sex', 'male'),
+apps/onboarding/services.py:34:                'fitness_level': getattr(profile, 'fitness_level', 'beginner'),
+apps/onboarding/services.py:41:                'equipment_list': OnboardingDataProcessor._format_equipment(profile),
+apps/onboarding/services.py:153:            'biological_sex': 'male',
+apps/onboarding/services.py:154:            'fitness_level': 'beginner',
+apps/onboarding/services.py:159:            'equipment_list': 'dumbbells, bodyweight',
+tests/test_prompt_manager.py:99:            'equipment_list': 'dumbbells, bench',
+tests/test_integration_onboarding.py:34:                'fitness_level': 'beginner',
+tests/test_integration_onboarding.py:263:                'fitness_level': 'intermediate',
+tests/test_integration_onboarding.py:279:            'fitness_level': 'intermediate',
+tests/test_integration_onboarding.py:318:                'fitness_level': 'beginner',
+prompts/gpt5/user/mentor.user.md:7:- **Available Equipment**: {{equipment_list}}
+templates/onboarding/ai_analysis_comprehensive.html:66:                                            {{ comprehensive_data.user_analysis.fitness_level_assessment }}
+tests/test_unit_ai_pipeline.py:90:            'fitness_level': 'beginner',
+prompts/v3/user/peer.user.md:7:- **Доступно дома/в зале**: {{equipment_list}}  
+prompts/v3/user/mentor_compact.user.md:7:- **Оборудование**: {{equipment_list}}
+tests/conftest.py:85:        'fitness_level': 'beginner',
+prompts/v3/user/mentor.user.md:8:- **Доступное оборудование**: {{equipment_list}}
+prompts/v3/user/professional.user.md:7:- **Арсенал**: {{equipment_list}}
+apps/ai_integration/workout_generator_gpt5.py:214:                'equipment_list': 'Bodyweight exercises only',
+apps/ai_integration/workout_generator_gpt5.py:216:                'onboarding_payload_json': '{"fitness_level": "beginner"}'
+prompts/v2/system/comprehensive_peer.system.md:71:- **fitness_level_assessment**: Честная, но поддерживающая оценка текущего состояния
+prompts/v2/system/comprehensive_mentor.system.md:70:- **fitness_level_assessment**: Детальная оценка физической подготовки
+prompts/v2/system/comprehensive_professional.system.md:71:- **fitness_level_assessment**: Профессиональная оценка физической подготовки с акцентом на потенциал
+demo_full_prompt_gpt5.py:34:        'equipment_list': 'Домашний спортзал: гантели 5-30кг, фитбол, эластичные ленты, коврик для йоги, турник',
+demo_full_prompt_gpt5.py:37:            'fitness_level': 'beginner',
+demo_full_prompt_gpt5.py:59:    print(f"Доступное оборудование: {user_data['equipment_list']}")
+apps/ai_integration/comprehensive_validator.py:142:            'fitness_level_assessment': 'Детальный анализ уровня физической подготовки пользователя на основе ответов онбординга.',
+prompts/v2/schemas/comprehensive_ai_report.json:36:      "required": ["fitness_level_assessment", "psychological_profile", "interaction_strategy", "archetype_adaptation"],
+prompts/v2/schemas/comprehensive_ai_report.json:38:        "fitness_level_assessment": {
+apps/ai_integration/schemas.py:170:    fitness_level_assessment: str = Field(..., min_length=50, max_length=800, description="Оценка текущего уровня физической подготовки")
+prompts/v2/user/comprehensive_mentor.user.md:9:- **Доступный инвентарь**: {{equipment_list}}
+prompts/v2/user/comprehensive_mentor.user.md:26:- **fitness_level_assessment** (50-800 символов): Детальный анализ текущего уровня физической подготовки на основе всех предоставленных данных
+prompts/v2/user/comprehensive_peer.user.md:9:- **Доступный инвентарь**: {{equipment_list}}
+prompts/v2/user/comprehensive_peer.user.md:26:- **fitness_level_assessment** (50-800 символов): Честная, но поддерживающая оценка текущего состояния с пониманием life context
+prompts/v2/user/master_peer.user.md:7:- **Есть дома/в зале**: {{equipment_list}}
+prompts/v2/user/master_mentor.user.md:9:- **Доступный инвентарь**: {{equipment_list}}
+prompts/v2/user/master_professional.user.md:7:- **Инвентарь**: {{equipment_list}}
+prompts/v2/user/comprehensive_professional.user.md:9:- **Доступный инвентарь**: {{equipment_list}}
+prompts/v2/user/comprehensive_professional.user.md:26:- **fitness_level_assessment** (50-800 символов): Комплексная оценка текущего уровня с акцентом на потенциал роста и конкурентные преимущества

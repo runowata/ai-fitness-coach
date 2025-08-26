@@ -1,0 +1,3 @@
+templates/onboarding/plan_confirmation.html:274:                                        {% for workout in plan_data.cycles.0.daily_workouts|slice:":7" %}
+templates/workouts/plan_overview.html:305:                            <a href="{% url 'workouts:daily_workout' workout.id %}" 
+templates/users/dashboard.html:110:                                            <a href="{% url 'workouts:daily_workout' today_workout.id %}" 
