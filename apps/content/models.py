@@ -24,8 +24,7 @@ class MediaAsset(models.Model):
         ('motivation_final', 'Final Congratulation'),
         ('card_background', 'Motivational Card Background'),
         ('avatar', 'Trainer Avatar'),
-        ('story_cover', 'Story Cover'),
-        ('story_chapter', 'Story Chapter Image'),
+        ('misc', 'Miscellaneous'),
     ]
     
     # File information
