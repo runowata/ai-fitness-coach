@@ -418,43 +418,5 @@ class Command(BaseCommand):
             self.stdout.write(f"   ⚠️  Motivational cards creation failed: {e}")
     
     def create_stories(self):
-        """Create story content programmatically"""
-        try:
-            from apps.content.models import Chapter, Story
-
-            # Clear existing
-            Story.objects.all().delete()
-            
-            story = Story.objects.create(
-                title='Путь к совершенству',
-                description='Ваше путешествие к идеальной форме',
-                is_active=True
-            )
-            
-            chapters_data = [
-                {
-                    'title': 'Первые шаги',
-                    'content': 'Каждый великий путь начинается с первого шага. Вы уже сделали его!',
-                    'order': 1,
-                    'unlock_level': 1
-                },
-                {
-                    'title': 'Набираем обороты',
-                    'content': 'Ваше тело начинает привыкать к нагрузкам. Продолжайте движение!',
-                    'order': 2,
-                    'unlock_level': 5
-                },
-                {
-                    'title': 'Мастер тренировок',
-                    'content': 'Вы освоили основы. Теперь пора переходить к более сложным вызовам!',
-                    'order': 3,
-                    'unlock_level': 10
-                }
-            ]
-            
-            for ch_data in chapters_data:
-                Chapter.objects.create(story=story, **ch_data)
-            
-            self.stdout.write(f"   ✅ Created story with {len(chapters_data)} chapters")
-        except Exception as e:
-            self.stdout.write(f"   ⚠️  Stories creation failed: {e}")
+        """Story creation removed - functionality deprecated"""
+        self.stdout.write("   ⚠️  Story functionality removed - skipping stories creation")

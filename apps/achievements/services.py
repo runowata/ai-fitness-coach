@@ -89,14 +89,7 @@ class AchievementChecker:
             )
             user.profile.add_xp(achievement.xp_reward)
         
-        # Unlock story chapter if applicable
-        if achievement.unlocks_story_chapter:
-            from apps.content.models import UserStoryAccess
-            UserStoryAccess.objects.get_or_create(
-                user=user,
-                chapter=achievement.unlocks_story_chapter,
-                defaults={'unlocked_by_achievement': achievement}
-            )
+        # Story chapter unlocking removed - story functionality deprecated
         
         logger.info(f"Achievement unlocked: {achievement.name} for user {user.email}")
         return user_achievement

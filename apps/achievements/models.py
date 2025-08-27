@@ -25,12 +25,7 @@ class Achievement(models.Model):
     
     # Rewards
     xp_reward = models.PositiveIntegerField(default=0)
-    unlocks_story_chapter = models.ForeignKey(
-        'content.StoryChapter',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
+    # unlocks_story_chapter removed - story functionality deprecated
     
     # Display
     icon_url = models.URLField(blank=True)

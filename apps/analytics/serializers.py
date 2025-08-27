@@ -35,7 +35,7 @@ class TrackEventSerializer(serializers.Serializer):
         ('workout_feedback', 'Workout Feedback'),
         ('weekly_lesson_viewed', 'Weekly Lesson Viewed'),
         ('weekly_lesson_completed', 'Weekly Lesson Completed'),
-        ('story_chapter_read', 'Story Chapter Read'),
+        # story_chapter_read removed - functionality deprecated
         ('video_played', 'Video Played'),
         ('video_completed', 'Video Completed'),
         ('achievement_unlocked', 'Achievement Unlocked'),

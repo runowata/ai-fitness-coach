@@ -31,8 +31,7 @@ class AnalyticsEvent(models.Model):
         # Content consumption
         ('weekly_lesson_viewed', 'Weekly Lesson Viewed'),
         ('weekly_lesson_completed', 'Weekly Lesson Completed'),
-        ('story_chapter_unlocked', 'Story Chapter Unlocked'),
-        ('story_chapter_read', 'Story Chapter Read'),
+        # story events removed - functionality deprecated
         ('video_played', 'Video Played'),
         ('video_completed', 'Video Completed'),
         
