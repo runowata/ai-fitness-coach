@@ -4,76 +4,8 @@ from django.db import models
 User = get_user_model()
 
 
-class Story(models.Model):
-    slug = models.SlugField(unique=True)
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=100)
-    description = models.TextField()
-    cover_image_url = models.URLField()
-    
-    # Story metadata
-    total_chapters = models.PositiveIntegerField()
-    is_published = models.BooleanField(default=False)
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'stories'
-        verbose_name_plural = 'Stories'
-        ordering = ['title']
-    
-    def __str__(self):
-        return self.title
-
-
-class StoryChapter(models.Model):
-    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='chapters')
-    chapter_number = models.PositiveIntegerField()
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    
-    # Reading time estimate
-    estimated_reading_time = models.PositiveIntegerField(help_text="In minutes")
-    
-    # Chapter image (optional)
-    image_url = models.URLField(blank=True)
-    
-    is_published = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        db_table = 'story_chapters'
-        unique_together = [['story', 'chapter_number']]
-        ordering = ['chapter_number']
-    
-    def __str__(self):
-        return f"{self.story.title} - Chapter {self.chapter_number}: {self.title}"
-
-
-class UserStoryAccess(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='story_access')
-    chapter = models.ForeignKey(StoryChapter, on_delete=models.CASCADE)
-    
-    unlocked_at = models.DateTimeField(auto_now_add=True)
-    unlocked_by_achievement = models.ForeignKey(
-        'achievements.Achievement',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-    
-    # Reading tracking
-    first_read_at = models.DateTimeField(null=True, blank=True)
-    last_read_at = models.DateTimeField(null=True, blank=True)
-    read_count = models.PositiveIntegerField(default=0)
-    
-    class Meta:
-        db_table = 'user_story_access'
-        unique_together = [['user', 'chapter']]
-        indexes = [
-            models.Index(fields=['user', 'chapter']),
-        ]
+# Story models removed - functionality not used and causing deployment issues
+# Story, StoryChapter, UserStoryAccess classes removed
 
 
 class MediaAsset(models.Model):
