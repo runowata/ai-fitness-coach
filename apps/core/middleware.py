@@ -172,13 +172,9 @@ class DatabaseSetupMiddleware:
                 logger.info(f"user_profiles exists: {user_profiles_exists}")
                 logger.info(f"equipment_needed column exists: {equipment_column_exists}")
                 
-                # Force run migrations (they might be marked as applied but not actually applied)
-                logger.info("Running migrations with fake rollback first...")
-                try:
-                    call_command('migrate', 'workouts', '0001', '--fake', verbosity=0)
-                    call_command('migrate', 'workouts', verbosity=0)
-                except Exception as migrate_error:
-                    logger.info(f"Migration rollback failed (expected): {migrate_error}")
+                # FIXME: убрано, чтобы не ломать миграции workouts
+                # Старый костыль с --fake откатами убран для чистой схемы миграций
+                logger.info("Running migrations cleanly without fake rollbacks...")
                     
                 # Just run all migrations
                 call_command('migrate', '--noinput', verbosity=1)
