@@ -11,6 +11,7 @@ services:
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
     preDeployCommand: >
       set -euo pipefail &&
+      python manage.py check_migration_integrity --app workouts &&
       python manage.py migrate --noinput --verbosity 2 &&
       if [ -d ./data/raw ]; then
         python manage.py import_exercises_v2 --data-dir ./data/raw
@@ -19,7 +20,8 @@ services:
       fi &&
       python manage.py bootstrap_v2_min &&
       python manage.py load_weekly_lessons &&
-      python manage.py setup_periodic_tasks
+      python manage.py setup_periodic_tasks &&
+      python manage.py audit_video_clips --summary || true
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
     plan: starter
     region: frankfurt
