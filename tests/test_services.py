@@ -32,12 +32,11 @@ class VideoPlaylistBuilderTest(TestCase):
         
         # Create test exercise
         self.exercise = Exercise.objects.create(
+            id='push-up-id',
             slug='push-up',
             name='Отжимания',
             description='Базовое упражнение',
-            difficulty='beginner',
-            muscle_groups=['chest', 'arms'],
-            equipment_needed=[]
+            difficulty='beginner'
         )
         
         # Create test video clips
@@ -317,12 +316,11 @@ class IntegrationTest(TestCase):
         
         # Create exercise
         self.exercise = Exercise.objects.create(
+            id='push-up-id-2',
             slug='push-up',
             name='Отжимания',
             description='Базовое упражнение',
-            difficulty='beginner',
-            muscle_groups=['chest', 'arms'],
-            equipment_needed=[]
+            difficulty='beginner'
         )
         
         # Create video

@@ -43,12 +43,11 @@ class EndToEndUserFlowTest(TestCase):
         
         # Create exercise
         self.exercise = Exercise.objects.create(
+            id="push-up-id-e2e",
             slug="push-up",
             name="Отжимания",
             description="Базовое упражнение",
-            difficulty="beginner",
-            muscle_groups=["chest", "arms"],
-            equipment_needed=[]
+            difficulty="beginner"
         )
         
         # Create achievement
@@ -287,16 +286,12 @@ class EndToEndUserFlowTest(TestCase):
         
         # Create alternative exercise
         alt_exercise = Exercise.objects.create(
+            id="knee-push-up-id",
             slug="knee-push-up",
             name="Отжимания с колен",
             description="Упрощенная версия",
-            difficulty="beginner",
-            muscle_groups=["chest", "arms"],
-            equipment_needed=[]
+            difficulty="beginner"
         )
-        
-        # Link as alternative
-        self.exercise.alternatives.add(alt_exercise)
         
         # Create workout plan and daily workout
         plan = WorkoutPlan.objects.create(

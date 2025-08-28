@@ -133,8 +133,6 @@ class Command(BaseCommand):
                 'name': exercise_name,
                 'description': f'{exercise_name} - proper form and technique',
                 'difficulty': 'beginner',
-                'muscle_groups': muscle_groups,
-                'equipment_needed': [],
                 'is_active': True
             }
             

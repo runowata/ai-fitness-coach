@@ -104,11 +104,7 @@ class Command(BaseCommand):
                     name=ex_data['name'],
                     description=f"{ex_data['name']} - proper form and technique",
                     difficulty=ex_data['difficulty'],
-                    muscle_groups=ex_data['muscle_groups'],
-                    equipment_needed=[],  # Default empty
-                    is_active=True,
-                    technique_video_url='',  # Default empty
-                    mistake_video_url=''     # Default empty
+                    is_active=True
                 )
                 created_count += 1
                 

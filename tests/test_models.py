@@ -49,36 +49,33 @@ class ExerciseModelTest(TestCase):
     
     def setUp(self):
         self.exercise = Exercise.objects.create(
+            id='push-up-id-models',
             slug='push-up',
             name='Отжимания',
             description='Базовое упражнение',
-            difficulty='beginner',
-            muscle_groups=['chest', 'arms'],
-            equipment_needed=[]
+            difficulty='beginner'
         )
     
     def test_exercise_creation(self):
         """Test exercise creation and properties"""
         self.assertEqual(str(self.exercise), 'Отжимания')
         self.assertEqual(self.exercise.difficulty, 'beginner')
-        self.assertEqual(self.exercise.muscle_groups, ['chest', 'arms'])
+        self.assertEqual(self.exercise.slug, 'push-up')
         self.assertTrue(self.exercise.is_active)
     
     def test_exercise_alternatives(self):
         """Test exercise alternatives system"""
         alt_exercise = Exercise.objects.create(
+            id='knee-push-up-models',
             slug='knee-push-up',
             name='Отжимания с колен',
             description='Упрощенная версия',
-            difficulty='beginner',
-            muscle_groups=['chest', 'arms'],
-            equipment_needed=[]
+            difficulty='beginner'
         )
         
-        self.exercise.alternatives.add(alt_exercise)
-        
-        self.assertIn(alt_exercise, self.exercise.alternatives.all())
-        self.assertIn(self.exercise, alt_exercise.alternatives.all())  # Symmetric
+        # Note: alternatives relationship was removed in Phase 5.6
+        self.assertNotEqual(alt_exercise.slug, self.exercise.slug)
+        self.assertEqual(alt_exercise.difficulty, 'beginner')
 
 
 class WorkoutPlanModelTest(TestCase):
