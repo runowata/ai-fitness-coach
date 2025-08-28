@@ -4,7 +4,7 @@ Tests for v2 playlist builder
 
 import pytest
 
-from apps.workouts.models import Exercise, VideoClip
+from apps.workouts.models import CSVExercise, VideoClip
 from apps.workouts.services.playlist_v2 import _resolve_clip, build_playlist, get_daily_playlist
 
 
@@ -107,13 +107,16 @@ class TestPlaylistV2Integration:
     
     def test_build_playlist_resolves_clips(self, db, sample_plan_json):
         """Test that playlist resolves actual video clips"""
-        # Create test exercise
-        exercise = Exercise.objects.create(
+        # Create test exercise (Phase 5.6: using CSVExercise)
+        exercise = CSVExercise.objects.create(
             id="test-1",
-            slug="push-ups",
-            name="Push-ups",
+            name_ru="Push-ups",
+            name_en="Push-ups",
             description="Test exercise",
-            difficulty="beginner"
+            level="beginner",
+            muscle_group="chest",
+            exercise_type="strength",
+            is_active=True
         )
         
         # Create test video clip
@@ -137,13 +140,16 @@ class TestPlaylistV2Integration:
     
     def test_archetype_fallback(self, db):
         """Test fallback to different archetype"""
-        # Create test exercise
-        exercise = Exercise.objects.create(
+        # Create test exercise (Phase 5.6: using CSVExercise)
+        exercise = CSVExercise.objects.create(
             id="test-2",
-            slug="squats",
-            name="Squats",
+            name_ru="Squats",
+            name_en="Squats",
             description="Test exercise",
-            difficulty="beginner"
+            level="beginner",
+            muscle_group="legs",
+            exercise_type="strength",
+            is_active=True
         )
         
         # Create clip with different archetype

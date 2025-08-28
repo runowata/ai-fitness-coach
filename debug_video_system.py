@@ -18,7 +18,7 @@ import json
 
 from django.conf import settings
 
-from apps.workouts.models import DailyWorkout, Exercise, VideoClip
+from apps.workouts.models import DailyWorkout, CSVExercise, VideoClip
 from apps.workouts.video_services import VideoPlaylistBuilder
 
 
@@ -81,7 +81,7 @@ def check_exercises():
     """Check exercise records"""
     print("\n=== CHECKING EXERCISES ===")
     
-    total_exercises = Exercise.objects.count()
+    total_exercises = CSVExercise.objects.count()
     active_exercises = CSVExercise.objects.filter(is_active=True).count()
     
     print(f"Total exercises: {total_exercises}")
@@ -173,12 +173,12 @@ def check_specific_workout(workout_id):
                 print(f"\nChecking exercise: {exercise_slug}")
                 
                 try:
-                    exercise = Exercise.objects.get(slug=exercise_slug)
+                    exercise = CSVExercise.objects.get(id=exercise_slug)  # CSVExercise uses 'id' not 'slug'
                     videos = exercise.video_clips.filter(is_active=True)
                     print(f"  Found {videos.count()} active videos for this exercise")
                     for v in videos[:3]:
-                        print(f"    - {v.type} | {v.model_name}")
-                except Exercise.DoesNotExist:
+                        print(f"    - {v.r2_kind} | {v.model_name}")
+                except CSVExercise.DoesNotExist:
                     print(f"  ERROR: Exercise '{exercise_slug}' not found!")
         
     except DailyWorkout.DoesNotExist:

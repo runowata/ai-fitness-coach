@@ -5,14 +5,14 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from apps.workouts.models import DailyWorkout, Exercise
+from apps.workouts.models import DailyWorkout, CSVExercise
 from apps.workouts.services import VideoPlaylistBuilder
 
 
 @pytest.fixture
 def mock_exercise():
     """Create mock exercise"""
-    exercise = Mock(spec=Exercise)
+    exercise = Mock(spec=CSVExercise)
     exercise.id = "EX001"
     exercise.slug = "push-ups"
     exercise.name = "Push-ups"
@@ -115,7 +115,7 @@ class TestVideoPlaylistBuilder:
             assert playlist[0]['type'] == 'rest_day'
             assert playlist[0]['url'] == 'rest.mp4'
     
-    @patch('apps.workouts.services.Exercise.objects.get')
+    @patch('apps.workouts.services.CSVExercise.objects.get')
     @patch('apps.workouts.services.random.random')
     def test_build_exercise_playlist_with_mistake_video(self, mock_random, mock_exercise_get, 
                                                        playlist_builder, mock_exercise):
@@ -139,7 +139,7 @@ class TestVideoPlaylistBuilder:
             assert any(video['type'] == 'instruction' for video in playlist)
             assert any(video['type'] == 'mistake' for video in playlist)
     
-    @patch('apps.workouts.services.Exercise.objects.get')
+    @patch('apps.workouts.services.CSVExercise.objects.get')
     @patch('apps.workouts.services.random.random')
     def test_build_exercise_playlist_without_mistake_video(self, mock_random, mock_exercise_get,
                                                           playlist_builder, mock_exercise):
@@ -162,7 +162,7 @@ class TestVideoPlaylistBuilder:
             assert any(video['type'] == 'instruction' for video in playlist)
             assert not any(video['type'] == 'mistake' for video in playlist)
     
-    @patch('apps.workouts.services.Exercise.objects.get')
+    @patch('apps.workouts.services.CSVExercise.objects.get')
     def test_build_exercise_playlist_exercise_not_found(self, mock_exercise_get, playlist_builder):
         """Test building playlist when exercise is not found"""
         from django.core.exceptions import ObjectDoesNotExist
@@ -172,7 +172,7 @@ class TestVideoPlaylistBuilder:
         
         assert playlist == []
     
-    @patch('apps.workouts.services.Exercise.objects.get')
+    @patch('apps.workouts.services.CSVExercise.objects.get')
     def test_exercise_slug_formats(self, mock_exercise_get, playlist_builder, mock_exercise):
         """Test handling different exercise slug formats"""
         mock_exercise_get.return_value = mock_exercise
@@ -517,11 +517,11 @@ class TestFallbackScenarios:
             assert len(playlist) == 1
             assert playlist[0]['type'] == 'intro'
     
-    @patch('apps.workouts.services.Exercise.objects.get')
+    @patch('apps.workouts.services.CSVExercise.objects.get')
     def test_invalid_exercise_slug_handling(self, mock_exercise_get, playlist_builder):
         """Test handling of invalid exercise slugs"""
-        from apps.workouts.models import Exercise
-        mock_exercise_get.side_effect = Exercise.DoesNotExist()
+        from apps.workouts.models import CSVExercise
+        mock_exercise_get.side_effect = CSVExercise.DoesNotExist()
         
         exercise_data = {'exercise_slug': 'invalid-exercise', 'sets': 3, 'reps': '10'}
         
