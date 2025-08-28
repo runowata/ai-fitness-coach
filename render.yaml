@@ -11,6 +11,7 @@ services:
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
     preDeployCommand: >
       set -euo pipefail &&
+      python manage.py create_csv_exercises_table &&
       python manage.py migrate --noinput --fake-initial --verbosity 2 &&
       if [ -d ./data/raw ]; then
         python manage.py import_exercises_v2 --data-dir ./data/raw
