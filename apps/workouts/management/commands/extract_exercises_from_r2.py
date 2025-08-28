@@ -347,16 +347,11 @@ class Command(BaseCommand):
         elif any(pattern in exercise_name for pattern in ['stretch', 'yoga']):
             exercise_type = 'stretch'
         
-        # Create AI tags for the exercise
-        ai_tags = [primary_muscle_group, equipment, difficulty, exercise_type]
-        if len(muscle_groups) > 1:
-            ai_tags.extend(muscle_groups)
+        # Create AI tags for the exercise (simplified in Phase 5.6)
+        ai_tags = [primary_muscle_group, difficulty, exercise_type]
         
         return {
             'primary_muscle_group': primary_muscle_group,
-            'muscle_groups': muscle_groups,
-            'equipment_needed': equipment_needed,
-            'equipment': equipment,
             'difficulty': difficulty,
             'exercise_type': exercise_type,
             'ai_tags': list(set(ai_tags))  # Remove duplicates

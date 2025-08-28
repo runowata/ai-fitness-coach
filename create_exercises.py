@@ -115,7 +115,7 @@ def create_exercises():
     
     try:
         with transaction.atomic():
-            for code, name, muscle_groups in EXERCISES:
+            for code, name, _ in EXERCISES:  # _ ignores muscle_groups
                 obj, was_created = Exercise.objects.update_or_create(
                     id=code,
                     defaults={

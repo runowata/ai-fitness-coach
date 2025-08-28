@@ -73,40 +73,34 @@ class FallbackService:
     def get_fallback_exercise(
         self, 
         target_exercise: str, 
-        muscle_groups: List[str], 
         equipment: str = "bodyweight"
     ) -> Optional[str]:
         """
         Find fallback exercise when target is unavailable
         
+        Note: muscle_groups parameter removed in Phase 5.6
+        
         Priority:
-        1. Same muscle group, same equipment
-        2. Same muscle group, different equipment  
-        3. Different muscle group, same equipment
-        4. Basic fallback exercises
+        1. Same equipment type
+        2. Basic fallback exercises
+        3. Any available exercise
         """
-        logger.info(f"Finding fallback for '{target_exercise}' targeting {muscle_groups}")
+        logger.info(f"Finding fallback for '{target_exercise}'")
         
-        # Level 1: Same muscle + same equipment
-        for exercise_slug, exercise_data in self.fallback_exercises.items():
-            if (set(muscle_groups) & set(exercise_data.get('muscle_groups', [])) and 
-                exercise_data.get('equipment') == equipment):
-                logger.info(f"Level 1 fallback: {exercise_slug}")
-                return exercise_slug
+        # Simple fallback list - use basic exercises (no muscle_groups matching)
+        simple_fallbacks = [
+            'push-ups',
+            'squats', 
+            'planks',
+            'jumping-jacks'
+        ]
         
-        # Level 2: Same muscle + different equipment  
-        for exercise_slug, exercise_data in self.fallback_exercises.items():
-            if set(muscle_groups) & set(exercise_data.get('muscle_groups', [])):
-                logger.info(f"Level 2 fallback: {exercise_slug}")
-                return exercise_slug
+        for fallback_slug in simple_fallbacks:
+            if fallback_slug in self.fallback_exercises:
+                logger.info(f"Simple fallback: {fallback_slug}")
+                return fallback_slug
         
-        # Level 3: Same equipment + different muscle
-        for exercise_slug, exercise_data in self.fallback_exercises.items():
-            if exercise_data.get('equipment') == equipment:
-                logger.info(f"Level 3 fallback: {exercise_slug}")
-                return exercise_slug
-        
-        # Level 4: Ultimate fallback - use first available exercise from our reliable set
+        # Ultimate fallback - use first available exercise from our reliable set
         if self.fallback_exercises:
             first_available = list(self.fallback_exercises.keys())[0]
             logger.warning(f"Ultimate fallback: {first_available}")
@@ -204,11 +198,10 @@ class FallbackService:
                 is_active=True,
                 level__in=['beginner', 'intermediate'],
                 exercise_type__in=['strength', 'cardio']
-            ).order_by('id')[:20].values('id', 'muscle_group', 'exercise_type')
+            ).order_by('id')[:20].values('id', 'exercise_type')
             
             for exercise in common_exercises:
                 reliable_exercises[exercise['id']] = {
-                    'muscle_groups': [exercise['muscle_group']] if exercise['muscle_group'] else [],
                     'equipment': 'bodyweight'  # Default for CSVExercise
                 }
                 
@@ -216,10 +209,10 @@ class FallbackService:
             logger.error(f"Failed to load reliable exercises: {e}")
             # Hardcoded fallback using technical names from R2
             reliable_exercises = {
-                'push-ups': {'muscle_groups': ['chest', 'triceps'], 'equipment': 'bodyweight'},
-                'squats': {'muscle_groups': ['legs', 'glutes'], 'equipment': 'bodyweight'},
-                'planks': {'muscle_groups': ['core'], 'equipment': 'bodyweight'},
-                'jumping-jacks': {'muscle_groups': ['cardio'], 'equipment': 'bodyweight'},
+                'push-ups': {'equipment': 'bodyweight'},
+                'squats': {'equipment': 'bodyweight'},
+                'planks': {'equipment': 'bodyweight'},
+                'jumping-jacks': {'equipment': 'bodyweight'},
             }
         
         return reliable_exercises

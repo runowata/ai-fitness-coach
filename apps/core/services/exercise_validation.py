@@ -216,7 +216,7 @@ class ExerciseValidationService:
             # Get exercise details for filtering
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT ai_tags, '', level
+                    SELECT ai_tags, level
                     FROM csv_exercises 
                     WHERE id = %s AND is_active = TRUE
                 """, [slug])
@@ -225,7 +225,7 @@ class ExerciseValidationService:
                 if not result:
                     return []
                 
-                original_muscle_groups, original_equipment, original_difficulty = result
+                original_muscle_groups, original_difficulty = result
                 
                 # Ensure muscle_groups is a valid list for PostgreSQL
                 if original_muscle_groups is None or not original_muscle_groups:
