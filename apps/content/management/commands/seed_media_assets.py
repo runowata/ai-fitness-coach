@@ -1,5 +1,4 @@
 import os
-from urllib.parse import urljoin
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
@@ -35,18 +34,10 @@ class Command(BaseCommand):
         dry = opts["dry_run"]
         force = opts["force_reseed"]
 
-        # Use R2_PUBLIC_URL from environment (set in render.yaml)
-        base_url = os.getenv("R2_PUBLIC_URL", "").rstrip("/")
-        if not base_url:
-            self.stderr.write(
-                self.style.ERROR(
-                    "R2_PUBLIC_URL is not set. Expected: https://pub-xxxx.r2.dev"
-                )
-            )
-            return
+        # For R2 with signed URLs, we store R2 keys for MediaService to handle
+        self.stdout.write("Using R2 storage with signed URL support")
 
-        # Real R2 keys based on common fitness app structure
-        # These should match actual files in your R2 bucket
+        # These R2 keys should match actual files in your bucket
         avatar_keys = {
             "peer": "images/avatars/peer_avatar_1.jpg",
             "professional": "images/avatars/professional_avatar_1.jpg", 
@@ -59,14 +50,17 @@ class Command(BaseCommand):
             "images/cards/card_motivation_3.jpg",
         ]
 
+        # For R2, we'll store a placeholder URL and let MediaService generate signed URLs
+        # The actual R2 key will be stored for reference
+        placeholder_url = "r2://placeholder"  # Special marker for R2 files
+
         plan = []
         # 1) Avatars per archetype
         for archetype, key in avatar_keys.items():
-            url = urljoin(base_url + "/", key)
             plan.append(
                 dict(
                     file_name=os.path.basename(key),
-                    file_url=url,
+                    file_url=f"r2://{key}",  # Store R2 key for MediaService
                     file_size=0,  # unknown - ok
                     asset_type=ASSET_TYPE_IMAGE,
                     category=AVATAR,
@@ -76,7 +70,7 @@ class Command(BaseCommand):
                     width=None,
                     height=None,
                     is_active=True,
-                    cdn_url=url,
+                    cdn_url=placeholder_url,  # Will be generated dynamically
                     cdn_status=CDN_READY,
                     exercise=None,
                     uploaded_by=None,
@@ -85,11 +79,10 @@ class Command(BaseCommand):
 
         # 2) Card backgrounds (no archetype binding)
         for key in card_bg_keys:
-            url = urljoin(base_url + "/", key)
             plan.append(
                 dict(
                     file_name=os.path.basename(key),
-                    file_url=url,
+                    file_url=f"r2://{key}",  # Store R2 key for MediaService
                     file_size=0,
                     asset_type=ASSET_TYPE_IMAGE,
                     category=CARD_BG,
@@ -99,7 +92,7 @@ class Command(BaseCommand):
                     width=None,
                     height=None,
                     is_active=True,
-                    cdn_url=url,
+                    cdn_url=placeholder_url,  # Will be generated dynamically
                     cdn_status=CDN_READY,
                     exercise=None,
                     uploaded_by=None,
@@ -107,7 +100,7 @@ class Command(BaseCommand):
             )
 
         self.stdout.write(self.style.MIGRATE_HEADING("Seeding media assets..."))
-        self.stdout.write(f"Base URL: {base_url}")
+        self.stdout.write(f"R2 storage mode: files will use signed URLs")
         self.stdout.write(f"Planned records: {len(plan)}")
         if dry:
             self.stdout.write(self.style.WARNING("DRY RUN — no DB writes"))

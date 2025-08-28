@@ -1,0 +1,136 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}День {{ day.day_number }} - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <div class="day-number-large mb-3">{{ day.day_number }}</div>
+                <h1 class="display-5 mb-3">{{ day.name }}</h1>
+                
+                {% if day.is_rest_day %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-bed fa-2x mb-3"></i>
+                        <h4>Сегодня день отдыха</h4>
+                        <p class="mb-0">Дайте своему телу время на восстановление. Можете прогуляться или сделать легкую растяжку.</p>
+                    </div>
+                {% else %}
+                    <p class="lead text-muted">
+                        {{ exercises|length }} упражнени{{ exercises|length|pluralize:"е,я,й" }} для достижения ваших целей
+                    </p>
+                {% endif %}
+            </div>
+
+            {% comment %} Плейлист из R2 {% endcomment %}
+            {% if playlist %}
+              {% for it in playlist %}
+                <div class="card mb-3 shadow-sm border-0">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="badge bg-secondary text-uppercase">{{ it.role }}</span>
+                      <small class="text-muted">#{{ it.order }}</small>
+                    </div>
+
+                    <h6 class="mt-2 mb-2">{{ it.media.file_name }}</h6>
+
+                    <video controls preload="none" class="w-100 rounded-3">
+                      <source
+                        src="{% url 'content:media_proxy' key=it.media.file_url|cut:'r2://' %}"
+                        type="video/mp4" />
+                      Ваш браузер не поддерживает воспроизведение видео.
+                    </video>
+
+                    {% if it.duration_seconds %}
+                      <small class="text-muted d-block mt-1">Длительность: {{ it.duration_seconds }} c</small>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="alert alert-warning">Для этого дня ещё не собран плейлист.</div>
+            {% endif %}
+
+            <!-- Back to Plan Button -->
+            <div class="text-center mt-5">
+                <a href="{% url 'workouts:my_plan' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Вернуться к плану
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.day-number-large {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 2rem;
+    margin: 0 auto;
+}
+
+.exercise-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.exercise-card:hover {
+    transform: translateY(-2px);
+}
+
+.exercise-card .card {
+    border: 2px solid #e0e6ed;
+    border-left: 4px solid #667eea;
+}
+
+.exercise-number {
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+}
+
+.exercise-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.spec-item {
+    display: inline-flex;
+    align-items: center;
+}
+
+.spec-item i {
+    color: #667eea;
+}
+
+@media (max-width: 768px) {
+    .day-number-large {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .exercise-specs {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+}
+</style>
+{% endblock %}

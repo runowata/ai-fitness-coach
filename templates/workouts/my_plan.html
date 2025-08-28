@@ -1,0 +1,121 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Мой план тренировок - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 text-primary mb-3">{{ plan.name }}</h1>
+                <p class="lead text-muted">{{ plan.duration_weeks }} недел{{ plan.duration_weeks|pluralize:"я,и,ь" }} тренировок</p>
+            </div>
+
+            <!-- Daily Workouts Grid -->
+            <div class="row g-4">
+                {% for day in daily_workouts %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 workout-day-card{% if day.is_rest_day %} rest-day{% endif %}">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="day-number">
+                                    {{ day.day_number }}
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="card-title mb-1">{{ day.name }}</h5>
+                                    {% if day.is_rest_day %}
+                                        <small class="text-muted">
+                                            <i class="fas fa-bed me-1"></i>День отдыха
+                                        </small>
+                                    {% else %}
+                                        <small class="text-muted">
+                                            <i class="fas fa-dumbbell me-1"></i>{{ day.exercises|length }} упражнени{{ day.exercises|length|pluralize:"е,я,й" }}
+                                        </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if not day.is_rest_day and day.exercises %}
+                            <div class="exercise-preview mb-3">
+                                {% for exercise in day.exercises|slice:":3" %}
+                                    <div class="exercise-item">
+                                        <small class="text-muted">{{ exercise.exercise_name }}</small>
+                                    </div>
+                                {% endfor %}
+                                {% if day.exercises|length > 3 %}
+                                    <small class="text-muted">и еще {{ day.exercises|length|add:"-3" }}...</small>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <div class="mt-auto">
+                                <a href="{% url 'workouts:workout_day' day.id %}" class="btn {% if day.is_rest_day %}btn-outline-secondary{% else %}btn-primary{% endif %} w-100">
+                                    {% if day.is_rest_day %}
+                                        <i class="fas fa-eye me-1"></i>Посмотреть
+                                    {% else %}
+                                        <i class="fas fa-play me-1"></i>Начать тренировку
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.workout-day-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid #e0e6ed;
+}
+
+.workout-day-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.workout-day-card.rest-day {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.day-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.rest-day .day-number {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+.exercise-preview {
+    font-size: 0.9rem;
+}
+
+.exercise-item {
+    padding: 2px 0;
+}
+
+@media (max-width: 768px) {
+    .day-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %}

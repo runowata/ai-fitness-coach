@@ -1,0 +1,48 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Нет активного плана - AI Fitness Coach{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <!-- Icon -->
+            <div class="mb-4">
+                <i class="fas fa-calendar-plus fa-4x text-muted"></i>
+            </div>
+            
+            <!-- Title -->
+            <h1 class="display-5 mb-4">У вас пока нет активного плана тренировок</h1>
+            
+            <!-- Description -->
+            <p class="lead text-muted mb-5">
+                Создайте персональный план тренировок, пройдя онбординг, или получите демо-план для быстрого старта.
+            </p>
+            
+            <!-- Action Buttons -->
+            <div class="d-grid gap-3 d-md-block">
+                <a href="{% url 'onboarding:start_onboarding' %}" class="btn btn-primary btn-lg px-4">
+                    <i class="fas fa-magic me-2"></i>
+                    Создать персональный план
+                </a>
+                <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-tachometer-alt me-2"></i>
+                    На главную
+                </a>
+            </div>
+            
+            <!-- Demo info -->
+            <div class="mt-5 p-4 bg-light rounded">
+                <h5 class="text-muted mb-3">Для разработчиков</h5>
+                <p class="small text-muted mb-2">
+                    Создать демо-план командой:
+                </p>
+                <code class="bg-dark text-light px-3 py-2 rounded">
+                    python manage.py create_demo_plan &lt;user_id&gt;
+                </code>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

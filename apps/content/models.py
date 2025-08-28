@@ -16,6 +16,7 @@ class MediaAsset(models.Model):
     ]
     
     CATEGORY_CHOICES = [
+        # Existing categories
         ('exercise_technique', 'Exercise Technique'),
         ('exercise_mistake', 'Exercise Mistake'),
         ('exercise_instruction', 'Exercise Instruction'),
@@ -25,6 +26,15 @@ class MediaAsset(models.Model):
         ('card_background', 'Motivational Card Background'),
         ('avatar', 'Trainer Avatar'),
         ('misc', 'Miscellaneous'),
+        # New R2 playlist categories
+        ('intro', 'Intro'),
+        ('warmup', 'Warm-up'),
+        ('main_block', 'Main Block'),
+        ('cooldown', 'Cooldown / Stretch'),
+        ('transition', 'Transition / Separator'),
+        ('timer', 'Timer / Beep'),
+        ('motivation', 'Motivational'),
+        ('breathing', 'Breathing'),
     ]
     
     # File information

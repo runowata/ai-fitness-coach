@@ -373,35 +373,60 @@ def select_archetype(request):
             
             logger.info(f"Successfully saved archetype: {archetype} -> {mapped_archetype} -> {validated_archetype} for user {request.user.email}")
             
-            # Generate workout plan with real AI analysis
-            return redirect('onboarding:generate_plan')
+            # Check if user already has a confirmed plan
+            from apps.workouts.models import WorkoutPlan
+            existing_plan = WorkoutPlan.objects.filter(user=request.user, status="CONFIRMED").first()
+            
+            if not existing_plan:
+                # Create demo plan automatically
+                logger.info(f"Creating demo plan for user {request.user.email}")
+                create_demo_plan_for_user(request.user)
+                messages.success(request, 'Отлично! Ваш тренировочный план готов!')
+            else:
+                logger.info(f"User {request.user.email} already has confirmed plan: {existing_plan.id}")
+                messages.info(request, 'У вас уже есть активный план тренировок!')
+            
+            # Redirect to workout plan
+            return redirect('workouts:my_plan')
         else:
             logger.error(f"Invalid archetype received: '{archetype}' not in {list(archetype_map.keys())}")
             messages.error(request, f'Выберите корректный архетип тренера. Получен: {archetype}')
     
-    archetypes = [
-        {
-            'key': 'peer',
-            'name': 'Близкий по духу ровесник',
-            'description': 'Понимающий, дружелюбный и открытый тренер. Идет к цели вместе с вами как равный, поддерживает через искреннее понимание и общие ценности.',
-            'image': '/static/images/avatars/bro-avatar.png',  # Сохраняем существующий аватар
-            'style': 'Дружелюбный и искренний'
-        },
-        {
-            'key': 'professional', 
-            'name': 'Успешный Профессионал',
-            'description': 'Результативный, целеориентированный тренер. Ведет к успеху через четкие планы, измеримые результаты и профессиональную поддержку.',
-            'image': '/static/images/avatars/sergeant-avatar.png',  # Сохраняем существующий аватар
-            'style': 'Результат-ориентированный'
-        },
-        {
-            'key': 'mentor',
-            'name': 'Мудрый Наставник',
-            'description': 'Опытный, терпеливый и поддерживающий тренер. Ведет к долгосрочному успеху через понимание и постепенные изменения.',
-            'image': '/static/images/avatars/intellectual-avatar.png',  # Сохраняем существующий аватар
-            'style': 'Мудрый и терпеливый'
-        }
-    ]
+    # Get trainer personas and media assets from database
+    from apps.content.models import TrainerPersona, MediaAsset
+    from django.urls import reverse
+    
+    personas = TrainerPersona.objects.filter(is_active=True).order_by('display_order')
+    
+    archetypes = []
+    for persona in personas:
+        # Try to get avatar for this archetype from MediaAsset
+        avatar_asset = MediaAsset.objects.filter(
+            category='avatar',
+            archetype=persona.archetype,
+            is_active=True
+        ).first()
+        
+        if avatar_asset:
+            # Extract R2 key from r2:// URL format  
+            r2_key = avatar_asset.file_url.replace('r2://', '')
+            image_url = reverse('content:media_proxy', kwargs={'key': r2_key})
+        else:
+            # Fallback to static images based on archetype
+            fallback_images = {
+                'peer': '/static/images/avatars/bro-avatar.png',
+                'professional': '/static/images/avatars/sergeant-avatar.png', 
+                'mentor': '/static/images/avatars/intellectual-avatar.png'
+            }
+            image_url = fallback_images.get(persona.archetype, '/static/images/avatars/bro-avatar.png')
+        
+        archetypes.append({
+            'key': persona.archetype,
+            'name': persona.title,
+            'description': persona.description,
+            'image': image_url,
+            'style': persona.motivational_style
+        })
     
     context = {'archetypes': archetypes}
     return render(request, 'onboarding/select_archetype.html', context)
@@ -1007,3 +1032,74 @@ def sleep_test(request, seconds):
             'message': f'Sleep interrupted: {str(e)}',
             'actual_duration': round(duration, 2)
         }, status=500)
+
+
+def create_demo_plan_for_user(user):
+    """Создаёт демо-план для пользователя (1 неделя, 5 тренировок + 2 отдыха)."""
+    import uuid
+    import random
+    from apps.workouts.models import WorkoutPlan, DailyWorkout, Exercise
+    
+    # Базовые упражнения
+    basic_exercises = [
+        {"slug": "pushups", "name": "Отжимания", "description": "Классические отжимания", "difficulty": "beginner"},
+        {"slug": "squats", "name": "Приседания", "description": "Приседания без веса", "difficulty": "beginner"},
+        {"slug": "plank", "name": "Планка", "description": "Удержание планки", "difficulty": "intermediate"},
+        {"slug": "burpee", "name": "Берпи", "description": "Полное упражнение с прыжком", "difficulty": "intermediate"},
+    ]
+
+    exercises = []
+    for data in basic_exercises:
+        ex, _ = Exercise.objects.get_or_create(
+            slug=data["slug"],
+            defaults={
+                "id": str(uuid.uuid4()),
+                "name": data["name"],
+                "description": data["description"],
+                "difficulty": data["difficulty"],
+                "muscle_groups": [],
+                "is_active": True,
+            },
+        )
+        exercises.append(ex)
+
+    # План
+    plan = WorkoutPlan.objects.create(
+        user=user,
+        name="Демо-план на 1 неделю",
+        duration_weeks=4,
+        plan_data={"demo": True, "exercises": len(exercises)},
+        status="CONFIRMED",
+    )
+
+    # Дни
+    for day in range(1, 8):
+        is_rest_day = day in (3, 6)
+        if is_rest_day:
+            exercise_data = []
+            workout_name = "День отдыха"
+        else:
+            chosen = random.sample(exercises, k=3)
+            exercise_data = [
+                {
+                    "exercise_id": ex.slug,
+                    "exercise_name": ex.name,
+                    "sets": 3,
+                    "reps": random.randint(8, 15),
+                    "rest_seconds": 60,
+                }
+                for ex in chosen
+            ]
+            workout_name = f"Тренировка день {day}"
+
+        DailyWorkout.objects.create(
+            plan=plan,
+            day_number=day,
+            week_number=1,
+            name=workout_name,
+            exercises=exercise_data,
+            is_rest_day=is_rest_day,
+        )
+
+    logger.info(f"Demo plan created for user {user.email}: {plan.id}")
+    return plan

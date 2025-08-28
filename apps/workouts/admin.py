@@ -7,34 +7,22 @@ from .video_storage import get_storage
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'difficulty', 'muscle_groups_display', 'is_active')
+    list_display = ('name', 'slug', 'difficulty', 'is_active')
     list_filter = ('difficulty', 'is_active')
     search_fields = ('name', 'slug', 'description')
     prepopulated_fields = {'slug': ('name',)}
-    filter_horizontal = ('alternatives',)
     
     fieldsets = (
         ('Basic Information', {
             'fields': ('name', 'slug', 'description')
         }),
         ('Classification', {
-            'fields': ('difficulty', 'muscle_groups')
-        }),
-        ('Alternatives', {
-            'fields': ('alternatives',),
-            'description': 'Exercises that can be substituted for this one'
-        }),
-        ('Media', {
-            'fields': ('poster_image',)
+            'fields': ('difficulty',)
         }),
         ('Status', {
             'fields': ('is_active',)
         })
     )
-    
-    def muscle_groups_display(self, obj):
-        return ', '.join(obj.muscle_groups)
-    muscle_groups_display.short_description = 'Muscle Groups'
     
     # Equipment display removed - field no longer exists
 

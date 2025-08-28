@@ -1,0 +1,42 @@
+{
+  "intro": [
+    "videos/intro/intro_generic_ru.mp4",
+    "videos/intro/intro_welcome.mp4"
+  ],
+  "warmup": [
+    "videos/warmup/warmup_basic.mp4",
+    "videos/warmup/warmup_cardio.mp4",
+    "videos/warmup/warmup_stretch.mp4"
+  ],
+  "main_block": [
+    "videos/exercises/pushups_technique_1.mp4",
+    "videos/exercises/squats_technique_1.mp4",
+    "videos/exercises/plank_technique_1.mp4",
+    "videos/exercises/burpee_technique_1.mp4",
+    "videos/exercises/crunches_technique_1.mp4",
+    "videos/exercises/lunges_technique_1.mp4"
+  ],
+  "transition": [
+    "videos/transitions/transition_1.mp4",
+    "videos/transitions/break_30s.mp4"
+  ],
+  "cooldown": [
+    "videos/cooldown/stretch_legs.mp4",
+    "videos/cooldown/stretch_arms.mp4",
+    "videos/cooldown/final_stretch.mp4"
+  ],
+  "motivation": [
+    "videos/motivation/motivation_generic_1.mp4",
+    "videos/motivation/motivation_weekly_1.mp4",
+    "videos/motivation/keep_going.mp4"
+  ],
+  "breathing": [
+    "videos/breathing/breath_in_out.mp4",
+    "videos/breathing/deep_breath.mp4"
+  ],
+  "timer": [
+    "videos/timer/countdown_30s.mp4",
+    "videos/timer/beep_start.mp4",
+    "videos/timer/beep_end.mp4"
+  ]
+}

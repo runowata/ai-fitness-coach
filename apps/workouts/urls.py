@@ -10,4 +10,8 @@ urlpatterns = [
     path('substitute/<int:workout_id>/', views.substitute_exercise_view, name='substitute_exercise'),
     path('history/', views.workout_history_view, name='history'),
     path('plan/', views.plan_overview_view, name='plan_overview'),
+    
+    # Demo plan views (Phase 4.2)
+    path('my-plan/', views.my_plan, name='my_plan'),
+    path('day/<int:day_id>/', views.workout_day, name='workout_day'),
 ]

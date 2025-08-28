@@ -492,3 +492,34 @@ class WeeklyLessonHealthView(generics.RetrieveAPIView):
             return 'acceptable'
         else:
             return 'poor'
+
+
+# Demo plan views for Phase 4.2
+@login_required
+def my_plan(request):
+    """Страница с текущим планом пользователя"""
+    from apps.workouts.models import WorkoutPlan, DailyWorkout
+    
+    plan = WorkoutPlan.objects.filter(user=request.user, status='CONFIRMED').first()
+    if not plan:
+        return render(request, "workouts/no_plan.html")
+
+    daily_workouts = DailyWorkout.objects.filter(plan=plan).order_by("week_number", "day_number")
+    return render(request, "workouts/my_plan.html", {
+        "plan": plan,
+        "daily_workouts": daily_workouts,
+    })
+
+
+@login_required
+def workout_day(request, day_id):
+    from apps.workouts.models import DailyWorkout
+    day = get_object_or_404(DailyWorkout, pk=day_id, plan__user=request.user)
+
+    # ВАЖНО: берём позиции плейлиста, вместе с MediaAsset
+    playlist = day.playlist_items.select_related("media").order_by("order")
+
+    return render(request, "workouts/workout_day.html", {
+        "day": day,
+        "playlist": playlist,
+    })

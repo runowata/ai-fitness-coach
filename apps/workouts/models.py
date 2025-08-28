@@ -36,21 +36,8 @@ class Exercise(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES)
-    muscle_groups = models.JSONField(default=list)  # List of muscle groups
-    # Equipment fields removed - not used in application
-    
-    # Exercise alternatives (for substitution feature)
-    alternatives = models.ManyToManyField('self', blank=True, symmetrical=True)
-    
-    # Legacy video references removed - use VideoClip.r2_file instead
-    
-    # Media assets
-    poster_image = models.ImageField(
-        upload_to='photos/workout/',
-        blank=True,
-        null=True,
-        help_text='Poster image for video player'
-    )
+    # Removed fields: muscle_groups, alternatives, poster_image
+    # These are now handled by MediaAsset system
     
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -67,14 +54,6 @@ class Exercise(models.Model):
     
     def __str__(self):
         return self.name
-    
-    @property
-    def poster_cdn(self):
-        """Get CDN URL for poster image"""
-        if self.poster_image:
-            from apps.core.services import MediaService
-            return MediaService.get_public_cdn_url(self.poster_image)
-        return ''
 
 
 class VideoClip(models.Model):
@@ -554,3 +533,38 @@ class WeeklyNotification(models.Model):
             self.is_read = True
             self.read_at = timezone.now()
             self.save(update_fields=['is_read', 'read_at'])
+
+
+class DailyPlaylistItem(models.Model):
+    """
+    Плейлист дня - последовательность медиа-клипов из R2 для конкретной тренировки
+    """
+    ROLE_CHOICES = [
+        ("intro", "Intro"),
+        ("warmup", "Warm-up"),
+        ("main", "Main Exercise Clip"),
+        ("transition", "Transition"),
+        ("cooldown", "Cooldown / Stretch"),
+        ("timer", "Timer"),
+        ("motivation", "Motivation"),
+        ("breathing", "Breathing"),
+    ]
+
+    day = models.ForeignKey("DailyWorkout", on_delete=models.CASCADE, related_name="playlist_items")
+    order = models.PositiveIntegerField()
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    media = models.ForeignKey("content.MediaAsset", on_delete=models.PROTECT, related_name="used_in_playlist")
+    duration_seconds = models.PositiveIntegerField(null=True, blank=True)
+    overlay = models.JSONField(default=dict, blank=True)  # подписи/подсказки/инструкции (опционально)
+
+    class Meta:
+        db_table = "daily_playlist_items"
+        ordering = ["day_id", "order"]
+        indexes = [
+            models.Index(fields=["day", "order"]),
+            models.Index(fields=["role"]),
+        ]
+        unique_together = [("day", "order")]
+
+    def __str__(self):
+        return f"Day {self.day.day_number} - #{self.order} {self.role}"
