@@ -49,7 +49,7 @@ class MediaAsset(models.Model):
     
     # Relations
     exercise = models.ForeignKey(
-        'workouts.Exercise',
+        'workouts.CSVExercise',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
