@@ -123,8 +123,6 @@ def create_exercises():
                         'name': name,
                         'description': f'{name} - proper form and technique',
                         'difficulty': 'beginner',
-                        'muscle_groups': muscle_groups,
-                        'equipment_needed': [],
                         'is_active': True
                     }
                 )

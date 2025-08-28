@@ -21,60 +21,60 @@ class Command(BaseCommand):
         # Exercise data mapping - matches the AI prompts exactly
         exercises_data = [
             # Basic exercises
-            {'id': 'ex001', 'name': 'Push-ups', 'muscle_groups': ['chest', 'arms'], 'difficulty': 'beginner'},
-            {'id': 'ex002', 'name': 'Squats', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
-            {'id': 'ex004', 'name': 'Lunges', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
-            {'id': 'ex005', 'name': 'Plank', 'muscle_groups': ['core'], 'difficulty': 'beginner'},
-            {'id': 'ex009', 'name': 'Burpees', 'muscle_groups': ['full_body'], 'difficulty': 'intermediate'},
-            {'id': 'ex010', 'name': 'Mountain Climbers', 'muscle_groups': ['core', 'legs'], 'difficulty': 'beginner'},
-            {'id': 'ex011', 'name': 'Jumping Jacks', 'muscle_groups': ['full_body'], 'difficulty': 'beginner'},
+            {'id': 'ex001', 'name': 'Push-ups', 'difficulty': 'beginner'},
+            {'id': 'ex002', 'name': 'Squats', 'difficulty': 'beginner'},
+            {'id': 'ex004', 'name': 'Lunges', 'difficulty': 'beginner'},
+            {'id': 'ex005', 'name': 'Plank', 'difficulty': 'beginner'},
+            {'id': 'ex009', 'name': 'Burpees', 'difficulty': 'intermediate'},
+            {'id': 'ex010', 'name': 'Mountain Climbers', 'difficulty': 'beginner'},
+            {'id': 'ex011', 'name': 'Jumping Jacks', 'difficulty': 'beginner'},
             
             # Chest exercises
-            {'id': 'ex007', 'name': 'Bench Press', 'muscle_groups': ['chest', 'arms'], 'difficulty': 'intermediate'},
-            {'id': 'ex026', 'name': 'Chest Flyes', 'muscle_groups': ['chest'], 'difficulty': 'intermediate'},
-            {'id': 'ex042', 'name': 'Diamond Push-ups', 'muscle_groups': ['chest', 'arms'], 'difficulty': 'intermediate'},
-            {'id': 'ex043', 'name': 'Wide Push-ups', 'muscle_groups': ['chest'], 'difficulty': 'beginner'},
-            {'id': 'ex045', 'name': 'Incline Push-ups', 'muscle_groups': ['chest'], 'difficulty': 'beginner'},
+            {'id': 'ex007', 'name': 'Bench Press', 'difficulty': 'intermediate'},
+            {'id': 'ex026', 'name': 'Chest Flyes', 'difficulty': 'intermediate'},
+            {'id': 'ex042', 'name': 'Diamond Push-ups', 'difficulty': 'intermediate'},
+            {'id': 'ex043', 'name': 'Wide Push-ups', 'difficulty': 'beginner'},
+            {'id': 'ex045', 'name': 'Incline Push-ups', 'difficulty': 'beginner'},
             
             # Back exercises
-            {'id': 'ex003', 'name': 'Pull-ups', 'muscle_groups': ['back', 'arms'], 'difficulty': 'intermediate'},
-            {'id': 'ex008', 'name': 'Rows', 'muscle_groups': ['back', 'arms'], 'difficulty': 'beginner'},
-            {'id': 'ex085', 'name': 'Lat Pulldowns', 'muscle_groups': ['back'], 'difficulty': 'intermediate'},
-            {'id': 'ex090', 'name': 'Bent Over Rows', 'muscle_groups': ['back'], 'difficulty': 'intermediate'},
-            {'id': 'ex084', 'name': 'Cable Rows', 'muscle_groups': ['back'], 'difficulty': 'intermediate'},
+            {'id': 'ex003', 'name': 'Pull-ups', 'difficulty': 'intermediate'},
+            {'id': 'ex008', 'name': 'Rows', 'difficulty': 'beginner'},
+            {'id': 'ex085', 'name': 'Lat Pulldowns', 'difficulty': 'intermediate'},
+            {'id': 'ex090', 'name': 'Bent Over Rows', 'difficulty': 'intermediate'},
+            {'id': 'ex084', 'name': 'Cable Rows', 'difficulty': 'intermediate'},
             
             # Leg exercises
-            {'id': 'ex050', 'name': 'Bulgarian Split Squats', 'muscle_groups': ['legs'], 'difficulty': 'intermediate'},
-            {'id': 'ex051', 'name': 'Goblet Squats', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
-            {'id': 'ex052', 'name': 'Jump Squats', 'muscle_groups': ['legs'], 'difficulty': 'intermediate'},
-            {'id': 'ex062', 'name': 'Hip Thrusts', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
-            {'id': 'ex064', 'name': 'Calf Raises', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
-            {'id': 'ex067', 'name': 'Leg Curls', 'muscle_groups': ['legs'], 'difficulty': 'intermediate'},
+            {'id': 'ex050', 'name': 'Bulgarian Split Squats', 'difficulty': 'intermediate'},
+            {'id': 'ex051', 'name': 'Goblet Squats', 'difficulty': 'beginner'},
+            {'id': 'ex052', 'name': 'Jump Squats', 'difficulty': 'intermediate'},
+            {'id': 'ex062', 'name': 'Hip Thrusts', 'difficulty': 'beginner'},
+            {'id': 'ex064', 'name': 'Calf Raises', 'difficulty': 'beginner'},
+            {'id': 'ex067', 'name': 'Leg Curls', 'difficulty': 'intermediate'},
             
             # Shoulder exercises
-            {'id': 'ex025', 'name': 'Shoulder Press', 'muscle_groups': ['shoulders'], 'difficulty': 'beginner'},
-            {'id': 'ex022', 'name': 'Lateral Raises', 'muscle_groups': ['shoulders'], 'difficulty': 'beginner'},
-            {'id': 'ex038', 'name': 'Front Raises', 'muscle_groups': ['shoulders'], 'difficulty': 'beginner'},
-            {'id': 'ex039', 'name': 'Rear Delt Flyes', 'muscle_groups': ['shoulders'], 'difficulty': 'intermediate'},
-            {'id': 'ex036', 'name': 'Arnold Press', 'muscle_groups': ['shoulders'], 'difficulty': 'intermediate'},
+            {'id': 'ex025', 'name': 'Shoulder Press', 'difficulty': 'beginner'},
+            {'id': 'ex022', 'name': 'Lateral Raises', 'difficulty': 'beginner'},
+            {'id': 'ex038', 'name': 'Front Raises', 'difficulty': 'beginner'},
+            {'id': 'ex039', 'name': 'Rear Delt Flyes', 'difficulty': 'intermediate'},
+            {'id': 'ex036', 'name': 'Arnold Press', 'difficulty': 'intermediate'},
             
             # Arm exercises
-            {'id': 'ex023', 'name': 'Bicep Curls', 'muscle_groups': ['arms'], 'difficulty': 'beginner'},
-            {'id': 'ex024', 'name': 'Tricep Extensions', 'muscle_groups': ['arms'], 'difficulty': 'beginner'},
-            {'id': 'ex031', 'name': 'Hammer Curls', 'muscle_groups': ['arms'], 'difficulty': 'beginner'},
-            {'id': 'ex012', 'name': 'Dips', 'muscle_groups': ['chest', 'arms'], 'difficulty': 'intermediate'},
+            {'id': 'ex023', 'name': 'Bicep Curls', 'difficulty': 'beginner'},
+            {'id': 'ex024', 'name': 'Tricep Extensions', 'difficulty': 'beginner'},
+            {'id': 'ex031', 'name': 'Hammer Curls', 'difficulty': 'beginner'},
+            {'id': 'ex012', 'name': 'Dips', 'difficulty': 'intermediate'},
             
             # Core exercises
-            {'id': 'ex014', 'name': 'Crunches', 'muscle_groups': ['core'], 'difficulty': 'beginner'},
-            {'id': 'ex015', 'name': 'Russian Twists', 'muscle_groups': ['core'], 'difficulty': 'beginner'},
-            {'id': 'ex013', 'name': 'Leg Raises', 'muscle_groups': ['core'], 'difficulty': 'intermediate'},
+            {'id': 'ex014', 'name': 'Crunches', 'difficulty': 'beginner'},
+            {'id': 'ex015', 'name': 'Russian Twists', 'difficulty': 'beginner'},
+            {'id': 'ex013', 'name': 'Leg Raises', 'difficulty': 'intermediate'},
             
             # Cardio exercises
-            {'id': 'ex017', 'name': 'High Knees', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
-            {'id': 'ex018', 'name': 'Butt Kicks', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
-            {'id': 'ex019', 'name': 'Jump Rope', 'muscle_groups': ['full_body'], 'difficulty': 'beginner'},
-            {'id': 'ex020', 'name': 'Box Jumps', 'muscle_groups': ['legs'], 'difficulty': 'intermediate'},
-            {'id': 'ex021', 'name': 'Step-ups', 'muscle_groups': ['legs'], 'difficulty': 'beginner'},
+            {'id': 'ex017', 'name': 'High Knees', 'difficulty': 'beginner'},
+            {'id': 'ex018', 'name': 'Butt Kicks', 'difficulty': 'beginner'},
+            {'id': 'ex019', 'name': 'Jump Rope', 'difficulty': 'beginner'},
+            {'id': 'ex020', 'name': 'Box Jumps', 'difficulty': 'intermediate'},
+            {'id': 'ex021', 'name': 'Step-ups', 'difficulty': 'beginner'},
         ]
         
         self.stdout.write(f"📊 Will create {len(exercises_data)} exercises")

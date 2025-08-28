@@ -158,7 +158,9 @@ def substitute_exercise_view(request, workout_id):
         original_exercise = CSVExercise.objects.get(id=original_slug)
         substitute_exercise = CSVExercise.objects.get(id=substitute_slug)
         
-        if substitute_exercise not in original_exercise.alternatives.all():
+        # Note: alternatives relationship was removed in Phase 5.6
+        # For now, allow any active exercise as substitute
+        if not substitute_exercise.is_active:
             return JsonResponse({'error': 'Недопустимая замена'}, status=400)
         
         # Update workout substitutions

@@ -466,10 +466,12 @@ class VideoPlaylistBuilder:
         try:
             exercise = CSVExercise.objects.get(id=exercise_slug)
             
-            # Get all active alternatives (equipment filtering removed)
-            alternatives = exercise.alternatives.filter(
-                is_active=True
-            ).all()
+            # Note: alternatives relationship was removed in Phase 5.6
+            # For now, return similar exercises by muscle group or difficulty
+            alternatives = CSVExercise.objects.filter(
+                is_active=True,
+                level=exercise.level
+            ).exclude(id=exercise_slug)[:3]
             
             return list(alternatives)
             
