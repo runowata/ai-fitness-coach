@@ -1051,12 +1051,11 @@ def create_demo_plan_for_user(user):
     exercises = []
     for data in basic_exercises:
         ex, _ = CSVExercise.objects.get_or_create(
-            slug=data["slug"],
+            id=data["slug"],
             defaults={
-                "id": str(uuid.uuid4()),
-                "name": data["name"],
+                "name_ru": data["name"],
                 "description": data["description"],
-                "difficulty": data["difficulty"],
+                "level": data["difficulty"],
                 "is_active": True,
             },
         )
