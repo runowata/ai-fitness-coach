@@ -14,46 +14,8 @@ class VideoProvider(models.TextChoices):
     EXTERNAL = "external", "External URL"
 
 
-class Exercise(models.Model):
-    DIFFICULTY_CHOICES = [
-        ('beginner', 'Beginner'),
-        ('intermediate', 'Intermediate'),
-        ('advanced', 'Advanced'),
-    ]
-    
-    MUSCLE_GROUP_CHOICES = [
-        ('chest', 'Chest'),
-        ('back', 'Back'),
-        ('shoulders', 'Shoulders'),
-        ('arms', 'Arms'),
-        ('legs', 'Legs'),
-        ('core', 'Core'),
-        ('full_body', 'Full Body'),
-    ]
-    
-    id = models.CharField(primary_key=True, max_length=36)
-    slug = models.SlugField(unique=True, max_length=100)
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES)
-    # Removed fields: muscle_groups, alternatives, poster_image
-    # These are now handled by MediaAsset system
-    
-    # Metadata
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    
-    class Meta:
-        db_table = 'exercises'
-        ordering = ['name']
-        indexes = [
-            models.Index(fields=['slug']),
-            models.Index(fields=['difficulty']),
-        ]
-    
-    def __str__(self):
-        return self.name
+# Exercise model COMPLETELY REMOVED in Phase 5.6
+# Replaced by CSVExercise model for cleaner structure
 
 
 class VideoClip(models.Model):

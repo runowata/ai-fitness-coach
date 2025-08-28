@@ -719,7 +719,7 @@ CORRECTION NEEDED: The following exercises are not available and need replacemen
 
 Please regenerate the plan using ONLY exercises from the allowed list.
 Focus especially on finding good substitutes for the exercises listed above.
-Consider muscle groups, equipment, and difficulty when selecting alternatives.
+Consider exercise difficulty and type when selecting alternatives.
 
 Allowed exercises: {', '.join(sorted(allowed_slugs))}
 """

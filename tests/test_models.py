@@ -65,17 +65,22 @@ class ExerciseModelTest(TestCase):
     
     def test_exercise_alternatives(self):
         """Test exercise alternatives system"""
-        alt_exercise = Exercise.objects.create(
+        from apps.workouts.models import CSVExercise
+        alt_exercise = CSVExercise.objects.create(
             id='knee-push-up-models',
-            slug='knee-push-up',
-            name='Отжимания с колен',
+            name_ru='Отжимания с колен',
+            name_en='Knee Push-ups',
+            level='beginner',
             description='Упрощенная версия',
-            difficulty='beginner'
+            muscle_group='chest',
+            exercise_type='strength',
+            is_active=True
         )
         
         # Note: alternatives relationship was removed in Phase 5.6
-        self.assertNotEqual(alt_exercise.slug, self.exercise.slug)
-        self.assertEqual(alt_exercise.difficulty, 'beginner')
+        # Now alternatives are handled via service layer
+        self.assertNotEqual(alt_exercise.id, 'regular-push-ups')
+        self.assertEqual(alt_exercise.level, 'beginner')
 
 
 class WorkoutPlanModelTest(TestCase):

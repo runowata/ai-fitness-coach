@@ -276,7 +276,7 @@ class ExerciseCatalog:
         
         return {
             'total_exercises': len(self._catalog),
-            'muscle_groups': len(self._by_muscle_group),
+            'muscle_group_count': len(self._by_muscle_group),
             'equipment_types': len(self._by_equipment),
             'difficulty_levels': len(self._by_difficulty),
             'muscle_group_distribution': {

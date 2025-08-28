@@ -1,30 +1,11 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import CSVExercise, DailyWorkout, Exercise, VideoClip, WorkoutPlan
+from .models import CSVExercise, DailyWorkout, VideoClip, WorkoutPlan
 from .video_storage import get_storage
 
 
-@admin.register(Exercise)
-class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'difficulty', 'is_active')
-    list_filter = ('difficulty', 'is_active')
-    search_fields = ('name', 'slug', 'description')
-    prepopulated_fields = {'slug': ('name',)}
-    
-    fieldsets = (
-        ('Basic Information', {
-            'fields': ('name', 'slug', 'description')
-        }),
-        ('Classification', {
-            'fields': ('difficulty',)
-        }),
-        ('Status', {
-            'fields': ('is_active',)
-        })
-    )
-    
-    # Equipment display removed - field no longer exists
+# ExerciseAdmin REMOVED in Phase 5.6 - Exercise model deleted
 
 
 @admin.register(CSVExercise)

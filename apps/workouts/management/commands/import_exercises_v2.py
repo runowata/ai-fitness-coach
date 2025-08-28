@@ -304,21 +304,7 @@ class Command(BaseCommand):
         
         self.stdout.write(self.style.SUCCESS(f"Created {created_count} R2 placeholder clips"))
 
-    def _parse_muscle_groups(self, muscle_groups_str):
-        """Parse muscle groups from string to JSON array"""
-        if pd.isna(muscle_groups_str) or not muscle_groups_str:
-            return []
-        try:
-            # If already JSON, return as-is
-            if isinstance(muscle_groups_str, list):
-                return muscle_groups_str
-            # If string with commas, split
-            if ',' in str(muscle_groups_str):
-                return [g.strip() for g in str(muscle_groups_str).split(',')]
-            # Single muscle group
-            return [str(muscle_groups_str).strip()]
-        except:
-            return []
+    # Note: _parse_muscle_groups method removed in Phase 5.6 (muscle_groups field removed)
     
     def _parse_equipment(self, equipment_str):
         """Parse equipment from string to JSON array"""

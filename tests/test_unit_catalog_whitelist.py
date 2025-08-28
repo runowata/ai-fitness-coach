@@ -260,7 +260,7 @@ def test_catalog_stats_generation():
     stats = catalog.get_stats()
     
     assert stats['total_exercises'] == 3
-    assert stats['muscle_groups'] >= 2
+    assert stats['muscle_group_count'] >= 2
     assert stats['muscle_group_distribution']['chest'] == 2
     assert stats['muscle_group_distribution']['legs'] == 1
 

@@ -121,11 +121,10 @@ class TestExerciseValidationService:
         mock_cursor = Mock()
         mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
         
-        # Mock exercise lookup
+        # Mock exercise lookup (Phase 5.6: muscle_groups removed, only ai_tags and level)
         mock_cursor.fetchone.return_value = (
-            ['legs', 'glutes'],  # muscle_groups
-            ['bodyweight'],      # equipment_needed
-            'intermediate'       # difficulty
+            ['legs', 'glutes', 'bodyweight'],  # ai_tags (JSONb)
+            'intermediate'       # level
         )
         
         # Mock alternatives query

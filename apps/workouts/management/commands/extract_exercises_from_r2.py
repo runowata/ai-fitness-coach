@@ -308,29 +308,14 @@ class Command(BaseCommand):
             'beginner': ['knee', 'assisted', 'wall'],
         }
         
-        # Determine muscle group
+        # Determine primary muscle group (simplified in Phase 5.6)
         primary_muscle_group = 'full_body'  # default
-        muscle_groups = []
         
         for muscle_group, patterns in muscle_group_patterns.items():
             if any(pattern in exercise_name for pattern in patterns):
-                muscle_groups.append(muscle_group)
-                if not muscle_groups or muscle_group != 'full_body':  # Prefer specific groups
+                if muscle_group != 'full_body':  # Prefer specific groups
                     primary_muscle_group = muscle_group
-        
-        if not muscle_groups:
-            muscle_groups = [primary_muscle_group]
-        
-        # Determine equipment
-        equipment = 'bodyweight'  # default
-        equipment_needed = []
-        
-        for equip, patterns in equipment_patterns.items():
-            if any(pattern in exercise_name for pattern in patterns):
-                equipment = equip
-                if equip != 'bodyweight':
-                    equipment_needed.append(equip)
-                break
+                    break
         
         # Determine difficulty
         difficulty = 'intermediate'  # default
