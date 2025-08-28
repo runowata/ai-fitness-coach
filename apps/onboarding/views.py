@@ -1057,7 +1057,6 @@ def create_demo_plan_for_user(user):
                 "name": data["name"],
                 "description": data["description"],
                 "difficulty": data["difficulty"],
-                "muscle_groups": [],
                 "is_active": True,
             },
         )
