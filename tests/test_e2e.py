@@ -9,7 +9,7 @@ from django.utils import timezone
 from apps.achievements.models import Achievement, UserAchievement
 from apps.content.models import Story, StoryChapter, UserStoryAccess
 from apps.onboarding.models import AnswerOption, OnboardingQuestion, UserOnboardingResponse
-from apps.workouts.models import DailyWorkout, Exercise, WorkoutPlan
+from apps.workouts.models import DailyWorkout, CSVExercise, WorkoutPlan
 
 User = get_user_model()
 
@@ -42,7 +42,7 @@ class EndToEndUserFlowTest(TestCase):
         )
         
         # Create exercise
-        self.exercise = Exercise.objects.create(
+        self.exercise = CSVExercise.objects.create(
             id="push-up-id-e2e",
             slug="push-up",
             name="Отжимания",
@@ -285,7 +285,7 @@ class EndToEndUserFlowTest(TestCase):
         user.profile.save()
         
         # Create alternative exercise
-        alt_exercise = Exercise.objects.create(
+        alt_exercise = CSVExercise.objects.create(
             id="knee-push-up-id",
             slug="knee-push-up",
             name="Отжимания с колен",

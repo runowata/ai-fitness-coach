@@ -72,7 +72,7 @@ def check_video_clips():
     # Sample some video clips
     print("\nSample VideoClips:")
     for clip in VideoClip.objects.filter(is_active=True)[:5]:
-        print(f"  - {clip.type} | {clip.archetype} | {clip.exercise.name if clip.exercise else 'No exercise'}")
+        print(f"  - {clip.type} | {clip.archetype} | {clip.exercise.name_ru if clip.exercise else 'No exercise'}")
         print(f"    URL: {clip.url}")
         print(f"    File exists: {os.path.exists(os.path.join(settings.STATIC_ROOT, clip.url.lstrip('/')))}")
 

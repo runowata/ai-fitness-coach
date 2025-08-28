@@ -66,7 +66,7 @@ class Command(BaseCommand):
         if sample_exercises:
             self.stdout.write("\n📝 Примеры упражнений:")
             for ex in sample_exercises:
-                self.stdout.write(f"   • {ex.id}: {ex.name}")
+                self.stdout.write(f"   • {ex.id}: {ex.name_ru}")
 
     def audit_video_clips(self, verbose):
         """Проверка видео клипов"""
@@ -119,7 +119,7 @@ class Command(BaseCommand):
             self.stdout.write("\n📝 Примеры видео клипов:")
             sample_clips = VideoClip.objects.all()[:5]
             for clip in sample_clips:
-                exercise_name = clip.exercise.name if clip.exercise else "Глобальное видео"
+                exercise_name = clip.exercise.name_ru if clip.exercise else "Глобальное видео"
                 self.stdout.write(f"   • {clip.id}: {exercise_name} - {clip.r2_kind} ({clip.r2_archetype})")
 
     def audit_users_and_plans(self, verbose):

@@ -433,7 +433,7 @@ class TestPerformanceAndEdgeCases:
         assert result == []
         
         # Test with None exercise slug
-        with patch('apps.workouts.services.Exercise.objects.get') as mock_get:
+        with patch('apps.workouts.services.CSVExercise.objects.get') as mock_get:
             mock_get.side_effect = Exception("DoesNotExist")
             result = builder._build_exercise_playlist('nonexistent', 'professional', {})
             assert result == []

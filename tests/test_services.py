@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-from apps.workouts.models import DailyWorkout, Exercise, VideoClip, WorkoutPlan
+from apps.workouts.models import DailyWorkout, CSVExercise, VideoClip, WorkoutPlan
 from apps.workouts.services import VideoPlaylistBuilder
 
 try:
@@ -31,7 +31,7 @@ class VideoPlaylistBuilderTest(TestCase):
         self.user.profile.save()
         
         # Create test exercise
-        self.exercise = Exercise.objects.create(
+        self.exercise = CSVExercise.objects.create(
             id='push-up-id',
             slug='push-up',
             name='Отжимания',
@@ -315,7 +315,7 @@ class IntegrationTest(TestCase):
         self.user.profile.save()
         
         # Create exercise
-        self.exercise = Exercise.objects.create(
+        self.exercise = CSVExercise.objects.create(
             id='push-up-id-2',
             slug='push-up',
             name='Отжимания',

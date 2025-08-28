@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from apps.workouts.models import Exercise, VideoClip
+from apps.workouts.models import CSVExercise, VideoClip
 
 # Import other app models
 try:
@@ -223,12 +223,12 @@ class Command(BaseCommand):
         self.stdout.write("\\n🗑️ CLEARING OLD DATA...")
         with transaction.atomic():
             VideoClip.objects.all().delete()
-            Exercise.objects.all().delete()
+            CSVExercise.objects.all().delete()
             
             # Create exercises
             self.stdout.write(f"💪 Creating {len(exercises_data)} exercises...")
             for ex_id, ex_data in exercises_data.items():
-                Exercise.objects.create(**ex_data)
+                CSVExercise.objects.create(**ex_data, muscle_group="full_body", exercise_type="strength", is_active=True)
             
             # Create videos
             self.stdout.write(f"🎬 Creating {len(videos_data)} video clips...")
@@ -236,7 +236,7 @@ class Command(BaseCommand):
                 # Handle trainer videos (exercise_id=None) and exercise videos
                 exercise = None
                 if video_data['exercise_id']:
-                    exercise = Exercise.objects.get(id=video_data['exercise_id'])
+                    exercise = CSVExercise.objects.get(id=video_data['exercise_id'])
                 
                 VideoClip.objects.create(
                     exercise=exercise,
@@ -250,7 +250,7 @@ class Command(BaseCommand):
                 )
         
         # Final stats
-        final_exercises = Exercise.objects.count()
+        final_exercises = CSVExercise.objects.count()
         final_videos = VideoClip.objects.count()
         
         # Create essential app data

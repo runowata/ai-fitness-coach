@@ -196,7 +196,7 @@ def substitute_exercise_view(request, workout_id):
             'message': f'Упражнение заменено: {original_exercise.name} → {substitute_exercise.name}'
         })
         
-    except Exercise.DoesNotExist:
+    except CSVExercise.DoesNotExist:
         return JsonResponse({'error': 'Упражнение не найдено'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

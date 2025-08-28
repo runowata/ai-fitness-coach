@@ -88,8 +88,8 @@ def health_check(request):
     
     # Check exercises exist
     try:
-        from apps.workouts.models import Exercise
-        exercise_count = Exercise.objects.count()
+        from apps.workouts.models import CSVExercise
+        exercise_count = CSVExercise.objects.count()
         status['checks']['exercises'] = f'{exercise_count} exercises available'
         
         if exercise_count == 0:

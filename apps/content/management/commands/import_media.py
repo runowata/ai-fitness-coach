@@ -6,7 +6,7 @@ from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand, CommandError
 
 from apps.content.models import MediaAsset
-from apps.workouts.models import Exercise
+from apps.workouts.models import CSVExercise
 
 
 class Command(BaseCommand):
@@ -141,10 +141,10 @@ class Command(BaseCommand):
         # Try to link to exercise if applicable
         if category.startswith('exercise_') and metadata.get('exercise_slug'):
             try:
-                exercise = Exercise.objects.get(slug=metadata['exercise_slug'])
+                exercise = CSVExercise.objects.get(slug=metadata['exercise_slug'])
                 asset.exercise = exercise
                 asset.save()
-            except Exercise.DoesNotExist:
+            except CSVExercise.DoesNotExist:
                 self.stdout.write(f'Warning: Exercise {metadata["exercise_slug"]} not found for {file_name}')
         
         self.stdout.write(self.style.SUCCESS(f'✓ Imported: {file_name}'))

@@ -4,7 +4,7 @@ Create all 100 exercises EX001-EX100 atomically
 """
 from django.db import transaction
 
-from apps.workouts.models import Exercise
+from apps.workouts.models import CSVExercise
 
 # All 100 exercises from our prompts
 EXERCISES = [
@@ -116,7 +116,7 @@ def create_exercises():
     try:
         with transaction.atomic():
             for code, name, _ in EXERCISES:  # _ ignores muscle_groups
-                obj, was_created = Exercise.objects.update_or_create(
+                obj, was_created = CSVExercise.objects.update_or_create(
                     id=code,
                     defaults={
                         'slug': code.lower(),  # ex001, ex002, etc.
@@ -148,8 +148,8 @@ if __name__ == "__main__":
     success = create_exercises()
     
     print("=" * 50)
-    print(f"Total exercises in database: {Exercise.objects.count()}")
-    print(f"EX exercises: {Exercise.objects.filter(id__startswith='EX').count()}")
+    print(f"Total exercises in database: {CSVExercise.objects.count()}")
+    print(f"EX exercises: {CSVExercise.objects.filter(id__startswith='EX').count()}")
     
     if success:
         print("🎉 All exercises created successfully!")

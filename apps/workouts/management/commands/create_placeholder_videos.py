@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from apps.workouts.models import Exercise, VideoClip
+from apps.workouts.models import CSVExercise, VideoClip
 
 
 class Command(BaseCommand):
@@ -17,7 +17,7 @@ class Command(BaseCommand):
         self.stdout.write("🎬 CREATING PLACEHOLDER VIDEO CLIPS")
         self.stdout.write("=" * 60)
         
-        exercises = Exercise.objects.all()
+        exercises = CSVExercise.objects.all()
         archetypes = ['bro', 'sergeant', 'intellectual']
         video_types = ['technique', 'mistake']
         

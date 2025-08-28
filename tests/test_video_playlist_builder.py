@@ -14,8 +14,8 @@ def mock_exercise():
     """Create mock exercise"""
     exercise = Mock(spec=CSVExercise)
     exercise.id = "EX001"
-    exercise.slug = "push-ups"
-    exercise.name = "Push-ups"
+    exercise.id = "push-ups"
+    exercise.name_ru = "Push-ups"
     return exercise
 
 

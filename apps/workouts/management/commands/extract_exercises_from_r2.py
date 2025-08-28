@@ -242,7 +242,7 @@ class Command(BaseCommand):
                 return 'updated'
             else:
                 # Create new exercise
-                exercise = CSVExercise.objects.create(**exercise_data)
+                exercise = CSVExercise.objects.create(**exercise_data, muscle_group="full_body", exercise_type="strength", is_active=True)
                 self.stdout.write(self.style.SUCCESS(f"  Created: {exercise_name} -> {exercise.name_ru}"))
                 return 'created'
 

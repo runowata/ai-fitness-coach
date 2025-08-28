@@ -4,17 +4,17 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from apps.workouts.models import Exercise, VideoClip, VideoProvider
+from apps.workouts.models import CSVExercise, VideoClip, VideoProvider
 from apps.workouts.video_storage import ExternalAdapter, R2Adapter, StreamAdapter, get_storage
 
 
 @pytest.fixture
 def exercise():
     """Create test exercise"""
-    exercise = Mock(spec=Exercise)
+    exercise = Mock(spec=CSVExercise)
     exercise.id = "EX001"
-    exercise.slug = "push-ups"
-    exercise.name = "Push-ups"
+    exercise.id = "push-ups"
+    exercise.name_ru = "Push-ups"
     return exercise
 
 

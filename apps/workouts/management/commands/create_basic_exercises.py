@@ -2,7 +2,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from apps.workouts.models import Exercise
+from apps.workouts.models import CSVExercise
 
 
 class Command(BaseCommand):
@@ -91,14 +91,14 @@ class Command(BaseCommand):
         with transaction.atomic():
             # Clear existing exercises
             self.stdout.write("🗑️ Clearing existing exercises...")
-            Exercise.objects.all().delete()
+            CSVExercise.objects.all().delete()
             
             # Create new exercises
             self.stdout.write(f"💪 Creating {len(exercises_data)} exercises...")
             created_count = 0
             
             for ex_data in exercises_data:
-                exercise = Exercise.objects.create(
+                exercise = CSVExercise.objects.create(
                     id=ex_data['id'],
                     slug=ex_data['id'],  # Use same as ID for consistency
                     name=ex_data['name'],
@@ -112,15 +112,15 @@ class Command(BaseCommand):
                     self.stdout.write(f"   Created {created_count}/{len(exercises_data)} exercises...")
         
         # Final verification
-        final_count = Exercise.objects.count()
+        final_count = CSVExercise.objects.count()
         self.stdout.write("\n🎉 SUCCESS!")
         self.stdout.write(f"   💪 Total exercises created: {final_count}")
         self.stdout.write("   🤖 AI prompts can now generate workout plans!")
         
         # Show some examples
         self.stdout.write("\n📋 Sample exercises created:")
-        sample_exercises = Exercise.objects.all()[:5]
+        sample_exercises = CSVExercise.objects.all()[:5]
         for ex in sample_exercises:
-            self.stdout.write(f"   {ex.id}: {ex.name} ({ex.difficulty})")
+            self.stdout.write(f"   {ex.id}: {ex.name_ru} ({ex.level})")
         
         return f"Created {final_count} basic exercises"

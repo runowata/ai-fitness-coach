@@ -1038,7 +1038,7 @@ def create_demo_plan_for_user(user):
     """Создаёт демо-план для пользователя (1 неделя, 5 тренировок + 2 отдыха)."""
     import uuid
     import random
-    from apps.workouts.models import WorkoutPlan, DailyWorkout, Exercise
+    from apps.workouts.models import WorkoutPlan, DailyWorkout, CSVExercise
     
     # Базовые упражнения
     basic_exercises = [
@@ -1050,7 +1050,7 @@ def create_demo_plan_for_user(user):
 
     exercises = []
     for data in basic_exercises:
-        ex, _ = Exercise.objects.get_or_create(
+        ex, _ = CSVExercise.objects.get_or_create(
             slug=data["slug"],
             defaults={
                 "id": str(uuid.uuid4()),
@@ -1081,8 +1081,8 @@ def create_demo_plan_for_user(user):
             chosen = random.sample(exercises, k=3)
             exercise_data = [
                 {
-                    "exercise_id": ex.slug,
-                    "exercise_name": ex.name,
+                    "exercise_id": ex.id,
+                    "exercise_name": ex.name_ru,
                     "sets": 3,
                     "reps": random.randint(8, 15),
                     "rest_seconds": 60,

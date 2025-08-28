@@ -5,7 +5,7 @@ from django.utils import timezone
 from apps.achievements.models import Achievement, UserAchievement
 from apps.onboarding.models import AnswerOption, OnboardingQuestion
 from apps.users.models import UserProfile
-from apps.workouts.models import DailyWorkout, Exercise, WorkoutPlan
+from apps.workouts.models import DailyWorkout, CSVExercise, WorkoutPlan
 
 User = get_user_model()
 
@@ -48,7 +48,7 @@ class ExerciseModelTest(TestCase):
     """Test Exercise model"""
     
     def setUp(self):
-        self.exercise = Exercise.objects.create(
+        self.exercise = CSVExercise.objects.create(
             id='push-up-id-models',
             slug='push-up',
             name='Отжимания',
@@ -59,8 +59,8 @@ class ExerciseModelTest(TestCase):
     def test_exercise_creation(self):
         """Test exercise creation and properties"""
         self.assertEqual(str(self.exercise), 'Отжимания')
-        self.assertEqual(self.exercise.difficulty, 'beginner')
-        self.assertEqual(self.exercise.slug, 'push-up')
+        self.assertEqual(self.exercise.level, 'beginner')
+        self.assertEqual(self.exercise.id, 'push-up')
         self.assertTrue(self.exercise.is_active)
     
     def test_exercise_alternatives(self):

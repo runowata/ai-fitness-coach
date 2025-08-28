@@ -51,7 +51,7 @@ class TestDeterministicPlaylist(TestCase):
                         model_name='mod1',
                         duration_seconds=30,
                         provider=VideoProvider.R2,
-                        r2_file=f'videos/{exercise.slug}_{kind}_{archetype}.mp4',
+                        r2_file=f'videos/{exercise.id}_{kind}_{archetype}.mp4',
                         r2_kind=kind
                     )
                     self.clips.append(clip)

@@ -44,7 +44,7 @@ class Command(BaseCommand):
         for exercise_slug in sample_exercises:
             try:
                 exercise = CSVExercise.objects.get(id=exercise_slug)
-                self.stdout.write(f"✅ {exercise_slug}: {exercise.name}")
+                self.stdout.write(f"✅ {exercise_slug}: {exercise.name_ru}")
                 
                 # Check if it's in allowed list
                 if exercise_slug in allowed_slugs:
@@ -76,7 +76,7 @@ class Command(BaseCommand):
                     exercise_lookup = {"id": exercise_slug}
                 
                 exercise = CSVExercise.objects.get(**exercise_lookup)
-                self.stdout.write(f"✅ VideoPlaylistBuilder can resolve: {exercise_slug} -> {exercise.name}")
+                self.stdout.write(f"✅ VideoPlaylistBuilder can resolve: {exercise_slug} -> {exercise.name_ru}")
             except CSVExercise.DoesNotExist:
                 self.stdout.write(f"❌ VideoPlaylistBuilder cannot resolve: {exercise_slug}")
         
