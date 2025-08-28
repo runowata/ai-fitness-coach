@@ -1052,15 +1052,15 @@ def create_demo_plan_for_user(user):
         )[:10]  # Первые 10 доступных упражнений
     
         if not available_exercises.exists():
-        # Fallback: создаем минимальный набор если упражнений нет
-        demo_exercises = [
-            {"id": "demo_pushup", "name_ru": "Отжимания", "level": "beginner"},
-            {"id": "demo_squat", "name_ru": "Приседания", "level": "beginner"},
-            {"id": "demo_plank", "name_ru": "Планка", "level": "intermediate"},
-        ]
-        exercises = []
-        for ex_data in demo_exercises:
-            ex, _ = CSVExercise.objects.get_or_create(
+            # Fallback: создаем минимальный набор если упражнений нет
+            demo_exercises = [
+                {"id": "demo_pushup", "name_ru": "Отжимания", "level": "beginner"},
+                {"id": "demo_squat", "name_ru": "Приседания", "level": "beginner"},
+                {"id": "demo_plank", "name_ru": "Планка", "level": "intermediate"},
+                ]
+            exercises = []
+            for ex_data in demo_exercises:
+                ex, _ = CSVExercise.objects.get_or_create(
                 id=ex_data["id"],
                 defaults={
                     "name_ru": ex_data["name_ru"],
@@ -1070,8 +1070,8 @@ def create_demo_plan_for_user(user):
                     "muscle_group": "Все тело",
                     "exercise_type": "strength"
                 }
-            )
-            exercises.append(ex)
+                )
+                exercises.append(ex)
             logger.warning(f"Created fallback demo exercises for user {user.email}")
         else:
             exercises = list(available_exercises)
@@ -1088,39 +1088,39 @@ def create_demo_plan_for_user(user):
     
         # Дни тренировок
         for day in range(1, 8):
-        is_rest_day = day in (3, 6)  # Среда и суббота - отдых
+            is_rest_day = day in (3, 6)  # Среда и суббота - отдых
         
-        if is_rest_day:
-            exercise_data = []
-            workout_name = "День отдыха"
-        else:
-            # Выбираем 2-3 упражнения для тренировки (с защитой от пустого списка)
-            if exercises:
-                chosen_count = min(3, len(exercises))
-                chosen = random.sample(exercises, k=chosen_count)
+            if is_rest_day:
+                exercise_data = []
+                workout_name = "День отдыха"
             else:
-                chosen = []
-            exercise_data = [
-                {
-                    "exercise_id": ex.id,
-                    "exercise_name": ex.name_ru,
-                    "sets": 3,
-                    "reps": random.randint(8, 15),
-                    "rest_seconds": 60,
-                }
-                for ex in chosen
-            ]
-            workout_name = f"Тренировка день {day}"
+                # Выбираем 2-3 упражнения для тренировки (с защитой от пустого списка)
+                if exercises:
+                    chosen_count = min(3, len(exercises))
+                    chosen = random.sample(exercises, k=chosen_count)
+                else:
+                    chosen = []
+                exercise_data = [
+                    {
+                        "exercise_id": ex.id,
+                        "exercise_name": ex.name_ru,
+                        "sets": 3,
+                        "reps": random.randint(8, 15),
+                        "rest_seconds": 60,
+                    }
+                    for ex in chosen
+                ]
+                workout_name = f"Тренировка день {day}"
         
             # Создаем DailyWorkout
             daily_workout = DailyWorkout.objects.create(
-            plan=plan,
-            day_number=day,
-            week_number=1,
-            name=workout_name,
-            exercises=exercise_data,
-            is_rest_day=is_rest_day,
-        )
+                plan=plan,
+                day_number=day,
+                week_number=1,
+                name=workout_name,
+                exercises=exercise_data,
+                is_rest_day=is_rest_day,
+            )
         
             # Создаем плейлист для тренировочных дней
             if not is_rest_day and exercise_data:
