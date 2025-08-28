@@ -6,6 +6,7 @@ app_name = 'onboarding'
 
 urlpatterns = [
     path('start/', views.start_onboarding, name='start'),
+    path('start/', views.start_onboarding, name='start_onboarding'),  # Alternative name for templates
     path('question/<int:question_id>/', views.question_view, name='question'),
     path('answer/<int:question_id>/', views.save_answer, name='save_answer'),
     path('archetype/', views.select_archetype, name='select_archetype'),
