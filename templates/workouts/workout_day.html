@@ -1,5 +1,6 @@
 {% extends "base/base.html" %}
 {% load static %}
+{% load workout_tags %}
 
 {% block title %}День {{ day.day_number }} - AI Fitness Coach{% endblock %}
 
@@ -20,7 +21,7 @@
                     </div>
                 {% else %}
                     <p class="lead text-muted">
-                        {{ exercises|length }} упражнени{{ exercises|length|pluralize:"е,я,й" }} для достижения ваших целей
+                        {{ exercises|length }} {{ exercises|length|exercise_count_plural }} для достижения ваших целей
                     </p>
                 {% endif %}
             </div>
@@ -39,7 +40,7 @@
 
                     <video controls preload="none" class="w-100 rounded-3">
                       <source
-                        src="{% url 'content:media_proxy' key=it.media.file_url|cut:'r2://' %}"
+                        src="{% url 'content:media_proxy' key=it.media.file_url|extract_r2_key %}"
                         type="video/mp4" />
                       Ваш браузер не поддерживает воспроизведение видео.
                     </video>

@@ -520,8 +520,12 @@ def workout_day(request, day_id):
 
     # ВАЖНО: берём позиции плейлиста, вместе с MediaAsset
     playlist = day.playlist_items.select_related("media").order_by("order")
+    
+    # Для совместимости с шаблоном добавляем переменную exercises
+    exercises = day.exercises if day.exercises else []
 
     return render(request, "workouts/workout_day.html", {
         "day": day,
         "playlist": playlist,
+        "exercises": exercises,  # Добавлено для совместимости с шаблоном
     })

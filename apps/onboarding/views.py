@@ -1035,49 +1035,67 @@ def sleep_test(request, seconds):
 
 
 def create_demo_plan_for_user(user):
-    """Создаёт демо-план для пользователя (1 неделя, 5 тренировок + 2 отдыха)."""
-    import uuid
+    """Создаёт демо-план для пользователя с реальными упражнениями и плейлистом."""
     import random
-    from apps.workouts.models import WorkoutPlan, DailyWorkout, CSVExercise
+    import logging
+    from apps.workouts.models import WorkoutPlan, DailyWorkout, CSVExercise, DailyPlaylistItem
+    from apps.content.models import MediaAsset
     
-    # Базовые упражнения
-    basic_exercises = [
-        {"slug": "pushups", "name": "Отжимания", "description": "Классические отжимания", "difficulty": "beginner"},
-        {"slug": "squats", "name": "Приседания", "description": "Приседания без веса", "difficulty": "beginner"},
-        {"slug": "plank", "name": "Планка", "description": "Удержание планки", "difficulty": "intermediate"},
-        {"slug": "burpee", "name": "Берпи", "description": "Полное упражнение с прыжком", "difficulty": "intermediate"},
-    ]
-
-    exercises = []
-    for data in basic_exercises:
-        ex, _ = CSVExercise.objects.get_or_create(
-            id=data["slug"],
-            defaults={
-                "name_ru": data["name"],
-                "description": data["description"],
-                "level": data["difficulty"],
-                "is_active": True,
-            },
-        )
-        exercises.append(ex)
-
+    logger = logging.getLogger(__name__)
+    
+    # Используем реальные упражнения из базы данных
+    # Берем простые упражнения для демо (ограничиваемся имеющимися)
+    available_exercises = CSVExercise.objects.filter(
+        is_active=True,
+        level__in=['beginner', 'intermediate']
+    )[:10]  # Первые 10 доступных упражнений
+    
+    if not available_exercises.exists():
+        # Fallback: создаем минимальный набор если упражнений нет
+        demo_exercises = [
+            {"id": "demo_pushup", "name_ru": "Отжимания", "level": "beginner"},
+            {"id": "demo_squat", "name_ru": "Приседания", "level": "beginner"},
+            {"id": "demo_plank", "name_ru": "Планка", "level": "intermediate"},
+        ]
+        exercises = []
+        for ex_data in demo_exercises:
+            ex, _ = CSVExercise.objects.get_or_create(
+                id=ex_data["id"],
+                defaults={
+                    "name_ru": ex_data["name_ru"],
+                    "level": ex_data["level"],
+                    "is_active": True,
+                    "description": f"Демо упражнение: {ex_data['name_ru']}",
+                    "muscle_group": "Все тело",
+                    "exercise_type": "strength"
+                }
+            )
+            exercises.append(ex)
+        logger.warning(f"Created fallback demo exercises for user {user.email}")
+    else:
+        exercises = list(available_exercises)
+        logger.info(f"Using {len(exercises)} real exercises for demo plan")
+    
     # План
     plan = WorkoutPlan.objects.create(
         user=user,
         name="Демо-план на 1 неделю",
-        duration_weeks=4,
-        plan_data={"demo": True, "exercises": len(exercises)},
+        duration_weeks=1,  # Исправлено: демо план на 1 неделю
+        plan_data={"demo": True, "exercises_count": len(exercises)},
         status="CONFIRMED",
     )
-
-    # Дни
+    
+    # Дни тренировок
     for day in range(1, 8):
-        is_rest_day = day in (3, 6)
+        is_rest_day = day in (3, 6)  # Среда и суббота - отдых
+        
         if is_rest_day:
             exercise_data = []
             workout_name = "День отдыха"
         else:
-            chosen = random.sample(exercises, k=3)
+            # Выбираем 2-3 упражнения для тренировки
+            chosen_count = min(3, len(exercises))
+            chosen = random.sample(exercises, k=chosen_count)
             exercise_data = [
                 {
                     "exercise_id": ex.id,
@@ -1089,14 +1107,120 @@ def create_demo_plan_for_user(user):
                 for ex in chosen
             ]
             workout_name = f"Тренировка день {day}"
-
-        DailyWorkout.objects.create(
+        
+        # Создаем DailyWorkout
+        daily_workout = DailyWorkout.objects.create(
             plan=plan,
             day_number=day,
             week_number=1,
             name=workout_name,
             exercises=exercise_data,
             is_rest_day=is_rest_day,
+        )
+        
+        # Создаем плейлист для тренировочных дней
+        if not is_rest_day and exercise_data:
+            _create_demo_playlist_items(daily_workout, exercise_data)
+            logger.info(f"Created playlist for day {day} with {len(exercise_data)} exercises")
+    
+    logger.info(f"Demo plan created for user {user.email}: {plan.id}")
+    return plan
+
+
+def _create_demo_playlist_items(daily_workout, exercise_data):
+    """Создает базовый плейлист для демо тренировки."""
+    from apps.content.models import MediaAsset
+    from apps.workouts.models import DailyPlaylistItem
+    
+    order = 1
+    
+    # 1. Intro видео (если есть)
+    intro_media = MediaAsset.objects.filter(
+        category='intro', 
+        asset_type='video',
+        is_active=True
+    ).first()
+    
+    if intro_media:
+        DailyPlaylistItem.objects.create(
+            day=daily_workout,
+            order=order,
+            role='intro',
+            media=intro_media,
+            duration_seconds=intro_media.duration_seconds
+        )
+        order += 1
+    
+    # 2. Warmup видео
+    warmup_media = MediaAsset.objects.filter(
+        category='warmup',
+        asset_type='video', 
+        is_active=True
+    ).first()
+    
+    if warmup_media:
+        DailyPlaylistItem.objects.create(
+            day=daily_workout,
+            order=order,
+            role='warmup', 
+            media=warmup_media,
+            duration_seconds=warmup_media.duration_seconds
+        )
+        order += 1
+    
+    # 3. Основные упражнения - ищем технику по exercise_id
+    for ex_data in exercise_data:
+        exercise_id = ex_data.get('exercise_id')
+        
+        # Ищем видео техники для упражнения (используем exercise ForeignKey)
+        technique_media = MediaAsset.objects.filter(
+            category='exercise_technique',
+            exercise__id=exercise_id,
+            asset_type='video',
+            is_active=True
+        ).first()
+        
+        if technique_media:
+            DailyPlaylistItem.objects.create(
+                day=daily_workout,
+                order=order,
+                role='main',
+                media=technique_media,
+                duration_seconds=technique_media.duration_seconds
+            )
+            order += 1
+        else:
+            # Fallback: любое видео техники
+            fallback_media = MediaAsset.objects.filter(
+                category='exercise_technique',
+                asset_type='video',
+                is_active=True
+            ).first()
+            
+            if fallback_media:
+                DailyPlaylistItem.objects.create(
+                    day=daily_workout,
+                    order=order,
+                    role='main',
+                    media=fallback_media,
+                    duration_seconds=fallback_media.duration_seconds
+                )
+                order += 1
+    
+    # 4. Cooldown видео
+    cooldown_media = MediaAsset.objects.filter(
+        category='cooldown',
+        asset_type='video',
+        is_active=True  
+    ).first()
+    
+    if cooldown_media:
+        DailyPlaylistItem.objects.create(
+            day=daily_workout,
+            order=order,
+            role='cooldown',
+            media=cooldown_media,
+            duration_seconds=cooldown_media.duration_seconds
         )
 
     logger.info(f"Demo plan created for user {user.email}: {plan.id}")
