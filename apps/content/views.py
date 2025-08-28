@@ -21,11 +21,8 @@ def media_proxy(request, key: str):
     r2_public_url = os.environ.get("R2_PUBLIC_URL")
     expires = int(os.environ.get("R2_SIGNED_URL_TTL", "3600"))
 
-    # Temporary fallback: if R2_PUBLIC_URL is available, try direct access first
-    # This is a workaround for production deployment issues
-    if r2_public_url and not all([bucket, endpoint, access_key, secret_key]):
-        direct_url = f"{r2_public_url.rstrip('/')}/{key}"
-        return HttpResponseRedirect(direct_url)
+    # Security fix: removed unsafe fallback that exposed direct URLs
+    # Always require proper S3 credentials for signed URLs
 
     if not all([bucket, endpoint, access_key, secret_key]):
         return HttpResponseBadRequest("R2 env vars are not configured")

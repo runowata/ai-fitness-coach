@@ -261,7 +261,7 @@ class WorkoutPlan(models.Model):
     
     # Plan details  
     name = models.CharField(max_length=200)
-    duration_weeks = models.PositiveIntegerField(validators=[MinValueValidator(4), MaxValueValidator(8)])
+    duration_weeks = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])  # Changed: allow 1 week for demo plans
     # goal field removed - data stored in plan_data JSON and user onboarding data
     
     # AI-generated plan data

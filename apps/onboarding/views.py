@@ -1043,14 +1043,15 @@ def create_demo_plan_for_user(user):
     
     logger = logging.getLogger(__name__)
     
-    # Используем реальные упражнения из базы данных
-    # Берем простые упражнения для демо (ограничиваемся имеющимися)
-    available_exercises = CSVExercise.objects.filter(
-        is_active=True,
-        level__in=['beginner', 'intermediate']
-    )[:10]  # Первые 10 доступных упражнений
+    try:
+        # Используем реальные упражнения из базы данных
+        # Берем простые упражнения для демо (ограничиваемся имеющимися)
+        available_exercises = CSVExercise.objects.filter(
+            is_active=True,
+            level__in=['beginner', 'intermediate']
+        )[:10]  # Первые 10 доступных упражнений
     
-    if not available_exercises.exists():
+        if not available_exercises.exists():
         # Fallback: создаем минимальный набор если упражнений нет
         demo_exercises = [
             {"id": "demo_pushup", "name_ru": "Отжимания", "level": "beginner"},
@@ -1071,13 +1072,13 @@ def create_demo_plan_for_user(user):
                 }
             )
             exercises.append(ex)
-        logger.warning(f"Created fallback demo exercises for user {user.email}")
-    else:
-        exercises = list(available_exercises)
-        logger.info(f"Using {len(exercises)} real exercises for demo plan")
+            logger.warning(f"Created fallback demo exercises for user {user.email}")
+        else:
+            exercises = list(available_exercises)
+            logger.info(f"Using {len(exercises)} real exercises for demo plan")
     
-    # План
-    plan = WorkoutPlan.objects.create(
+        # План
+        plan = WorkoutPlan.objects.create(
         user=user,
         name="Демо-план на 1 неделю",
         duration_weeks=1,  # Исправлено: демо план на 1 неделю
@@ -1085,17 +1086,20 @@ def create_demo_plan_for_user(user):
         status="CONFIRMED",
     )
     
-    # Дни тренировок
-    for day in range(1, 8):
+        # Дни тренировок
+        for day in range(1, 8):
         is_rest_day = day in (3, 6)  # Среда и суббота - отдых
         
         if is_rest_day:
             exercise_data = []
             workout_name = "День отдыха"
         else:
-            # Выбираем 2-3 упражнения для тренировки
-            chosen_count = min(3, len(exercises))
-            chosen = random.sample(exercises, k=chosen_count)
+            # Выбираем 2-3 упражнения для тренировки (с защитой от пустого списка)
+            if exercises:
+                chosen_count = min(3, len(exercises))
+                chosen = random.sample(exercises, k=chosen_count)
+            else:
+                chosen = []
             exercise_data = [
                 {
                     "exercise_id": ex.id,
@@ -1108,8 +1112,8 @@ def create_demo_plan_for_user(user):
             ]
             workout_name = f"Тренировка день {day}"
         
-        # Создаем DailyWorkout
-        daily_workout = DailyWorkout.objects.create(
+            # Создаем DailyWorkout
+            daily_workout = DailyWorkout.objects.create(
             plan=plan,
             day_number=day,
             week_number=1,
@@ -1118,13 +1122,18 @@ def create_demo_plan_for_user(user):
             is_rest_day=is_rest_day,
         )
         
-        # Создаем плейлист для тренировочных дней
-        if not is_rest_day and exercise_data:
-            _create_demo_playlist_items(daily_workout, exercise_data)
-            logger.info(f"Created playlist for day {day} with {len(exercise_data)} exercises")
+            # Создаем плейлист для тренировочных дней
+            if not is_rest_day and exercise_data:
+                _create_demo_playlist_items(daily_workout, exercise_data)
+                logger.info(f"Created playlist for day {day} with {len(exercise_data)} exercises")
     
-    logger.info(f"Demo plan created for user {user.email}: {plan.id}")
-    return plan
+        logger.info(f"Demo plan created for user {user.email}: {plan.id}")
+        return plan
+        
+    except Exception as e:
+        logger.error(f"Failed to create demo plan for user {user.email}: {e}", exc_info=True)
+        # Return None or raise depending on business logic
+        return None
 
 
 def _create_demo_playlist_items(daily_workout, exercise_data):

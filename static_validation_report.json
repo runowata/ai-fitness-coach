@@ -1,0 +1,95 @@
+{
+  "errors": [
+    {
+      "level": "ERROR",
+      "category": "MODEL_VALIDATOR",
+      "message": "WorkoutPlan.duration_weeks has MinValueValidator(4) but demo plan uses duration_weeks=1",
+      "location": "apps/workouts/models.py:duration_weeks"
+    },
+    {
+      "level": "ERROR",
+      "category": "SECURITY",
+      "message": "media_proxy exposes direct URLs without authentication in fallback mode",
+      "location": "apps/content/views.py:media_proxy"
+    },
+    {
+      "level": "ERROR",
+      "category": "EDGE_CASE",
+      "message": "random.sample(k=3) without length check - will fail if collection < 3",
+      "location": "/Users/alexbel/Desktop/\u041f\u0440\u043e\u0435\u043a\u0442\u044b/AI Fitness Coach/apps/workouts/management/commands/create_demo_plan.py:41"
+    },
+    {
+      "level": "ERROR",
+      "category": "EDGE_CASE",
+      "message": "random.sample(k=3) without length check - will fail if collection < 3",
+      "location": "/Users/alexbel/Desktop/\u041f\u0440\u043e\u0435\u043a\u0442\u044b/AI Fitness Coach/backup_before_refactor_20250828_205642/apps/onboarding/views.py:1081"
+    },
+    {
+      "level": "ERROR",
+      "category": "EDGE_CASE",
+      "message": "random.sample(k=3) without length check - will fail if collection < 3",
+      "location": "/Users/alexbel/Desktop/\u041f\u0440\u043e\u0435\u043a\u0442\u044b/AI Fitness Coach/backup_before_refactor_20250828_205642/apps/workouts/management/commands/create_demo_plan.py:41"
+    }
+  ],
+  "warnings": [
+    {
+      "level": "WARNING",
+      "category": "TEMPLATE_VAR",
+      "message": "Template uses variable 'it' but view might not provide it",
+      "location": "templates/workouts/workout_day.html"
+    },
+    {
+      "level": "WARNING",
+      "category": "ERROR_HANDLING",
+      "message": "Function 'generate_plan' catches exceptions but doesn't log them",
+      "location": "apps/onboarding/views.py:generate_plan"
+    },
+    {
+      "level": "WARNING",
+      "category": "ERROR_HANDLING",
+      "message": "Critical function 'create_demo_plan_for_user' has no error handling",
+      "location": "apps/onboarding/views.py:create_demo_plan_for_user"
+    },
+    {
+      "level": "WARNING",
+      "category": "ERROR_HANDLING",
+      "message": "Function 'media_proxy' catches exceptions but doesn't log them",
+      "location": "apps/content/views.py:media_proxy"
+    },
+    {
+      "level": "WARNING",
+      "category": "MIGRATION",
+      "message": "Field 'WorkoutPlan.started_at' used in code but might not exist in migrations",
+      "location": "apps/workouts/migrations/"
+    },
+    {
+      "level": "WARNING",
+      "category": "MIGRATION",
+      "message": "Field 'WorkoutPlan.is_active' used in code but might not exist in migrations",
+      "location": "apps/workouts/migrations/"
+    },
+    {
+      "level": "WARNING",
+      "category": "MIGRATION",
+      "message": "Field 'WorkoutPlan.is_confirmed' used in code but might not exist in migrations",
+      "location": "apps/workouts/migrations/"
+    }
+  ],
+  "info": [
+    {
+      "level": "INFO",
+      "category": "MODEL_VALIDATOR",
+      "message": "Found duration_weeks=1 usage in onboarding"
+    },
+    {
+      "level": "INFO",
+      "category": "URL_PATTERN",
+      "message": "media_proxy URL pattern looks correct"
+    }
+  ],
+  "summary": {
+    "total_errors": 5,
+    "total_warnings": 7,
+    "total_info": 2
+  }
+}

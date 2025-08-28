@@ -38,7 +38,9 @@ class Command(BaseCommand):
             if is_rest:
                 exercises = []; name = "День отдыха"
             else:
-                chosen = random.sample(BASIC_EXERCISES, k=3)
+                # Защита от случая когда упражнений меньше 3
+                exercise_count = min(3, len(BASIC_EXERCISES))
+                chosen = random.sample(BASIC_EXERCISES, k=exercise_count) if BASIC_EXERCISES else []
                 exercises = [
                     {"exercise_id": e["slug"], "exercise_name": e["name"],
                      "sets": 3, "reps": random.randint(8,15), "rest_seconds": 60}
