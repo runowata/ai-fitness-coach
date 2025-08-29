@@ -14,8 +14,8 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 
 
-from .models import CSVExercise, DailyWorkout, ExplainerVideo, WeeklyLesson, WeeklyNotification
-from .serializers import WeeklyLessonSerializer, WeeklyNotificationSerializer
+from .models import CSVExercise, DailyWorkout, WeeklyNotification
+from .serializers import WeeklyNotificationSerializer
 from .video_services import VideoPlaylistBuilder
 
 
@@ -246,28 +246,8 @@ def plan_overview_view(request):
     return render(request, 'workouts/plan_overview.html', context)
 
 
-class ExplainerVideoView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    
-    def get(self, request, exercise_id):
-        user_archetype = request.user.profile.archetype_name
-        if not user_archetype:
-            return Response({'error': 'User archetype not set'}, status=400)
-        
-        try:
-            video = ExplainerVideo.objects.get(
-                exercise_id=exercise_id,
-                archetype=user_archetype,
-                locale='ru'
-            )
-            return Response({
-                'exercise_id': video.exercise_id,
-                'archetype': video.archetype,
-                'script': video.script,
-                'locale': video.locale
-            })
-        except ExplainerVideo.DoesNotExist:
-            return Response({'error': 'Video not found'}, status=404)
+# УДАЛЕНО: ExplainerVideoView - ExplainerVideo заменен на R2Video с category='exercises'
+# Использовать R2Video.objects.filter(category='exercises', archetype=user_archetype)
 
 
 class WeeklyCurrentView(generics.RetrieveAPIView):
@@ -388,30 +368,8 @@ class WeeklyUnreadView(generics.RetrieveAPIView):
         return Response({'unread': unread_exists})
 
 
-class WeeklyLessonView(generics.RetrieveAPIView):
-    """
-    GET /api/weekly/<int:week>/
-    Возвращает урок по номеру недели для архетипа текущего пользователя.
-    """
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = WeeklyLessonSerializer
-    lookup_field = 'week'
-    
-    def get(self, request, week):
-        user_archetype = request.user.profile.archetype_name
-        if not user_archetype:
-            return Response({'error': 'User archetype not set'}, status=400)
-        
-        try:
-            lesson = WeeklyLesson.objects.get(
-                week=week,
-                archetype=user_archetype,
-                locale='ru'
-            )
-            serializer = self.serializer_class(lesson)
-            return Response(serializer.data)
-        except WeeklyLesson.DoesNotExist:
-            return Response({'error': f'Lesson for week {week} not found'}, status=404)
+# УДАЛЕНО: WeeklyLessonView - WeeklyLesson заменен на R2Video с category='weekly'
+# Использовать R2Video.objects.filter(category='weekly', archetype=user_archetype)
 
 
 class WeeklyLessonHealthView(generics.RetrieveAPIView):

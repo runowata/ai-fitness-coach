@@ -96,7 +96,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WeeklyLesson'
+                $ref: '#/components/schemas/R2Video'
         '404':
           description: Lesson not found for specified week
           content:
@@ -189,7 +189,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExplainerVideo'
+                $ref: '#/components/schemas/R2Video'
         '404':
           description: Exercise or video not found
           content:
@@ -287,62 +287,47 @@ components:
         - created_at
         - is_read
 
-    WeeklyLesson:
+    R2Video:
       type: object
       properties:
-        week:
-          type: integer
-          minimum: 1
-          maximum: 8
-          description: Week number
+        code:
+          type: string
+          maxLength: 150
+          description: Video code (filename without extension)
+        name:
+          type: string
+          maxLength: 200
+          description: Display name
+        description:
+          type: string
+          description: Video description
+        category:
+          type: string
+          enum: ['exercises', 'motivation', 'final', 'progress', 'weekly']
+          description: Video category
         archetype:
           type: string
-          enum: ['111', '222', '333']
+          enum: ['mentor', 'professional', 'peer']
           description: Trainer archetype
-        title:
+        display_title:
           type: string
-          maxLength: 120
-          description: Lesson title
-        script:
+          maxLength: 200
+          description: Title for landing page display
+        display_description:
           type: string
-          description: Lesson content
-        locale:
-          type: string
-          default: 'ru'
-          description: Content locale
-        duration_sec:
+          description: Description for landing page display
+        is_featured:
+          type: boolean
+          default: false
+          description: Show on main page
+        sort_order:
           type: integer
           minimum: 0
-          description: Estimated reading time in seconds
+          description: Display sort order
       required:
-        - week
-        - archetype
-        - title
-        - script
-        - locale
-        - duration_sec
-
-    ExplainerVideo:
-      type: object
-      properties:
-        exercise_id:
-          type: string
-          description: Exercise identifier
-        archetype:
-          type: string
-          enum: ['111', '222', '333']
-          description: Video archetype variant
-        script:
-          type: string
-          description: Video script/content
-        locale:
-          type: string
-          description: Content locale
-      required:
-        - exercise_id
-        - archetype
-        - script
-        - locale
+        - code
+        - name
+        - category
 
     HealthStatus:
       type: object

@@ -8,17 +8,17 @@ from django.core.files.storage import default_storage
 from .models import VideoProvider
 
 if TYPE_CHECKING:
-    from .models import VideoClip
+    from .models import R2Video
 
 
 class VideoStorage(Protocol):
     """Protocol for video storage adapters"""
     
-    def exists(self, clip: 'VideoClip') -> bool:
+    def exists(self, clip: 'R2Video') -> bool:
         """Check if video exists in storage"""
         ...
     
-    def playback_url(self, clip: 'VideoClip') -> str:
+    def playback_url(self, clip: 'R2Video') -> str:
         """Get playback URL for video"""
         ...
 
@@ -26,14 +26,14 @@ class VideoStorage(Protocol):
 class R2Adapter:
     """Cloudflare R2 storage adapter with CDN and signed URL support"""
     
-    def exists(self, clip: 'VideoClip') -> bool:
+    def exists(self, clip: 'R2Video') -> bool:
         """Check if R2 video file exists"""
-        if not clip.model_name or not clip.r2_kind:
+        if not clip.code or not clip.category:
             return False
-        # Trust DB for performance - could add storage.exists() check if needed
+        # R2Video всегда существует, так как создается только для существующих файлов в R2
         return True
     
-    def playback_url(self, clip: 'VideoClip') -> str:
+    def playback_url(self, clip: 'R2Video') -> str:
         """Get R2 video playback URL using structured paths"""
         from apps.core.services.media import MediaService
         

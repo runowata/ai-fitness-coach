@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from apps.content.models import TrainerPersona, LandingContent
+from apps.content.models import LandingContent
+# УДАЛЕНО: TrainerPersona - заменен на архетипы в R2Video/R2Image
 
 
 class Command(BaseCommand):
@@ -36,21 +37,9 @@ class Command(BaseCommand):
             }
         ]
         
-        for i, persona_data in enumerate(personas):
-            persona, created = TrainerPersona.objects.update_or_create(
-                slug=persona_data["slug"],
-                defaults={
-                    "archetype": persona_data["archetype"],
-                    "title": persona_data["title"],
-                    "description": persona_data["description"],
-                    "tone_guidelines": persona_data["tone_guidelines"],
-                    "motivational_style": persona_data["motivational_style"],
-                    "display_order": i,
-                    "is_active": True
-                }
-            )
-            action = "Created" if created else "Updated"
-            self.stdout.write(f"  {action} persona: {persona.title}")
+        # УДАЛЕНО: TrainerPersona - функциональность перенесена в архетипы R2Video/R2Image
+        # TODO: Создать R2Image для аватаров архетипов
+        self.stdout.write("  TrainerPersona seeding skipped - using R2Image avatars")
         
         # 2) Seed Landing Content
         landing, created = LandingContent.objects.update_or_create(
@@ -74,13 +63,12 @@ class Command(BaseCommand):
         self.stdout.write(f"  {action} landing content v2.0")
         
         # 3) Verify counts
-        persona_count = TrainerPersona.objects.count()
         landing_count = LandingContent.objects.count()
         
         self.stdout.write(self.style.SUCCESS(f"""
 ✅ Basic seed completed!
-  - Trainer personas: {persona_count}
   - Landing content: {landing_count}
+  - Trainer personas: Using R2Image avatars
         
 Now the UI should show:
   - Homepage with hero section

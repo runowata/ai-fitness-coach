@@ -9,10 +9,8 @@ from django.urls import include, path
 # API Views
 from apps.users.views import ArchetypeView, UserProfileView
 from apps.workouts.views import (
-    ExplainerVideoView,
     WeeklyCurrentView,
     WeeklyLessonHealthView,
-    WeeklyLessonView,
     WeeklyUnreadView,
 )
 
@@ -29,10 +27,10 @@ urlpatterns = [
     # API endpoints
     path('api/profile/', UserProfileView.as_view(), name='api_profile'),
     path('api/archetype/', ArchetypeView.as_view(), name='api_archetype'),
-    path('api/exercise/<str:exercise_id>/video/', ExplainerVideoView.as_view(), name='api_exercise_video'),
+    # УДАЛЕНО: ExplainerVideoView - заменен на R2Video с category='exercises'
     path('api/weekly/current/', WeeklyCurrentView.as_view(), name='api_weekly_current'),
     path('api/weekly/unread/', WeeklyUnreadView.as_view(), name='api_weekly_unread'),
-    path('api/weekly/<int:week>/', WeeklyLessonView.as_view(), name='api_weekly_lesson'),
+    # УДАЛЕНО: WeeklyLessonView - заменен на R2Video с category='weekly'
     path('api/weekly/health/', WeeklyLessonHealthView.as_view(), name='api_weekly_health'),
     
     # Auth URLs

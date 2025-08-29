@@ -67,13 +67,13 @@ jobs:
         
         # Test that we can create basic data
         python manage.py shell --settings=config.settings -c "
-        from apps.workouts.models import WeeklyLesson;
-        wl = WeeklyLesson.objects.create(
-            week=1, archetype='111', locale='ru', 
-            title='Test', script='Test script'
+        from apps.workouts.models import R2Video;
+        rv = R2Video.objects.create(
+            code='test_video_1', name='Test Video', 
+            category='weekly', archetype='mentor'
         );
-        print(f'✅ Created WeeklyLesson: {wl}');
-        wl.delete();
+        print(f'✅ Created R2Video: {rv}');
+        rv.delete();
         print('✅ Cleanup successful');
         "
     

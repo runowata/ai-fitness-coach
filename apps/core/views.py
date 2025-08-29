@@ -101,14 +101,12 @@ def health_check(request):
         status['checks']['exercises'] = f'error: {str(e)}'
         logger.error(f"Health check exercises error: {e}")
     
-    # Check video clips exist  
+    # Check R2 videos exist  
     try:
-        from apps.workouts.models import VideoClip
-        video_count = VideoClip.objects.count()
-        placeholder_count = VideoClip.objects.filter(is_placeholder=True).count()
-        real_videos = video_count - placeholder_count
+        from apps.workouts.models import R2Video
+        video_count = R2Video.objects.count()
         
-        status['checks']['videos'] = f'{video_count} total ({real_videos} real, {placeholder_count} placeholder)'
+        status['checks']['videos'] = f'{video_count} R2 videos'
         
         if video_count == 0:
             status['status'] = 'degraded'

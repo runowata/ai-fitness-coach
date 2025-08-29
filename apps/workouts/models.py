@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+import re
 
 from .constants import Archetype, VideoKind
 
@@ -18,235 +20,196 @@ class VideoProvider(models.TextChoices):
 # Replaced by CSVExercise model for cleaner structure
 
 
-class VideoClip(models.Model):
-    # Use centralized constants
-    R2_KIND_CHOICES = VideoKind.choices()
-    ARCHETYPE_CHOICES = Archetype.choices()
+class R2Video(models.Model):
+    """
+    Видео из Cloudflare R2 хранилища - ТОЛЬКО необходимые поля
+    Основано на реальной структуре R2 (616 видео в 5 категориях)
+    """
+    # Код = имя файла без расширения
+    code = models.CharField(max_length=150, unique=True, primary_key=True)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
     
-    exercise = models.ForeignKey(
-        'CSVExercise', 
-        on_delete=models.CASCADE, 
-        related_name='video_clips',
-        null=True,
-        blank=True
-    )
-    archetype = models.CharField(
-        max_length=20, 
-        choices=ARCHETYPE_CHOICES
-    )
-    model_name = models.CharField(max_length=50)  # mod1, mod2, mod3
-    duration_seconds = models.PositiveIntegerField()
+    # Категория определяется по папке в R2
+    CATEGORY_CHOICES = [
+        ('exercises', 'Упражнения'),         # videos/exercises/ - 271 файл
+        ('motivation', 'Мотивация'),         # videos/motivation/ - 315 файлов
+        ('final', 'Финальные'),              # videos/final/ - 3 файла
+        ('progress', 'Прогресс'),            # videos/progress/ - 9 файлов  
+        ('weekly', 'Еженедельные'),          # videos/weekly/ - 18 файлов
+    ]
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     
-    # R2 Storage fields (required in v2)
-    r2_file = models.FileField(
-        upload_to='videos/',
-        blank=True,
-        null=True,
-        help_text='Video file in R2 storage'
-    )
-    r2_key = models.CharField(
-        max_length=500,
-        blank=True,
-        help_text='R2 storage key/path for direct access'
-    )
-    r2_kind = models.CharField(
-        max_length=20,
-        choices=R2_KIND_CHOICES,
-        default=VideoKind.INSTRUCTION,
-        help_text='Video type for R2 organization'
-    )
-    r2_archetype = models.CharField(
-        max_length=20,
-        choices=ARCHETYPE_CHOICES,
-        blank=True,
-        help_text='Archetype for R2 videos'
-    )
+    # Landing page support - дополнительные поля для отображения на сайте
+    display_title = models.CharField(max_length=200, blank=True, help_text="Заголовок для отображения на landing page")
+    display_description = models.TextField(blank=True, help_text="Описание для отображения на landing page")
+    is_featured = models.BooleanField(default=False, help_text="Показывать на главной странице")
+    sort_order = models.PositiveIntegerField(default=0, help_text="Порядок сортировки для отображения")
     
-    # Video provider abstraction
-    provider = models.CharField(
-        max_length=16,
-        choices=VideoProvider.choices,
-        default=VideoProvider.R2,
-        help_text='Video storage provider'
-    )
-    
-    # Stream provider fields (for future use)
-    stream_uid = models.CharField(
-        max_length=64, 
-        blank=True, 
-        null=True,
-        help_text='Cloudflare Stream UID'
-    )
-    playback_id = models.CharField(
-        max_length=64, 
-        blank=True, 
-        null=True,
-        help_text='Stream playback ID'
-    )
-    
-    # Script/content
-    script_text = models.TextField(blank=True, help_text='Video script or content')
-    
-    # For reminder clips
-    reminder_text = models.CharField(max_length=200, blank=True)
-    
-    # Rich contextual fields for expanded video system
-    mood_type = models.CharField(
-        max_length=20,
-        choices=[
-            ('energetic', 'Энергичное'),
-            ('philosophical', 'Философское'), 
-            ('business', 'Деловое'),
-            ('encouraging', 'Ободряющее'),
-            ('calm', 'Спокойное')
-        ],
-        blank=True,
-        help_text='Настроение/тон видео'
-    )
-    
-    content_theme = models.CharField(
-        max_length=30, 
-        choices=[
-            ('week_start', 'Начало недели'),
-            ('overcoming', 'Преодоление'),
-            ('gratitude', 'Благодарность'),
-            ('motivation', 'Мотивация'),
-            ('recovery', 'Восстановление'),
-            ('achievement', 'Достижение'),
-            ('consistency', 'Постоянство'),
-            ('challenge', 'Вызов')
-        ],
-        blank=True,
-        help_text='Тематика контента'
-    )
-    
-    position_in_workout = models.CharField(
-        max_length=15,
-        choices=[
-            ('intro', 'Вступление'),
-            ('mid', 'Середина'),
-            ('outro', 'Завершение')
-        ],
-        blank=True,
-        help_text='Позиция в тренировке'
-    )
-    
-    week_context = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(8)],
-        help_text='Номер недели курса (1-8)'
-    )
-    
-    variation_number = models.PositiveIntegerField(
-        default=1,
-        validators=[MinValueValidator(1), MaxValueValidator(99)],
-        help_text='Номер вариации (для множественных intro/outro)'
-    )
-    
-    # Metadata
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
-    is_placeholder = models.BooleanField(default=False)  # True for dev placeholders
+    # Archetype support - для архетипных видео
+    ARCHETYPE_CHOICES = [
+        ('mentor', 'Мудрый наставник'),
+        ('professional', 'Профессиональный тренер'), 
+        ('peer', 'Лучший друг'),
+    ]
+    archetype = models.CharField(max_length=20, choices=ARCHETYPE_CHOICES, blank=True, help_text="Архетип тренера для видео")
     
     class Meta:
-        db_table = 'video_clips'
-        indexes = [
-            models.Index(fields=['exercise', 'r2_kind', 'archetype']),
-            models.Index(fields=['r2_kind', 'archetype']),  # For playlist queries
-            models.Index(fields=['is_active', 'r2_kind']),  # For filtering active clips
-        ]
-        unique_together = [
-            ['exercise', 'r2_kind', 'archetype', 'model_name', 'reminder_text']
-        ]
-    
-    def __str__(self):
-        return f"{self.exercise.name_ru if self.exercise else 'General'} - {self.r2_kind} - {self.archetype}"
-    
-    @property
-    def signed_url(self):
-        """Get signed URL for video from R2 storage"""
-        if self.r2_file:
-            from apps.core.services.media import MediaService
-            return MediaService.get_signed_url(self.r2_file)
-        elif self.r2_key:
-            # Direct R2 key access for synced videos
-            from apps.core.services.media import MediaService
-            return MediaService.get_signed_url_from_key(self.r2_key)
-        return ''
-    
-    @property
-    def has_video(self) -> bool:
-        """Check if video clip has available video content"""
-        if self.provider == VideoProvider.R2:
-            return bool(self.r2_file or self.r2_key)
-        if self.provider == VideoProvider.STREAM:
-            return bool(self.stream_uid or self.playback_id)
-        if self.provider == VideoProvider.EXTERNAL:
-            # Future: check external_url field
-            return False
-        return False
-
-
-class WeeklyTheme(models.Model):
-    """Weekly themes for structured course progression"""
-    
-    week_number = models.PositiveIntegerField(
-        unique=True,
-        validators=[MinValueValidator(1), MaxValueValidator(8)],
-        help_text='Week number in the course (1-8)'
-    )
-    
-    theme_title = models.CharField(
-        max_length=100,
-        help_text='Title of the weekly theme'
-    )
-    
-    focus_area = models.CharField(
-        max_length=200,
-        help_text='Main focus area for the week'
-    )
-    
-    description = models.TextField(
-        blank=True,
-        help_text='Detailed description of weekly objectives'
-    )
-    
-    # Archetype-specific content variations
-    mentor_content = models.TextField(
-        blank=True,
-        help_text='Content adapted for mentor archetype'
-    )
-    
-    professional_content = models.TextField(
-        blank=True,
-        help_text='Content adapted for professional archetype'
-    )
-    
-    peer_content = models.TextField(
-        blank=True,
-        help_text='Content adapted for peer archetype'
-    )
-    
-    # Metadata
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        db_table = 'weekly_themes'
-        ordering = ['week_number']
+        db_table = 'r2_videos'
+        verbose_name = 'R2 Видео'
+        verbose_name_plural = 'R2 Видео'
         
     def __str__(self):
-        return f"Week {self.week_number}: {self.theme_title}"
+        return f"{self.code} - {self.name}"
     
-    def get_content_for_archetype(self, archetype: str) -> str:
-        """Get content adapted for specific archetype"""
-        content_map = {
-            'mentor': self.mentor_content,
-            'professional': self.professional_content, 
-            'peer': self.peer_content
-        }
-        return content_map.get(archetype, self.description)
+    def clean(self):
+        """Валидация R2Video модели"""
+        super().clean()
+        
+        # Проверяем код на валидные символы (без пробелов и спецсимволов)
+        if not re.match(r'^[a-zA-Z0-9_-]+$', self.code):
+            raise ValidationError({
+                'code': 'Код должен содержать только буквы, цифры, _ и -'
+            })
+        
+        # Проверяем длину кода
+        if len(self.code) < 3:
+            raise ValidationError({
+                'code': 'Код должен содержать минимум 3 символа'
+            })
+        
+        # Проверяем соответствие кода категории для exercises
+        if self.category == 'exercises':
+            valid_prefixes = ['warmup_', 'main_', 'endurance_', 'relaxation_']
+            if not any(self.code.startswith(prefix) for prefix in valid_prefixes):
+                raise ValidationError({
+                    'code': f'Для категории exercises код должен начинаться с: {", ".join(valid_prefixes)}'
+                })
+        
+        # Проверяем, что название не пустое
+        if not self.name.strip():
+            raise ValidationError({
+                'name': 'Название не может быть пустым'
+            })
+    
+    @property
+    def r2_url(self):
+        """Генерирует публичный URL в R2"""
+        if not self.code or not self.category:
+            return None
+        base_url = "https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev"
+        return f"{base_url}/videos/{self.category}/{self.code}.mp4"
+    
+    @property 
+    def exercise_type(self):
+        """Определяет тип упражнения для категории exercises"""
+        if self.category == 'exercises':
+            if self.code.startswith('warmup_'):
+                return 'warmup'
+            elif self.code.startswith('main_') or self.code.startswith('endurance_') or self.code.startswith('relaxation_'):
+                # Разбираем из названия файла: main_01_technique_m01.mp4
+                parts = self.code.split('_')
+                if len(parts) >= 2:
+                    return parts[0]  # main, endurance, relaxation  
+            return 'main'  # По умолчанию основное упражнение
+        return self.category
+    
+    def save(self, *args, **kwargs):
+        """Сохранение с валидацией"""
+        self.full_clean()  # Запускаем валидацию перед сохранением
+        super().save(*args, **kwargs)
+
+
+class R2Image(models.Model):
+    """
+    Изображения из R2 хранилища для мотивационных карточек
+    Основано на реальной структуре R2 (2009 изображений в 4 категориях)
+    """
+    # Код = имя файла без расширения  
+    code = models.CharField(max_length=150, unique=True, primary_key=True)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    
+    # Категория по папкам в R2
+    CATEGORY_CHOICES = [
+        ('avatars', 'Аватары'),              # images/avatars/ - 9 файлов
+        ('quotes', 'Цитаты'),                # photos/quotes/ - 1000 файлов
+        ('progress', 'Прогресс'),            # photos/progress/ - 500 файлов
+        ('workout', 'Тренировки'),           # photos/workout/ - 500 файлов
+    ]
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    
+    # Landing page support - дополнительные поля для отображения
+    alt_text = models.CharField(max_length=200, blank=True, help_text="Альтернативный текст для изображения")
+    is_hero_image = models.BooleanField(default=False, help_text="Главное изображение на landing page")
+    is_featured = models.BooleanField(default=False, help_text="Показывать в featured галерее")
+    sort_order = models.PositiveIntegerField(default=0, help_text="Порядок сортировки для отображения")
+    
+    # Archetype support - для архетипных изображений (аватары)
+    ARCHETYPE_CHOICES = [
+        ('mentor', 'Мудрый наставник'),
+        ('professional', 'Профессиональный тренер'), 
+        ('peer', 'Лучший друг'),
+    ]
+    archetype = models.CharField(max_length=20, choices=ARCHETYPE_CHOICES, blank=True, help_text="Архетип для аватаров")
+    
+    class Meta:
+        db_table = 'r2_images'
+        verbose_name = 'R2 Изображение'
+        verbose_name_plural = 'R2 Изображения'
+        
+    def __str__(self):
+        return f"{self.code} - {self.name}"
+    
+    def clean(self):
+        """Валидация R2Image модели"""
+        super().clean()
+        
+        # Проверяем код на валидные символы
+        if not re.match(r'^[a-zA-Z0-9_-]+$', self.code):
+            raise ValidationError({
+                'code': 'Код должен содержать только буквы, цифры, _ и -'
+            })
+        
+        # Проверяем длину кода
+        if len(self.code) < 3:
+            raise ValidationError({
+                'code': 'Код должен содержать минимум 3 символа'
+            })
+        
+        # Проверяем, что название не пустое
+        if not self.name.strip():
+            raise ValidationError({
+                'name': 'Название не может быть пустым'
+            })
+        
+        # Специфические проверки для категорий
+        if self.category == 'quotes' and not self.code.startswith('card_'):
+            raise ValidationError({
+                'code': 'Для категории quotes код должен начинаться с "card_"'
+            })
+    
+    @property
+    def r2_url(self):
+        """Генерирует публичный URL в R2"""
+        if not self.code or not self.category:
+            return None
+        base_url = "https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev"
+        if self.category == 'avatars':
+            return f"{base_url}/images/avatars/{self.code}.jpg"
+        else:
+            return f"{base_url}/photos/{self.category}/{self.code}.jpg"
+    
+    def save(self, *args, **kwargs):
+        """Сохранение с валидацией"""
+        self.full_clean()  # Запускаем валидацию перед сохранением
+        super().save(*args, **kwargs)
+
+
+# УДАЛЕНО: VideoClip alias - все ссылки обновлены на R2Video
+
+
+# УДАЛЕНО: WeeklyTheme - дублировал R2Video(weekly), пустая модель
 
 
 class WorkoutPlan(models.Model):
@@ -388,71 +351,13 @@ class CSVExercise(models.Model):
         return 'unknown'
 
 
-class ExplainerVideo(models.Model):
-    """
-    Скрипт или ссылка на видео-объяснение; 1:* к упражнению,
-    разделено по архетипу тренера.
-    """
-    ARCHETYPE_CHOICES = [
-        ("111", "Наставник"),
-        ("222", "Профессионал"),
-        ("333", "Ровесник"),
-    ]
-
-    exercise = models.ForeignKey(CSVExercise, on_delete=models.CASCADE, related_name="videos")
-    archetype = models.CharField(max_length=3, choices=ARCHETYPE_CHOICES)
-    script = models.TextField()                      # пока хранит текст; позже можно добавить video_url
-    locale = models.CharField(max_length=5, default="ru")  # ru / en …
-
-    class Meta:
-        unique_together = ("exercise", "archetype", "locale")
-        verbose_name = "Видео-объяснение"
-        verbose_name_plural = "Видео-объяснения"
-        db_table = 'explainer_videos'
-
-    def __str__(self):
-        return f"{self.exercise_id} – {self.get_archetype_display()}"
-
-    @classmethod
-    def from_row(cls, row: dict, archetype: str, locale: str = "ru"):
-        return cls(
-            exercise_id=row["exercise_id"],
-            archetype=archetype,
-            script=row[f"script_{locale}"],
-            locale=locale,
-        )
+# УДАЛЕНО: ExplainerVideo - дублировал R2Video(exercises), использовать R2Video с category='exercises'
 
 
-class WeeklyLesson(models.Model):
-    """
-    Текст «бонус-урока недели», 1 запись = 1 неделя × архетип × язык
-    """
-    week = models.PositiveSmallIntegerField()
-    archetype = models.CharField(max_length=3, choices=[("111","Н"),("222","П"),("333","Р")])
-    locale = models.CharField(max_length=5, default="ru")
-    title = models.CharField(max_length=120)
-    script = models.TextField()
-    duration_sec = models.PositiveIntegerField(default=180, help_text="Estimated reading time in seconds")
-
-    class Meta:
-        unique_together = ("week", "archetype", "locale")
-        ordering = ["week"]
-        db_table = 'weekly_lessons'
-
-    def __str__(self):
-        return f"Week {self.week} - {self.get_archetype_display()}"
+# УДАЛЕНО: WeeklyLesson - дублировал R2Video(weekly), использовать R2Video с category='weekly'
 
 
-class FinalVideo(models.Model):
-    arch = models.CharField(max_length=3, choices=[("111","Н"),("222","П"),("333","Р")], primary_key=True)
-    locale = models.CharField(max_length=5, default="ru")
-    script = models.TextField()
-
-    class Meta:
-        db_table = 'final_videos'
-
-    def __str__(self):
-        return f"Final - {self.get_arch_display()}"
+# УДАЛЕНО: FinalVideo - дублировал R2Video(final), использовать R2Video с category='final'
 
 
 class WeeklyNotification(models.Model):
@@ -493,7 +398,8 @@ class WeeklyNotification(models.Model):
 
 class DailyPlaylistItem(models.Model):
     """
-    Плейлист дня - последовательность медиа-клипов из R2 для конкретной тренировки
+    Плейлист дня - последовательность видео из R2 для конкретной тренировки
+    Обновлено для использования R2Video вместо MediaAsset
     """
     ROLE_CHOICES = [
         ("intro", "Intro"),
@@ -509,7 +415,10 @@ class DailyPlaylistItem(models.Model):
     day = models.ForeignKey("DailyWorkout", on_delete=models.CASCADE, related_name="playlist_items")
     order = models.PositiveIntegerField()
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    media = models.ForeignKey("content.MediaAsset", on_delete=models.PROTECT, related_name="used_in_playlist")
+    # ОБНОВЛЕНО: используем R2Video вместо MediaAsset
+    # Это поле заменяет старое media поле
+    video = models.ForeignKey("R2Video", on_delete=models.PROTECT, related_name="used_in_playlist")
+    # Старое поле media будет удалено в миграции
     duration_seconds = models.PositiveIntegerField(null=True, blank=True)
     overlay = models.JSONField(default=dict, blank=True)  # подписи/подсказки/инструкции (опционально)
 

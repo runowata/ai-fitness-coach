@@ -10,7 +10,8 @@ from django.utils import timezone
 
 from apps.users.models import User
 
-from .models import WeeklyLesson, WeeklyNotification
+from .models import WeeklyNotification
+# УДАЛЕНО: WeeklyLesson - заменен на R2Video с category='weekly'
 
 logger = logging.getLogger(__name__)
 
@@ -33,19 +34,16 @@ def send_weekly_lesson():
             if not archetype:
                 continue
                 
-            # Получаем урок для этого архетипа и недели
-            lesson = WeeklyLesson.objects.filter(
-                week=week_number,
-                archetype=archetype,
-                locale='ru'
-            ).first()
+            # УДАЛЕНО: WeeklyLesson заменен на R2Video с category='weekly'
+            # TODO: Заменить на R2Video.objects.filter(category='weekly', archetype=archetype, week=week_number)
+            lesson = None  # Временно отключено
             
             if lesson:
                 # Подготавливаем контекст для шаблона
                 base_url = settings.BASE_URL if hasattr(settings, 'BASE_URL') else 'https://aifitnesscoach.com'
                 context = {
-                    'title': lesson.title,
-                    'script': lesson.script,
+                    'title': getattr(lesson, 'title', lesson.name),
+                    'script': getattr(lesson, 'script', lesson.description),
                     'dashboard_url': f"{base_url}/users/dashboard/",
                     'profile_url': f"{base_url}/users/profile/",
                     'support_url': f"{base_url}/support/",
@@ -107,12 +105,9 @@ def enqueue_weekly_lesson():
                 skipped_count += 1
                 continue
                 
-            # Получаем урок для этого архетипа и недели
-            lesson = WeeklyLesson.objects.filter(
-                week=week_number,
-                archetype=archetype,
-                locale='ru'
-            ).first()
+            # УДАЛЕНО: WeeklyLesson заменен на R2Video с category='weekly'
+            # TODO: Заменить на R2Video.objects.filter(category='weekly', archetype=archetype, week=week_number)
+            lesson = None  # Временно отключено
             
             if lesson:
                 # Создаем уведомление
@@ -120,8 +115,8 @@ def enqueue_weekly_lesson():
                     user=user,
                     week=week_number,
                     archetype=archetype,
-                    lesson_title=lesson.title,
-                    lesson_script=lesson.script
+                    lesson_title=getattr(lesson, 'title', lesson.name),
+                    lesson_script=getattr(lesson, 'script', lesson.description)
                 )
                 created_count += 1
                 

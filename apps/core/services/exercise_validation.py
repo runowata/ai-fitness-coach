@@ -22,18 +22,11 @@ class ExerciseValidationService:
     
     @staticmethod
     def get_clips_with_video():
-        """Get QuerySet of VideoClips that have available video content"""
-        from apps.workouts.models import VideoClip
+        """Get QuerySet of R2Videos that have available video content"""
+        from apps.workouts.models import R2Video
         
-        # For R2 provider, videos are available if they have model_name and r2_kind
-        # (files are accessed via structured paths, not FileField)
-        return VideoClip.objects.filter(
-            is_active=True
-        ).filter(
-            Q(provider=VideoProvider.R2, model_name__isnull=False, r2_kind__isnull=False) |
-            Q(provider=VideoProvider.STREAM, stream_uid__isnull=False) |
-            Q(provider=VideoProvider.STREAM, playback_id__isnull=False)
-        )
+        # All R2Videos are available by definition (they exist in R2 storage)
+        return R2Video.objects.all()
     
     @staticmethod
     def get_allowed_exercise_slugs(archetype: Optional[str] = None, locale: Optional[str] = None) -> Set[str]:

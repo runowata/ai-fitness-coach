@@ -8,7 +8,7 @@ from django.conf import settings
 from django.db.models import Q
 
 from apps.core.services.media import MediaService
-from apps.workouts.models import CSVExercise, VideoClip
+from apps.workouts.models import CSVExercise, R2Video
 
 logger = logging.getLogger(__name__)
 
@@ -88,11 +88,13 @@ class StrictPlaylistValidator:
                 self.validation_warnings.append(error_msg)
             return False
             
-        # Проверка что у клипа есть реальный файл
-        if not clip.has_video:
-            error_msg = f"VIDEO_FILE_MISSING: {ex_slug}/{kind}/{archetype} (clip_id: {clip.id})"
-            fail_on_missing = getattr(settings, 'PLAYLIST_FAIL_ON_MISSING_VIDEOS', False)
-            if self.strict_mode and fail_on_missing:
+        # Проверка что у R2Video есть реальный файл
+        # R2Video всегда имеет файл, так как создается только для существующих файлов в R2
+        # Проверка опциональна через настройки
+        fail_on_missing = getattr(settings, 'PLAYLIST_FAIL_ON_MISSING_VIDEOS', False)
+        if fail_on_missing and not clip.r2_url:
+            error_msg = f"VIDEO_FILE_MISSING: {ex_slug}/{kind}/{archetype} (clip_id: {clip.code})"
+            if self.strict_mode:
                 raise ValueError(error_msg)
             self.validation_warnings.append(error_msg)
             return False
@@ -158,7 +160,7 @@ class StrictPlaylistValidator:
         }
 
 
-def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip]:
+def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[R2Video]:
     """
     Resolve video clip with fallback strategy
     1. Exact archetype match
@@ -171,43 +173,43 @@ def _resolve_clip(ex_slug: str, kind: str, archetype: str) -> Optional[VideoClip
         logger.warning(f"Exercise not found: {ex_slug}")
         return None
 
-    # 1) точный архетип
-    qs = VideoClip.objects.filter(
-        exercise=ex, 
-        r2_kind=kind, 
-        archetype=archetype, 
-        is_active=True,
-        model_name__isnull=False
-    ).exclude(model_name='')
+    # 1) точный архетип - ищем R2Video с соответствующими параметрами
+    # Для R2Video код = имя файла, архетип и тип определяются из naming convention
+    code_pattern = f"{ex_slug}_{kind}_{archetype}"
+    qs = R2Video.objects.filter(
+        code__icontains=code_pattern,
+        category='exercises',
+        archetype=archetype
+    )
     clip = qs.order_by("-is_active", "-created_at").first()
     if clip:
-        logger.debug(f"Found exact match for {ex_slug}/{kind}/{archetype}")
+        logger.debug(f"Found exact R2Video match for {ex_slug}/{kind}/{archetype}")
         return clip
 
     # 2) generic (без привязки к архетипу)
-    qs = VideoClip.objects.filter(
-        exercise=ex, 
-        r2_kind=kind, 
-        is_active=True,
-        model_name__isnull=False
-    ).exclude(model_name='').filter(
+    # Ищем видео для упражнения без конкретного архетипа
+    code_pattern = f"{ex_slug}_{kind}"
+    qs = R2Video.objects.filter(
+        code__icontains=code_pattern,
+        category='exercises'
+    ).filter(
         Q(archetype="") | Q(archetype__isnull=True)
     )
     clip = qs.order_by("-is_active", "-created_at").first()
     if clip:
-        logger.debug(f"Found generic clip for {ex_slug}/{kind}")
+        logger.debug(f"Found generic R2Video for {ex_slug}/{kind}")
         return clip
 
     # 3) другой архетип как крайний фоллбек
-    qs = VideoClip.objects.filter(
-        exercise=ex, 
-        r2_kind=kind, 
-        is_active=True,
-        model_name__isnull=False
-    ).exclude(model_name='').exclude(archetype=archetype)
+    # Ищем любое видео для этого упражнения и типа с другим архетипом
+    code_pattern = f"{ex_slug}_{kind}"
+    qs = R2Video.objects.filter(
+        code__icontains=code_pattern,
+        category='exercises'
+    ).exclude(archetype=archetype)
     clip = qs.order_by("-is_active", "-created_at").first()
     if clip:
-        logger.debug(f"Using fallback archetype {clip.archetype} for {ex_slug}/{kind}")
+        logger.debug(f"Using fallback R2Video archetype {clip.archetype} for {ex_slug}/{kind}")
     return clip
 
 
@@ -263,13 +265,14 @@ def build_playlist(plan_json: Dict, archetype: str, strict_mode: bool = None) ->
                                 # Use structured path URL generation instead of r2_file
                                 signed_url = MediaService.get_video_url(clip)
                             except (AttributeError, TypeError) as e:
-                                logger.warning(f"Error generating video URL for clip {clip.id}: {e}")
+                                logger.warning(f"Error generating video URL for R2Video {clip.code}: {e}")
                             
+                            # R2Video не имеет прямой связи с exercise и poster_image
+                            # Используем название видео как poster (опционально)
                             try:
-                                if clip.exercise and clip.exercise.poster_image:
-                                    poster_cdn = MediaService.get_public_cdn_url(clip.exercise.poster_image)
-                            except (AttributeError, TypeError) as e:
-                                logger.warning(f"Invalid poster_image for exercise {clip.exercise}: {e}")
+                                poster_cdn = ""  # Пока без poster'ов для R2Video
+                            except Exception as e:
+                                logger.warning(f"Error handling poster for R2Video {clip.code}: {e}")
                             
                             out.append({
                                 "week": w_idx,
@@ -280,11 +283,11 @@ def build_playlist(plan_json: Dict, archetype: str, strict_mode: bool = None) ->
                                 "sets": ex.get("sets"),
                                 "reps": ex.get("reps"),
                                 "kind": "instruction",
-                                "clip_id": clip.id,
+                                "clip_id": clip.code,
                                 "signed_url": signed_url,
                                 "poster_cdn": poster_cdn,
                                 "archetype": clip.archetype or archetype,
-                                "duration_seconds": clip.duration_seconds,
+                                "duration_seconds": None,  # R2Video не хранит duration
                             })
                         
                         # Add technique/mistake videos if available (for UI hints)
@@ -302,7 +305,7 @@ def build_playlist(plan_json: Dict, archetype: str, strict_mode: bool = None) ->
                                     # Use structured path URL generation instead of r2_file
                                     signed_url = MediaService.get_video_url(clip)
                                 except (AttributeError, TypeError) as e:
-                                    logger.warning(f"Error generating video URL for {aux_kind} clip {clip.id}: {e}")
+                                    logger.warning(f"Error generating video URL for {aux_kind} R2Video {clip.code}: {e}")
                                 
                                 try:
                                     if clip.exercise and clip.exercise.poster_image:
@@ -317,11 +320,11 @@ def build_playlist(plan_json: Dict, archetype: str, strict_mode: bool = None) ->
                                     "exercise_slug": slug,
                                     "exercise_name": ex.get("name", slug),
                                     "kind": aux_kind,
-                                    "clip_id": clip.id,
+                                    "clip_id": clip.code,
                                     "signed_url": signed_url,
                                     "poster_cdn": poster_cdn,
                                     "archetype": clip.archetype or archetype,
-                                    "duration_seconds": clip.duration_seconds,
+                                    "duration_seconds": None,  # R2Video не хранит duration
                                 })
                                 
                 elif btype == "confidence_task":

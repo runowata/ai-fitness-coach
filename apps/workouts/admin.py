@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import CSVExercise, DailyWorkout, VideoClip, WorkoutPlan
+from .models import CSVExercise, DailyWorkout, R2Video, R2Image, WorkoutPlan
 from .video_storage import get_storage
 
 
@@ -25,72 +25,53 @@ class CSVExerciseAdmin(admin.ModelAdmin):
     get_video_type.short_description = 'Тип видео'
 
 
-@admin.register(VideoClip)
-class VideoClipAdmin(admin.ModelAdmin):
-    list_display = ('exercise', 'r2_kind', 'provider', 'storage_status', 'archetype', 'model_name', 'duration_seconds', 'is_active')
-    list_filter = ('r2_kind', 'provider', 'archetype', 'model_name', 'is_active')
-    search_fields = ('exercise__name_ru', 'exercise__name_en', 'reminder_text', 'stream_uid', 'playback_id')
-    autocomplete_fields = ['exercise']
-    readonly_fields = ('storage_status', 'playback_url_display')
+@admin.register(R2Video)
+class R2VideoAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name', 'category', 'archetype', 'is_featured', 'get_exercise_type')
+    list_filter = ('category', 'archetype', 'is_featured')
+    search_fields = ('code', 'name', 'description', 'display_title')
+    readonly_fields = ('get_exercise_type', 'r2_url')
     
     fieldsets = (
         ('Video Information', {
-            'fields': ('exercise', 'r2_kind', 'archetype', 'model_name')
+            'fields': ('code', 'name', 'description', 'category', 'archetype')
         }),
-        ('Storage Provider', {
-            'fields': ('provider', 'storage_status', 'playback_url_display'),
-            'description': 'Video storage configuration and validation status'
+        ('Landing Page Display', {
+            'fields': ('display_title', 'display_description', 'is_featured', 'sort_order'),
+            'classes': ('collapse',)
         }),
-        ('R2 Storage (Cloudflare R2)', {
-            'fields': ('r2_file', 'r2_archetype'),
-            'classes': ('collapse',),
-            'description': 'Fields for R2-hosted videos'
+        ('R2 Storage', {
+            'fields': ('get_exercise_type', 'r2_url'),
+            'classes': ('collapse',)
         }),
-        ('Stream Storage (Cloudflare Stream)', {
-            'fields': ('stream_uid', 'playback_id'),
-            'classes': ('collapse',),
-            'description': 'Fields for Stream-hosted videos'
-        }),
-        ('Content', {
-            'fields': ('duration_seconds', 'script_text', 'reminder_text')
-        }),
-        ('Status', {
-            'fields': ('is_active', 'is_placeholder')
-        })
     )
     
-    def storage_status(self, obj):
-        """Display storage status with color coding"""
-        try:
-            storage = get_storage(obj)
-            exists = storage.exists(obj)
-            
-            if exists:
-                return format_html('<span style="color: green; font-weight: bold;">✓ Available</span>')
-            else:
-                return format_html('<span style="color: red; font-weight: bold;">✗ Missing</span>')
-        except Exception as e:
-            return format_html('<span style="color: orange; font-weight: bold;">⚠ Error: {}</span>', str(e))
-    storage_status.short_description = 'Storage Status'
+    def get_exercise_type(self, obj):
+        return obj.exercise_type
+    get_exercise_type.short_description = 'Тип упражнения'
+
+
+@admin.register(R2Image)
+class R2ImageAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name', 'category', 'archetype', 'is_hero_image', 'is_featured')
+    list_filter = ('category', 'archetype', 'is_hero_image', 'is_featured')
+    search_fields = ('code', 'name', 'description', 'alt_text')
+    readonly_fields = ('r2_url',)
     
-    def playback_url_display(self, obj):
-        """Display playback URL for testing"""
-        try:
-            storage = get_storage(obj)
-            url = storage.playback_url(obj)
-            
-            if url:
-                # Truncate very long URLs for display
-                display_url = url if len(url) <= 80 else f"{url[:77]}..."
-                return format_html('<a href="{}" target="_blank" title="{}">{}</a>', url, url, display_url)
-            else:
-                return format_html('<span style="color: gray;">No URL</span>')
-        except Exception as e:
-            return format_html('<span style="color: red;">Error: {}</span>', str(e))
-    playback_url_display.short_description = 'Playback URL'
+    fieldsets = (
+        ('Image Information', {
+            'fields': ('code', 'name', 'description', 'category', 'archetype')
+        }),
+        ('Landing Page Display', {
+            'fields': ('alt_text', 'is_hero_image', 'is_featured', 'sort_order'),
+            'classes': ('collapse',)
+        }),
+        ('R2 Storage', {
+            'fields': ('r2_url',),
+            'classes': ('collapse',)
+        }),
+    )
     
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('exercise')
 
 
 @admin.register(WorkoutPlan)

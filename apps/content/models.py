@@ -7,157 +7,12 @@ User = get_user_model()
 # Story models removed - functionality not used and causing deployment issues
 # Story, StoryChapter, UserStoryAccess classes removed
 
+# УДАЛЕНО: MediaAsset модель - заменена на R2Video/R2Image через UnifiedMediaService
+# Все медиафайлы теперь управляются через apps.workouts.models.R2Video и R2Image
+# с унифицированным сервисом apps.core.services.unified_media.UnifiedMediaService
 
-class MediaAsset(models.Model):
-    ASSET_TYPE_CHOICES = [
-        ('video', 'Video'),
-        ('image', 'Image'),
-        ('audio', 'Audio'),
-    ]
-    
-    CATEGORY_CHOICES = [
-        # Existing categories
-        ('exercise_technique', 'Exercise Technique'),
-        ('exercise_mistake', 'Exercise Mistake'),
-        ('exercise_instruction', 'Exercise Instruction'),
-        ('exercise_reminder', 'Exercise Reminder'),
-        ('motivation_weekly', 'Weekly Motivation'),
-        ('motivation_final', 'Final Congratulation'),
-        ('card_background', 'Motivational Card Background'),
-        ('avatar', 'Trainer Avatar'),
-        ('misc', 'Miscellaneous'),
-        # New R2 playlist categories
-        ('intro', 'Intro'),
-        ('warmup', 'Warm-up'),
-        ('main_block', 'Main Block'),
-        ('cooldown', 'Cooldown / Stretch'),
-        ('transition', 'Transition / Separator'),
-        ('timer', 'Timer / Beep'),
-        ('motivation', 'Motivational'),
-        ('breathing', 'Breathing'),
-    ]
-    
-    # File information
-    file_name = models.CharField(max_length=255)
-    file_url = models.URLField()
-    file_size = models.PositiveIntegerField(help_text="Size in bytes")
-    asset_type = models.CharField(max_length=10, choices=ASSET_TYPE_CHOICES)
-    
-    # Categorization
-    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
-    tags = models.JSONField(default=list)
-    
-    # Relations
-    exercise = models.ForeignKey(
-        'workouts.CSVExercise',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='media_assets'
-    )
-    archetype = models.CharField(
-        max_length=20,
-        choices=[
-            ('peer', 'Лучший друг'),
-            ('professional', 'Профессиональный тренер'),
-            ('mentor', 'Мудрый наставник'),
-        ],
-        blank=True
-    )
-    
-    # Metadata
-    duration_seconds = models.PositiveIntegerField(null=True, blank=True, help_text="For videos/audio")
-    width = models.PositiveIntegerField(null=True, blank=True, help_text="For images/videos")
-    height = models.PositiveIntegerField(null=True, blank=True, help_text="For images/videos")
-    
-    # Management
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    uploaded_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='uploaded_media'
-    )
-    is_active = models.BooleanField(default=True)
-    
-    # CDN information
-    cdn_url = models.URLField(blank=True)
-    cdn_status = models.CharField(
-        max_length=20,
-        choices=[
-            ('pending', 'Pending'),
-            ('processing', 'Processing'),
-            ('ready', 'Ready'),
-            ('error', 'Error'),
-        ],
-        default='pending'
-    )
-    
-    class Meta:
-        db_table = 'media_assets'
-        indexes = [
-            models.Index(fields=['category', 'asset_type']),
-            models.Index(fields=['exercise', 'category']),
-        ]
-    
-    def __str__(self):
-        return f"{self.get_category_display()} - {self.file_name}"
-    
-    def get_serving_url(self):
-        return self.cdn_url if self.cdn_url else self.file_url
-
-
-class TrainerPersona(models.Model):
-    """Model for trainer archetypes/personas"""
-    ARCHETYPE_CHOICES = [
-        ('peer', 'Ровесник'),
-        ('professional', 'Успешный профессионал'),
-        ('mentor', 'Мудрый наставник'),
-        # Old archetypes for backward compatibility
-        ('bro', 'Бро (Legacy)'),
-        ('sergeant', 'Сержант (Legacy)'),
-        ('intellectual', 'Интеллектуал (Legacy)'),
-    ]
-    
-    slug = models.SlugField(unique=True, max_length=50)
-    archetype = models.CharField(max_length=20, choices=ARCHETYPE_CHOICES, unique=True)
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    
-    # Personality traits
-    tone_guidelines = models.TextField(help_text='Guidelines for AI tone and communication style')
-    motivational_style = models.TextField(help_text='How this trainer motivates users')
-    
-    # Visual assets
-    avatar = models.ImageField(
-        upload_to='images/avatars/',
-        blank=True,
-        null=True,
-        help_text='Trainer avatar image'
-    )
-    
-    # Order for display
-    display_order = models.PositiveIntegerField(default=0)
-    is_active = models.BooleanField(default=True)
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'trainer_personas'
-        ordering = ['display_order', 'title']
-    
-    def __str__(self):
-        return f"{self.title} ({self.archetype})"
-    
-    @property
-    def avatar_cdn(self):
-        """Get CDN URL for avatar"""
-        if self.avatar:
-            from apps.core.services import MediaService
-            return MediaService.get_public_cdn_url(self.avatar)
-        return ''
+# УДАЛЕНО: TrainerPersona модель - заменена на архетипы в R2Video/R2Image
+# Архетипы теперь хранятся прямо в медиафайлах: 'mentor', 'professional', 'peer'
 
 
 class LandingContent(models.Model):
@@ -202,3 +57,8 @@ class LandingContent(models.Model):
     
     def __str__(self):
         return f"Landing Content v{self.version}"
+    
+    @classmethod
+    def get_active_content(cls):
+        """Получить активный контент для landing page"""
+        return cls.objects.filter(is_active=True).first()

@@ -94,10 +94,10 @@ class MediaService:
     @staticmethod
     def get_video_url(clip) -> str:
         """
-        Get video URL for a VideoClip using structured R2 paths
+        Get video URL for a R2Video using structured R2 paths
         
         Args:
-            clip: VideoClip instance
+            clip: R2Video instance
             
         Returns:
             Public URL for video file

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from apps.workouts.models import VideoClip
+from apps.workouts.models import R2Video
 import requests, random
 
 class Command(BaseCommand):
@@ -14,9 +14,9 @@ class Command(BaseCommand):
         print("AWS_S3_ENDPOINT_URL:", getattr(settings, "AWS_S3_ENDPOINT_URL", None))
         print("AWS_STORAGE_BUCKET_NAME:", getattr(settings, "AWS_STORAGE_BUCKET_NAME", None))
 
-        qs = VideoClip.objects.exclude(r2_file__isnull=True).exclude(r2_file="").order_by("?")[:3]
+        qs = R2Video.objects.order_by("?")[:3]
         if not qs:
-            print("No VideoClip rows with r2_file yet.")
+            print("No R2Video rows yet.")
             return
 
         for vc in qs:

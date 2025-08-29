@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import WeeklyLesson, WeeklyNotification
+from .models import WeeklyNotification
 
 
 class WeeklyNotificationSerializer(serializers.ModelSerializer):
@@ -13,8 +13,4 @@ class WeeklyNotificationSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'read_at', 'is_read']
 
 
-class WeeklyLessonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WeeklyLesson
-        fields = ['week', 'archetype', 'title', 'script', 'locale', 'duration_sec']
-        read_only_fields = ['week', 'archetype', 'title', 'script', 'locale', 'duration_sec']
+# УДАЛЕНО: WeeklyLessonSerializer - WeeklyLesson заменен на R2Video с category='weekly'

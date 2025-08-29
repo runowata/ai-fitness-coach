@@ -6,7 +6,7 @@ import logging
 from typing import List, Dict, Set
 from django.core.cache import cache
 
-from apps.workouts.models import CSVExercise, VideoClip
+from apps.workouts.models import CSVExercise, R2Video
 from apps.core.utils.slug import normalize_exercise_slug, normalize_slug_with_aliases
 
 logger = logging.getLogger(__name__)
@@ -23,11 +23,20 @@ def get_available_exercise_slugs() -> List[str]:
     if cached:
         return cached
     
-    # Get exercises with at least one video
-    exercises_with_videos = CSVExercise.objects.filter(
-        is_active=True,
-        video_clips__isnull=False
-    ).distinct().values_list('id', flat=True)
+    # Получаем упражнения, для которых есть R2Video
+    # Так как R2Video создается из файлов R2, проверяем по naming convention
+    # Ищем R2Video где код содержит ID упражнения
+    available_exercise_ids = set()
+    for exercise in CSVExercise.objects.all():
+        # Проверяем есть ли хотя бы одно видео для этого упражнения
+        has_video = R2Video.objects.filter(
+            code__icontains=exercise.id,
+            category='exercises'
+        ).exists()
+        if has_video:
+            available_exercise_ids.add(exercise.id)
+    
+    exercises_with_videos = list(available_exercise_ids)
     
     # Normalize slugs
     slugs = []
@@ -50,10 +59,20 @@ def get_exercise_catalog_for_prompt() -> str:
     Generate exercise catalog text for AI prompt
     Returns formatted list of exercises with descriptions
     """
-    exercises = CSVExercise.objects.filter(
-        is_active=True,
-        video_clips__isnull=False
-    ).distinct().values('id', 'name_ru', 'muscle_group', 'level')
+    # Получаем упражнения, для которых есть видео в R2
+    exercises = []
+    for exercise in CSVExercise.objects.all():
+        has_video = R2Video.objects.filter(
+            code__icontains=exercise.id,
+            category='exercises'
+        ).exists()
+        if has_video:
+            exercises.append({
+                'id': exercise.id,
+                'name_ru': exercise.name_ru,
+                'muscle_group': 'general',  # CSVExercise не имеет muscle_group
+                'level': 'all'  # CSVExercise не имеет level
+            })
     
     catalog_lines = ["Available exercises (use exact slugs):"]
     

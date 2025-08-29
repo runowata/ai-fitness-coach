@@ -392,25 +392,25 @@ def select_archetype(request):
             logger.error(f"Invalid archetype received: '{archetype}' not in {list(archetype_map.keys())}")
             messages.error(request, f'Выберите корректный архетип тренера. Получен: {archetype}')
     
-    # Get trainer personas and media assets from database
-    from apps.content.models import TrainerPersona, MediaAsset
+    # Get trainer avatars from R2 using UnifiedMediaService
+    from apps.core.services.unified_media import UnifiedMediaService
     from django.urls import reverse
     
-    personas = TrainerPersona.objects.filter(is_active=True).order_by('display_order')
+    # Используем список архетипов из UnifiedMediaService
+    archetype_choices = [
+        ('mentor', 'Мудрый наставник'),
+        ('professional', 'Профессиональный тренер'),
+        ('peer', 'Лучший друг'),
+    ]
     
     archetypes = []
-    for persona in personas:
-        # Try to get avatar for this archetype from MediaAsset
-        avatar_asset = MediaAsset.objects.filter(
-            category='avatar',
-            archetype=persona.archetype,
-            is_active=True
-        ).first()
+    for archetype_code, archetype_name in archetype_choices:
+        # Получаем аватар для архетипа из R2
+        avatar_image = UnifiedMediaService.get_avatar_for_archetype(archetype_code)
         
-        if avatar_asset:
-            # Extract R2 key from r2:// URL format  
-            r2_key = avatar_asset.file_url.replace('r2://', '')
-            image_url = reverse('content:media_proxy', kwargs={'key': r2_key})
+        if avatar_image:
+            # Используем публичный URL из R2
+            image_url = avatar_image.r2_url
         else:
             # Fallback to static images based on archetype
             fallback_images = {
@@ -418,14 +418,14 @@ def select_archetype(request):
                 'professional': '/static/images/avatars/sergeant-avatar.png', 
                 'mentor': '/static/images/avatars/intellectual-avatar.png'
             }
-            image_url = fallback_images.get(persona.archetype, '/static/images/avatars/bro-avatar.png')
+            image_url = fallback_images.get(archetype_code, '/static/images/avatars/bro-avatar.png')
         
         archetypes.append({
-            'key': persona.archetype,
-            'name': persona.title,
-            'description': persona.description,
+            'key': archetype_code,
+            'name': archetype_name,
+            'description': f'Архетип тренера: {archetype_name}',
             'image': image_url,
-            'style': persona.motivational_style
+            'style': f'Стиль общения: {archetype_name}'
         })
     
     context = {'archetypes': archetypes}
@@ -1039,7 +1039,7 @@ def create_demo_plan_for_user(user):
     import random
     import logging
     from apps.workouts.models import WorkoutPlan, DailyWorkout, CSVExercise, DailyPlaylistItem
-    from apps.content.models import MediaAsset
+    # from apps.content.models import MediaAsset  # УБРАНО: заменено на UnifiedMediaService
     
     logger = logging.getLogger(__name__)
     
@@ -1123,10 +1123,8 @@ def create_demo_plan_for_user(user):
                 is_rest_day=is_rest_day,
             )
         
-            # Создаем плейлист для тренировочных дней
-            if not is_rest_day and exercise_data:
-                _create_demo_playlist_items(daily_workout, exercise_data)
-                logger.info(f"Created playlist for day {day} with {len(exercise_data)} exercises")
+            # Плейлисты создаются автоматически через R2PlaylistBuilder при необходимости
+            # УДАЛЕНО: _create_demo_playlist_items - дублировало функциональность R2PlaylistBuilder
     
         logger.info(f"Demo plan created for user {user.email}: {plan.id}")
         return plan
@@ -1137,101 +1135,6 @@ def create_demo_plan_for_user(user):
         return None
 
 
-def _create_demo_playlist_items(daily_workout, exercise_data):
-    """Создает базовый плейлист для демо тренировки."""
-    from apps.content.models import MediaAsset
-    from apps.workouts.models import DailyPlaylistItem
-    
-    order = 1
-    
-    # 1. Intro видео (если есть)
-    intro_media = MediaAsset.objects.filter(
-        category='intro', 
-        asset_type='video',
-        is_active=True
-    ).first()
-    
-    if intro_media:
-        DailyPlaylistItem.objects.create(
-            day=daily_workout,
-            order=order,
-            role='intro',
-            media=intro_media,
-            duration_seconds=intro_media.duration_seconds
-        )
-        order += 1
-    
-    # 2. Warmup видео
-    warmup_media = MediaAsset.objects.filter(
-        category='warmup',
-        asset_type='video', 
-        is_active=True
-    ).first()
-    
-    if warmup_media:
-        DailyPlaylistItem.objects.create(
-            day=daily_workout,
-            order=order,
-            role='warmup', 
-            media=warmup_media,
-            duration_seconds=warmup_media.duration_seconds
-        )
-        order += 1
-    
-    # 3. Основные упражнения - ищем технику по exercise_id
-    for ex_data in exercise_data:
-        exercise_id = ex_data.get('exercise_id')
-        
-        # Ищем видео техники для упражнения (используем exercise ForeignKey)
-        technique_media = MediaAsset.objects.filter(
-            category='exercise_technique',
-            exercise__id=exercise_id,
-            asset_type='video',
-            is_active=True
-        ).first()
-        
-        if technique_media:
-            DailyPlaylistItem.objects.create(
-                day=daily_workout,
-                order=order,
-                role='main',
-                media=technique_media,
-                duration_seconds=technique_media.duration_seconds
-            )
-            order += 1
-        else:
-            # Fallback: любое видео техники
-            fallback_media = MediaAsset.objects.filter(
-                category='exercise_technique',
-                asset_type='video',
-                is_active=True
-            ).first()
-            
-            if fallback_media:
-                DailyPlaylistItem.objects.create(
-                    day=daily_workout,
-                    order=order,
-                    role='main',
-                    media=fallback_media,
-                    duration_seconds=fallback_media.duration_seconds
-                )
-                order += 1
-    
-    # 4. Cooldown видео
-    cooldown_media = MediaAsset.objects.filter(
-        category='cooldown',
-        asset_type='video',
-        is_active=True  
-    ).first()
-    
-    if cooldown_media:
-        DailyPlaylistItem.objects.create(
-            day=daily_workout,
-            order=order,
-            role='cooldown',
-            media=cooldown_media,
-            duration_seconds=cooldown_media.duration_seconds
-        )
 
-    logger.info(f"Demo plan created for user {user.email}: {plan.id}")
-    return plan
+# УДАЛЕНО: _create_demo_playlist_items - дублировала функциональность R2PlaylistBuilder
+# Плейлисты создаются автоматически через R2PlaylistBuilder при необходимости

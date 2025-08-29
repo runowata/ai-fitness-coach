@@ -31,8 +31,9 @@ class VideoPlaylistBuilder:
         self._candidates = {}  # Candidate cache: (exercise_id, kind, archetype) -> [VideoClip]
     
     def build_playlist(self, exercises) -> List[Dict]:
-        """Build playlist from ExplainerVideo scripts for given exercises"""
-        from apps.workouts.models import CSVExercise, ExplainerVideo
+        """Build playlist from R2Video for given exercises"""
+        from apps.workouts.models import CSVExercise, R2Video
+        # УДАЛЕНО: ExplainerVideo - заменен на R2Video с category='exercises'
         
         videos = []
         for ex in exercises:
@@ -45,18 +46,15 @@ class VideoPlaylistBuilder:
             if not exercise:
                 continue
                 
-            # Get video script for this exercise/archetype/locale
-            available_videos = list(ExplainerVideo.objects.filter(
-                exercise=exercise,
-                archetype=self.archetype,
-                locale=self.locale
-            ).values_list('id', flat=True))
+            # УДАЛЕНО: ExplainerVideo заменен на R2Video
+            # TODO: Заменить на R2Video.objects.filter(category='exercises', archetype=self.archetype)
+            available_videos = []
             
             video = None
             if available_videos:
                 # Use RNG instead of order_by('?') for better distribution
                 random_id = self.rng.choice(available_videos)
-                video = ExplainerVideo.objects.get(id=random_id)
+                video = R2Video.objects.get(code=random_id)
             
             if video:
                 videos.append({
@@ -561,34 +559,10 @@ class VideoPlaylistBuilder:
     
     def _get_weekly_theme_video(self, week_number: int, archetype: str) -> Optional[Dict]:
         """Get weekly theme-based lesson video"""
-        from .models import WeeklyTheme
+        # УДАЛЕНО: WeeklyTheme - заменен на R2Video с category='weekly'
+        # TODO: Использовать R2Video.objects.filter(category='weekly', archetype=archetype)
         
-        try:
-            # Get the weekly theme
-            theme = WeeklyTheme.objects.get(week_number=week_number, is_active=True)
-            
-            # Try to get theme-based video first
-            theme_video = self._get_contextual_video_by_factors(
-                VideoKind.THEME_BASED,
-                archetype,
-                {'week_context': week_number}
-            )
-            
-            if theme_video:
-                logger.info(f"Found theme-based video for week {week_number}: {theme.theme_title}")
-                return {
-                    'type': 'weekly_theme',
-                    'url': self._format_video_response(theme_video, VideoKind.THEME_BASED)['url'],
-                    'duration': theme_video.duration_seconds,
-                    'title': f'Урок недели {week_number}: {theme.theme_title}',
-                    'theme_content': theme.get_content_for_archetype(archetype),
-                    'clip_id': theme_video.id,
-                    'provider': theme_video.provider,
-                    'kind': VideoKind.THEME_BASED
-                }
-                
-        except WeeklyTheme.DoesNotExist:
-            logger.warning(f"No weekly theme found for week {week_number}")
+        logger.warning(f"WeeklyTheme model removed - using fallback for week {week_number}")
         
         # Fallback to regular weekly video
         return self._get_weekly_motivation_video(week_number, archetype)

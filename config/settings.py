@@ -87,13 +87,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f"postgresql://{os.getenv('DB_USER', 'postgres')}:{os.getenv('DB_PASSWORD', '')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'ai_fitness_coach')}",
-        conn_max_age=600,
-        ssl_require=not DEBUG,  # SSL only in production
-    )
-}
+if os.getenv('DATABASE_URL'):
+    # Use DATABASE_URL if provided (respects sslmode parameter)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600,
+        )
+    }
+else:
+    # Fallback to individual env vars
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=f"postgresql://{os.getenv('DB_USER', 'postgres')}:{os.getenv('DB_PASSWORD', '')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'ai_fitness_coach')}",
+            conn_max_age=600,
+            ssl_require=not DEBUG,  # SSL only in production
+        )
+    }
 
 # Cache
 CACHES = {
