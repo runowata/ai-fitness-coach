@@ -1082,6 +1082,7 @@ def create_demo_plan_for_user(user):
         user=user,
         name="Демо-план на 1 неделю",
         duration_weeks=1,  # Исправлено: демо план на 1 неделю
+        goal="fitness",  # Временное поле для БД
         plan_data={"demo": True, "exercises_count": len(exercises)},
         status="CONFIRMED",
     )
