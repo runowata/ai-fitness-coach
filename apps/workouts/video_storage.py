@@ -68,38 +68,38 @@ class R2Adapter:
 class StreamAdapter:
     """Cloudflare Stream adapter"""
     
-    def exists(self, clip: 'VideoClip') -> bool:
+    def exists(self, clip: 'R2Video') -> bool:
         """Check if Stream video exists"""
-        return bool(clip.stream_uid or clip.playback_id)
+        return bool(clip.stream_uid or clip.playback_id) if hasattr(clip, 'stream_uid') else False
     
-    def playback_url(self, clip: 'VideoClip') -> str:
+    def playback_url(self, clip: 'R2Video') -> str:
         """Get Stream HLS playback URL"""
-        if not (clip.stream_uid or clip.playback_id):
+        if not hasattr(clip, 'stream_uid') or not (clip.stream_uid or getattr(clip, 'playback_id', None)):
             return ''
         
         # Get template from settings - don't hardcode domain
         template = getattr(settings, 'CF_STREAM_HLS_TEMPLATE', 
                           'https://videodelivery.net/{playback_id}/manifest/video.m3u8')
         
-        playback_id = clip.playback_id or clip.stream_uid
+        playback_id = getattr(clip, 'playback_id', None) or clip.stream_uid
         return template.format(playback_id=playback_id)
 
 
 class ExternalAdapter:
     """External URL adapter (for future use)"""
     
-    def exists(self, clip: 'VideoClip') -> bool:
+    def exists(self, clip: 'R2Video') -> bool:
         """Check if external URL is available"""
         # Future: check external_url field
         return False
     
-    def playback_url(self, clip: 'VideoClip') -> str:
+    def playback_url(self, clip: 'R2Video') -> str:
         """Get external URL"""
         # Future: return clip.external_url
         return ''
 
 
-def get_storage(clip: 'VideoClip') -> VideoStorage:
+def get_storage(clip: 'R2Video') -> VideoStorage:
     """Factory function to get appropriate storage adapter"""
     if clip.provider == VideoProvider.R2:
         return R2Adapter()

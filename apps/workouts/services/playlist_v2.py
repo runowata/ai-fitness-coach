@@ -308,10 +308,9 @@ def build_playlist(plan_json: Dict, archetype: str, strict_mode: bool = None) ->
                                     logger.warning(f"Error generating video URL for {aux_kind} R2Video {clip.code}: {e}")
                                 
                                 try:
-                                    if clip.exercise and clip.exercise.poster_image:
-                                        poster_cdn = MediaService.get_public_cdn_url(clip.exercise.poster_image)
+                                    poster_cdn = ""  # R2Video не имеет прямой связи с exercise.poster_image
                                 except (AttributeError, TypeError) as e:
-                                    logger.warning(f"Invalid poster_image for {aux_kind} exercise {clip.exercise}: {e}")
+                                    logger.warning(f"Error handling poster for {aux_kind} R2Video {clip.code}: {e}")
                                 
                                 out.append({
                                     "week": w_idx,
