@@ -86,8 +86,8 @@ class Command(BaseCommand):
             
         # Step 3: Summary
         if not dry_run:
-            exercises_count = CSVExercise.objects.filter(is_active=True).count()
-            clips_count = VideoClip.objects.filter(is_active=True, r2_file__isnull=False).count()
+            exercises_count = CSVExercise.objects.count()
+            clips_count = VideoClip.objects.filter(r2_file__isnull=False).count()
             
             self.stdout.write(self.style.SUCCESS("\n🎉 Import complete!"))
             self.stdout.write(f"  📊 {exercises_count} exercises imported")
@@ -131,12 +131,7 @@ class Command(BaseCommand):
                 
                 exercise_data = {
                     'name_ru': str(row['Название (RU)']).strip(),
-                    'name_en': str(row['Название (EN)']).strip(),
-                    'muscle_group': str(row.get('Основная мышечная группа', '')).strip(),
-                    'exercise_type': str(row.get('Тип упражнения', '')).strip(),
-                    'level': level_en,
-                    # Note: CSVExercise model doesn't have duration field
-                    'is_active': True
+                    'description': str(row.get('Описание', '')).strip() or ''
                 }
                 
                 if dry_run:
@@ -280,7 +275,7 @@ class Command(BaseCommand):
                         'archetype': archetype,
                         'r2_kind': video_kind,
                         'model_name': 'default',
-                        'reminder_text': f'{video_kind} for {exercise.name_en}',
+                        'reminder_text': f'{video_kind} for {exercise.name_ru}',
                         'duration_seconds': 60,  # Correct field name is duration_seconds
                         'is_active': True,
                         'is_placeholder': True

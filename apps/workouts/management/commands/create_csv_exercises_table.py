@@ -19,16 +19,7 @@ class Command(BaseCommand):
                 CREATE TABLE IF NOT EXISTS csv_exercises (
                     id VARCHAR(20) PRIMARY KEY,
                     name_ru VARCHAR(120) NOT NULL,
-                    name_en VARCHAR(120) DEFAULT '',
-                    description TEXT DEFAULT '',
-                    level VARCHAR(20) DEFAULT 'beginner',
-                    muscle_group VARCHAR(120) DEFAULT '',
-                    exercise_type VARCHAR(120) DEFAULT '',
-                    ai_tags JSONB DEFAULT '[]'::jsonb,
-                    r2_slug VARCHAR(50) DEFAULT '',
-                    is_active BOOLEAN DEFAULT true,
-                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                    description TEXT DEFAULT ''
                 );
             ''')
             

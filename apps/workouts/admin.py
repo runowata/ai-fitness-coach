@@ -10,22 +10,19 @@ from .video_storage import get_storage
 
 @admin.register(CSVExercise)
 class CSVExerciseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name_ru', 'name_en', 'level', 'muscle_group', 'exercise_type', 'is_active')
-    list_filter = ('level', 'muscle_group', 'exercise_type', 'is_active')
-    search_fields = ('id', 'name_ru', 'name_en', 'description')
-    readonly_fields = ('id',)
+    list_display = ('id', 'name_ru', 'get_video_type')
+    search_fields = ('id', 'name_ru', 'description')
+    readonly_fields = ('id', 'get_video_type')
     
     fieldsets = (
         ('Basic Information', {
-            'fields': ('id', 'name_ru', 'name_en', 'description')
+            'fields': ('id', 'name_ru', 'description', 'get_video_type')
         }),
-        ('Classification', {
-            'fields': ('level', 'muscle_group', 'exercise_type', 'ai_tags')
-        }),
-        ('Status', {
-            'fields': ('is_active',)
-        })
     )
+    
+    def get_video_type(self, obj):
+        return obj.video_type
+    get_video_type.short_description = 'Тип видео'
 
 
 @admin.register(VideoClip)

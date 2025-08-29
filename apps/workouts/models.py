@@ -358,40 +358,34 @@ class WorkoutExecution(models.Model):
 
 class CSVExercise(models.Model):
     """
-    Базовое упражнение, импортируется из data/clean/exercises_complete_r2.csv
-    Обновлено под реальную структуру R2 (271 упражнение)
+    Упрощенная модель упражнения - только необходимые поля
+    Тип определяется по префиксу id (warmup_, main_, endurance_, relaxation_)
     """
-    # Primary fields matching R2 structure
-    id = models.CharField(primary_key=True, max_length=20)          # warmup_01, main_001, endurance_01, relaxation_01
-    name_ru = models.CharField(max_length=120)
-    name_en = models.CharField(max_length=120, blank=True)
-    description = models.TextField(blank=True)
+    # Только необходимые поля
+    id = models.CharField(primary_key=True, max_length=20)  # warmup_01, main_001, etc
+    name_ru = models.CharField(max_length=120)  # Название упражнения
+    description = models.TextField(blank=True)  # Описание упражнения
     
-    # Classification fields
-    level = models.CharField(max_length=20, default='beginner')     # beginner / intermediate / advanced
-    muscle_group = models.CharField(max_length=120, blank=True)     # Все тело / Грудь / Спина / Ноги / и т.д.
-    exercise_type = models.CharField(max_length=120, blank=True)    # strength / mobility / cardio / flexibility
-    
-    # AI integration fields
-    ai_tags = models.JSONField(blank=True, default=list)
-    
-    # R2 structure support 
-    r2_slug = models.CharField(max_length=50, blank=True, help_text='Original R2 slug format')
-    
-    # Status
-    is_active = models.BooleanField(default=True)
-    
-    # Metadata
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-
     class Meta:
-        verbose_name = "Упражнение CSV"
-        verbose_name_plural = "Упражнения CSV"
+        verbose_name = "Упражнение"
+        verbose_name_plural = "Упражнения"
         db_table = 'csv_exercises'
 
     def __str__(self):
         return f"{self.id} – {self.name_ru}"
+    
+    @property
+    def video_type(self):
+        """Определяет тип видео по префиксу id"""
+        if self.id.startswith('warmup_'):
+            return 'warmup'
+        elif self.id.startswith('main_'):
+            return 'main'
+        elif self.id.startswith('endurance_'):
+            return 'endurance'
+        elif self.id.startswith('relaxation_'):
+            return 'relaxation'
+        return 'unknown'
 
 
 class ExplainerVideo(models.Model):
