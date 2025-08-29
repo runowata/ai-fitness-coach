@@ -56,12 +56,11 @@ class Command(BaseCommand):
             return
         
         # Get available R2 images for motivational content
-        images = list(
-            R2Image.objects.filter(
-                is_active=True,
-                category__in=['motivation', 'quotes', 'progress']
-            ).order_by('code').values_list('code', flat=True)
-        )
+        images_qs = R2Image.objects.filter(
+            category__in=['motivation', 'quotes']
+        ).order_by('sort_order', 'code')
+        
+        images = list(images_qs.values('category', 'code'))
         
         if not images:
             self.stdout.write("No R2 images found for motivational cards. Skipping.")
@@ -70,10 +69,11 @@ class Command(BaseCommand):
         # Assign image paths to cards
         for idx, card in enumerate(cards):
             # Use round-robin to distribute images
-            code = images[idx % len(images)]
-            card.path = code  # R2Image code is the full path
+            img = images[idx % len(images)]
+            # Form relative path in R2 storage
+            card.path = f'{img["category"]}/{img["code"]}.jpg'
             card.save(update_fields=['path'])
             
-            self.stdout.write(f"Card {card.id}: assigned image {code}")
+            self.stdout.write(f"Card {card.id}: assigned image {img['category']}/{img['code']}.jpg")
         
         self.stdout.write(f"Added images to {cards.count()} cards")
