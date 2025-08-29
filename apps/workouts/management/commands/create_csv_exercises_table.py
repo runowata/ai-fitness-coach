@@ -13,55 +13,51 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cursor = connection.cursor()
         
+        # First, try to create table with IF NOT EXISTS via SQL
         try:
-            # Check if table exists
-            tables = connection.introspection.table_names()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS csv_exercises (
+                    id VARCHAR(20) PRIMARY KEY,
+                    name_ru VARCHAR(120) NOT NULL,
+                    name_en VARCHAR(120) DEFAULT '',
+                    description TEXT DEFAULT '',
+                    level VARCHAR(20) DEFAULT 'beginner',
+                    muscle_group VARCHAR(120) DEFAULT '',
+                    exercise_type VARCHAR(120) DEFAULT '',
+                    ai_tags JSONB DEFAULT '[]'::jsonb,
+                    r2_slug VARCHAR(50) DEFAULT '',
+                    is_active BOOLEAN DEFAULT true,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+                );
+            ''')
             
-            if 'csv_exercises' not in tables:
-                self.stdout.write('Creating csv_exercises table...')
-                
-                # Use Django ORM to create the table
-                with connection.schema_editor() as schema_editor:
-                    schema_editor.create_model(CSVExercise)
-                
+            # Check if table was created or already existed
+            cursor.execute("""
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_name = 'csv_exercises'
+                );
+            """)
+            exists = cursor.fetchone()[0]
+            
+            if exists:
                 self.stdout.write(
-                    self.style.SUCCESS('✅ csv_exercises table created successfully')
+                    self.style.SUCCESS('✅ csv_exercises table is ready')
                 )
             else:
                 self.stdout.write(
-                    self.style.SUCCESS('csv_exercises table already exists')
+                    self.style.ERROR('Failed to verify csv_exercises table')
                 )
                 
         except Exception as e:
-            self.stdout.write(
-                self.style.WARNING(f'ORM creation failed: {e}')
-            )
-            
-            # Fallback to raw SQL
-            try:
-                cursor.execute('''
-                    CREATE TABLE IF NOT EXISTS csv_exercises (
-                        id VARCHAR(20) PRIMARY KEY,
-                        name_ru VARCHAR(120) NOT NULL,
-                        name_en VARCHAR(120) DEFAULT '',
-                        description TEXT DEFAULT '',
-                        level VARCHAR(20) DEFAULT 'beginner',
-                        muscle_group VARCHAR(120) DEFAULT '',
-                        exercise_type VARCHAR(120) DEFAULT '',
-                        ai_tags JSONB DEFAULT '[]'::jsonb,
-                        r2_slug VARCHAR(50) DEFAULT '',
-                        is_active BOOLEAN DEFAULT true,
-                        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-                    );
-                ''')
-                
+            # If the error is about table already existing, that's fine
+            if 'already exists' in str(e).lower():
                 self.stdout.write(
-                    self.style.SUCCESS('✅ csv_exercises table created via SQL')
+                    self.style.SUCCESS('✅ csv_exercises table already exists')
                 )
-                
-            except Exception as sql_error:
+            else:
                 self.stdout.write(
-                    self.style.ERROR(f'Failed to create table: {sql_error}')
+                    self.style.ERROR(f'Failed to create table: {e}')
                 )
                 raise
