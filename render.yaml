@@ -10,7 +10,7 @@ services:
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
     preDeployCommand: >
-      python manage.py migrate --noinput --verbosity 2 &&
+      python manage.py migrate --noinput --fake-initial --verbosity 2 &&
       python manage.py sync_from_r2 &&
       python manage.py load_weekly_lessons &&
       python manage.py seed_basic_data &&
