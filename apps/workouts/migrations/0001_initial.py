@@ -16,22 +16,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="CSVExercise",
-            fields=[
-                (
-                    "id",
-                    models.CharField(max_length=20, primary_key=True, serialize=False),
-                ),
-                ("name_ru", models.CharField(max_length=120)),
-                ("description", models.TextField(blank=True)),
-            ],
-            options={
-                "verbose_name": "Упражнение",
-                "verbose_name_plural": "Упражнения",
-                "db_table": "csv_exercises",
-            },
-        ),
-        migrations.CreateModel(
             name="DailyWorkout",
             fields=[
                 (
