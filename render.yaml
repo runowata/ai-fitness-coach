@@ -10,19 +10,19 @@ services:
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
     preDeployCommand: >
-      python manage.py create_csv_exercises_table || echo "CSV table setup completed" &&
+      python manage.py fix_csv_table &&
       python manage.py migrate --noinput --verbosity 2 &&
       if [ -d ./data/raw ]; then
         python manage.py import_exercises_v2 --data-dir ./data/raw || echo "Import exercises skipped"
       else
         echo "data/raw not found, skipping import_exercises_v2"
       fi &&
-      python manage.py bootstrap_v2_min || echo "Bootstrap skipped" &&
-      python manage.py load_weekly_lessons || echo "Weekly lessons skipped" &&
-      python manage.py seed_basic_data || echo "Seed basic data skipped" &&
-      python manage.py seed_media_assets || echo "Seed media assets skipped" &&
-      python manage.py setup_periodic_tasks || echo "Periodic tasks skipped" &&
-      python manage.py audit_video_clips --summary || echo "Video audit skipped"
+      python manage.py bootstrap_v2_min &&
+      python manage.py load_weekly_lessons &&
+      python manage.py seed_basic_data &&
+      python manage.py seed_media_assets &&
+      python manage.py setup_periodic_tasks &&
+      python manage.py audit_video_clips --summary || true
     startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300"
     plan: starter
     region: frankfurt
