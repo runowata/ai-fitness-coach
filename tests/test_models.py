@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-from apps.achievements.models import Achievement, UserAchievement
 from apps.onboarding.models import AnswerOption, OnboardingQuestion
 from apps.users.models import UserProfile
 from apps.workouts.models import DailyWorkout, CSVExercise, WorkoutPlan
@@ -135,42 +134,6 @@ class WorkoutPlanModelTest(TestCase):
         self.assertFalse(workout.is_rest_day)
         self.assertEqual(len(workout.exercises), 1)
 
-
-class AchievementModelTest(TestCase):
-    """Test Achievement system"""
-    
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username='testuser',
-            email='test@example.com',
-            password='testpass123'
-        )
-        
-        self.achievement = Achievement.objects.create(
-            slug='first-workout',
-            name='Первая тренировка',
-            description='Завершите вашу первую тренировку',
-            trigger_type='workout_count',
-            trigger_value=1,
-            xp_reward=100
-        )
-    
-    def test_achievement_creation(self):
-        """Test achievement creation"""
-        self.assertEqual(str(self.achievement), 'Первая тренировка')
-        self.assertEqual(self.achievement.trigger_type, 'workout_count')
-        self.assertEqual(self.achievement.xp_reward, 100)
-    
-    def test_user_achievement_unlock(self):
-        """Test unlocking achievement"""
-        user_achievement = UserAchievement.objects.create(
-            user=self.user,
-            achievement=self.achievement
-        )
-        
-        self.assertEqual(user_achievement.user, self.user)
-        self.assertEqual(user_achievement.achievement, self.achievement)
-        self.assertIsNotNone(user_achievement.unlocked_at)
 
 
 class OnboardingModelTest(TestCase):

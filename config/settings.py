@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'apps.workouts',
     'apps.onboarding',
     'apps.content',
-    'apps.achievements',
     'apps.ai_integration',
     'apps.notifications',
     'apps.analytics',

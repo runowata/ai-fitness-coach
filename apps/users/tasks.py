@@ -110,54 +110,13 @@ def send_workout_reminder_email(user):
     )
 
 
-@shared_task
-def send_achievement_notification(user_id, achievement_id):
-    """Send achievement unlock notification"""
-    from django.contrib.auth import get_user_model
-
-    from apps.achievements.models import Achievement
-    
-    User = get_user_model()
-    
-    try:
-        user = User.objects.get(id=user_id)
-        achievement = Achievement.objects.get(id=achievement_id)
-        
-        if not user.profile.email_notifications_enabled:
-            return "Email notifications disabled"
-        
-        context = {
-            'user': user,
-            'achievement': achievement,
-            'dashboard_url': f"{settings.FRONTEND_URL}/dashboard/"
-        }
-        
-        subject = f"🏆 Новое достижение: {achievement.name}!"
-        
-        html_message = render_to_string('emails/achievement_unlocked.html', context)
-        text_message = render_to_string('emails/achievement_unlocked.txt', context)
-        
-        send_mail(
-            subject=subject,
-            message=text_message,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            html_message=html_message,
-            fail_silently=True
-        )
-        
-        return f"Achievement notification sent to {user.email}"
-        
-    except Exception as e:
-        return f"Error sending achievement notification: {str(e)}"
+# Achievement notifications removed - no longer needed
 
 
 @shared_task
 def send_weekly_progress_summary():
     """Send weekly progress summary to active users"""
     
-    from apps.achievements.models import DailyProgress
-
     # Get users with activity in the last week
     week_ago = timezone.now() - timedelta(days=7)
     

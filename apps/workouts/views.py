@@ -13,7 +13,6 @@ from django.views.decorators.http import require_http_methods
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 
-from apps.achievements.services import WorkoutCompletionService
 
 from .models import CSVExercise, DailyWorkout, ExplainerVideo, WeeklyLesson, WeeklyNotification
 from .serializers import WeeklyLessonSerializer, WeeklyNotificationSerializer
@@ -116,26 +115,20 @@ def complete_workout_view(request, workout_id):
         feedback_note = data.get('feedback_note', '')
         
         # Complete workout
-        completion_service = WorkoutCompletionService()
-        result = completion_service.complete_workout(
-            user=request.user,
-            workout=workout,
-            feedback_rating=feedback_rating,
-            feedback_note=feedback_note
-        )
+        workout.completed_at = timezone.now()
+        workout.feedback_rating = feedback_rating
+        workout.feedback_note = feedback_note
+        workout.save()
+        
+        # Update user profile progress
+        profile = request.user.profile
+        profile.workouts_completed = (profile.workouts_completed or 0) + 1
+        profile.save()
         
         return JsonResponse({
             'success': True,
-            'xp_earned': result['xp_earned'],
-            'new_achievements': [
-                {
-                    'name': achievement.achievement.name,
-                    'description': achievement.achievement.description
-                }
-                for achievement in result['new_achievements']
-            ],
-            'current_streak': result['current_streak'],
-            'ai_analysis': result.get('ai_analysis')
+            'message': 'Тренировка успешно завершена!',
+            'workouts_completed': profile.workouts_completed
         })
         
     except Exception as e:

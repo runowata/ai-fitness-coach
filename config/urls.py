@@ -23,7 +23,6 @@ urlpatterns = [
     path('workouts/', include('apps.workouts.urls')),
     path('onboarding/', include('apps.onboarding.urls')),
     path('content/', include('apps.content.urls')),
-    path('achievements/', include('apps.achievements.urls')),
     path('', include('apps.notifications.urls')),
     path('', include('apps.analytics.urls')),
     

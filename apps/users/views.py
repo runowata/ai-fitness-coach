@@ -84,16 +84,8 @@ def dashboard_view(request):
             logger.error(f"Error processing workout plan {workout_plan.id}: {e}")
             messages.warning(request, 'Есть проблемы с планом тренировок. Попробуйте обновить страницу.')
     
-    # Safe achievement checking
-    try:
-        from apps.achievements.services import AchievementChecker
-        checker = AchievementChecker()
-        new_achievements = checker.check_user_achievements(user)
-    except Exception as e:
-        # Log error but continue without achievements
-        import logging
-        logger = logging.getLogger(__name__)
-        logger.error(f"Error checking achievements for user {user.id}: {e}")
+    # Achievements removed - no longer needed
+    new_achievements = []
     
     # Safe context building
     context = {
