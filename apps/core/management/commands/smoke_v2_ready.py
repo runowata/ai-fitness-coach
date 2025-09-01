@@ -94,8 +94,22 @@ class Command(BaseCommand):
                     # 4. Test playlist generation
                     self.stdout.write("\n4️⃣ Testing playlist generation...")
                     archetype = getattr(plan.user.profile, 'archetype', 'mentor') if hasattr(plan.user, 'profile') else 'mentor'
-                    # playlist = build_playlist(plan.plan_data, archetype)  # DEPRECATED
-                    playlist = []  # TODO: Use PlaylistGeneratorV2
+                    # Use new PlaylistGeneratorV2 system
+                    try:
+                        from apps.workouts.services import PlaylistGeneratorV2
+                        from apps.workouts.models import DailyWorkout
+                        
+                        # Get first daily workout to test playlist generation
+                        first_workout = DailyWorkout.objects.filter(plan=plan).first()
+                        if first_workout:
+                            generator = PlaylistGeneratorV2(plan.user, archetype)
+                            playlist_items = generator.generate_playlist_for_day(first_workout.day_number, first_workout)
+                            playlist = [{'clip_id': item.video.code, 'signed_url': f'test_url_{item.id}'} for item in playlist_items]
+                        else:
+                            playlist = []
+                    except Exception as e:
+                        playlist = []
+                        warnings.append(f"Playlist generation failed: {e}")
                     
                     if not playlist:
                         warnings.append(f"Empty playlist for plan {plan.id}")

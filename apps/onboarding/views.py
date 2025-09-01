@@ -51,23 +51,6 @@ def _get_random_motivational_background():
                     logger.info(f"Using path field: {card.path} -> {public_url}")
                     return public_url
         
-        # LEGACY fallback: try to find cards with image_url (during migration period)
-        available_legacy_cards = list(MotivationalCard.objects.filter(
-            is_active=True,
-            image_url__isnull=False
-        ).exclude(image_url='').values_list('id', flat=True))
-        
-        legacy_card = None
-        if available_legacy_cards:
-            # Use Python's random selection instead of order_by('?') for better distribution
-            random_id = random.choice(available_legacy_cards)
-            legacy_card = MotivationalCard.objects.get(id=random_id)
-        
-        if legacy_card and legacy_card.image_url:
-            if legacy_card.image_url.startswith('https://pub-'):
-                logger.warning(f"Using legacy image_url (should be migrated to path): {legacy_card.image_url}")
-                return legacy_card.image_url
-        
         # Secondary fallback: use r2_upload_state.json for quotes
         r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
         if os.path.exists(r2_state_path):

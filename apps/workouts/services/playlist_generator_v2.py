@@ -52,9 +52,9 @@ class PlaylistGeneratorV2:
         """Get list of exercises already used by this user"""
         # Получаем все использованные упражнения из предыдущих плейлистов
         used = DailyPlaylistItem.objects.filter(
-            workout__plan__user=self.user,
-            video_type__in=['warmup', 'main', 'endurance', 'cooldown']
-        ).values_list('video_code', flat=True)
+            day__plan__user=self.user,
+            role__in=['warmup', 'main', 'endurance', 'cooldown']
+        ).values_list('video__code', flat=True)
         return set(used)
     
     def generate_playlist_for_day(self, day_number: int, workout: DailyWorkout) -> List[DailyPlaylistItem]:
@@ -75,7 +75,7 @@ class PlaylistGeneratorV2:
         opening = self._get_motivation_video('opening', day_number)
         if opening:
             playlist_items.append(self._create_playlist_item(
-                workout, position, opening, 'opening'
+                workout, position, opening, 'motivation'
             ))
             position += 1
         
@@ -91,7 +91,7 @@ class PlaylistGeneratorV2:
         warmup_mot = self._get_motivation_video('warmup', day_number)
         if warmup_mot:
             playlist_items.append(self._create_playlist_item(
-                workout, position, warmup_mot, 'warmup_motivation'
+                workout, position, warmup_mot, 'motivation'
             ))
             position += 1
         
@@ -107,7 +107,7 @@ class PlaylistGeneratorV2:
         main_mot = self._get_motivation_video('middle', day_number)
         if main_mot:
             playlist_items.append(self._create_playlist_item(
-                workout, position, main_mot, 'main_motivation'
+                workout, position, main_mot, 'motivation'
             ))
             position += 1
         
@@ -115,7 +115,7 @@ class PlaylistGeneratorV2:
         endurances = self._get_exercise_videos('endurance', 2)
         for video in endurances:
             playlist_items.append(self._create_playlist_item(
-                workout, position, video, 'endurance'
+                workout, position, video, 'main'
             ))
             position += 1
         
@@ -123,7 +123,7 @@ class PlaylistGeneratorV2:
         endurance_mot = self._get_motivation_video('endurance', day_number)
         if endurance_mot:
             playlist_items.append(self._create_playlist_item(
-                workout, position, endurance_mot, 'endurance_motivation'
+                workout, position, endurance_mot, 'motivation'
             ))
             position += 1
         
@@ -139,7 +139,7 @@ class PlaylistGeneratorV2:
         closing = self._get_motivation_video('closing', day_number)
         if closing:
             playlist_items.append(self._create_playlist_item(
-                workout, position, closing, 'closing'
+                workout, position, closing, 'motivation'
             ))
             position += 1
         
@@ -216,7 +216,7 @@ class PlaylistGeneratorV2:
         return video
     
     def _create_playlist_item(self, workout: DailyWorkout, order: int, 
-                             video: R2Video, video_type: str) -> DailyPlaylistItem:
+                             video: R2Video, role: str) -> DailyPlaylistItem:
         """
         Create and save playlist item
         
@@ -224,21 +224,21 @@ class PlaylistGeneratorV2:
             workout: DailyWorkout to attach to
             order: Position in playlist
             video: R2Video object
-            video_type: Type of video for tracking
+            role: Type of video for role field
             
         Returns:
             Created DailyPlaylistItem
         """
         return DailyPlaylistItem.objects.create(
-            workout=workout,
+            day=workout,
             order=order,
-            video_code=video.code,
-            video_type=video_type,
+            video=video,
+            role=role,
             duration_seconds=30,  # Default duration, можно обновить позже
-            metadata={
+            overlay={
                 'category': video.category,
                 'archetype': self.archetype,
-                'original_archetype': video.archetype
+                'original_archetype': getattr(video, 'archetype', '')
             }
         )
     
@@ -275,7 +275,7 @@ class PlaylistGeneratorV2:
                 )
                 
                 # Удаляем старые плейлисты если есть
-                DailyPlaylistItem.objects.filter(workout=workout).delete()
+                DailyPlaylistItem.objects.filter(day=workout).delete()
                 
                 # Генерируем новый плейлист
                 playlist = self.generate_playlist_for_day(day, workout)

@@ -5,7 +5,9 @@ Tests for v2 playlist builder
 import pytest
 
 from apps.workouts.models import CSVExercise, VideoClip
-from apps.workouts.services.playlist_v2 import _resolve_clip, build_playlist, get_daily_playlist
+# DEPRECATED: Old playlist system removed, replaced with PlaylistGeneratorV2
+# from apps.workouts.services.playlist_v2 import _resolve_clip, build_playlist, get_daily_playlist
+from apps.workouts.services import PlaylistGeneratorV2
 
 
 @pytest.fixture

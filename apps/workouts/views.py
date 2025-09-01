@@ -14,71 +14,83 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 
 
+from django.db import models
 from .models import CSVExercise, DailyWorkout, WeeklyNotification
 from .serializers import WeeklyNotificationSerializer
-from .video_services import VideoPlaylistBuilder
+# OLD SYSTEM REMOVED: VideoPlaylistBuilder replaced with PlaylistGeneratorV2
+# from .video_services import VideoPlaylistBuilder
 
 
 @login_required
 def daily_workout_view(request, workout_id):
-    """Display today's workout with video playlist"""
+    """Display today's workout with video playlist (NEW SYSTEM)"""
     workout = get_object_or_404(DailyWorkout, id=workout_id, plan__user=request.user)
     
     # Get user's archetype
-    archetype = request.user.profile.archetype_name
+    archetype = getattr(request.user.profile, 'archetype', 'mentor')
     if not archetype:
         messages.error(request, 'Пожалуйста, выберите архетип тренера в настройках')
         return redirect('users:profile_settings')
     
-    # Build video playlist
-    playlist_builder = VideoPlaylistBuilder(archetype=archetype)
-    video_playlist = playlist_builder.build_workout_playlist(workout, archetype)
+    # NEW SYSTEM: Use pre-generated playlist items from PlaylistGeneratorV2
+    playlist_items = workout.playlist_items.all().order_by('order')
     
-    # Get substitution options for each exercise (equipment checking removed)
-    substitutions = {}
-    
-    # Get detailed exercise information for display
+    # Convert playlist items to format expected by template
+    video_playlist = []
     exercise_details = {}
     
-    for exercise_data in workout.exercises:
-        exercise_slug = exercise_data.get('exercise_slug')
-        
-        # Get substitution alternatives
-        alternatives = playlist_builder.get_substitution_options(exercise_slug, [])
-        if alternatives:
-            substitutions[exercise_slug] = alternatives
-        
-        # Get detailed exercise info from database
+    if not playlist_items:
+        # Fallback: Generate playlist if it doesn't exist
         try:
-            exercise = CSVExercise.objects.get(id=exercise_slug)
-            exercise_details[exercise_slug] = {
-                'id': exercise.id,
-                'name_ru': exercise.name_ru,
-                'name_en': exercise.name_en,
-                'description': exercise.description,
-                'muscle_group': exercise.muscle_group,
-                'level': exercise.level,
-                'exercise_type': exercise.exercise_type,
-                'sets': exercise_data.get('sets'),
-                'reps': exercise_data.get('reps'),
-                'rest_seconds': exercise_data.get('rest_seconds'),
-                'duration_seconds': exercise_data.get('duration_seconds'),
+            from apps.workouts.services import PlaylistGeneratorV2
+            generator = PlaylistGeneratorV2(request.user, archetype)
+            playlist_items = generator.generate_playlist_for_day(workout.day_number, workout)
+        except Exception as e:
+            logger.error(f"Failed to generate playlist for workout {workout_id}: {e}")
+            playlist_items = []
+    
+    # Convert DailyPlaylistItem objects to template format
+    for item in playlist_items:
+        try:
+            # Get R2 URL for video (direct from R2Video model)
+            signed_url = item.video.r2_url
+            
+            # Create video entry in expected format
+            video_entry = {
+                'url': signed_url,
+                'title': _get_video_title(item),
+                'role': item.role,
+                'duration': item.duration_seconds or 30,
+                'video_code': item.video.code,
+                'order': item.order,
+                # Exercise-specific data for exercises
+                'sets': _get_sets_from_role(item.role),
+                'reps': _get_reps_from_role(item.role), 
+                'rest': _get_rest_from_role(item.role),
             }
-        except CSVExercise.DoesNotExist:
-            # Fallback for missing exercises
-            exercise_details[exercise_slug] = {
-                'id': exercise_slug,
-                'name_ru': exercise_slug.replace('_', ' ').replace('-', ' ').title(),
-                'name_en': '',
-                'description': 'Описание упражнения будет добавлено позже.',
-                'muscle_group': '',
-                'level': 'beginner',
-                'exercise_type': 'strength',
-                'sets': exercise_data.get('sets'),
-                'reps': exercise_data.get('reps'),
-                'rest_seconds': exercise_data.get('rest_seconds'),
-                'duration_seconds': exercise_data.get('duration_seconds'),
-            }
+            
+            video_playlist.append(video_entry)
+            
+            # Add exercise details for exercise videos
+            if item.role in ['warmup', 'main', 'cooldown']:
+                exercise_key = item.video.code
+                exercise_details[exercise_key] = {
+                    'id': exercise_key,
+                    'name_ru': _get_exercise_name(item.video.code),
+                    'name_en': '',
+                    'description': f'{item.role.title()} упражнение',
+                    'muscle_group': _get_muscle_group_from_code(item.video.code),
+                    'level': 'intermediate',
+                    'exercise_type': 'strength',
+                    'sets': _get_sets_from_role(item.role),
+                    'reps': _get_reps_from_role(item.role),
+                    'rest_seconds': _get_rest_from_role(item.role),
+                    'duration_seconds': item.duration_seconds or 30,
+                }
+                
+        except Exception as e:
+            logger.error(f"Error processing playlist item {item.id}: {e}")
+            continue
     
     # Check if workout is already started
     if not workout.started_at and not workout.is_rest_day:
@@ -89,11 +101,11 @@ def daily_workout_view(request, workout_id):
         'workout': workout,
         'video_playlist': video_playlist,
         'video_playlist_json': json.dumps(video_playlist),
-        'substitutions': substitutions,
+        'substitutions': {},  # TODO: Implement substitutions for new system
         'exercise_details': exercise_details,
         'exercise_details_json': json.dumps(exercise_details),
         'is_completed': workout.completed_at is not None,
-        'can_substitute': bool(substitutions)
+        'can_substitute': False  # TODO: Implement substitutions for new system
     }
     
     return render(request, 'workouts/daily_workout.html', context)
@@ -156,38 +168,11 @@ def substitute_exercise_view(request, workout_id):
         if not substitute_exercise.is_active:
             return JsonResponse({'error': 'Недопустимая замена'}, status=400)
         
-        # Update workout substitutions
-        substitutions = workout.substitutions or {}
-        substitutions[original_slug] = substitute_slug
-        workout.substitutions = substitutions
-        workout.save()
-        
-        # Rebuild playlist with substitution
-        user_archetype = request.user.profile.archetype_name_name or 'mentor'
-        playlist_builder = VideoPlaylistBuilder(archetype=user_archetype)
-        
-        # Update exercise in workout data
-        updated_exercises = []
-        for exercise_data in workout.exercises:
-            if exercise_data.get('exercise_slug') == original_slug:
-                exercise_data['exercise_slug'] = substitute_slug
-                exercise_data['exercise_name'] = substitute_exercise.name
-            updated_exercises.append(exercise_data)
-        
-        workout.exercises = updated_exercises
-        workout.save()
-        
-        # Build new playlist
-        video_playlist = playlist_builder.build_workout_playlist(
-            workout, 
-            request.user.profile.archetype
-        )
-        
+        # TODO: Implement substitution for new playlist system
+        # For now, return error as substitution is not yet implemented for new system
         return JsonResponse({
-            'success': True,
-            'video_playlist': video_playlist,
-            'message': f'Упражнение заменено: {original_exercise.name} → {substitute_exercise.name}'
-        })
+            'error': 'Замена упражнений временно недоступна. Функция будет добавлена в следующем обновлении.'
+        }, status=501)  # 501 Not Implemented
         
     except CSVExercise.DoesNotExist:
         return JsonResponse({'error': 'Упражнение не найдено'}, status=404)
@@ -480,3 +465,108 @@ def workout_day(request, day_id):
         "playlist": playlist,
         "exercises": exercises,  # Добавлено для совместимости с шаблоном
     })
+
+
+# Helper functions for new playlist system
+def _get_video_title(playlist_item):
+    """Generate human-readable title for video"""
+    role = playlist_item.role
+    video_code = playlist_item.video.code
+    
+    if role == 'motivation':
+        if 'opening' in video_code or 'intro' in video_code:
+            return "Вступление"
+        elif 'closing' in video_code:
+            return "Заключение"
+        elif 'main' in video_code:
+            return "Мотивация"
+        else:
+            return "Мотивационное видео"
+    elif role == 'warmup':
+        return f"Разминка: {_get_exercise_name(video_code)}"
+    elif role == 'main':
+        return f"Упражнение: {_get_exercise_name(video_code)}"
+    elif role == 'cooldown':
+        return f"Заминка: {_get_exercise_name(video_code)}"
+    else:
+        return video_code.replace('_', ' ').title()
+
+
+def _get_exercise_name(video_code):
+    """Extract exercise name from video code"""
+    # Try to get from CSVExercise database first
+    try:
+        from apps.workouts.models import CSVExercise
+        # Extract exercise slug from video code (e.g., 'main_042_technique_m01' -> find exercise with similar name)
+        parts = video_code.split('_')
+        if len(parts) >= 2 and parts[0] in ['warmup', 'main', 'endurance', 'relaxation']:
+            exercise_num = parts[1]
+            # Try to find exercise by partial match
+            exercise = CSVExercise.objects.filter(
+                models.Q(name_ru__icontains=exercise_num) |
+                models.Q(id__icontains=exercise_num)
+            ).first()
+            if exercise:
+                return exercise.name_ru
+    except:
+        pass
+    
+    # Fallback: clean up video code
+    clean_name = video_code.replace('_technique_m01', '').replace('_', ' ')
+    return clean_name.title()
+
+
+def _get_muscle_group_from_code(video_code):
+    """Extract muscle group from video code"""
+    code_lower = video_code.lower()
+    
+    if any(term in code_lower for term in ['push', 'chest', 'bench']):
+        return 'Грудь'
+    elif any(term in code_lower for term in ['pull', 'back', 'row']):
+        return 'Спина' 
+    elif any(term in code_lower for term in ['squat', 'leg', 'quad']):
+        return 'Ноги'
+    elif any(term in code_lower for term in ['shoulder', 'press']):
+        return 'Плечи'
+    elif any(term in code_lower for term in ['arm', 'bicep', 'tricep']):
+        return 'Руки'
+    elif any(term in code_lower for term in ['core', 'abs', 'plank']):
+        return 'Корпус'
+    else:
+        return 'Общие'
+
+
+def _get_sets_from_role(role):
+    """Get typical sets count for exercise role"""
+    if role == 'warmup':
+        return 1
+    elif role == 'main':
+        return 3
+    elif role == 'cooldown':
+        return 1
+    else:
+        return None
+
+
+def _get_reps_from_role(role):
+    """Get typical reps count for exercise role"""
+    if role == 'warmup':
+        return 10
+    elif role == 'main':
+        return 12
+    elif role == 'cooldown':
+        return 8
+    else:
+        return None
+
+
+def _get_rest_from_role(role):
+    """Get typical rest time for exercise role"""
+    if role == 'warmup':
+        return 30
+    elif role == 'main':
+        return 90
+    elif role == 'cooldown':
+        return 30
+    else:
+        return 0
