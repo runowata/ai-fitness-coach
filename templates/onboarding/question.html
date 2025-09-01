@@ -1853,7 +1853,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Use image if available, otherwise fallback to gradient
         const backgroundStyle = card.image_url ? 
-            `background-image: url('${card.image_url}'); background: url('${card.image_url}') center/cover no-repeat;` : 
+            `background: url('${card.image_url}') center/cover no-repeat;` : 
             `background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(78, 205, 196, 0.9) 50%, rgba(255, 107, 107, 0.9) 100%);`;
         
         const cardHtml = `

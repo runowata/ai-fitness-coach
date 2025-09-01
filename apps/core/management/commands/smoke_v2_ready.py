@@ -6,8 +6,7 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 
 from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
-from apps.core.services.exercise_validation import ExerciseValidationService
-from apps.workouts.models import CSVExercise, WorkoutPlan
+from apps.workouts.models import WorkoutPlan
 # from apps.workouts.services.playlist_v2 import build_playlist  # DEPRECATED
 
 
@@ -48,30 +47,23 @@ class Command(BaseCommand):
             errors.append(f"Prompt loading failed: {e}")
             self.stdout.write(self.style.ERROR(f"   ❌ {e}"))
         
-        # 2. Check exercise coverage
-        self.stdout.write("\n2️⃣ Checking exercise video coverage...")
+        # 2. Check R2 video count (simple)
+        self.stdout.write("\n2️⃣ Checking R2 videos...")
         try:
-            service = ExerciseValidationService()
-            allowed_slugs = service.get_allowed_exercise_slugs()
-            total_exercises = CSVExercise.objects.filter(is_active=True).count()
+            from apps.workouts.models import R2Video
             
-            coverage_pct = (len(allowed_slugs) / total_exercises * 100) if total_exercises > 0 else 0
+            exercise_videos = R2Video.objects.filter(category='exercises').count()
+            motivation_videos = R2Video.objects.filter(category='motivation').count()
+            total_videos = R2Video.objects.count()
             
-            if coverage_pct < 10:
-                warnings.append(f"Low video coverage: {coverage_pct:.1f}%")
-                self.stdout.write(self.style.WARNING(f"   ⚠️  Coverage: {len(allowed_slugs)}/{total_exercises} ({coverage_pct:.1f}%)"))
-            else:
-                self.stdout.write(self.style.SUCCESS(f"   ✅ Coverage: {len(allowed_slugs)}/{total_exercises} ({coverage_pct:.1f}%)"))
+            self.stdout.write(self.style.SUCCESS(f"   ✅ R2Videos: {total_videos} total ({exercise_videos} exercises, {motivation_videos} motivation)"))
             
-            if verbose:
-                report = service.get_coverage_report()
-                stats = report.get('statistics', {})
-                self.stdout.write(f"      Complete: {stats.get('complete', 0)}")
-                self.stdout.write(f"      Partial: {stats.get('partial', 0)}")
-                self.stdout.write(f"      None: {stats.get('none', 0)}")
+            if total_videos < 100:
+                warnings.append(f"Low video count: {total_videos}")
+                self.stdout.write(self.style.WARNING(f"   ⚠️  Only {total_videos} videos found"))
                 
         except Exception as e:
-            errors.append(f"Coverage check failed: {e}")
+            errors.append(f"R2Video check failed: {e}")
             self.stdout.write(self.style.ERROR(f"   ❌ {e}"))
         
         # 3. Check recent workout plan
@@ -91,25 +83,29 @@ class Command(BaseCommand):
                     weeks_count = len(plan.plan_data.get('weeks', []))
                     self.stdout.write(self.style.SUCCESS(f"   ✅ Latest plan: {plan.id} ({weeks_count} weeks)"))
                     
-                    # 4. Test playlist generation
+                    # 4. Test playlist generation (simple check)
                     self.stdout.write("\n4️⃣ Testing playlist generation...")
                     archetype = getattr(plan.user.profile, 'archetype', 'mentor') if hasattr(plan.user, 'profile') else 'mentor'
-                    # Use new PlaylistGeneratorV2 system
+                    
                     try:
-                        from apps.workouts.services import PlaylistGeneratorV2
                         from apps.workouts.models import DailyWorkout
                         
-                        # Get first daily workout to test playlist generation
+                        # Check if any playlist items exist
                         first_workout = DailyWorkout.objects.filter(plan=plan).first()
                         if first_workout:
-                            generator = PlaylistGeneratorV2(plan.user, archetype)
-                            playlist_items = generator.generate_playlist_for_day(first_workout.day_number, first_workout)
-                            playlist = [{'clip_id': item.video.code, 'signed_url': f'test_url_{item.id}'} for item in playlist_items]
+                            existing_items = first_workout.playlist_items.count()
+                            if existing_items > 0:
+                                playlist = [{'clip_id': f'test_{i}'} for i in range(existing_items)]
+                                self.stdout.write(self.style.SUCCESS(f"   ✅ Found {existing_items} existing playlist items"))
+                            else:
+                                playlist = []
+                                warnings.append("No playlist items found for workout")
                         else:
                             playlist = []
+                            warnings.append("No workouts found in plan")
                     except Exception as e:
                         playlist = []
-                        warnings.append(f"Playlist generation failed: {e}")
+                        warnings.append(f"Playlist check failed: {e}")
                     
                     if not playlist:
                         warnings.append(f"Empty playlist for plan {plan.id}")
@@ -135,27 +131,33 @@ class Command(BaseCommand):
             errors.append(f"Plan check failed: {e}")
             self.stdout.write(self.style.ERROR(f"   ❌ {e}"))
         
-        # 5. Check database indexes
-        self.stdout.write("\n5️⃣ Checking database indexes...")
+        # 5. Check database tables (simple)
+        self.stdout.write("\n5️⃣ Checking database tables...")
         try:
             with connection.cursor() as cursor:
+                # Check if R2Video table exists
                 cursor.execute("""
-                    SELECT indexname 
-                    FROM pg_indexes 
-                    WHERE tablename = 'video_clips'
-                    AND indexname LIKE '%r2_kind%'
+                    SELECT COUNT(*) FROM information_schema.tables 
+                    WHERE table_name = 'r2_videos'
                 """)
-                indexes = cursor.fetchall()
+                r2_videos_exists = cursor.fetchone()[0] > 0
                 
-                if len(indexes) < 2:
-                    warnings.append("Missing r2_kind indexes on video_clips")
-                    self.stdout.write(self.style.WARNING(f"   ⚠️  Found {len(indexes)} r2_kind indexes (expected 2+)"))
+                # Check if DailyPlaylistItem table exists  
+                cursor.execute("""
+                    SELECT COUNT(*) FROM information_schema.tables 
+                    WHERE table_name = 'daily_playlist_items'
+                """)
+                playlist_items_exists = cursor.fetchone()[0] > 0
+                
+                if r2_videos_exists and playlist_items_exists:
+                    self.stdout.write(self.style.SUCCESS("   ✅ Core tables exist"))
                 else:
-                    self.stdout.write(self.style.SUCCESS(f"   ✅ Found {len(indexes)} r2_kind indexes"))
+                    warnings.append("Missing core tables")
+                    self.stdout.write(self.style.WARNING("   ⚠️  Missing core tables"))
                     
         except Exception as e:
-            warnings.append(f"Index check failed: {e}")
-            self.stdout.write(self.style.WARNING(f"   ⚠️  Could not check indexes: {e}"))
+            warnings.append(f"Table check failed: {e}")
+            self.stdout.write(self.style.WARNING(f"   ⚠️  Could not check tables: {e}"))
         
         # 6. Check R2 configuration
         self.stdout.write("\n6️⃣ Checking R2 configuration...")

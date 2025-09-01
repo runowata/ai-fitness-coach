@@ -59,8 +59,7 @@ class ExerciseValidationService:
             # Exercises are universal - archetype affects only motivational videos
             query = ExerciseValidationService.get_clips_with_video().filter(
                 r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
-                exercise__is_active=True
-            )
+            ).exclude(exercise__isnull=True)
             
             # Apply locale filter if specified (future: when locale field exists)
             # if locale:
@@ -111,7 +110,7 @@ class ExerciseValidationService:
             exercises_data = []
             stats = {'complete': 0, 'partial': 0, 'none': 0}
             
-            for exercise in CSVExercise.objects.filter(is_active=True):
+            for exercise in CSVExercise.objects.all():
                 # Get available video kinds for this exercise using provider-aware logic
                 available_clips = ExerciseValidationService.get_clips_with_video().filter(
                     exercise=exercise,

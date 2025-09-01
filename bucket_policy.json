@@ -6,7 +6,12 @@
       "Effect": "Allow",
       "Principal": "*",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::ai-fitness-media/photos/progress/*"
+      "Resource": [
+        "arn:aws:s3:::ai-fitness-media/photos/quotes/*",
+        "arn:aws:s3:::ai-fitness-media/photos/progress/*",
+        "arn:aws:s3:::ai-fitness-media/photos/workout/*",
+        "arn:aws:s3:::ai-fitness-media/images/avatars/*"
+      ]
     }
   ]
 }
