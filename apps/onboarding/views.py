@@ -1047,7 +1047,6 @@ def create_demo_plan_for_user(user):
         # Используем реальные упражнения из базы данных
         # Берем простые упражнения для демо (ограничиваемся имеющимися)
         available_exercises = CSVExercise.objects.filter(
-            is_active=True,
             level__in=['beginner', 'intermediate']
         )[:10]  # Первые 10 доступных упражнений
     
@@ -1065,10 +1064,7 @@ def create_demo_plan_for_user(user):
                 defaults={
                     "name_ru": ex_data["name_ru"],
                     "level": ex_data["level"],
-                    "is_active": True,
                     "description": f"Демо упражнение: {ex_data['name_ru']}",
-                    "muscle_group": "Все тело",
-                    "exercise_type": "strength"
                 }
                 )
                 exercises.append(ex)
