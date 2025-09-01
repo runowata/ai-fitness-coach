@@ -41,14 +41,18 @@
                             <!-- Trainer Avatar with glow effect -->
                             <div class="trainer-avatar-container">
                                 <div class="avatar-glow"></div>
-                                {% if motivational_card.image_url %}
-                                    <img src="{{ motivational_card.image_url }}" 
+                                {% if motivational_card.path %}
+                                    {% if 'http' in motivational_card.path %}
+                                        <img src="{{ motivational_card.path }}" 
+                                    {% else %}
+                                        <img src="https://pub-9b30caf23edc4d0b8509a7fb15c2bd5a.r2.dev/{{ motivational_card.path }}" 
+                                    {% endif %}
                                          alt="Тренер" 
                                          class="trainer-avatar"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 {% endif %}
                                 <!-- Always include fallback, show if image fails or is empty -->
-                                <div class="trainer-avatar-fallback" style="{% if motivational_card.image_url %}display: none;{% endif %}">
+                                <div class="trainer-avatar-fallback" style="{% if motivational_card.path %}display: none;{% endif %}">
                                     <span class="fallback-text">💪</span>
                                 </div>
                             </div>
@@ -58,12 +62,6 @@
                                 <h2 class="motivation-title">{{ motivational_card.title }}</h2>
                                 <p class="motivation-message">{{ motivational_card.message }}</p>
                                 
-                                <!-- Debug info (remove after fixing) -->
-                                {% comment %}
-                                <div style="font-size: 10px; color: #666; margin-top: 10px; opacity: 0.7;">
-                                    Debug: image_url = "{{ motivational_card.image_url }}"
-                                </div>
-                                {% endcomment %}
                             </div>
                             
                             <!-- Action Button -->

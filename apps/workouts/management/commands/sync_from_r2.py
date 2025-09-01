@@ -144,7 +144,8 @@ class Command(BaseCommand):
         
         # Разделяем видео и изображения
         video_files = [f for f in files if f.key.startswith('videos/')]
-        image_files = [f for f in files if f.key.startswith('images/')]
+        # Ищем изображения в images/ и photos/
+        image_files = [f for f in files if f.key.startswith('images/') or f.key.startswith('photos/')]
         
         self.stdout.write(f"   Видео файлов: {len(video_files)}")
         self.stdout.write(f"   Изображений: {len(image_files)}")
