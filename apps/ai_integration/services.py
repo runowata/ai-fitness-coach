@@ -516,10 +516,9 @@ class WorkoutPlanGenerator:
             # Get exercises that have video coverage from database
             from apps.workouts.models import CSVExercise
             try:
-                # Get all exercises with video clips (using proper codes from CSV)
+                # Get all available exercises from CSV (no direct video link in current architecture)
                 video_exercises = set(
-                    CSVExercise.objects.filter(video_clips__isnull=False)
-                    .distinct()
+                    CSVExercise.objects.all()
                     .values_list('id', flat=True)
                 )
                 
@@ -725,7 +724,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
 """
         return reprompt
 
-    def adapt_weekly_plan(self, current_plan: Dict, user_feedback: List[Dict], week_number: int, user_archetype: str = 'bro') -> Dict:
+    def adapt_weekly_plan(self, current_plan: Dict, user_feedback: List[Dict], week_number: int, user_archetype: str = 'mentor') -> Dict:
         """Adapt the plan for the upcoming week based on user feedback"""
         adaptation_prompt = self._build_adaptation_prompt(current_plan, user_feedback, week_number, user_archetype)
         
@@ -818,10 +817,24 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         """
         return prompt
     
-    def _get_system_prompt(self, archetype: str = 'bro') -> str:
+    def _get_system_prompt(self, archetype: str = 'mentor') -> str:
         """Get system prompt based on trainer archetype"""
         
         archetype_prompts = {
+            # Standard archetype names
+            'mentor': """You are a scientifically-minded fitness coach who applies evidence-based 
+            principles to training. You explain the 'why' behind exercises using research and data. 
+            Your approach is methodical, educational, and backed by sports science.""",
+            
+            'professional': """You are a disciplined military-style fitness instructor who emphasizes structure, 
+            discipline, and clear commands. You push for excellence while maintaining respect. Use direct, 
+            precise language and focus on building mental toughness alongside physical strength.""",
+            
+            'peer': """You are a friendly, supportive fitness coach who speaks in a casual, encouraging way. 
+            You're like a workout buddy who motivates with positivity and enthusiasm. Use simple language, 
+            celebrate progress, and make fitness fun. Always be encouraging and approachable.""",
+            
+            # Legacy compatibility
             'bro': """You are a friendly, supportive fitness coach who speaks in a casual, encouraging way. 
             You're like a workout buddy who motivates with positivity and enthusiasm. Use simple language, 
             celebrate progress, and make fitness fun. Always be encouraging and approachable.""",
@@ -840,14 +853,28 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         Your plans are progressive, safe, and engaging. Always include appropriate rest days and 
         confidence-building tasks that help users feel more comfortable in their bodies and social situations."""
         
-        archetype_specific = archetype_prompts.get(archetype, archetype_prompts['bro'])
+        archetype_specific = archetype_prompts.get(archetype, archetype_prompts.get('peer', archetype_prompts.get('bro', '')))
         
         return f"{base_prompt}\n\nYour coaching style: {archetype_specific}"
     
-    def _get_adaptation_system_prompt(self, archetype: str = 'bro') -> str:
+    def _get_adaptation_system_prompt(self, archetype: str = 'mentor') -> str:
         """Get adaptation system prompt based on trainer archetype"""
         
         archetype_prompts = {
+            # Standard archetype names
+            'mentor': """You are a scientifically-minded fitness coach analyzing training data. 
+            You make evidence-based adjustments using sports science principles. Focus on explaining 
+            the rationale behind changes with research-backed reasoning. Use methodical, educational language.""",
+            
+            'professional': """You are a disciplined military fitness instructor reviewing a soldier's performance. 
+            You maintain high standards while being fair and strategic. Make tactical adjustments based on 
+            performance data to ensure optimal training progression. Use direct, precise language.""",
+            
+            'peer': """You are a friendly, supportive fitness coach reviewing your buddy's progress. 
+            You speak in a casual, encouraging way and focus on keeping workouts fun and engaging. 
+            Make adjustments that maintain motivation while respecting their limits. Use simple, friendly language.""",
+            
+            # Legacy compatibility
             'bro': """You are a friendly, supportive fitness coach reviewing your buddy's progress. 
             You speak in a casual, encouraging way and focus on keeping workouts fun and engaging. 
             Make adjustments that maintain motivation while respecting their limits. Use simple, friendly language.""",
@@ -865,7 +892,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         Based on their feedback, you will suggest minor modifications to maintain optimal challenge and engagement. 
         Only suggest changes that improve the experience without completely restructuring the plan."""
         
-        archetype_specific = archetype_prompts.get(archetype, archetype_prompts['bro'])
+        archetype_specific = archetype_prompts.get(archetype, archetype_prompts.get('peer', archetype_prompts.get('bro', '')))
         
         return f"{base_prompt}\n\nYour coaching style: {archetype_specific}"
     
@@ -958,7 +985,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         return cleaned_plan
     
     
-    def _build_adaptation_prompt(self, current_plan: Dict, user_feedback: List[Dict], week_number: int, user_archetype: str = 'bro') -> str:
+    def _build_adaptation_prompt(self, current_plan: Dict, user_feedback: List[Dict], week_number: int, user_archetype: str = 'mentor') -> str:
         """Build prompt for weekly adaptation based on archetype"""
         self._summarize_feedback(user_feedback)
         
@@ -1144,7 +1171,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
                         days[last_workout_idx]['exercises'] = []
                         days[last_workout_idx]['workout_name'] = 'День отдыха'
     
-    def generate_evolved_plan(self, user, evolution_context: Dict, archetype: str = 'bro') -> Dict:
+    def generate_evolved_plan(self, user, evolution_context: Dict, archetype: str = 'mentor') -> Dict:
         """Generate an evolved workout plan for a new 6-week cycle"""
         evolution_prompt = self._build_evolution_prompt(user, evolution_context, archetype)
         
@@ -1269,10 +1296,24 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         
         return ', '.join(list(exercises)[:8])  # Top 8 exercises
     
-    def _get_evolution_system_prompt(self, archetype: str = 'bro') -> str:
+    def _get_evolution_system_prompt(self, archetype: str = 'mentor') -> str:
         """Get system prompt for evolved plan generation"""
         
         archetype_prompts = {
+            # Standard archetype names
+            'mentor': """Ты ученый-тренер, который анализирует данные первого цикла для создания оптимального 
+            второго этапа. Используй принципы прогрессивной перегрузки и адаптации на основе собранной статистики. 
+            Объясняй логику изменений.""",
+            
+            'professional': """Ты военный инструктор, который видит что новобранец готов к продвинутой подготовке. 
+            Время перейти от базовых упражнений к серьезному тренингу. Будь требовательным но справедливым, 
+            создавай программы которые формируют характер.""",
+            
+            'peer': """Ты дружелюбный фитнес-тренер, который помогает своему бро перейти на следующий уровень! 
+            Ты видишь его прогресс и готов бросить ему новые вызовы. Говори просто и мотивирующе, 
+            как лучший друг который хочет видеть результаты.""",
+            
+            # Legacy compatibility  
             'bro': """Ты дружелюбный фитнес-тренер, который помогает своему бро перейти на следующий уровень! 
             Ты видишь его прогресс и готов бросить ему новые вызовы. Говори просто и мотивирующе, 
             как лучший друг который хочет видеть результаты.""",
@@ -1290,7 +1331,7 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         Твоя задача - прогрессивно развить программу, учитывая успехи и предпочтения пользователя. 
         Новый план должен быть сложнее, но достижимым. Включи элементы которые понравились, адаптируй сложности."""
         
-        archetype_specific = archetype_prompts.get(archetype, archetype_prompts['bro'])
+        archetype_specific = archetype_prompts.get(archetype, archetype_prompts.get('peer', archetype_prompts.get('bro', '')))
         
         return f"{base_prompt}\n\nТвой стиль: {archetype_specific}"
     

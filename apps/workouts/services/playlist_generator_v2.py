@@ -40,13 +40,20 @@ class PlaylistGeneratorV2:
         self.used_exercises = self._get_used_exercises()
         
     def _normalize_archetype(self, archetype: str) -> str:
-        """Normalize archetype names to match video naming"""
-        mapping = {
-            'mentor': 'intellectual',  # в видео используется intellectual
-            'professional': 'sergeant',  # в видео используется sergeant
-            'peer': 'bro',  # в видео используется bro
-        }
-        return mapping.get(archetype, 'bro')
+        """Convert NEW archetype names to OLD R2 file names"""
+        # R2 files use OLD names: bro, sergeant, intellectual
+        # Convert NEW names to match R2 files
+        if archetype in ['peer', 'friend']:
+            return 'bro'  # peer → bro (R2 files)
+        elif archetype in ['professional', 'coach']:
+            return 'sergeant'  # professional → sergeant (R2 files)
+        elif archetype in ['mentor', 'wise']:
+            return 'intellectual'  # mentor → intellectual (R2 files)
+        # Handle legacy cases
+        elif archetype in ['bro', 'sergeant', 'intellectual']:
+            return archetype  # Already correct R2 names
+        else:
+            return 'intellectual'  # Default fallback to match R2
     
     def _get_used_exercises(self) -> set:
         """Get list of exercises already used by this user"""
@@ -71,8 +78,8 @@ class PlaylistGeneratorV2:
         playlist_items = []
         position = 0
         
-        # 1. Opening video
-        opening = self._get_motivation_video('opening', day_number)
+        # 1. Opening video (use 'intro' in R2)
+        opening = self._get_motivation_video('intro', day_number)
         if opening:
             playlist_items.append(self._create_playlist_item(
                 workout, position, opening, 'motivation'
@@ -88,7 +95,7 @@ class PlaylistGeneratorV2:
             position += 1
         
         # 4. Warmup motivation
-        warmup_mot = self._get_motivation_video('warmup', day_number)
+        warmup_mot = self._get_motivation_video('warmup_motivation', day_number)
         if warmup_mot:
             playlist_items.append(self._create_playlist_item(
                 workout, position, warmup_mot, 'motivation'
@@ -103,8 +110,8 @@ class PlaylistGeneratorV2:
             ))
             position += 1
         
-        # 10. Main motivation
-        main_mot = self._get_motivation_video('middle', day_number)
+        # 10. Main motivation  
+        main_mot = self._get_motivation_video('main_motivation', day_number)
         if main_mot:
             playlist_items.append(self._create_playlist_item(
                 workout, position, main_mot, 'motivation'
@@ -119,8 +126,8 @@ class PlaylistGeneratorV2:
             ))
             position += 1
         
-        # 13. Endurance motivation
-        endurance_mot = self._get_motivation_video('endurance', day_number)
+        # 13. Endurance motivation (use main_motivation)
+        endurance_mot = self._get_motivation_video('main_motivation', day_number)
         if endurance_mot:
             playlist_items.append(self._create_playlist_item(
                 workout, position, endurance_mot, 'motivation'
@@ -185,28 +192,37 @@ class PlaylistGeneratorV2:
         Get motivation video for specific type and day
         
         Args:
-            video_type: 'opening', 'warmup', 'middle', 'endurance', 'closing'
+            video_type: 'intro', 'warmup_motivation', 'main_motivation', 'closing'
             day_number: Day number (1-21)
             
         Returns:
             R2Video object or None
         """
-        # Ищем видео с нужным типом и архетипом
-        pattern = f"{video_type}_{self.archetype}_day{day_number:02d}"
+        # R2 motivation videos have patterns like: intro_bro_day01, warmup_motivation_bro_day01
+        if video_type == 'warmup_motivation' or video_type == 'main_motivation':
+            pattern = f"{video_type}_{self.archetype}_day{day_number:02d}"
+        else:  # intro, closing
+            pattern = f"{video_type}_{self.archetype}_day{day_number:02d}"
         
         video = R2Video.objects.filter(
             category='motivation',
-            code__icontains=pattern
+            code=pattern
         ).first()
         
-        # Если нет для конкретного дня, берем любое этого типа
+        # If not found for specific day, try without day
         if not video:
-            video = R2Video.objects.filter(
-                category='motivation',
-                code__icontains=f"{video_type}_{self.archetype}"
-            ).order_by('?').first()
+            if video_type == 'warmup_motivation' or video_type == 'main_motivation':
+                video = R2Video.objects.filter(
+                    category='motivation',
+                    code__startswith=f"{video_type}_{self.archetype}_"
+                ).order_by('?').first()
+            else:
+                video = R2Video.objects.filter(
+                    category='motivation',
+                    code__startswith=f"{video_type}_{self.archetype}_"
+                ).order_by('?').first()
         
-        # Если все еще нет, берем любое мотивационное для архетипа
+        # Final fallback: any motivation video for this archetype
         if not video:
             video = R2Video.objects.filter(
                 category='motivation',
@@ -232,7 +248,7 @@ class PlaylistGeneratorV2:
         return DailyPlaylistItem.objects.create(
             day=workout,
             order=order,
-            video=video,
+            video=video,  # ForeignKey to R2Video
             role=role,
             duration_seconds=30,  # Default duration, можно обновить позже
             overlay={

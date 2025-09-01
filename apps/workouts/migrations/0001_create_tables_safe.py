@@ -33,7 +33,9 @@ class Migration(migrations.Migration):
                 day_id INTEGER NOT NULL,
                 "order" INTEGER NOT NULL,
                 role VARCHAR(20) NOT NULL,
-                video_code VARCHAR(150) NOT NULL REFERENCES r2_videos(code),
+                -- NOTE: This migration defines video_code but actual DB has video_id (ForeignKey)
+                -- Since table exists, this IF NOT EXISTS won't run - actual schema is correct
+                video_id VARCHAR(150) NOT NULL REFERENCES r2_videos(code),
                 duration_seconds INTEGER,
                 overlay JSONB DEFAULT '{}'::jsonb,
                 UNIQUE (day_id, "order")

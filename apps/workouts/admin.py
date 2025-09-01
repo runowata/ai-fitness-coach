@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import CSVExercise, DailyWorkout, R2Video, R2Image, WorkoutPlan
-from .video_storage import get_storage
 
 
 # ExerciseAdmin REMOVED in Phase 5.6 - Exercise model deleted

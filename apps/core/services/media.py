@@ -224,16 +224,21 @@ class MediaService:
             aliases = {}
         
         if to_new:
-            # Map old to new (bro -> peer)
-            return aliases.get(archetype, archetype)
-        else:
-            # Map new to old (peer -> bro) - for backward compatibility
-            reverse_map = {
-                'peer': 'bro',
-                'professional': 'sergeant',
-                'mentor': 'intellectual'
+            # Map old to new (intellectual -> mentor, sergeant -> professional, bro -> peer)
+            old_to_new = {
+                'intellectual': 'mentor',
+                'sergeant': 'professional', 
+                'bro': 'peer'
             }
-            return reverse_map.get(archetype, archetype)
+            return old_to_new.get(archetype, archetype)
+        else:
+            # Map new to old for video file compatibility
+            new_to_old = {
+                'mentor': 'intellectual',
+                'professional': 'sergeant',
+                'peer': 'bro'
+            }
+            return new_to_old.get(archetype, archetype)
     
     @staticmethod
     def get_media_path(category: str, filename: str, archetype: str = None) -> str:

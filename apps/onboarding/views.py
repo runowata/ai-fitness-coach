@@ -757,21 +757,21 @@ def plan_confirmation(request, plan_id=None):
                 if not day.get('is_rest_day'):
                     total_exercises += len(day.get('exercises', []))
     else:
-        # Handle different archetype structures (new structure)
-        if archetype == 'bro':
-            # Bro uses cycles with daily_workouts
+        # Handle different archetype structures (standardized names)
+        if archetype == 'peer':  # was 'bro'
+            # Peer uses cycles with daily_workouts
             for cycle in plan_details.get('cycles', []):
                 for workout in cycle.get('daily_workouts', []):
                     if not workout.get('is_rest_day'):
                         total_exercises += len(workout.get('exercises', []))
-        elif archetype == 'sergeant':
-            # Sergeant uses phases with daily_operations
+        elif archetype == 'professional':  # was 'sergeant'
+            # Professional uses phases with daily_operations
             for phase in plan_details.get('phases', []):
                 for operation in phase.get('daily_operations', []):
                     if not operation.get('is_rest_day'):
                         total_exercises += len(operation.get('exercises', []))
-        elif archetype == 'intellectual':
-            # Intellectual uses phases with training_sessions
+        elif archetype == 'mentor':  # was 'intellectual'
+            # Mentor uses phases with training_sessions
             for phase in plan_details.get('phases', []):
                 for session in phase.get('training_sessions', []):
                     if not session.get('is_rest_day'):
@@ -1058,7 +1058,6 @@ def create_demo_plan_for_user(user):
         user=user,
         name="Демо-план на 1 неделю",
         duration_weeks=1,  # Исправлено: демо план на 1 неделю
-        goal="fitness",  # Временное поле для БД
         plan_data={"demo": True, "exercises_count": len(exercises)},
         status="CONFIRMED",
     )

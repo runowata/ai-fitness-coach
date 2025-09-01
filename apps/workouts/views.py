@@ -52,8 +52,13 @@ def daily_workout_view(request, workout_id):
     # Convert DailyPlaylistItem objects to template format
     for item in playlist_items:
         try:
-            # Get R2 URL for video (direct from R2Video model)
-            signed_url = item.video.r2_url
+            # Get R2Video object via ForeignKey
+            video = item.video
+            if not video:
+                continue  # Skip if video not found
+                
+            # Get R2 URL for video 
+            signed_url = video.r2_url
             
             # Create video entry in expected format
             video_entry = {
@@ -61,7 +66,7 @@ def daily_workout_view(request, workout_id):
                 'title': _get_video_title(item),
                 'role': item.role,
                 'duration': item.duration_seconds or 30,
-                'video_code': item.video.code,
+                'video_code': video.code,  # Get code from video object
                 'order': item.order,
                 # Exercise-specific data for exercises
                 'sets': _get_sets_from_role(item.role),
@@ -73,13 +78,13 @@ def daily_workout_view(request, workout_id):
             
             # Add exercise details for exercise videos
             if item.role in ['warmup', 'main', 'cooldown']:
-                exercise_key = item.video.code
+                exercise_key = video.code
                 exercise_details[exercise_key] = {
                     'id': exercise_key,
-                    'name_ru': _get_exercise_name(item.video.code),
+                    'name_ru': _get_exercise_name(video.code),
                     'name_en': '',
                     'description': f'{item.role.title()} упражнение',
-                    'muscle_group': _get_muscle_group_from_code(item.video.code),
+                    'muscle_group': _get_muscle_group_from_code(video.code),
                     'level': 'intermediate',
                     'exercise_type': 'strength',
                     'sets': _get_sets_from_role(item.role),
