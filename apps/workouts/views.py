@@ -459,8 +459,8 @@ def workout_day(request, day_id):
     from apps.workouts.models import DailyWorkout
     day = get_object_or_404(DailyWorkout, pk=day_id, plan__user=request.user)
 
-    # ВАЖНО: берём позиции плейлиста, вместе с MediaAsset
-    playlist = day.playlist_items.select_related("media").order_by("order")
+    # ВАЖНО: берём позиции плейлиста, вместе с R2Video
+    playlist = day.playlist_items.select_related("video").order_by("order")
     
     # Для совместимости с шаблоном добавляем переменную exercises
     exercises = day.exercises if day.exercises else []

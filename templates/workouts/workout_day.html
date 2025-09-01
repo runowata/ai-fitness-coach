@@ -36,11 +36,11 @@
                       <small class="text-muted">#{{ it.order }}</small>
                     </div>
 
-                    <h6 class="mt-2 mb-2">{{ it.media.file_name }}</h6>
+                    <h6 class="mt-2 mb-2">{{ it.video.name }}</h6>
 
                     <video controls preload="none" class="w-100 rounded-3">
                       <source
-                        src="{% url 'content:media_proxy' key=it.media.file_url|extract_r2_key %}"
+                        src="{{ it.video.r2_url }}"
                         type="video/mp4" />
                       Ваш браузер не поддерживает воспроизведение видео.
                     </video>
