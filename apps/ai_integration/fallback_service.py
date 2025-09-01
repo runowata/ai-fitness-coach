@@ -118,11 +118,7 @@ class FallbackService:
         
         # Use actual CSVExercise IDs from the database
         try:
-            available_exercises = CSVExercise.objects.filter(
-                is_active=True,
-                level='beginner',
-                exercise_type__in=['strength', 'cardio']
-            ).order_by('id')[:4].values_list('id', flat=True)
+            available_exercises = CSVExercise.objects.all().order_by('id')[:4].values_list('id', flat=True)
             
             emergency_exercises = []
             for i, ex_id in enumerate(available_exercises):
@@ -194,11 +190,7 @@ class FallbackService:
         try:
             # Query most common exercises from database by actual exercise IDs
             # CSVExercise uses 'id' field (e.g., EX001_v2, EX002_v2, etc.)
-            common_exercises = CSVExercise.objects.filter(
-                is_active=True,
-                level__in=['beginner', 'intermediate'],
-                exercise_type__in=['strength', 'cardio']
-            ).order_by('id')[:20].values('id', 'exercise_type')
+            common_exercises = CSVExercise.objects.all().order_by('id')[:20].values('id')
             
             for exercise in common_exercises:
                 reliable_exercises[exercise['id']] = {

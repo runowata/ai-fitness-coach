@@ -51,7 +51,7 @@ class StrictPlaylistValidator:
             self.validation_warnings.append(error_msg)
             return False
         
-        exists = CSVExercise.objects.filter(id=ex_slug, is_active=True).exists()
+        exists = CSVExercise.objects.filter(id=ex_slug).exists()
         
         if not exists:
             error_msg = f"EXERCISE_SLUG_UNKNOWN: '{ex_slug}'"

@@ -1028,17 +1028,15 @@ def create_demo_plan_for_user(user):
     
     try:
         # Используем реальные упражнения из базы данных
-        # Берем простые упражнения для демо (ограничиваемся имеющимися)
-        available_exercises = CSVExercise.objects.filter(
-            level__in=['beginner', 'intermediate']
-        )[:10]  # Первые 10 доступных упражнений
+        # Берем любые доступные упражнения для демо
+        available_exercises = CSVExercise.objects.all()[:10]  # Первые 10 доступных упражнений
     
         if not available_exercises.exists():
             # Fallback: создаем минимальный набор если упражнений нет
             demo_exercises = [
-                {"id": "demo_pushup", "name_ru": "Отжимания", "level": "beginner"},
-                {"id": "demo_squat", "name_ru": "Приседания", "level": "beginner"},
-                {"id": "demo_plank", "name_ru": "Планка", "level": "intermediate"},
+                {"id": "demo_pushup", "name_ru": "Отжимания"},
+                {"id": "demo_squat", "name_ru": "Приседания"},
+                {"id": "demo_plank", "name_ru": "Планка"},
                 ]
             exercises = []
             for ex_data in demo_exercises:
@@ -1046,7 +1044,6 @@ def create_demo_plan_for_user(user):
                 id=ex_data["id"],
                 defaults={
                     "name_ru": ex_data["name_ru"],
-                    "level": ex_data["level"],
                     "description": f"Демо упражнение: {ex_data['name_ru']}",
                 }
                 )

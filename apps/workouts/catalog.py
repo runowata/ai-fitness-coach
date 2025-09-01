@@ -80,44 +80,23 @@ class ExerciseCatalog:
         # Build catalog from database
         catalog = {}
         # Use actual CSVExercise fields that exist in the model and CSV
-        exercises = CSVExercise.objects.filter(is_active=True).values(
-            'id', 'name_ru', 'muscle_group', 'exercise_type', 'level', 'ai_tags'
+        exercises = CSVExercise.objects.all().values(
+            'id', 'name_ru', 'description'
         )
         
         for ex in exercises:
-            # Map level to difficulty with comprehensive support
-            raw_level = (ex.get('level') or '').strip().lower()
-            lvl_map = {
-                'начальный': 'beginner', 'начальный уровень': 'beginner',
-                'средний': 'intermediate', 'средний уровень': 'intermediate',  
-                'продвинутый': 'advanced', 'продвинутый уровень': 'advanced',
-                'beginner': 'beginner', 'intermediate': 'intermediate', 'advanced': 'advanced'
-            }
-            difficulty = lvl_map.get(raw_level, 'beginner')
-            
-            # Safe parsing of ai_tags (can be string from CSV or list from Django)
-            raw_tags = ex.get('ai_tags')
-            if isinstance(raw_tags, str):
-                try:
-                    ai_tags = json.loads(raw_tags)
-                except (json.JSONDecodeError, ValueError):
-                    ai_tags = []
-            elif isinstance(raw_tags, (list, tuple)):
-                ai_tags = list(raw_tags)
-            else:
-                ai_tags = []
-                
-            exercise_type = (ex.get('exercise_type') or '').strip().lower()
-            
-            # Safe defaults for fields that don't exist in CSVExercise
-            equipment = 'none'  # No equipment field in CSV/model
-            is_compound = any('compound' in str(t).lower() for t in ai_tags)
+            # Simplified processing - use defaults for missing fields
+            difficulty = 'beginner'  # Default level
+            ai_tags = []  # No ai_tags field available
+            exercise_type = 'strength'  # Default type
+            equipment = 'none'  # Default equipment
+            is_compound = False  # Default
             is_cardio = (exercise_type == 'cardio')
             
             catalog[ex['id']] = ExerciseAttributes(
                 slug=ex['id'],  # Use id as slug
                 name=ex['name_ru'],  # Use Russian name
-                muscle_group=(ex['muscle_group'] or 'general').strip().lower(),
+                muscle_group='general',  # Default muscle group
                 equipment=equipment,
                 difficulty=difficulty,
                 is_compound=is_compound,
