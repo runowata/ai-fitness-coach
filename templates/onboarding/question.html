@@ -900,46 +900,39 @@
     }
 }
 
-/* Bottom gradient overlay for text readability */
+
+/* Content directly on image - full coverage */
+.motivational-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    text-align: center;
+    padding: 4rem 2rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 50vh;
+}
+
+/* Bottom gradient overlay enhanced for better text readability */
 .bottom-gradient-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 60%;
+    height: 70%;
     background: linear-gradient(
         to top,
         rgba(0, 0, 0, 0.8) 0%,
-        rgba(0, 0, 0, 0.4) 50%,
+        rgba(0, 0, 0, 0.6) 40%,
+        rgba(0, 0, 0, 0.3) 70%,
         rgba(0, 0, 0, 0) 100%
     );
     z-index: 1;
-}
-
-/* Content directly on image */
-.motivational-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 0 2rem;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-/* Centered content for fullscreen cards */
-.motivational-content-centered {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 3rem 2rem;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 25px;
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* White text styles for image overlay - optimized for 13-inch screens */
@@ -1006,12 +999,11 @@
     .motivational-fullscreen-card {
         width: 100vw;
         height: 100vh;
-        padding: 2rem 1rem;
     }
     
-    .motivational-content-centered {
-        max-width: 90%;
-        padding: 2rem 1.5rem;
+    .motivational-content {
+        padding: 3rem 1.5rem;
+        min-height: 60vh;
     }
     
     .motivational-title-white {
@@ -1024,10 +1016,6 @@
         max-width: 100%;
     }
     
-    .motivational-content {
-        padding: 0 1rem;
-    }
-    
     .btn-continue-white {
         padding: 1.2rem 2.5rem;
         font-size: 1.1rem;
@@ -1038,12 +1026,11 @@
     .motivational-fullscreen-card {
         width: 100vw;
         height: 100vh;
-        padding: 1.5rem 1rem;
     }
     
-    .motivational-content-centered {
-        max-width: 95%;
-        padding: 1.5rem 1rem;
+    .motivational-content {
+        padding: 2rem 1rem;
+        min-height: 50vh;
     }
     
     .motivational-title-white {
@@ -1053,10 +1040,6 @@
     .motivational-message-white {
         font-size: 1.2rem;
         margin-bottom: 2rem;
-    }
-    
-    .motivational-content {
-        padding: 0 0.5rem;
     }
     
     .btn-continue-white {
@@ -1903,9 +1886,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Image URL:', card.image_url); // Debug image URL
         
         // Use image if available, otherwise fallback to gradient
-        // FIXED: Optimized for 13-inch screens with proper background size
+        // FIXED: Photo as full background without overlay - text will be readable with bottom gradient
         const backgroundStyle = card.image_url ? 
-            `background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('${card.image_url}') center/cover no-repeat; background-size: cover;` : 
+            `background: url('${card.image_url}') center/cover no-repeat; background-size: cover;` : 
             `background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(78, 205, 196, 0.9) 50%, rgba(255, 107, 107, 0.9) 100%);`;
         
         const cardHtml = `
@@ -1914,8 +1897,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="fas fa-times"></i>
                 </div>
                 
-                <!-- Content centered on screen -->
-                <div class="motivational-content-centered">
+                <!-- Bottom gradient overlay for text readability -->
+                <div class="bottom-gradient-overlay"></div>
+                
+                <!-- Content directly over photo -->
+                <div class="motivational-content">
                     ${card.title ? `<h2 class="motivational-title-white">${card.title}</h2>` : ''}
                     <p class="motivational-message-white">${card.message}</p>
                     
