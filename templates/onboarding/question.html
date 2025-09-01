@@ -878,12 +878,17 @@
 /* Full-screen Motivational Card */
 .motivational-fullscreen-card {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    max-width: 800px;
+    max-height: 600px;
+    width: 90vw;
+    height: 80vh;
     display: flex;
     align-items: flex-end;
-    padding-bottom: 4rem;
+    padding: 2rem;
+    margin: 2rem auto;
     overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     /* Background will be set by JavaScript inline styles */
     animation: fadeInScale 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -981,6 +986,14 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+    .motivational-fullscreen-card {
+        width: 95vw;
+        height: 70vh;
+        margin: 1rem auto;
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+    
     .motivational-title-white {
         font-size: 2.2rem;
     }
@@ -991,7 +1004,7 @@
     }
     
     .motivational-content {
-        padding: 0 1.5rem;
+        padding: 0 1rem;
     }
     
     .btn-continue-white {
@@ -1001,6 +1014,14 @@
 }
 
 @media (max-width: 576px) {
+    .motivational-fullscreen-card {
+        width: 98vw;
+        height: 60vh;
+        margin: 0.5rem auto;
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    
     .motivational-title-white {
         font-size: 1.8rem;
     }
@@ -1010,7 +1031,7 @@
     }
     
     .motivational-content {
-        padding: 0 1rem;
+        padding: 0 0.5rem;
     }
 }
 
@@ -1852,8 +1873,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Image URL:', card.image_url); // Debug image URL
         
         // Use image if available, otherwise fallback to gradient
+        // FIXED: Use contain instead of cover and limit background size
         const backgroundStyle = card.image_url ? 
-            `background: url('${card.image_url}') center/cover no-repeat;` : 
+            `background: url('${card.image_url}') center/contain no-repeat, linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(78, 205, 196, 0.9) 50%, rgba(255, 107, 107, 0.9) 100%);` : 
             `background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(78, 205, 196, 0.9) 50%, rgba(255, 107, 107, 0.9) 100%);`;
         
         const cardHtml = `
