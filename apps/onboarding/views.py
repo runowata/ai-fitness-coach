@@ -1119,8 +1119,27 @@ def create_demo_plan_for_user(user):
                 is_rest_day=is_rest_day,
             )
         
-            # Плейлисты создаются автоматически через R2PlaylistBuilder при необходимости
-            # УДАЛЕНО: _create_demo_playlist_items - дублировало функциональность R2PlaylistBuilder
+            # Создаем плейлист для тренировки
+            if not is_rest_day and exercise_data:
+                from apps.workouts.models import DailyPlaylistItem, R2Video
+                archetype = user.userprofile.archetype or 'mentor'
+                
+                for idx, exercise_info in enumerate(exercise_data):
+                    # Берем любые видео из R2 для этого упражнения
+                    videos = R2Video.objects.filter(
+                        code__icontains=exercise_info['exercise_id'],
+                        category='exercises'
+                    ).order_by('code')[:4]  # Берем первые 4 видео
+                    
+                    for video_idx, video in enumerate(videos):
+                        DailyPlaylistItem.objects.create(
+                            workout=daily_workout,
+                            order=(idx * 10) + video_idx,
+                            video_code=video.code,
+                            video_type='exercise',
+                            duration_seconds=30,  # Временная длительность
+                            metadata={'exercise_id': exercise_info['exercise_id']}
+                        )
     
         logger.info(f"Demo plan created for user {user.email}: {plan.id}")
         return plan
