@@ -8,7 +8,7 @@ from django.db import connection
 from apps.ai_integration.prompt_manager_v2 import PromptManagerV2
 from apps.core.services.exercise_validation import ExerciseValidationService
 from apps.workouts.models import CSVExercise, WorkoutPlan
-from apps.workouts.services.playlist_v2 import build_playlist
+# from apps.workouts.services.playlist_v2 import build_playlist  # DEPRECATED
 
 
 class Command(BaseCommand):
@@ -94,7 +94,8 @@ class Command(BaseCommand):
                     # 4. Test playlist generation
                     self.stdout.write("\n4️⃣ Testing playlist generation...")
                     archetype = getattr(plan.user.profile, 'archetype', 'mentor') if hasattr(plan.user, 'profile') else 'mentor'
-                    playlist = build_playlist(plan.plan_data, archetype)
+                    # playlist = build_playlist(plan.plan_data, archetype)  # DEPRECATED
+                    playlist = []  # TODO: Use PlaylistGeneratorV2
                     
                     if not playlist:
                         warnings.append(f"Empty playlist for plan {plan.id}")
