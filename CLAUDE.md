@@ -4,14 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-AI Fitness Coach - Django-based personalized workout platform for gay men combining fitness training, confidence-building tasks, and gamified content rewards. Features AI-generated workout plans with archetype-based personalization (Mentor/Professional/Peer).
+> **⚠️ IMPORTANT: AI FUNCTIONALITY DISABLED** - All AI integration code has been commented out as per user request.
+
+Fitness Coach - Django-based personalized workout platform for gay men combining fitness training, confidence-building tasks, and gamified content rewards. ~~Features AI-generated workout plans~~ Now uses demo workout plans with archetype-based personalization (Mentor/Professional/Peer).
 
 ## Tech Stack
 - **Backend:** Django 5.0.8, Python 3.12+
 - **Database:** PostgreSQL 15+ 
 - **Task Queue:** Celery 5.4.0 + Redis
 - **Storage:** Cloudflare R2 (primary) / AWS S3 + CloudFront CDN (legacy)
-- **AI:** OpenAI GPT-4 / Claude (multi-provider via AIClientFactory)
+- **~~AI~~:** ~~OpenAI GPT-4 / Claude (multi-provider via AIClientFactory)~~ **DISABLED - All AI code commented out**
 - **Deployment:** Render.com
 
 ## Development Commands
@@ -108,13 +110,20 @@ isort . --profile=black --line-length=100               # Sort imports
 - `OnboardingDataProcessor` - Processes onboarding for AI (apps/onboarding/services.py)
 - `ExerciseValidationService` - Validates exercise coverage (apps/core/services/exercise_validation.py)
 
-### AI Integration
-- **Prompts:** `prompts/v2/` with archetype variations
-  - System: `prompts/v2/system/{archetype}.system.md`
-  - User: `prompts/v2/user/{archetype}.user.md`
-  - Schemas: `prompts/v2/schemas/` for JSON validation
-- **Archetypes:** mentor (Wise Mentor), professional (Pro Coach), peer (Best Mate)
-- **Providers:** OpenAI GPT-4, Claude (via AIClientFactory)
+### ~~AI Integration~~ (DISABLED)
+> **🚫 ALL AI FUNCTIONALITY HAS BEEN COMMENTED OUT**
+> 
+> The following AI components have been disabled by commenting out the code:
+> - All files in `apps/ai_integration/` (services.py, ai_client_gpt5.py, prompt_manager_v2.py, schemas.py, validators.py)
+> - AI-related management commands in `dev_tools/management_commands/`
+> - AI analysis templates: `templates/onboarding/ai_analysis*.html`
+> - AI integration app removed from `INSTALLED_APPS` in settings.py
+
+~~**Prompts:** `prompts/v2/` with archetype variations~~
+~~**Archetypes:** mentor (Wise Mentor), professional (Pro Coach), peer (Best Mate)~~
+~~**Providers:** OpenAI GPT-4, Claude (via AIClientFactory)~~
+
+**Current Implementation:** Demo plans are used instead of AI-generated plans via `create_demo_plan_for_user()` function.
 
 ## Critical Management Commands
 

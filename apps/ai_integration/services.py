@@ -1,82 +1,89 @@
-import logging
-import os
-from typing import Dict, List, Set, Tuple
+# DISABLED AI: All AI integration services commented out
+# import logging
+# import os
+# from typing import Dict, List, Set, Tuple
+# 
+# from django.conf import settings
+# from django.utils import timezone
+# from openai import OpenAI
+# 
+# from apps.core.metrics import MetricNames, incr
+# from apps.core.services.exercise_validation import ExerciseValidationService
+# from apps.onboarding.services import OnboardingDataProcessor
+# from apps.workouts.catalog import get_catalog
+# from apps.workouts.constants import EXERCISE_FALLBACK_PRIORITY
+# 
+# from .ai_client_gpt5 import AIClientError, AIClientFactory
+# from .fallback_service import FallbackService
+# from .prompt_manager_v2 import PromptManagerV2
+# from .validators import WorkoutPlanValidator
+# 
+# logger = logging.getLogger(__name__)
+# 
+# # Real OpenAI client
+# openai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-from django.conf import settings
-from django.utils import timezone
-from openai import OpenAI
-
-from apps.core.metrics import MetricNames, incr
-from apps.core.services.exercise_validation import ExerciseValidationService
-from apps.onboarding.services import OnboardingDataProcessor
-from apps.workouts.catalog import get_catalog
-from apps.workouts.constants import EXERCISE_FALLBACK_PRIORITY
-
-from .ai_client_gpt5 import AIClientError, AIClientFactory
-from .fallback_service import FallbackService
-from .prompt_manager_v2 import PromptManagerV2
-from .validators import WorkoutPlanValidator
-
-logger = logging.getLogger(__name__)
-
-# Real OpenAI client
-openai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
+# DISABLED AI: AI-based workout plan generation commented out
+# def create_workout_plan_from_onboarding(user):
+#     """
+#     Main function to create workout plan from onboarding data
+#     Called from onboarding views
+#     """
+#     
+#     logger.info("🔍 PLAN GENERATION: Starting for user %s", user.id)
+#     
+#     try:
+#         # Use data processor to collect user data
+#         logger.info("🔍 PLAN GENERATION: Collecting user data...")
+#         user_data = OnboardingDataProcessor.collect_user_data(user)
+#         logger.info("🔍 PLAN GENERATION: User data collected, keys: %s", list(user_data.keys()))
+#         
+#         # Check if comprehensive analysis should be used (default to True)
+#         use_comprehensive = user_data.get('use_comprehensive', True)
+#         
+#         # Create workout plan using dedicated service
+#         logger.info("🔍 PLAN GENERATION: Creating plan with WorkoutPlanGenerator...")
+#         plan_generator = WorkoutPlanGenerator()
+#         result = plan_generator.create_plan(user, user_data, use_comprehensive)
+#         logger.info("🔍 PLAN GENERATION: Plan created successfully, plan ID: %s", result.id)
+#         return result
+#         
+#     except Exception as e:
+#         logger.error("🔍 PLAN GENERATION: FAILED for user %s: %s", user.id, str(e))
+#         logger.exception("🔍 PLAN GENERATION: Full traceback:")
+#         raise
 
-def create_workout_plan_from_onboarding(user):
-    """
-    Main function to create workout plan from onboarding data
-    Called from onboarding views
-    """
+
+# DISABLED AI: WorkoutPlanGenerator class commented out
+# class WorkoutPlanGenerator:
+#     """Service for generating workout plans using AI"""
+#     
+#     def __init__(self, user=None):
+#         self.ai_client = AIClientFactory.create_client()
+#         self.prompt_manager = PromptManagerV2()
+#         self.user = user
     
-    logger.info("🔍 PLAN GENERATION: Starting for user %s", user.id)
-    
-    try:
-        # Use data processor to collect user data
-        logger.info("🔍 PLAN GENERATION: Collecting user data...")
-        user_data = OnboardingDataProcessor.collect_user_data(user)
-        logger.info("🔍 PLAN GENERATION: User data collected, keys: %s", list(user_data.keys()))
-        
-        # Check if comprehensive analysis should be used (default to True)
-        use_comprehensive = user_data.get('use_comprehensive', True)
-        
-        # Create workout plan using dedicated service
-        logger.info("🔍 PLAN GENERATION: Creating plan with WorkoutPlanGenerator...")
-        plan_generator = WorkoutPlanGenerator()
-        result = plan_generator.create_plan(user, user_data, use_comprehensive)
-        logger.info("🔍 PLAN GENERATION: Plan created successfully, plan ID: %s", result.id)
-        return result
-        
-    except Exception as e:
-        logger.error("🔍 PLAN GENERATION: FAILED for user %s: %s", user.id, str(e))
-        logger.exception("🔍 PLAN GENERATION: Full traceback:")
-        raise
-
-
-class WorkoutPlanGenerator:
-    """Service for generating workout plans using AI"""
-    
-    def __init__(self, user=None):
-        self.ai_client = AIClientFactory.create_client()
-        self.prompt_manager = PromptManagerV2()
-        self.user = user
-    
-    def create_plan(self, user, user_data: Dict, use_comprehensive: bool = True) -> 'WorkoutPlan':
-        """Create a complete workout plan for user"""
-
-        from apps.workouts.models import WorkoutPlan
-
-        # Prevent race condition - check if plan generation is already in progress
-        existing_active_plan = WorkoutPlan.objects.filter(
-            user=user, 
-            is_active=True,
-            created_at__gte=timezone.now() - timezone.timedelta(minutes=10)  # Recent plan
-        ).first()
-        
-        if existing_active_plan:
-            logger.info(f"User {user.id} already has a recent active plan, returning existing")
-            return existing_active_plan
+#     def create_plan(self, user, user_data: Dict, use_comprehensive: bool = True) -> 'WorkoutPlan':
+#         """Create a complete workout plan for user"""
+# 
+#         from apps.workouts.models import WorkoutPlan
+# 
+#         # Prevent race condition - check if plan generation is already in progress
+#         existing_active_plan = WorkoutPlan.objects.filter(
+#             user=user, 
+#             is_active=True,
+#             created_at__gte=timezone.now() - timezone.timedelta(minutes=10)  # Recent plan
+#         ).first()
+#         
+#         if existing_active_plan:
+#             logger.info(f"User {user.id} already has a recent active plan, returning existing")
+#             return existing_active_plan
+# 
+# DISABLED AI: Entire WorkoutPlanGenerator implementation commented out below
+# 
+\"\"\"
         
         try:
             logger.info(f"Starting plan generation for user {user.id}")
@@ -1460,3 +1467,5 @@ Allowed exercises: {', '.join(sorted(allowed_slugs))}
         OnboardingSession.objects.filter(
             user=user, is_completed=False
         ).update(is_completed=True, completed_at=timezone.now())
+\"\"\"
+# DISABLED AI: End of commented out WorkoutPlanGenerator implementation

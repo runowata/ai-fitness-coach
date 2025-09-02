@@ -1,14 +1,18 @@
-"""
-Post-validation and fixing services for AI-generated workout plans
-"""
-import json
-import logging
-from typing import Any, Dict, Optional, Tuple
+# DISABLED AI: Workout plan validators commented out
+# """
+# Post-validation and fixing services for AI-generated workout plans
+# """
+# import json
+# import logging
+# from typing import Any, Dict, Optional, Tuple
+# 
+# from apps.core.services.exercise_validation import ExerciseValidationService
+# from apps.core.utils.slug import normalize_slug_with_aliases
+# 
+# logger = logging.getLogger(__name__)
 
-from apps.core.services.exercise_validation import ExerciseValidationService
-from apps.core.utils.slug import normalize_slug_with_aliases
-
-logger = logging.getLogger(__name__)
+# DISABLED AI: All validation classes commented out
+\"\"\"
 
 
 class WorkoutPlanValidator:
@@ -286,3 +290,6 @@ class WorkoutPlanValidator:
         original_plan = json.loads(json.dumps(plan_data))  # Deep copy
         _, report = self.validate_and_fix_plan(original_plan)
         return report
+\"\"\"
+
+# DISABLED AI: End of validators implementation

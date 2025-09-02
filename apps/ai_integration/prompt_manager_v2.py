@@ -332,3 +332,6 @@ def normalize_archetype(slug: Optional[str]) -> Optional[str]:
 
 def load_schema(name: str) -> Dict[str, Any]:
     return prompt_manager.load_schema(name)
+\"\"\"
+
+# DISABLED AI: End of commented prompt manager implementation

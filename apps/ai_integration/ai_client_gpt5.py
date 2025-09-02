@@ -1,53 +1,61 @@
-"""AI client interfaces for GPT-5 with Responses API and Structured Outputs support"""
-import json
-import logging
-import time
-from typing import Dict
+# DISABLED AI: GPT-5 client implementation commented out
+# """AI client interfaces for GPT-5 with Responses API and Structured Outputs support"""
+# import json
+# import logging
+# import time
+# from typing import Dict
+# 
+# import random
+# import httpx
+# from django.conf import settings
+# from openai import OpenAI, APITimeoutError, APIError
+# 
+# from .schemas import (
+#     ComprehensiveAIReport,
+#     WorkoutPlan,
+#     validate_ai_plan_response,
+#     validate_comprehensive_ai_report,
+# )
+# from .schemas_simple import SimpleWorkoutPlan, validate_simple_ai_plan
+# from .schemas_json_simple import WORKOUT_PLAN_JSON_SCHEMA_SIMPLE
+# 
+# logger = logging.getLogger(__name__)
+# 
+# 
+# class AIClientError(Exception):
+#     """Custom exception for AI client errors"""
+# 
+# 
+# class ServiceTimeoutError(AIClientError):
+#     """Raised when OpenAI service times out"""
+# 
+# 
+# class ServiceCallError(AIClientError):
+#     """Raised when OpenAI service returns an error"""
 
-import random
-import httpx
-from django.conf import settings
-from openai import OpenAI, APITimeoutError, APIError
-
-from .schemas import (
-    ComprehensiveAIReport,
-    WorkoutPlan,
-    validate_ai_plan_response,
-    validate_comprehensive_ai_report,
-)
-from .schemas_simple import SimpleWorkoutPlan, validate_simple_ai_plan
-from .schemas_json_simple import WORKOUT_PLAN_JSON_SCHEMA_SIMPLE
-
-logger = logging.getLogger(__name__)
+# DISABLED AI: Entire OpenAI client implementation commented out
+"""
 
 
-class AIClientError(Exception):
-    """Custom exception for AI client errors"""
+# class OpenAIClient:
+#     """OpenAI API client with GPT-5 and Responses API support"""
+#     
+#     def __init__(self):
+#         if not settings.OPENAI_API_KEY:
+#             raise AIClientError("OPENAI_API_KEY not configured")
+#         
+#         # Set comprehensive timeouts (prevent hanging)
+#         self.connect_timeout = getattr(settings, 'OPENAI_CONNECT_TIMEOUT', 15)
+#         self.read_timeout = getattr(settings, 'OPENAI_READ_TIMEOUT', 600)  # GPT-5 needs more time for large plans
+#         self.total_timeout = getattr(settings, 'OPENAI_TOTAL_TIMEOUT', 720)  # overall limit
+#         self.max_retries = getattr(settings, 'OPENAI_MAX_RETRIES', 3)
+#         
+#         # Create httpx client with connection pooling and limits
+#         timeout = httpx.Timeout(
 
+# DISABLED AI: Rest of OpenAI client implementation wrapped in multiline comment
 
-class ServiceTimeoutError(AIClientError):
-    """Raised when OpenAI service times out"""
-
-
-class ServiceCallError(AIClientError):
-    """Raised when OpenAI service returns an error"""
-
-
-class OpenAIClient:
-    """OpenAI API client with GPT-5 and Responses API support"""
-    
-    def __init__(self):
-        if not settings.OPENAI_API_KEY:
-            raise AIClientError("OPENAI_API_KEY not configured")
-        
-        # Set comprehensive timeouts (prevent hanging)
-        self.connect_timeout = getattr(settings, 'OPENAI_CONNECT_TIMEOUT', 15)
-        self.read_timeout = getattr(settings, 'OPENAI_READ_TIMEOUT', 600)  # GPT-5 needs more time for large plans
-        self.total_timeout = getattr(settings, 'OPENAI_TOTAL_TIMEOUT', 720)  # overall limit
-        self.max_retries = getattr(settings, 'OPENAI_MAX_RETRIES', 3)
-        
-        # Create httpx client with connection pooling and limits
-        timeout = httpx.Timeout(
+\"\"\"
             timeout=self.total_timeout,
             connect=self.connect_timeout,
             read=self.read_timeout,
@@ -353,3 +361,6 @@ class AIClientFactory:
             return OpenAIClient()
         else:
             raise AIClientError(f"Unsupported AI provider: {provider}")
+\"\"\"
+
+# DISABLED AI: End of commented OpenAI client implementation
