@@ -374,8 +374,20 @@ def select_archetype(request):
             if not existing_plan:
                 # Create demo plan automatically
                 logger.info(f"Creating demo plan for user {request.user.email}")
-                create_demo_plan_for_user(request.user)
-                messages.success(request, 'Отлично! Ваш тренировочный план готов!')
+                demo_plan = create_demo_plan_for_user(request.user)
+                
+                if demo_plan:
+                    # CRITICAL: Mark onboarding as completed after demo plan creation
+                    request.user.completed_onboarding = True
+                    request.user.profile.onboarding_completed_at = timezone.now()
+                    request.user.save()
+                    request.user.profile.save()
+                    
+                    messages.success(request, 'Отлично! Ваш тренировочный план готов!')
+                    logger.info(f"Onboarding completed for user {request.user.email}")
+                else:
+                    messages.error(request, 'Ошибка при создании плана тренировок')
+                    return redirect('onboarding:select_archetype')
             else:
                 logger.info(f"User {request.user.email} already has confirmed plan: {existing_plan.id}")
                 messages.info(request, 'У вас уже есть активный план тренировок!')
@@ -1067,15 +1079,17 @@ def create_demo_plan_for_user(user):
         # План
         plan = WorkoutPlan.objects.create(
         user=user,
-        name="Демо-план на 1 неделю",
-        duration_weeks=1,  # Исправлено: демо план на 1 неделю
+        name="Демо-план на 3 недели",
+        duration_weeks=3,  # FIXED: Full 21-day program for proper testing
         plan_data={"demo": True, "exercises_count": len(exercises)},
         status="CONFIRMED",
     )
     
-        # Дни тренировок
-        for day in range(1, 8):
-            is_rest_day = day in (3, 6)  # Среда и суббота - отдых
+        # Дни тренировок (21 дней)
+        for day in range(1, 22):
+            # Rest days: Wednesday and Saturday every week (days 3,6,10,13,17,20)
+            week_day = ((day - 1) % 7) + 1  # Convert to 1-7 day of week
+            is_rest_day = week_day in (3, 6)  # Wednesday and Saturday
         
             if is_rest_day:
                 exercise_data = []
@@ -1103,7 +1117,7 @@ def create_demo_plan_for_user(user):
             daily_workout = DailyWorkout.objects.create(
                 plan=plan,
                 day_number=day,
-                week_number=1,
+                week_number=((day - 1) // 7) + 1,  # FIXED: Proper week calculation for 21 days
                 name=workout_name,
                 exercises=exercise_data,
                 is_rest_day=is_rest_day,
