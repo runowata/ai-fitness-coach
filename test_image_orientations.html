@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Image Orientations</title>
+    <style>
+        .test-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .test-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border: 4px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .test-avatar.portrait {
+            object-fit: cover;
+            object-position: center top;
+        }
+        
+        .test-avatar.landscape {
+            object-fit: contain;
+            background-color: rgba(248, 249, 250, 0.95);
+            padding: 8px;
+        }
+        
+        .test-avatar.square {
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        .test-card {
+            text-align: center;
+            margin: 10px;
+        }
+        
+        .test-label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Avatar Image Orientations</h1>
+    
+    <div class="test-container">
+        <div class="test-card">
+            <img src="https://via.placeholder.com/400x600/4CAF50/white?text=Vertical+400x600" 
+                 class="test-avatar" 
+                 onload="handleImageLoad(this)">
+            <div class="test-label">Vertical Image (400x600)</div>
+        </div>
+        
+        <div class="test-card">
+            <img src="https://via.placeholder.com/600x400/2196F3/white?text=Horizontal+600x400" 
+                 class="test-avatar"
+                 onload="handleImageLoad(this)">
+            <div class="test-label">Horizontal Image (600x400)</div>
+        </div>
+        
+        <div class="test-card">
+            <img src="https://via.placeholder.com/500x500/FF9800/white?text=Square+500x500" 
+                 class="test-avatar"
+                 onload="handleImageLoad(this)">
+            <div class="test-label">Square Image (500x500)</div>
+        </div>
+    </div>
+    
+    <script>
+        function handleImageLoad(img) {
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+            
+            // Remove any existing orientation classes
+            img.classList.remove('portrait', 'landscape', 'square');
+            
+            if (aspectRatio < 0.8) {
+                // Vertical/Portrait image 
+                img.classList.add('portrait');
+                console.log('Applied portrait styling to image:', img.src);
+            } else if (aspectRatio > 1.2) {
+                // Horizontal/Landscape image 
+                img.classList.add('landscape');
+                console.log('Applied landscape styling to image:', img.src);
+            } else {
+                // Square-ish image
+                img.classList.add('square');
+                console.log('Applied square styling to image:', img.src);
+            }
+        }
+    </script>
+</body>
+</html>
