@@ -1102,7 +1102,7 @@ def create_demo_plan_for_user(user):
         # Генерируем плейлисты для всех дней
         from apps.workouts.services.playlist_generator_v2 import PlaylistGeneratorV2
         
-        archetype = user.userprofile.archetype or 'mentor'
+        archetype = user.profile.archetype or 'mentor'
         generator = PlaylistGeneratorV2(user, archetype)
         stats = generator.generate_full_program(plan)
         
