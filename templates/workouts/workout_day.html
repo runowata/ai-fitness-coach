@@ -30,67 +30,76 @@
             {% if playlist %}
               <div class="modern-video-container">
                 <div class="row">
-                  <div class="col-lg-8">
-                    <!-- Главный видео-плеер -->
-                    <div class="main-video-card">
-                      <div class="video-header">
-                        <h3 class="video-title">{{ playlist.0.video.name }}</h3>
-                        <div class="video-progress-info">
-                          <span id="currentVideoNumber">1</span> из {{ playlist|length }}
+                  <div class="col-xl-9 col-lg-8">
+                    <!-- Современный видео-плеер -->
+                    <div class="modern-video-player">
+                      <!-- Инфо о текущем видео (над плеером) -->
+                      <div class="video-info-header" id="videoInfoHeader" style="display: none;">
+                        <div class="video-current-info">
+                          <h4 class="current-video-title" id="currentVideoTitleHeader">{{ playlist.0.video.name }}</h4>
+                          <div class="video-progress-indicator">
+                            <span class="progress-text">
+                              Видео <span id="currentVideoNumber">1</span> из {{ playlist|length }}
+                            </span>
+                            <div class="mini-progress-bar">
+                              <div class="mini-progress-fill" id="miniProgressFill"></div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       
-                      <div class="video-player-container">
+                      <div class="video-container-modern">
                         <!-- Start overlay -->
-                        <div id="startOverlay" class="video-start-overlay">
-                          <button class="start-btn" onclick="startPlaylist()">
-                            <i class="fas fa-play"></i>
-                            <span>Начать тренировку</span>
-                          </button>
-                        </div>
-                        
-                        <!-- Progress overlay -->
-                        <div id="progressOverlay" class="video-progress-overlay">
-                          <div class="progress-info">
-                            <div class="current-title" id="overlayTitle">{{ playlist.0.video.name }}</div>
-                            <div class="progress-counter">
-                              <span id="progressCurrent">1</span> / {{ playlist|length }}
+                        <div id="startOverlay" class="modern-start-overlay">
+                          <div class="start-content">
+                            <div class="start-icon-wrapper">
+                              <div class="start-icon-bg"></div>
+                              <i class="fas fa-play start-icon"></i>
                             </div>
-                          </div>
-                          <div class="progress-bar-container">
-                            <div class="progress-bar-fill" id="progressFill"></div>
+                            <h3 class="start-title">Начать тренировку</h3>
+                            <p class="start-subtitle">{{ playlist|length }} видео ждут вас</p>
+                            <button class="modern-start-btn" onclick="startPlaylist()">
+                              <span>Начать</span>
+                              <i class="fas fa-arrow-right"></i>
+                            </button>
                           </div>
                         </div>
                         
-                        <!-- Main video player -->
+                        <!-- Видео-плеер без перекрывающих элементов -->
                         <video 
                           id="mainVideoPlayer"
-                          class="main-video-player"
+                          class="clean-video-player"
                           controls 
                           preload="metadata"
-                          playsinline
-                          controlslist="nodownload">
+                          playsinline>
                           <source src="{{ playlist.0.video.r2_url }}" type="video/mp4">
                           Ваш браузер не поддерживает видео.
                         </video>
                       </div>
                       
-                      <!-- Video controls -->
-                      <div class="video-controls" id="videoControls" style="display: none;">
-                        <button class="control-btn" onclick="previousVideo()" title="Предыдущее">
-                          <i class="fas fa-step-backward"></i>
-                        </button>
-                        <button class="control-btn" onclick="togglePlayPause()" id="playPauseBtn" title="Пауза">
-                          <i class="fas fa-pause"></i>
-                        </button>
-                        <button class="control-btn" onclick="nextVideo()" title="Следующее">
-                          <i class="fas fa-step-forward"></i>
-                        </button>
+                      <!-- Контролы под плеером -->
+                      <div class="modern-controls" id="modernControls" style="display: none;">
+                        <div class="controls-wrapper">
+                          <button class="modern-control-btn" onclick="previousVideo()" title="Предыдущее">
+                            <i class="fas fa-step-backward"></i>
+                          </button>
+                          <button class="modern-control-btn play-pause-btn" onclick="togglePlayPause()" id="modernPlayPauseBtn" title="Пауза">
+                            <i class="fas fa-pause"></i>
+                          </button>
+                          <button class="modern-control-btn" onclick="nextVideo()" title="Следующее">
+                            <i class="fas fa-step-forward"></i>
+                          </button>
+                        </div>
+                        <div class="playlist-progress">
+                          <div class="progress-track">
+                            <div class="progress-fill" id="playlistProgressBar"></div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div class="col-lg-4">
+                  <div class="col-xl-3 col-lg-4">
                     <!-- Плейлист сбоку -->
                     <div class="playlist-sidebar">
                       <div class="playlist-sidebar-header">
@@ -176,49 +185,309 @@
 
 {% block extra_css %}
 <style>
-/* Base styles */
+/* Modern minimalist base styles */
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1a202c;
+}
+
+.container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .day-number-large {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    border-radius: 50%;
+    border-radius: 24px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 2rem;
+    font-weight: 700;
+    font-size: 2.5rem;
     margin: 0 auto;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Modern video container */
+/* Modern clean container */
 .modern-video-container {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 25px;
-    padding: 2rem;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    padding: 0;
+    margin-bottom: 3rem;
+}
+
+/* Modern video player */
+.modern-video-player {
+    background: white;
+    border-radius: 24px;
+    padding: 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    overflow: hidden;
     margin-bottom: 2rem;
 }
 
-/* Main video player card */
-.main-video-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+/* Video info header */
+.video-info-header {
+    padding: 1.5rem 2rem;
+    background: white;
+    border-bottom: 1px solid #f1f5f9;
+    transition: opacity 0.3s ease;
 }
 
-.video-header {
+.modern-controls {
+    transition: opacity 0.3s ease;
+}
+
+.video-current-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.current-video-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.video-progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.progress-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.mini-progress-bar {
+    width: 120px;
+    height: 6px;
+    background: #f1f5f9;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.mini-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Clean video container */
+.video-container-modern {
+    position: relative;
+    background: #000;
+    aspect-ratio: 16/9;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.clean-video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    outline: none;
+}
+
+.clean-video-player:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Modern start overlay */
+.modern-start-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.4s ease;
+    border-radius: 16px;
+}
+
+.start-content {
+    text-align: center;
+    color: white;
+}
+
+.start-icon-wrapper {
+    position: relative;
+    margin: 0 auto 2rem;
+    width: 100px;
+    height: 100px;
+}
+
+.start-icon-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.start-icon {
+    position: relative;
+    z-index: 2;
+    font-size: 2.5rem;
+    margin-left: 4px;
+    color: white;
+    line-height: 100px;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+.start-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: white;
+}
+
+.start-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0 0 2rem;
+    font-weight: 400;
+}
+
+.modern-start-btn {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-transform: none;
+}
+
+.modern-start-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Modern controls */
+.modern-controls {
+    padding: 1.5rem 2rem;
+    background: white;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.controls-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+}
+
+.modern-control-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    background: #f8fafc;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.modern-control-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.modern-control-btn.play-pause-btn {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px;
+}
+
+.modern-control-btn.play-pause-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.playlist-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-track {
+    width: 100%;
+    max-width: 400px;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Modern playlist sidebar */
+.playlist-sidebar {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    max-height: 700px;
+}
+
+.playlist-sidebar-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 1.5rem;
@@ -227,258 +496,95 @@ body {
     align-items: center;
 }
 
-.video-header .video-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin: 0;
-    color: white;
-}
-
-.video-progress-info {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-/* Video player container */
-.video-player-container {
-    position: relative;
-    background: #000;
-    aspect-ratio: 16/9;
-}
-
-.main-video-player {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Video overlays */
-.video-start-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: all 0.3s ease;
-}
-
-.start-btn {
-    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-    border: none;
-    color: white;
-    padding: 2rem 3rem;
-    border-radius: 25px;
-    font-size: 1.3rem;
-    font-weight: 700;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 15px 35px rgba(78, 205, 196, 0.4);
-}
-
-.start-btn:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 25px 50px rgba(78, 205, 196, 0.6);
-}
-
-.start-btn i {
-    font-size: 3rem;
-}
-
-.video-progress-overlay {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(15px);
-    border-radius: 15px;
-    padding: 15px 20px;
-    color: white;
-    z-index: 5;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-}
-
-.video-progress-overlay.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.current-title {
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.progress-counter {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.progress-bar-container {
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4ecdc4, #44a08d);
-    border-radius: 2px;
-    transition: width 0.3s ease;
-    width: 0%;
-}
-
-/* Video controls */
-.video-controls {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    padding: 1rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.control-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-.control-btn:hover {
-    background: rgba(78, 205, 196, 0.3);
-    border-color: rgba(78, 205, 196, 0.6);
-    transform: scale(1.1);
-}
-
-/* Playlist sidebar */
-.playlist-sidebar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    max-height: 600px;
-}
-
-.playlist-sidebar-header {
-    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-    color: white;
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .playlist-sidebar-header h5 {
     margin: 0;
     font-weight: 600;
+    font-size: 1.1rem;
 }
 
 .playlist-count {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 0.375rem 0.875rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .playlist-items {
-    max-height: 500px;
+    max-height: 550px;
     overflow-y: auto;
-    padding: 0.5rem 0;
+    padding: 0.5rem;
 }
 
 .playlist-sidebar-item {
     display: flex;
     align-items: center;
-    padding: 0.75rem 1.5rem;
+    padding: 1rem;
+    margin: 0.25rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    border-left: 3px solid transparent;
+    border-radius: 12px;
     position: relative;
+    border: 1px solid transparent;
 }
 
 .playlist-sidebar-item:hover {
-    background: rgba(102, 126, 234, 0.1);
-    border-left-color: rgba(102, 126, 234, 0.3);
+    background: #f8fafc;
+    border-color: rgba(102, 126, 234, 0.2);
+    transform: translateX(2px);
 }
 
 .playlist-sidebar-item.active {
-    background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(102, 126, 234, 0.2));
-    border-left-color: #4ecdc4;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateX(4px);
 }
 
 .playlist-sidebar-item.playing {
-    background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(102, 126, 234, 0.3));
-    border-left-color: #4ecdc4;
-    animation: playingPulse 2s infinite alternate;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+    border-color: #667eea;
+    transform: translateX(6px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .playlist-sidebar-item.completed {
-    opacity: 0.7;
-    background: rgba(46, 204, 113, 0.1);
-    border-left-color: #2ecc71;
+    opacity: 0.8;
+    background: rgba(34, 197, 94, 0.05);
+    border-color: rgba(34, 197, 94, 0.2);
 }
 
 .playlist-sidebar-item.completed::after {
     content: '✓';
     position: absolute;
-    right: 15px;
-    color: #2ecc71;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #22c55e;
     font-weight: bold;
     font-size: 1.1rem;
-}
-
-@keyframes playingPulse {
-    0% { box-shadow: inset 0 0 0 rgba(78, 205, 196, 0.3); }
-    100% { box-shadow: inset 0 0 20px rgba(78, 205, 196, 0.6); }
+    background: rgba(34, 197, 94, 0.1);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
 }
 
 .item-number {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: #667eea;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 0.85rem;
+    font-weight: 600;
+    font-size: 0.875rem;
     margin-right: 1rem;
     flex-shrink: 0;
 }
@@ -490,12 +596,10 @@ body {
 
 .item-title {
     font-weight: 600;
-    font-size: 0.9rem;
-    color: #2c3e50;
-    margin-bottom: 0.25rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.875rem;
+    color: #1e293b;
+    margin-bottom: 0.375rem;
+    line-height: 1.3;
 }
 
 .item-meta {
@@ -506,82 +610,92 @@ body {
 }
 
 .item-role {
-    padding: 2px 8px;
-    border-radius: 10px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: capitalize;
+    font-size: 0.7rem;
+}
+
+.item-role.motivation { background: #fef3c7; color: #d97706; }
+.item-role.warmup { background: #dbeafe; color: #2563eb; }
+.item-role.main { background: #d1fae5; color: #059669; }
+.item-role.cooldown { background: #e9d5ff; color: #7c3aed; }
+
+.item-duration {
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Modern summary styles */
+.playlist-summary {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.summary-stat {
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+.summary-stat i {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.stat-number {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1;
+    margin-bottom: 0.375rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.item-role.motivation { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
-.item-role.warmup { background: rgba(52, 152, 219, 0.2); color: #3498db; }
-.item-role.main { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
-.item-role.cooldown { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
-
-.item-duration {
-    color: #7f8c8d;
-}
-
-/* Summary styles */
-.playlist-summary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 255, 0.95) 100%);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.summary-stat {
-    padding: 1rem;
-    text-align: center;
-}
-
-.summary-stat i {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2c3e50;
-    line-height: 1;
-    margin-bottom: 0.25rem;
-}
-
-.stat-label {
-    font-size: 0.9rem;
-    color: #6c757d;
-    font-weight: 500;
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
     .day-number-large {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
     }
     
-    .modern-video-container {
+    .video-info-header {
         padding: 1rem;
     }
     
-    .video-header {
+    .video-current-info {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.75rem;
         text-align: center;
     }
     
-    .start-btn {
-        padding: 1.5rem 2rem;
+    .current-video-title {
         font-size: 1.1rem;
     }
     
-    .start-btn i {
-        font-size: 2rem;
+    .start-title {
+        font-size: 1.5rem;
+    }
+    
+    .start-subtitle {
+        font-size: 1rem;
+    }
+    
+    .modern-start-btn {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
     }
     
     .playlist-sidebar {
@@ -589,10 +703,35 @@ body {
         max-height: 400px;
     }
     
-    .control-btn {
-        width: 40px;
-        height: 40px;
+    .modern-controls {
+        padding: 1rem;
+    }
+    
+    .modern-control-btn {
+        width: 44px;
+        height: 44px;
         font-size: 1rem;
+    }
+    
+    .modern-control-btn.play-pause-btn {
+        width: 52px;
+        height: 52px;
+    }
+    
+    .playlist-summary {
+        padding: 1.5rem;
+    }
+    
+    .summary-stat {
+        padding: 1rem 0.5rem;
+    }
+    
+    .summary-stat i {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 1.75rem;
     }
 }
 </style>
@@ -628,22 +767,31 @@ document.addEventListener('DOMContentLoaded', function() {
 function startPlaylist() {
     const video = document.getElementById('mainVideoPlayer');
     const startOverlay = document.getElementById('startOverlay');
-    const progressOverlay = document.getElementById('progressOverlay');
-    const videoControls = document.getElementById('videoControls');
+    const videoInfoHeader = document.getElementById('videoInfoHeader');
+    const modernControls = document.getElementById('modernControls');
     
     playlistStarted = true;
     
-    // Hide start overlay
+    // Hide start overlay with smooth animation
     startOverlay.style.opacity = '0';
     setTimeout(() => {
         startOverlay.style.display = 'none';
-    }, 300);
+    }, 400);
     
-    // Show progress overlay and controls
+    // Show video info and controls
     setTimeout(() => {
-        progressOverlay.classList.add('visible');
-        videoControls.style.display = 'flex';
-    }, 500);
+        videoInfoHeader.style.display = 'block';
+        modernControls.style.display = 'flex';
+        
+        // Smooth fade in
+        videoInfoHeader.style.opacity = '0';
+        modernControls.style.opacity = '0';
+        
+        setTimeout(() => {
+            videoInfoHeader.style.opacity = '1';
+            modernControls.style.opacity = '1';
+        }, 100);
+    }, 200);
     
     // Start first video
     video.play();
@@ -653,7 +801,7 @@ function startPlaylist() {
     // Setup video event listeners
     setupVideoEvents();
     
-    console.log('Playlist started');
+    console.log('Modern playlist started');
 }
 
 // Setup video event listeners
@@ -753,16 +901,16 @@ function updateProgress() {
     if (!playlistStarted || playlistData.length === 0) return;
     
     const progressPercent = ((currentVideoIndex + 1) / playlistData.length) * 100;
-    const progressFill = document.getElementById('progressFill');
-    const progressCurrent = document.getElementById('progressCurrent');
+    const playlistProgressBar = document.getElementById('playlistProgressBar');
+    const miniProgressFill = document.getElementById('miniProgressFill');
     const currentVideoNumber = document.getElementById('currentVideoNumber');
     
-    if (progressFill) {
-        progressFill.style.width = progressPercent + '%';
+    if (playlistProgressBar) {
+        playlistProgressBar.style.width = progressPercent + '%';
     }
     
-    if (progressCurrent) {
-        progressCurrent.textContent = currentVideoIndex + 1;
+    if (miniProgressFill) {
+        miniProgressFill.style.width = progressPercent + '%';
     }
     
     if (currentVideoNumber) {
@@ -772,15 +920,10 @@ function updateProgress() {
 
 // Update video info
 function updateVideoInfo(video) {
-    const overlayTitle = document.getElementById('overlayTitle');
-    const videoTitle = document.querySelector('.video-header .video-title');
+    const currentVideoTitleHeader = document.getElementById('currentVideoTitleHeader');
     
-    if (overlayTitle) {
-        overlayTitle.textContent = video.title;
-    }
-    
-    if (videoTitle) {
-        videoTitle.textContent = video.title;
+    if (currentVideoTitleHeader) {
+        currentVideoTitleHeader.textContent = video.title;
     }
 }
 
@@ -806,27 +949,32 @@ function updatePlaylistStates() {
 
 // Update play/pause button
 function updatePlayPauseButton(isPaused) {
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    if (playPauseBtn) {
-        playPauseBtn.innerHTML = isPaused ? 
+    const modernPlayPauseBtn = document.getElementById('modernPlayPauseBtn');
+    if (modernPlayPauseBtn) {
+        modernPlayPauseBtn.innerHTML = isPaused ? 
             '<i class="fas fa-play"></i>' : 
             '<i class="fas fa-pause"></i>';
-        playPauseBtn.title = isPaused ? 'Воспроизведение' : 'Пауза';
+        modernPlayPauseBtn.title = isPaused ? 'Воспроизведение' : 'Пауза';
     }
 }
 
 // Complete playlist
 function completePlaylist() {
-    const progressFill = document.getElementById('progressFill');
+    const playlistProgressBar = document.getElementById('playlistProgressBar');
+    const miniProgressFill = document.getElementById('miniProgressFill');
     
-    if (progressFill) {
-        progressFill.style.width = '100%';
+    if (playlistProgressBar) {
+        playlistProgressBar.style.width = '100%';
+    }
+    
+    if (miniProgressFill) {
+        miniProgressFill.style.width = '100%';
     }
     
     updatePlaylistStates();
     showNotification('🎉 Все видео завершены! Отличная тренировка!');
     
-    console.log('Playlist completed');
+    console.log('Modern playlist completed');
 }
 
 // Setup playlist interactions
