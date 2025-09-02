@@ -319,7 +319,7 @@
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    object-fit: cover; /* Возвращаем cover для лучшего вида */
+    object-fit: cover;
     object-position: center;
     background: linear-gradient(45deg, #f8f9fa, #e9ecef); /* Светлый фон */
     border: 4px solid rgba(255, 255, 255, 0.8);
@@ -327,6 +327,24 @@
     position: relative;
     z-index: 1;
     animation: avatarFloat 4s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+/* Enhanced styles for different image orientations */
+.trainer-avatar.portrait {
+    object-fit: cover;
+    object-position: center top;
+}
+
+.trainer-avatar.landscape {
+    object-fit: contain;
+    background-color: rgba(248, 249, 250, 0.95);
+    padding: 8px;
+}
+
+.trainer-avatar.square {
+    object-fit: cover;
+    object-position: center;
 }
 
 @keyframes avatarFloat {
@@ -631,6 +649,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add entrance animations
     const card = document.querySelector('.motivation-card');
     const progressBar = document.querySelector('.progress-bar-modern');
+    
+    // Smart image handling for trainer avatar
+    const trainerAvatar = document.querySelector('.trainer-avatar');
+    if (trainerAvatar) {
+        trainerAvatar.onload = function() {
+            const aspectRatio = this.naturalWidth / this.naturalHeight;
+            
+            // Remove any existing orientation classes
+            this.classList.remove('portrait', 'landscape', 'square');
+            
+            if (aspectRatio < 0.8) {
+                // Vertical/Portrait image 
+                this.classList.add('portrait');
+                console.log('Applied portrait styling to avatar image');
+            } else if (aspectRatio > 1.2) {
+                // Horizontal/Landscape image 
+                this.classList.add('landscape');
+                console.log('Applied landscape styling to avatar image');
+            } else {
+                // Square-ish image
+                this.classList.add('square');
+                console.log('Applied square styling to avatar image');
+            }
+        };
+        
+        // Trigger load event if image is already loaded
+        if (trainerAvatar.complete) {
+            trainerAvatar.onload();
+        }
+        
+        // Also handle error case - apply default styling
+        trainerAvatar.onerror = function() {
+            this.classList.remove('portrait', 'landscape');
+            this.classList.add('square');
+        };
+    }
     
     // Animate progress bar
     setTimeout(() => {
