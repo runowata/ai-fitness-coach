@@ -100,3 +100,43 @@ fixtures/onboarding_questions_old.json
 
 # Development tools (not for production)
 dev_tools/
+
+# Temporary and backup directories (prevent reintroduction)
+backup_before_*/
+*_backup/
+*_bak/
+*_old/
+temp_*/
+tmp_*/
+
+# Obsolete documentation and data files
+*_old.md
+*_backup.md
+*_temp.json
+*_dump.json
+*_sample.json
+*_test.json
+upload_log*.json
+upload_state*.json
+validation_report*.json
+schema_analysis*.json
+
+# Archives and compressed files (unless essential)
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Media organizer temporary files
+media_organizer/*.log
+media_organizer/*.csv
+rename_log.csv
+
+# R2/S3 temporary files
+r2_upload_*.json
+s3_upload_*.json
+*_cors_config.json
+*_whitelist.txt
+
+# Render/deployment temporary files  
+render_env_template.txt
