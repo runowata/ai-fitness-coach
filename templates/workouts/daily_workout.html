@@ -39,6 +39,63 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
     
+    /* Video progress overlay */
+    .video-progress-overlay {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 15px 20px;
+        color: white;
+        z-index: 5;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .video-progress-overlay.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .playlist-progress {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .current-video-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+    
+    .video-counter {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .playlist-progress-bar {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+    
+    .playlist-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4ecdc4, #44a08d);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        width: 0%;
+    }
+    
     /* Enhanced playlist items */
     .playlist-item {
         cursor: pointer;
@@ -47,6 +104,7 @@
         margin-bottom: 0.5rem;
         position: relative;
         overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .playlist-item::before {
@@ -64,6 +122,7 @@
     .playlist-item:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: rgba(78, 205, 196, 0.3);
     }
     
     .playlist-item:hover::before {
@@ -71,11 +130,88 @@
     }
     
     .playlist-item.active {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(78, 205, 196, 0.2));
-        border-left: 5px solid #4ecdc4;
-        transform: translateX(5px);
-        box-shadow: 0 10px 30px rgba(78, 205, 196, 0.3);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(78, 205, 196, 0.15));
+        border-left: 4px solid #4ecdc4;
+        border-color: rgba(78, 205, 196, 0.4);
+        transform: translateX(3px);
+        box-shadow: 0 8px 20px rgba(78, 205, 196, 0.2);
     }
+    
+    .playlist-item.playing {
+        background: linear-gradient(135deg, rgba(78, 205, 196, 0.25), rgba(102, 126, 234, 0.25));
+        border-left: 4px solid #4ecdc4;
+        border-color: rgba(78, 205, 196, 0.6);
+        transform: translateX(3px);
+        box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+        animation: playingPulse 2s infinite alternate;
+    }
+    
+    .playlist-item.completed {
+        background: rgba(46, 204, 113, 0.1);
+        border-left: 3px solid #2ecc71;
+        opacity: 0.8;
+        border-color: rgba(46, 204, 113, 0.3);
+    }
+    
+    .playlist-item.completed::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        color: #2ecc71;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    @keyframes playingPulse {
+        0% { box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4); }
+        100% { box-shadow: 0 15px 40px rgba(78, 205, 196, 0.6); }
+    }
+    
+    /* Playlist item content */
+    .playlist-item-content {
+        position: relative;
+        z-index: 2;
+        padding: 15px;
+    }
+    
+    .playlist-video-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+        color: #2c3e50;
+        line-height: 1.3;
+    }
+    
+    .playlist-video-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #7f8c8d;
+    }
+    
+    .playlist-video-duration {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .playlist-video-type {
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .type-instruction { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+    .type-technique { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+    .type-mistake { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+    .type-reminder { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+    .type-motivation { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
     
     /* Enhanced feedback buttons */
     .feedback-buttons {
@@ -240,25 +376,6 @@
         overflow: hidden;
     }
     
-    .playlist-item.playing {
-        background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(102, 126, 234, 0.3));
-        border-left: 5px solid #4ecdc4;
-        transform: translateX(5px);
-        box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
-        animation: pulse 2s infinite;
-    }
-    
-    .playlist-item.completed {
-        background: rgba(46, 204, 113, 0.1);
-        border-left: 3px solid #2ecc71;
-        opacity: 0.7;
-    }
-    
-    @keyframes pulse {
-        0% { box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4); }
-        50% { box-shadow: 0 15px 40px rgba(78, 205, 196, 0.6); }
-        100% { box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4); }
-    }
     
     .playlist-header {
         background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
@@ -266,6 +383,45 @@
         padding: 1rem 1.5rem;
         font-weight: 600;
         font-size: 1.1rem;
+    }
+    
+    .playlist-title {
+        display: flex;
+        align-items: center;
+    }
+    
+    .playlist-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .playlist-controls .btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: all 0.2s ease;
+        padding: 0;
+    }
+    
+    .playlist-controls .btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.05);
+    }
+    
+    .playlist-controls .btn:active {
+        transform: scale(0.95);
+    }
+    
+    .playlist-controls .btn i {
+        font-size: 0.8rem;
     }
     
     /* Responsive improvements */
@@ -341,6 +497,19 @@
                                     <i class="fas fa-play me-2"></i>
                                     Начать тренировку
                                 </button>
+                            </div>
+                            
+                            <!-- Video Progress Overlay -->
+                            <div id="videoProgressOverlay" class="video-progress-overlay">
+                                <div class="playlist-progress">
+                                    <div class="current-video-title" id="overlayVideoTitle">{{ video_playlist.0.title }}</div>
+                                    <div class="video-counter">
+                                        <span id="currentVideoNumber">1</span> из <span id="totalVideoCount">{{ video_playlist|length }}</span>
+                                    </div>
+                                </div>
+                                <div class="playlist-progress-bar">
+                                    <div class="playlist-progress-fill" id="playlistProgressFill"></div>
+                                </div>
                             </div>
                             
                             <video id="mainVideo" class="video-player" controls>
@@ -429,25 +598,48 @@
             {% if video_playlist %}
                 <div class="playlist-card">
                     <div class="playlist-header">
-                        <i class="fas fa-play-circle me-2"></i>Плейлист тренировки
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="playlist-title">
+                                <i class="fas fa-play-circle me-2"></i>Плейлист тренировки
+                            </div>
+                            <div class="playlist-controls" style="display: none;" id="playlistControls">
+                                <button class="btn btn-sm btn-outline-light me-1" onclick="playPreviousVideo()" title="Предыдущее видео">
+                                    <i class="fas fa-step-backward"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-light me-1" onclick="toggleVideoPlayPause()" id="playPauseBtn" title="Пауза/Воспроизведение">
+                                    <i class="fas fa-pause"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-light" onclick="playNextVideo()" title="Следующее видео">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        {% for video in video_playlist %}
-                            <div class="list-group-item playlist-item {% if forloop.first %}active{% endif %}" 
-                                 data-video-url="{{ video.url }}"
-                                 data-video-title="{{ video.title }}"
-                                 data-video-index="{{ forloop.counter0 }}">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1">{{ video.title }}</h6>
-                                        <small class="text-muted">{{ video.duration }} сек</small>
+                <div class="card-body p-2">
+                    {% for video in video_playlist %}
+                        <div class="playlist-item {% if forloop.first %}active{% endif %}" 
+                             data-video-url="{{ video.url }}"
+                             data-video-title="{{ video.title }}"
+                             data-video-index="{{ forloop.counter0 }}"
+                             data-video-duration="{{ video.duration }}"
+                             data-video-sets="{{ video.sets }}"
+                             data-video-reps="{{ video.reps }}"
+                             data-video-rest="{{ video.rest }}">
+                            <div class="playlist-item-content">
+                                <div class="playlist-video-title">{{ video.title }}</div>
+                                <div class="playlist-video-meta">
+                                    <div class="playlist-video-duration">
+                                        <i class="fas fa-clock"></i>
+                                        <span>{{ video.duration }}сек</span>
+                                        {% if video.sets %}
+                                            • {{ video.sets }}×{{ video.reps }}
+                                        {% endif %}
                                     </div>
-                                    <span class="badge bg-secondary">{{ video.type }}</span>
+                                    <span class="playlist-video-type type-{{ video.type|lower }}">{{ video.type }}</span>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         {% endif %}
@@ -524,133 +716,300 @@ function getCookie(name) {
 
 let workoutStarted = false;
 let currentVideoIndex = 0;
+let playlistData = [];
 
-// Start workout function
+// Initialize playlist data
+document.addEventListener('DOMContentLoaded', function() {
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    playlistData = Array.from(playlistItems).map((item, index) => ({
+        url: item.getAttribute('data-video-url'),
+        title: item.getAttribute('data-video-title'),
+        duration: item.getAttribute('data-video-duration'),
+        sets: item.getAttribute('data-video-sets'),
+        reps: item.getAttribute('data-video-reps'),
+        rest: item.getAttribute('data-video-rest'),
+        index: index
+    }));
+});
+
+// Start workout function with enhanced features
 function startWorkout() {
     const video = document.getElementById('mainVideo');
     const overlay = document.getElementById('startWorkoutOverlay');
+    const progressOverlay = document.getElementById('videoProgressOverlay');
+    const playlistControls = document.getElementById('playlistControls');
     const playlistItems = document.querySelectorAll('.playlist-item');
     
     workoutStarted = true;
     
-    // Hide overlay with animation
+    // Hide start overlay with animation
     overlay.style.opacity = '0';
     setTimeout(() => {
         overlay.style.display = 'none';
     }, 300);
     
+    // Show progress overlay
+    setTimeout(() => {
+        progressOverlay.classList.add('visible');
+    }, 500);
+    
+    // Show playlist controls
+    if (playlistControls) {
+        playlistControls.style.display = 'flex';
+    }
+    
     // Start first video
     video.play();
+    updateProgress();
     
     // Update playlist state
     if (playlistItems.length > 0) {
         playlistItems[0].classList.add('playing');
         playlistItems[0].classList.remove('active');
     }
+    
+    // Setup video event listeners
+    setupVideoEvents();
 }
 
-// Auto-play next video function
+// Enhanced auto-play next video function
 function playNextVideo() {
     const video = document.getElementById('mainVideo');
     const playlistItems = document.querySelectorAll('.playlist-item');
     
     currentVideoIndex++;
     
-    if (currentVideoIndex < playlistItems.length) {
-        const nextItem = playlistItems[currentVideoIndex];
-        const videoUrl = nextItem.getAttribute('data-video-url');
-        const videoTitle = nextItem.getAttribute('data-video-title');
+    if (currentVideoIndex < playlistData.length) {
+        const nextVideo = playlistData[currentVideoIndex];
         
-        // Update video source
-        video.src = videoUrl;
+        // Update video source with smooth transition
+        video.style.opacity = '0.5';
+        video.src = nextVideo.url;
         video.load();
         
         // Auto-play next video after loading
         video.addEventListener('loadeddata', function() {
+            video.style.opacity = '1';
             video.play();
+            updateProgress();
+            
+            // Show video transition notification
+            showVideoTransitionNotification(nextVideo.title, currentVideoIndex + 1, playlistData.length);
         }, { once: true });
         
-        // Update title
-        if (document.getElementById('currentTitle')) {
-            document.getElementById('currentTitle').textContent = videoTitle;
-        }
+        // Update overlays and info
+        updateVideoInfo(nextVideo);
         
         // Update exercise info panel
         if (window.exerciseInfoPanel) {
             window.exerciseInfoPanel.updateFromVideoIndex(currentVideoIndex);
         }
         
-        // Update playlist states
-        playlistItems.forEach((item, index) => {
-            item.classList.remove('active', 'playing');
-            if (index === currentVideoIndex) {
-                item.classList.add('playing');
-            } else if (index < currentVideoIndex) {
-                item.classList.add('completed');
-            }
-        });
+        // Update playlist states with smooth animations
+        updatePlaylistStates();
         
-        console.log(`Playing video ${currentVideoIndex + 1} of ${playlistItems.length}: ${videoTitle}`);
+        console.log(`Playing video ${currentVideoIndex + 1} of ${playlistData.length}: ${nextVideo.title}`);
     } else {
         console.log('All videos completed');
-        // All videos finished - show completion state
-        playlistItems.forEach(item => {
-            item.classList.remove('active', 'playing');
-            item.classList.add('completed');
-        });
+        completePlaylist();
     }
 }
 
-// Video playlist functionality
+// Update progress indicators
+function updateProgress() {
+    if (!workoutStarted || playlistData.length === 0) return;
+    
+    const progressPercent = ((currentVideoIndex + 1) / playlistData.length) * 100;
+    const progressFill = document.getElementById('playlistProgressFill');
+    const currentNumber = document.getElementById('currentVideoNumber');
+    
+    if (progressFill) {
+        progressFill.style.width = progressPercent + '%';
+    }
+    
+    if (currentNumber) {
+        currentNumber.textContent = currentVideoIndex + 1;
+    }
+}
+
+// Update video info in overlays
+function updateVideoInfo(video) {
+    const overlayTitle = document.getElementById('overlayVideoTitle');
+    const currentTitle = document.getElementById('currentTitle');
+    
+    if (overlayTitle) {
+        overlayTitle.textContent = video.title;
+    }
+    
+    if (currentTitle) {
+        currentTitle.textContent = video.title;
+    }
+}
+
+// Update playlist visual states
+function updatePlaylistStates() {
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    
+    playlistItems.forEach((item, index) => {
+        // Remove all state classes
+        item.classList.remove('active', 'playing', 'completed');
+        
+        // Add appropriate state class
+        if (index === currentVideoIndex) {
+            item.classList.add('playing');
+        } else if (index < currentVideoIndex) {
+            item.classList.add('completed');
+        }
+        
+        // Smooth scroll to current item
+        if (index === currentVideoIndex) {
+            item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+}
+
+// Show video transition notification
+function showVideoTransitionNotification(title, current, total) {
+    // Create or update notification
+    let notification = document.getElementById('videoTransitionNotification');
+    
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'videoTransitionNotification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(78, 205, 196, 0.95);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            font-weight: 600;
+            transform: translateX(300px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        `;
+        document.body.appendChild(notification);
+    }
+    
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-play-circle"></i>
+            <div>
+                <div style="font-size: 0.9rem; margin-bottom: 2px;">${current} из ${total}</div>
+                <div style="font-size: 0.8rem; opacity: 0.9;">${title}</div>
+            </div>
+        </div>
+    `;
+    
+    // Show notification
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
+    }, 100);
+    
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(300px)';
+        notification.style.opacity = '0';
+    }, 3000);
+}
+
+// Complete playlist
+function completePlaylist() {
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    const progressOverlay = document.getElementById('videoProgressOverlay');
+    
+    // Mark all items as completed
+    playlistItems.forEach(item => {
+        item.classList.remove('active', 'playing');
+        item.classList.add('completed');
+    });
+    
+    // Update progress to 100%
+    const progressFill = document.getElementById('playlistProgressFill');
+    if (progressFill) {
+        progressFill.style.width = '100%';
+    }
+    
+    // Show completion notification
+    showVideoTransitionNotification('Все видео завершены! 🎉', playlistData.length, playlistData.length);
+    
+    // Hide progress overlay after a delay
+    setTimeout(() => {
+        if (progressOverlay) {
+            progressOverlay.classList.remove('visible');
+        }
+    }, 5000);
+}
+
+// Setup video event listeners
+function setupVideoEvents() {
+    const video = document.getElementById('mainVideo');
+    
+    // Auto-play next video when current ends
+    video.removeEventListener('ended', playNextVideo); // Remove any existing listener
+    video.addEventListener('ended', function() {
+        if (workoutStarted) {
+            setTimeout(playNextVideo, 500); // Small delay for smoother transition
+        }
+    });
+    
+    // Progress tracking during video play
+    video.addEventListener('timeupdate', function() {
+        if (workoutStarted) {
+            updateVideoProgress();
+        }
+    });
+    
+    // Handle video loading states
+    video.addEventListener('loadstart', function() {
+        showVideoLoadingState();
+    });
+    
+    video.addEventListener('loadeddata', function() {
+        hideVideoLoadingState();
+    });
+}
+
+// Update individual video progress
+function updateVideoProgress() {
+    const video = document.getElementById('mainVideo');
+    if (!video.duration || !video.currentTime) return;
+    
+    // Update any video-specific progress indicators here if needed
+}
+
+// Show/hide loading states
+function showVideoLoadingState() {
+    const video = document.getElementById('mainVideo');
+    video.style.filter = 'blur(2px)';
+}
+
+function hideVideoLoadingState() {
+    const video = document.getElementById('mainVideo');
+    video.style.filter = 'none';
+}
+
+// Enhanced video playlist functionality
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('mainVideo');
     const playlistItems = document.querySelectorAll('.playlist-item');
     
-    // Manual playlist item click
+    // Manual playlist item click with enhanced features
     playlistItems.forEach((item, index) => {
         item.addEventListener('click', function() {
             if (!workoutStarted) {
-                alert('Сначала нажмите "Начать тренировку"');
+                showVideoTransitionNotification('Сначала нажмите "Начать тренировку"', 0, playlistData.length);
                 return;
             }
             
-            const videoUrl = this.getAttribute('data-video-url');
-            const videoTitle = this.getAttribute('data-video-title');
-            
-            currentVideoIndex = index;
-            
-            // Update video source
-            video.src = videoUrl;
-            video.load();
-            video.play();
-            
-            // Update title
-            if (document.getElementById('currentTitle')) {
-                document.getElementById('currentTitle').textContent = videoTitle;
-            }
-            
-            // Update exercise info panel
-            if (window.exerciseInfoPanel) {
-                window.exerciseInfoPanel.updateFromVideoIndex(index);
-            }
-            
-            // Update playlist states
-            playlistItems.forEach((pItem, pIndex) => {
-                pItem.classList.remove('active', 'playing');
-                if (pIndex === index) {
-                    pItem.classList.add('playing');
-                } else if (pIndex < index) {
-                    pItem.classList.add('completed');
-                }
-            });
+            // Jump to selected video
+            jumpToVideo(index);
         });
-    });
-    
-    // Auto-play next video when current ends
-    video.addEventListener('ended', function() {
-        if (workoutStarted) {
-            playNextVideo();
-        }
     });
     
     // Prevent manual play before workout starts
@@ -658,9 +1017,96 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!workoutStarted) {
             e.preventDefault();
             video.pause();
+            showVideoTransitionNotification('Нажмите "Начать тренировку" для старта', 0, playlistData.length);
+        }
+    });
+    
+    // Keyboard controls for video playlist
+    document.addEventListener('keydown', function(e) {
+        if (!workoutStarted) return;
+        
+        switch(e.key) {
+            case 'ArrowRight':
+            case 'n':
+            case 'N':
+                e.preventDefault();
+                playNextVideo();
+                break;
+            case 'ArrowLeft':
+            case 'p':
+            case 'P':
+                e.preventDefault();
+                playPreviousVideo();
+                break;
+            case ' ':
+                e.preventDefault();
+                toggleVideoPlayPause();
+                break;
         }
     });
 });
+
+// Jump to specific video in playlist
+function jumpToVideo(index) {
+    if (index < 0 || index >= playlistData.length) return;
+    
+    const video = document.getElementById('mainVideo');
+    const targetVideo = playlistData[index];
+    
+    currentVideoIndex = index;
+    
+    // Update video source with transition effect
+    video.style.opacity = '0.5';
+    video.src = targetVideo.url;
+    video.load();
+    
+    video.addEventListener('loadeddata', function() {
+        video.style.opacity = '1';
+        video.play();
+        updateProgress();
+        updateVideoInfo(targetVideo);
+        updatePlaylistStates();
+        
+        // Show transition notification
+        showVideoTransitionNotification(targetVideo.title, index + 1, playlistData.length);
+        
+        // Update exercise info panel
+        if (window.exerciseInfoPanel) {
+            window.exerciseInfoPanel.updateFromVideoIndex(index);
+        }
+    }, { once: true });
+}
+
+// Play previous video
+function playPreviousVideo() {
+    if (currentVideoIndex > 0) {
+        jumpToVideo(currentVideoIndex - 1);
+    } else {
+        showVideoTransitionNotification('Это первое видео в плейлисте', 1, playlistData.length);
+    }
+}
+
+// Toggle play/pause with button update
+function toggleVideoPlayPause() {
+    const video = document.getElementById('mainVideo');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    
+    if (video.paused) {
+        video.play();
+        if (playPauseBtn) {
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            playPauseBtn.title = 'Пауза';
+        }
+        showVideoTransitionNotification('▶️ Воспроизведение', currentVideoIndex + 1, playlistData.length);
+    } else {
+        video.pause();
+        if (playPauseBtn) {
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            playPauseBtn.title = 'Воспроизведение';
+        }
+        showVideoTransitionNotification('⏸️ Пауза', currentVideoIndex + 1, playlistData.length);
+    }
+}
 
 function showFeedbackModal() {
     new bootstrap.Modal(document.getElementById('feedbackModal')).show();
