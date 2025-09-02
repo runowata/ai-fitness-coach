@@ -4,62 +4,129 @@
 {% block title %}Мой план тренировок - AI Fitness Coach{% endblock %}
 
 {% block content %}
-<div class="container-fluid px-4 py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Header -->
-            <div class="text-center mb-5">
-                <h1 class="display-4 text-primary mb-3">{{ plan.name }}</h1>
-                <p class="lead text-muted">{{ plan.duration_weeks }} недел{{ plan.duration_weeks|pluralize:"я,и,ь" }} тренировок</p>
+<!-- Immersive Glass Dashboard Style -->
+<div class="plan-fullscreen">
+    <!-- Video background -->
+    <video autoplay muted loop playsinline class="plan-video-bg">
+        <source src="{% static 'videos/Video_o_transformaciji_tela.mp4' %}" type="video/mp4">
+    </video>
+    
+    <!-- Gradient overlay -->
+    <div class="plan-overlay"></div>
+    
+    <!-- Content -->
+    <div class="plan-content">
+        <div class="container-fluid px-4">
+            
+            <!-- Plan Header -->
+            <div class="plan-header">
+                <div class="glass-card plan-title-card">
+                    <div class="plan-title-content">
+                        <div class="plan-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="plan-title-text">
+                            <h1 class="plan-title">{{ plan.name }}</h1>
+                            <div class="plan-meta">
+                                <span class="duration-badge">{{ plan.duration_weeks }} недел{{ plan.duration_weeks|pluralize:"я,и,ь" }}</span>
+                                <span class="total-days">{{ daily_workouts|length }} дней</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:dashboard' %}" class="btn-glass-outline">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            На главную
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <!-- Daily Workouts Grid -->
-            <div class="row g-4">
+            <!-- Workout Days Grid -->
+            <div class="workout-grid">
                 {% for day in daily_workouts %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 workout-day-card{% if day.is_rest_day %} rest-day{% endif %}">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="day-number">
-                                    {{ day.day_number }}
-                                </div>
-                                <div class="ms-3">
-                                    <h5 class="card-title mb-1">{{ day.name }}</h5>
-                                    {% if day.is_rest_day %}
-                                        <small class="text-muted">
-                                            <i class="fas fa-bed me-1"></i>День отдыха
-                                        </small>
-                                    {% else %}
-                                        <small class="text-muted">
-                                            <i class="fas fa-dumbbell me-1"></i>{{ day.exercises|length }} упражнени{{ day.exercises|length|pluralize:"е,я,й" }}
-                                        </small>
-                                    {% endif %}
-                                </div>
+                <div class="workout-day-item">
+                    <div class="glass-card workout-day-card{% if day.is_rest_day %} rest-day{% endif %}{% if day.completed_at %} completed{% endif %}">
+                        
+                        <!-- Day Header -->
+                        <div class="day-header">
+                            <div class="day-number-modern">
+                                <span class="day-num">{{ day.day_number }}</span>
+                                {% if day.completed_at %}
+                                    <div class="completion-indicator">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                {% endif %}
                             </div>
+                            <div class="day-info">
+                                <h3 class="day-name">{{ day.name }}</h3>
+                                {% if day.is_rest_day %}
+                                    <div class="day-type rest">
+                                        <i class="fas fa-bed"></i>
+                                        <span>День отдыха</span>
+                                    </div>
+                                {% else %}
+                                    <div class="day-type workout">
+                                        <i class="fas fa-dumbbell"></i>
+                                        <span>{{ day.exercises|length }} упражнени{{ day.exercises|length|pluralize:"е,я,й" }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
 
-                            {% if not day.is_rest_day and day.exercises %}
-                            <div class="exercise-preview mb-3">
+                        <!-- Exercise Preview -->
+                        {% if not day.is_rest_day and day.exercises %}
+                        <div class="exercise-preview">
+                            <div class="preview-title">Основные упражнения:</div>
+                            <div class="exercise-list">
                                 {% for exercise in day.exercises|slice:":3" %}
-                                    <div class="exercise-item">
-                                        <small class="text-muted">{{ exercise.exercise_name }}</small>
+                                    <div class="exercise-preview-item">
+                                        <div class="exercise-dot"></div>
+                                        <span>{{ exercise.exercise_name }}</span>
                                     </div>
                                 {% endfor %}
                                 {% if day.exercises|length > 3 %}
-                                    <small class="text-muted">и еще {{ day.exercises|length|add:"-3" }}...</small>
+                                    <div class="more-exercises">
+                                        +{{ day.exercises|length|add:"-3" }} еще...
+                                    </div>
                                 {% endif %}
                             </div>
-                            {% endif %}
-
-                            <div class="mt-auto">
-                                <a href="{% url 'workouts:workout_day' day.id %}" class="btn {% if day.is_rest_day %}btn-outline-secondary{% else %}btn-primary{% endif %} w-100">
-                                    {% if day.is_rest_day %}
-                                        <i class="fas fa-eye me-1"></i>Посмотреть
-                                    {% else %}
-                                        <i class="fas fa-play me-1"></i>Начать тренировку
-                                    {% endif %}
-                                </a>
-                            </div>
                         </div>
+                        {% elif day.is_rest_day %}
+                        <div class="rest-day-content">
+                            <div class="rest-icon-large">
+                                <i class="fas fa-spa"></i>
+                            </div>
+                            <p class="rest-description">Время для восстановления и релаксации</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Action Button -->
+                        <div class="day-action">
+                            {% if day.completed_at %}
+                                <a href="{% url 'workouts:workout_day' day.id %}" class="btn-day-action completed">
+                                    <div class="btn-icon">
+                                        <i class="fas fa-redo"></i>
+                                    </div>
+                                    <span>Повторить</span>
+                                </a>
+                            {% elif day.is_rest_day %}
+                                <a href="{% url 'workouts:workout_day' day.id %}" class="btn-day-action rest">
+                                    <div class="btn-icon">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                    <span>Посмотреть</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'workouts:workout_day' day.id %}" class="btn-day-action start">
+                                    <div class="btn-icon">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <span>Начать</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Progress Glow Effect -->
+                        <div class="progress-glow"></div>
                     </div>
                 </div>
                 {% endfor %}
@@ -71,50 +138,592 @@
 
 {% block extra_css %}
 <style>
+/* =================================================================
+   IMMERSIVE GLASS PLAN PAGE - Dashboard Style
+   Full-screen with video background and glass morphism
+   ================================================================= */
+
+/* Full-screen layout like dashboard */
+.plan-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Video Background */
+.plan-video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.25;
+}
+
+/* Gradient Overlay */
+.plan-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.85) 0%, 
+        rgba(118, 75, 162, 0.85) 50%,
+        rgba(255, 107, 107, 0.8) 100%
+    );
+    z-index: -1;
+}
+
+/* Content Container */
+.plan-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 0;
+    min-height: 100vh;
+}
+
+/* Glass Card Base (inherited from dashboard) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(25px);
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.6), 
+        transparent
+    );
+}
+
+/* =================================================================
+   PLAN HEADER
+   ================================================================= */
+
+.plan-header {
+    margin-bottom: 3rem;
+}
+
+.plan-title-card {
+    padding: 2rem 2.5rem;
+}
+
+.plan-title-content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.plan-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 8px 24px rgba(78, 205, 196, 0.4);
+}
+
+.plan-title-text {
+    flex: 1;
+    min-width: 300px;
+}
+
+.plan-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 1rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.plan-meta {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.duration-badge, .total-days {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.duration-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* Glass Buttons */
+.btn-glass-outline {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.btn-glass-outline:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-decoration: none;
+}
+
+/* =================================================================
+   WORKOUT GRID
+   ================================================================= */
+
+.workout-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    animation: staggerIn 0.8s ease-out;
+}
+
+.workout-day-item {
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: both;
+}
+
+.workout-day-item:nth-child(1) { animation-delay: 0.1s; }
+.workout-day-item:nth-child(2) { animation-delay: 0.2s; }
+.workout-day-item:nth-child(3) { animation-delay: 0.3s; }
+.workout-day-item:nth-child(4) { animation-delay: 0.4s; }
+.workout-day-item:nth-child(5) { animation-delay: 0.5s; }
+.workout-day-item:nth-child(6) { animation-delay: 0.6s; }
+
 .workout-day-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 2px solid #e0e6ed;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
 }
 
 .workout-day-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .workout-day-card.rest-day {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: rgba(78, 205, 196, 0.15);
+    border-color: rgba(78, 205, 196, 0.3);
 }
 
-.day-number {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+.workout-day-card.completed {
+    background: rgba(40, 167, 69, 0.15);
+    border-color: rgba(40, 167, 69, 0.3);
+}
+
+.workout-day-card.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 30px;
+    height: 30px;
+    background: #28a745;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
 }
 
-.rest-day .day-number {
-    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+/* =================================================================
+   DAY HEADER
+   ================================================================= */
+
+.day-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
+
+.day-number-modern {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    flex-shrink: 0;
+}
+
+.day-num {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.completion-indicator {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 24px;
+    height: 24px;
+    background: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5);
+}
+
+.rest-day .day-number-modern {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    box-shadow: 0 8px 24px rgba(78, 205, 196, 0.4);
+}
+
+.day-info {
+    flex: 1;
+}
+
+.day-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.day-type {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.day-type i {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.day-type.rest {
+    color: #4ecdc4;
+}
+
+.day-type.workout {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* =================================================================
+   EXERCISE PREVIEW
+   ================================================================= */
 
 .exercise-preview {
+    flex: 1;
+    margin-bottom: 1.5rem;
+}
+
+.preview-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.exercise-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.exercise-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.9);
     font-size: 0.9rem;
 }
 
-.exercise-item {
-    padding: 2px 0;
+.exercise-dot {
+    width: 6px;
+    height: 6px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.more-exercises {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding-left: 1.5rem;
+    font-style: italic;
+}
+
+/* Rest day content */
+.rest-day-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.rest-icon-large {
+    font-size: 3rem;
+    color: #4ecdc4;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.rest-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* =================================================================
+   ACTION BUTTONS
+   ================================================================= */
+
+.day-action {
+    margin-top: auto;
+}
+
+.btn-day-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border-radius: 18px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-day-action.start {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.btn-day-action.rest {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+    box-shadow: 0 8px 24px rgba(78, 205, 196, 0.4);
+}
+
+.btn-day-action.completed {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    box-shadow: 0 8px 24px rgba(40, 167, 69, 0.4);
+}
+
+.btn-day-action:hover {
+    transform: translateY(-3px);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-day-action.start:hover {
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+}
+
+.btn-day-action.rest:hover {
+    box-shadow: 0 12px 32px rgba(78, 205, 196, 0.6);
+}
+
+.btn-day-action.completed:hover {
+    box-shadow: 0 12px 32px rgba(40, 167, 69, 0.6);
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    font-size: 0.9rem;
+}
+
+/* Progress Glow Effect */
+.progress-glow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    border-radius: 0 0 25px 25px;
+    animation: shimmer 3s infinite linear;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.workout-day-card:hover .progress-glow {
+    opacity: 1;
+}
+
+/* =================================================================
+   ANIMATIONS
+   ================================================================= */
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes staggerIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* =================================================================
+   RESPONSIVE DESIGN
+   ================================================================= */
+
+@media (max-width: 1200px) {
+    .workout-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
 }
 
 @media (max-width: 768px) {
-    .day-number {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
+    .plan-content {
+        padding: 1rem 0;
+    }
+    
+    .plan-title-card {
+        padding: 1.5rem;
+    }
+    
+    .plan-title-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .plan-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+    }
+    
+    .plan-title {
+        font-size: 2rem;
+    }
+    
+    .workout-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .workout-day-card {
+        min-height: 240px;
+        padding: 1.5rem;
+    }
+    
+    .day-number-modern {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .day-num {
+        font-size: 1.2rem;
+    }
+    
+    .day-name {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .plan-title {
+        font-size: 1.8rem;
+    }
+    
+    .workout-day-card {
+        min-height: 220px;
+        padding: 1.2rem;
+    }
+    
+    .btn-day-action {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
     }
 }
 </style>
