@@ -39,13 +39,19 @@ def _get_random_motivational_background():
             with open(r2_state_path, 'r') as f:
                 r2_files = json.load(f)
             
-            # Expanded filter: get more image categories (not just quotes)
-            motivational_photos = [
+            # IMPROVED: Prioritize workout photos first (most likely to be horizontal)
+            workout_photos = [
                 f for f in r2_files 
-                if ('photos/' in f and f.endswith('.jpg')) and
-                   # Filter by categories that likely have horizontal images
-                   ('quotes/' in f or 'progress/' in f or 'workout/' in f)
+                if 'photos/workout/' in f and f.endswith('.jpg')
             ]
+            
+            progress_photos = [
+                f for f in r2_files 
+                if 'photos/progress/' in f and f.endswith('.jpg')
+            ]
+            
+            # Use workout photos as primary source (better horizontal ratio)
+            motivational_photos = workout_photos if workout_photos else progress_photos
             
             # BONUS: If we have metadata about image dimensions, filter horizontal ones
             # For now, we'll improve randomization to use more variety

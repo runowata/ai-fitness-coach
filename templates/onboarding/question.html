@@ -2326,14 +2326,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         img.onload = function() {
             console.log('✅ Image loaded successfully!');
+            console.log('Image dimensions:', this.naturalWidth, 'x', this.naturalHeight);
+            
+            // Detect if image is vertical/portrait
+            const isVertical = this.naturalHeight > this.naturalWidth;
+            const aspectRatio = this.naturalWidth / this.naturalHeight;
+            console.log('Is vertical:', isVertical, 'Aspect ratio:', aspectRatio.toFixed(2));
+            
             hideLoadingAnimation();
-            createStunningCard(card, navigationData, true);
+            createStunningCard(card, navigationData, true, isVertical);
         };
         
         img.onerror = function() {
             console.warn('❌ Image failed to load, using gradient fallback');
             hideLoadingAnimation();
-            createStunningCard(card, navigationData, false);
+            createStunningCard(card, navigationData, false, false);
         };
         
         // Test different URL formats
@@ -2383,20 +2390,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function createStunningCard(card, navigationData, hasImage) {
-        console.log('🎨 Creating stunning card, hasImage:', hasImage);
+    function createStunningCard(card, navigationData, hasImage, isVertical = false) {
+        console.log('🎨 Creating stunning card, hasImage:', hasImage, 'isVertical:', isVertical);
         
         // Epic background with multiple layers for depth
         const backgroundLayers = hasImage ? `
-            /* Main photo */
+            /* Main photo - IMPROVED vertical image handling */
             background-image: 
                 linear-gradient(45deg, rgba(102, 126, 234, 0.1) 0%, transparent 50%, rgba(78, 205, 196, 0.1) 100%),
                 linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.7) 100%),
                 url('${card.image_url}');
-            background-size: cover, cover, cover;
-            background-position: center, center, center;
+            background-size: cover, cover, ${isVertical ? 'auto 100%' : 'cover'};
+            background-position: center, center, ${isVertical ? 'center center' : 'center'};
             background-repeat: no-repeat;
             animation: backgroundZoom 20s ease-in-out infinite;
+            ${isVertical ? 'transform: scale(1.2);' : ''}
         ` : `
             background: 
                 radial-gradient(ellipse at top, rgba(102, 126, 234, 0.1) 0%, transparent 70%),
@@ -2520,7 +2528,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function showCardWithGradient(card, navigationData) {
-        createStunningCard(card, navigationData, false);
+        createStunningCard(card, navigationData, false, false);
     }
     
     // Store navigation data globally and show modal

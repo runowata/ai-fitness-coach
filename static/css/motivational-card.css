@@ -35,11 +35,28 @@
 .hero-img {
     width: 100%;
     height: 100%;
+    /* IMPROVED: Better handling for vertical images */
     object-fit: cover;
     object-position: center;
-    /* Improved: Better handling for different aspect ratios */
     min-height: 100vh;
     min-width: 100vw;
+    
+    /* Fallback for vertical images: use contain to show full image */
+    /* This will be overridden by JS if image is determined to be vertical */
+}
+
+/* Special handling for vertical/portrait images */
+.hero-img.portrait {
+    object-fit: cover;
+    object-position: center;
+    /* For portrait images, we want to show the center portion without extreme cropping */
+    transform: scale(1.1);
+}
+
+/* Alternative: contain for portrait to show full image with background blur */
+.hero-img.portrait-contain {
+    object-fit: contain;
+    background-color: #000;
 }
 
 /* Gradient Overlay - Fades image to bottom for text readability */
