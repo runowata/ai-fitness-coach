@@ -26,59 +26,106 @@
                 {% endif %}
             </div>
 
-            {% comment %} Плейлист из R2 (IMPROVED) {% endcomment %}
+            {% comment %} Современный видео-плеер с плейлистом {% endcomment %}
             {% if playlist %}
-              <div class="playlist-header mb-4">
-                <h3 class="playlist-title">
-                  <i class="fas fa-play-circle me-2" style="color: #667eea;"></i>
-                  Видео-плейлист дня ({{ playlist|length }} видео)
-                </h3>
-                <p class="text-muted">Следуйте порядку видео для максимального эффекта тренировки</p>
-              </div>
-              
-              {% for it in playlist %}
-                <div class="card mb-3 shadow-sm border-0 playlist-item">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                      <div class="d-flex align-items-center">
-                        <span class="playlist-number me-3">{{ it.order|add:1 }}</span>
-                        <span class="badge bg-primary text-white role-badge">
-                          {{ it.role|title }}
-                        </span>
+              <div class="modern-video-container">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <!-- Главный видео-плеер -->
+                    <div class="main-video-card">
+                      <div class="video-header">
+                        <h3 class="video-title">{{ playlist.0.video.name }}</h3>
+                        <div class="video-progress-info">
+                          <span id="currentVideoNumber">1</span> из {{ playlist|length }}
+                        </div>
                       </div>
-                      {% if it.duration_seconds %}
-                        <small class="text-muted">
-                          <i class="fas fa-clock me-1"></i>
-                          {{ it.duration_seconds }}с
-                        </small>
-                      {% endif %}
+                      
+                      <div class="video-player-container">
+                        <!-- Start overlay -->
+                        <div id="startOverlay" class="video-start-overlay">
+                          <button class="start-btn" onclick="startPlaylist()">
+                            <i class="fas fa-play"></i>
+                            <span>Начать тренировку</span>
+                          </button>
+                        </div>
+                        
+                        <!-- Progress overlay -->
+                        <div id="progressOverlay" class="video-progress-overlay">
+                          <div class="progress-info">
+                            <div class="current-title" id="overlayTitle">{{ playlist.0.video.name }}</div>
+                            <div class="progress-counter">
+                              <span id="progressCurrent">1</span> / {{ playlist|length }}
+                            </div>
+                          </div>
+                          <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="progressFill"></div>
+                          </div>
+                        </div>
+                        
+                        <!-- Main video player -->
+                        <video 
+                          id="mainVideoPlayer"
+                          class="main-video-player"
+                          controls 
+                          preload="metadata"
+                          playsinline
+                          controlslist="nodownload">
+                          <source src="{{ playlist.0.video.r2_url }}" type="video/mp4">
+                          Ваш браузер не поддерживает видео.
+                        </video>
+                      </div>
+                      
+                      <!-- Video controls -->
+                      <div class="video-controls" id="videoControls" style="display: none;">
+                        <button class="control-btn" onclick="previousVideo()" title="Предыдущее">
+                          <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="control-btn" onclick="togglePlayPause()" id="playPauseBtn" title="Пауза">
+                          <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="control-btn" onclick="nextVideo()" title="Следующее">
+                          <i class="fas fa-step-forward"></i>
+                        </button>
+                      </div>
                     </div>
-
-                    <h6 class="video-title mb-3">{{ it.video.name }}</h6>
-
-                    <div class="video-wrapper position-relative">
-                      <video 
-                        controls 
-                        preload="metadata" 
-                        playsinline
-                        controlslist="nodownload"
-                        class="w-100 rounded-3 shadow-sm video-player"
-                        data-video-id="{{ it.video.code }}"
-                        poster="">
-                        <source src="{{ it.video.r2_url }}" type="video/mp4" />
-                        Ваш браузер не поддерживает воспроизведение видео.
-                      </video>
-                      <!-- Debug info (remove in production) -->
-                      <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">
-                        {{ it.video.r2_url|truncatechars:50 }}
-                      </small>
+                  </div>
+                  
+                  <div class="col-lg-4">
+                    <!-- Плейлист сбоку -->
+                    <div class="playlist-sidebar">
+                      <div class="playlist-sidebar-header">
+                        <h5><i class="fas fa-list"></i> Плейлист тренировки</h5>
+                        <span class="playlist-count">{{ playlist|length }} видео</span>
+                      </div>
+                      
+                      <div class="playlist-items">
+                        {% for it in playlist %}
+                          <div class="playlist-sidebar-item {% if forloop.first %}active{% endif %}"
+                               data-index="{{ forloop.counter0 }}"
+                               data-video-url="{{ it.video.r2_url }}"
+                               data-video-title="{{ it.video.name }}"
+                               data-video-role="{{ it.role }}"
+                               onclick="jumpToVideo({{ forloop.counter0 }})">
+                            <div class="item-number">{{ forloop.counter }}</div>
+                            <div class="item-content">
+                              <div class="item-title">{{ it.video.name }}</div>
+                              <div class="item-meta">
+                                <span class="item-role {{ it.role|lower }}">{{ it.role|title }}</span>
+                                {% if it.duration_seconds %}
+                                  <span class="item-duration">{{ it.duration_seconds }}с</span>
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        {% endfor %}
+                      </div>
                     </div>
                   </div>
                 </div>
-              {% endfor %}
+              </div>
               
-              <!-- Playlist Summary -->
-              <div class="playlist-summary mt-4 p-3 bg-light rounded">
+              <!-- Статистика плейлиста -->
+              <div class="playlist-summary mt-4">
                 <div class="row text-center">
                   <div class="col-4">
                     <div class="summary-stat">
@@ -90,14 +137,14 @@
                   <div class="col-4">
                     <div class="summary-stat">
                       <i class="fas fa-dumbbell text-success"></i>
-                      <div class="stat-number">11</div>
+                      <div class="stat-number">{% widthratio playlist|length 1 1.5|floatformat:0 %}</div>
                       <div class="stat-label">Упражнений</div>
                     </div>
                   </div>
                   <div class="col-4">
                     <div class="summary-stat">
                       <i class="fas fa-heart text-danger"></i>
-                      <div class="stat-number">5</div>
+                      <div class="stat-number">{% for item in playlist %}{% if item.role == 'Motivation' %}{{ forloop.counter0|add:1 }}{% endif %}{% endfor %}</div>
                       <div class="stat-label">Мотивации</div>
                     </div>
                   </div>
@@ -129,6 +176,12 @@
 
 {% block extra_css %}
 <style>
+/* Base styles */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
 .day-number-large {
     width: 80px;
     height: 80px;
@@ -141,131 +194,370 @@
     font-weight: bold;
     font-size: 2rem;
     margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
-/* Improved playlist styles */
-.playlist-header {
-    text-align: center;
+/* Modern video container */
+.modern-video-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     margin-bottom: 2rem;
 }
 
-.playlist-title {
-    color: #333;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+/* Main video player card */
+.main-video-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
-.playlist-item {
-    border-left: 4px solid #667eea;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.playlist-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-}
-
-.playlist-number {
-    background: #667eea;
+.video-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: inline-flex;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    font-weight: bold;
+}
+
+.video-header .video-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+}
+
+.video-progress-info {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
     font-size: 0.9rem;
 }
 
-.role-badge {
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.video-title {
-    color: #2c3e50;
-    font-weight: 500;
-}
-
-.video-wrapper {
+/* Video player container */
+.video-player-container {
     position: relative;
+    background: #000;
+    aspect-ratio: 16/9;
+}
+
+.main-video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Video overlays */
+.video-start-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.start-btn {
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    border: none;
+    color: white;
+    padding: 2rem 3rem;
+    border-radius: 25px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 15px 35px rgba(78, 205, 196, 0.4);
+}
+
+.start-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 25px 50px rgba(78, 205, 196, 0.6);
+}
+
+.start-btn i {
+    font-size: 3rem;
+}
+
+.video-progress-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 15px 20px;
+    color: white;
+    z-index: 5;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.video-progress-overlay.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.current-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.progress-counter {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
     overflow: hidden;
 }
 
-.video-wrapper video {
-    transition: transform 0.3s ease;
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #44a08d);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
 }
 
-.video-wrapper:hover video {
-    transform: scale(1.02);
+/* Video controls */
+.video-controls {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.control-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.control-btn:hover {
+    background: rgba(78, 205, 196, 0.3);
+    border-color: rgba(78, 205, 196, 0.6);
+    transform: scale(1.1);
+}
+
+/* Playlist sidebar */
+.playlist-sidebar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-height: 600px;
+}
+
+.playlist-sidebar-header {
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.playlist-sidebar-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.playlist-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.playlist-items {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.playlist-sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    position: relative;
+}
+
+.playlist-sidebar-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-left-color: rgba(102, 126, 234, 0.3);
+}
+
+.playlist-sidebar-item.active {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(102, 126, 234, 0.2));
+    border-left-color: #4ecdc4;
+}
+
+.playlist-sidebar-item.playing {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(102, 126, 234, 0.3));
+    border-left-color: #4ecdc4;
+    animation: playingPulse 2s infinite alternate;
+}
+
+.playlist-sidebar-item.completed {
+    opacity: 0.7;
+    background: rgba(46, 204, 113, 0.1);
+    border-left-color: #2ecc71;
+}
+
+.playlist-sidebar-item.completed::after {
+    content: '✓';
+    position: absolute;
+    right: 15px;
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+@keyframes playingPulse {
+    0% { box-shadow: inset 0 0 0 rgba(78, 205, 196, 0.3); }
+    100% { box-shadow: inset 0 0 20px rgba(78, 205, 196, 0.6); }
+}
+
+.item-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #667eea;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.item-role {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.item-role.motivation { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+.item-role.warmup { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+.item-role.main { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+.item-role.cooldown { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+
+.item-duration {
+    color: #7f8c8d;
+}
+
+/* Summary styles */
 .playlist-summary {
-    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
-    border: 1px solid #e1e8f5;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 255, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .summary-stat {
-    padding: 1rem 0.5rem;
+    padding: 1rem;
+    text-align: center;
 }
 
 .summary-stat i {
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin-bottom: 0.5rem;
+    display: block;
 }
 
 .stat-number {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #2c3e50;
     line-height: 1;
+    margin-bottom: 0.25rem;
 }
 
 .stat-label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #6c757d;
     font-weight: 500;
 }
 
-.exercise-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.exercise-card:hover {
-    transform: translateY(-2px);
-}
-
-.exercise-card .card {
-    border: 2px solid #e0e6ed;
-    border-left: 4px solid #667eea;
-}
-
-.exercise-number {
-    color: #667eea;
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-right: 0.5rem;
-}
-
-.exercise-specs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.spec-item {
-    display: inline-flex;
-    align-items: center;
-}
-
-.spec-item i {
-    color: #667eea;
-}
-
+/* Responsive design */
 @media (max-width: 768px) {
     .day-number-large {
         width: 60px;
@@ -273,84 +565,353 @@
         font-size: 1.5rem;
     }
     
-    .exercise-specs {
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
+    .modern-video-container {
+        padding: 1rem;
     }
-}
-
-/* Video player improvements */
-.video-player {
-    max-height: 400px;
-    background: #000;
-}
-
-.video-wrapper video::-webkit-media-controls-fullscreen-button {
-    display: inline-block !important;
-}
-
-.video-error {
-    background: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 10px;
+    
+    .video-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .start-btn {
+        padding: 1.5rem 2rem;
+        font-size: 1.1rem;
+    }
+    
+    .start-btn i {
+        font-size: 2rem;
+    }
+    
+    .playlist-sidebar {
+        margin-top: 2rem;
+        max-height: 400px;
+    }
+    
+    .control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
 }
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+// Global playlist variables
+let currentVideoIndex = 0;
+let playlistStarted = false;
+let playlistData = [];
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle all video elements
-    const videos = document.querySelectorAll('video.video-player');
+    // Initialize playlist data
+    const playlistItems = document.querySelectorAll('.playlist-sidebar-item');
+    playlistData = Array.from(playlistItems).map((item, index) => ({
+        url: item.getAttribute('data-video-url'),
+        title: item.getAttribute('data-video-title'),
+        role: item.getAttribute('data-video-role'),
+        index: index
+    }));
     
-    videos.forEach(video => {
-        // Add error handling
-        video.addEventListener('error', function(e) {
-            console.error('Video error:', e);
-            const videoId = this.dataset.videoId;
-            const src = this.querySelector('source').src;
-            
-            // Create error message
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'video-error';
-            errorDiv.innerHTML = `
-                <strong>Ошибка загрузки видео</strong><br>
-                <small>ID: ${videoId}</small><br>
-                <small>URL: ${src}</small><br>
-                <small>Попробуйте обновить страницу</small>
-            `;
-            this.parentElement.appendChild(errorDiv);
-        });
-        
-        // Log successful load
-        video.addEventListener('loadedmetadata', function() {
-            console.log('Video loaded:', this.dataset.videoId);
-        });
-        
-        // Fix for iOS/Safari fullscreen
-        video.addEventListener('webkitbeginfullscreen', function() {
-            console.log('Entering fullscreen');
-        });
-        
-        // Ensure video can play
-        video.addEventListener('click', function(e) {
-            if (this.paused) {
-                this.play().catch(err => {
-                    console.error('Play error:', err);
-                });
-            }
-        });
-    });
+    console.log('Playlist initialized with', playlistData.length, 'videos');
     
-    // Debug: Log all video URLs
-    console.log('Video URLs on page:');
-    videos.forEach(video => {
-        const src = video.querySelector('source').src;
-        console.log(src);
-    });
+    // Setup playlist item clicks
+    setupPlaylistInteractions();
+    
+    // Setup keyboard controls
+    setupKeyboardControls();
 });
+
+// Start playlist function
+function startPlaylist() {
+    const video = document.getElementById('mainVideoPlayer');
+    const startOverlay = document.getElementById('startOverlay');
+    const progressOverlay = document.getElementById('progressOverlay');
+    const videoControls = document.getElementById('videoControls');
+    
+    playlistStarted = true;
+    
+    // Hide start overlay
+    startOverlay.style.opacity = '0';
+    setTimeout(() => {
+        startOverlay.style.display = 'none';
+    }, 300);
+    
+    // Show progress overlay and controls
+    setTimeout(() => {
+        progressOverlay.classList.add('visible');
+        videoControls.style.display = 'flex';
+    }, 500);
+    
+    // Start first video
+    video.play();
+    updateProgress();
+    updatePlaylistStates();
+    
+    // Setup video event listeners
+    setupVideoEvents();
+    
+    console.log('Playlist started');
+}
+
+// Setup video event listeners
+function setupVideoEvents() {
+    const video = document.getElementById('mainVideoPlayer');
+    
+    // Auto-advance to next video
+    video.removeEventListener('ended', nextVideo); // Remove existing listener
+    video.addEventListener('ended', function() {
+        if (playlistStarted) {
+            setTimeout(nextVideo, 500);
+        }
+    });
+    
+    // Update play/pause button
+    video.addEventListener('play', function() {
+        updatePlayPauseButton(false);
+    });
+    
+    video.addEventListener('pause', function() {
+        updatePlayPauseButton(true);
+    });
+    
+    // Error handling
+    video.addEventListener('error', function(e) {
+        console.error('Video error:', e);
+        showNotification('Ошибка загрузки видео', 'error');
+    });
+}
+
+// Next video function
+function nextVideo() {
+    if (currentVideoIndex < playlistData.length - 1) {
+        jumpToVideo(currentVideoIndex + 1);
+    } else {
+        completePlaylist();
+    }
+}
+
+// Previous video function
+function previousVideo() {
+    if (currentVideoIndex > 0) {
+        jumpToVideo(currentVideoIndex - 1);
+    } else {
+        showNotification('Это первое видео в плейлисте');
+    }
+}
+
+// Jump to specific video
+function jumpToVideo(index) {
+    if (index < 0 || index >= playlistData.length || !playlistStarted) {
+        if (!playlistStarted) {
+            showNotification('Сначала нажмите "Начать тренировку"');
+        }
+        return;
+    }
+    
+    const video = document.getElementById('mainVideoPlayer');
+    const targetVideo = playlistData[index];
+    
+    currentVideoIndex = index;
+    
+    // Update video with fade effect
+    video.style.opacity = '0.5';
+    video.src = targetVideo.url;
+    video.load();
+    
+    video.addEventListener('loadeddata', function() {
+        video.style.opacity = '1';
+        video.play();
+        updateProgress();
+        updateVideoInfo(targetVideo);
+        updatePlaylistStates();
+        
+        showNotification(`Воспроизводится: ${targetVideo.title}`);
+    }, { once: true });
+}
+
+// Toggle play/pause
+function togglePlayPause() {
+    const video = document.getElementById('mainVideoPlayer');
+    
+    if (!playlistStarted) {
+        showNotification('Сначала нажмите "Начать тренировку"');
+        return;
+    }
+    
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
+    }
+}
+
+// Update progress indicators
+function updateProgress() {
+    if (!playlistStarted || playlistData.length === 0) return;
+    
+    const progressPercent = ((currentVideoIndex + 1) / playlistData.length) * 100;
+    const progressFill = document.getElementById('progressFill');
+    const progressCurrent = document.getElementById('progressCurrent');
+    const currentVideoNumber = document.getElementById('currentVideoNumber');
+    
+    if (progressFill) {
+        progressFill.style.width = progressPercent + '%';
+    }
+    
+    if (progressCurrent) {
+        progressCurrent.textContent = currentVideoIndex + 1;
+    }
+    
+    if (currentVideoNumber) {
+        currentVideoNumber.textContent = currentVideoIndex + 1;
+    }
+}
+
+// Update video info
+function updateVideoInfo(video) {
+    const overlayTitle = document.getElementById('overlayTitle');
+    const videoTitle = document.querySelector('.video-header .video-title');
+    
+    if (overlayTitle) {
+        overlayTitle.textContent = video.title;
+    }
+    
+    if (videoTitle) {
+        videoTitle.textContent = video.title;
+    }
+}
+
+// Update playlist visual states
+function updatePlaylistStates() {
+    const playlistItems = document.querySelectorAll('.playlist-sidebar-item');
+    
+    playlistItems.forEach((item, index) => {
+        item.classList.remove('active', 'playing', 'completed');
+        
+        if (index === currentVideoIndex) {
+            item.classList.add('playing');
+        } else if (index < currentVideoIndex) {
+            item.classList.add('completed');
+        }
+        
+        // Smooth scroll to current item
+        if (index === currentVideoIndex) {
+            item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+}
+
+// Update play/pause button
+function updatePlayPauseButton(isPaused) {
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    if (playPauseBtn) {
+        playPauseBtn.innerHTML = isPaused ? 
+            '<i class="fas fa-play"></i>' : 
+            '<i class="fas fa-pause"></i>';
+        playPauseBtn.title = isPaused ? 'Воспроизведение' : 'Пауза';
+    }
+}
+
+// Complete playlist
+function completePlaylist() {
+    const progressFill = document.getElementById('progressFill');
+    
+    if (progressFill) {
+        progressFill.style.width = '100%';
+    }
+    
+    updatePlaylistStates();
+    showNotification('🎉 Все видео завершены! Отличная тренировка!');
+    
+    console.log('Playlist completed');
+}
+
+// Setup playlist interactions
+function setupPlaylistInteractions() {
+    const playlistItems = document.querySelectorAll('.playlist-sidebar-item');
+    
+    playlistItems.forEach((item, index) => {
+        item.addEventListener('click', function() {
+            jumpToVideo(index);
+        });
+    });
+}
+
+// Setup keyboard controls
+function setupKeyboardControls() {
+    document.addEventListener('keydown', function(e) {
+        if (!playlistStarted) return;
+        
+        switch(e.key) {
+            case 'ArrowRight':
+            case 'n':
+            case 'N':
+                e.preventDefault();
+                nextVideo();
+                break;
+            case 'ArrowLeft':
+            case 'p':
+            case 'P':
+                e.preventDefault();
+                previousVideo();
+                break;
+            case ' ':
+                e.preventDefault();
+                togglePlayPause();
+                break;
+        }
+    });
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Create or update notification
+    let notification = document.getElementById('playlistNotification');
+    
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'playlistNotification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'error' ? 'rgba(231, 76, 60, 0.95)' : 'rgba(78, 205, 196, 0.95)'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            font-weight: 600;
+            transform: translateX(300px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 300px;
+        `;
+        document.body.appendChild(notification);
+    }
+    
+    notification.textContent = message;
+    notification.style.background = type === 'error' ? 
+        'rgba(231, 76, 60, 0.95)' : 'rgba(78, 205, 196, 0.95)';
+    
+    // Show notification
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
+    }, 100);
+    
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(300px)';
+        notification.style.opacity = '0';
+    }, 3000);
+}
+
+// Debug logging
+console.log('Modern playlist player initialized');
 </script>
 {% endblock %}
