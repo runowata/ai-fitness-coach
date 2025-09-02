@@ -56,11 +56,22 @@
 
                     <h6 class="video-title mb-3">{{ it.video.name }}</h6>
 
-                    <div class="video-wrapper">
-                      <video controls preload="none" class="w-100 rounded-3 shadow-sm">
+                    <div class="video-wrapper position-relative">
+                      <video 
+                        controls 
+                        preload="metadata" 
+                        playsinline
+                        controlslist="nodownload"
+                        class="w-100 rounded-3 shadow-sm video-player"
+                        data-video-id="{{ it.video.code }}"
+                        poster="">
                         <source src="{{ it.video.r2_url }}" type="video/mp4" />
                         Ваш браузер не поддерживает воспроизведение видео.
                       </video>
+                      <!-- Debug info (remove in production) -->
+                      <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">
+                        {{ it.video.r2_url|truncatechars:50 }}
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -268,5 +279,78 @@
         margin-top: 0.5rem;
     }
 }
+
+/* Video player improvements */
+.video-player {
+    max-height: 400px;
+    background: #000;
+}
+
+.video-wrapper video::-webkit-media-controls-fullscreen-button {
+    display: inline-block !important;
+}
+
+.video-error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle all video elements
+    const videos = document.querySelectorAll('video.video-player');
+    
+    videos.forEach(video => {
+        // Add error handling
+        video.addEventListener('error', function(e) {
+            console.error('Video error:', e);
+            const videoId = this.dataset.videoId;
+            const src = this.querySelector('source').src;
+            
+            // Create error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'video-error';
+            errorDiv.innerHTML = `
+                <strong>Ошибка загрузки видео</strong><br>
+                <small>ID: ${videoId}</small><br>
+                <small>URL: ${src}</small><br>
+                <small>Попробуйте обновить страницу</small>
+            `;
+            this.parentElement.appendChild(errorDiv);
+        });
+        
+        // Log successful load
+        video.addEventListener('loadedmetadata', function() {
+            console.log('Video loaded:', this.dataset.videoId);
+        });
+        
+        // Fix for iOS/Safari fullscreen
+        video.addEventListener('webkitbeginfullscreen', function() {
+            console.log('Entering fullscreen');
+        });
+        
+        // Ensure video can play
+        video.addEventListener('click', function(e) {
+            if (this.paused) {
+                this.play().catch(err => {
+                    console.error('Play error:', err);
+                });
+            }
+        });
+    });
+    
+    // Debug: Log all video URLs
+    console.log('Video URLs on page:');
+    videos.forEach(video => {
+        const src = video.querySelector('source').src;
+        console.log(src);
+    });
+});
+</script>
 {% endblock %}

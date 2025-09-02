@@ -97,7 +97,14 @@ class R2Video(models.Model):
         """Генерирует публичный URL в R2"""
         if not self.code or not self.category:
             return None
-        base_url = "https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev"
+        # Use R2 public URL from settings if available
+        from django.conf import settings
+        base_url = getattr(settings, 'R2_PUBLIC_BASE_URL', None)
+        if not base_url:
+            # Fallback to hardcoded URL
+            base_url = "https://pub-d620683e68bf49abb422f1bc95810ff7.r2.dev"
+        # Ensure no trailing slash
+        base_url = base_url.rstrip('/')
         return f"{base_url}/videos/{self.category}/{self.code}.mp4"
     
     @property 
@@ -194,7 +201,14 @@ class R2Image(models.Model):
         """Генерирует публичный URL в R2"""
         if not self.code or not self.category:
             return None
-        base_url = "https://pub-92568f8b8a15c68a9ece5fe08c66485b.r2.dev"
+        # Use R2 public URL from settings if available
+        from django.conf import settings
+        base_url = getattr(settings, 'R2_PUBLIC_BASE_URL', None)
+        if not base_url:
+            # Fallback to hardcoded URL
+            base_url = "https://pub-d620683e68bf49abb422f1bc95810ff7.r2.dev"
+        # Ensure no trailing slash
+        base_url = base_url.rstrip('/')
         if self.category == 'avatars':
             return f"{base_url}/images/avatars/{self.code}.jpg"
         else:
