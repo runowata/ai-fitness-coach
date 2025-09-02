@@ -491,7 +491,7 @@ def generate_plan(request):
     
     try:
         # Use centralized service for plan creation
-        from apps.ai_integration.services import create_workout_plan_from_onboarding
+        # from apps.ai_integration.services import create_workout_plan_from_onboarding  # DISABLED AI
 
         # Pass comprehensive flag through user_data
         if use_comprehensive:
@@ -531,8 +531,8 @@ def generate_plan_ajax(request):
     
     from django.conf import settings
 
-    from apps.ai_integration.services import WorkoutPlanGenerator
-    from apps.onboarding.services import OnboardingDataProcessor
+    # from apps.ai_integration.services import WorkoutPlanGenerator  # DISABLED AI
+    # from apps.onboarding.services import OnboardingDataProcessor  # DISABLED AI
     from apps.workouts.models import WorkoutPlan
 
     # Check if plan already exists
@@ -583,9 +583,12 @@ def generate_plan_ajax(request):
                     'error': 'No pending plan to confirm'
                 }, status=400)
             
-            # Create the actual workout plan
-            generator = WorkoutPlanGenerator()
-            workout_plan = generator.create_plan(request.user, plan_data)
+            # DISABLED AI: Create demo plan instead of using AI generated plan_data
+            # generator = WorkoutPlanGenerator()
+            # workout_plan = generator.create_plan(request.user, plan_data)
+            
+            # Create demo plan directly
+            workout_plan = create_demo_plan_for_user(request.user)
             
             # Clear session data
             request.session.pop('pending_plan_data', None)
@@ -603,100 +606,54 @@ def generate_plan_ajax(request):
             })
         
         else:
-            # Generate new plan
+            # DISABLED AI: Generate demo plan instead of AI plan
             milestone_times['prepare_user_data'] = time.time()
-            logger.info(f"📊 Collecting user data for {request.user}...")
+            logger.info(f"📊 Creating demo plan for {request.user} (AI disabled)...")
             
-            user_data = OnboardingDataProcessor.collect_user_data(request.user)
-            generator = WorkoutPlanGenerator()
+            # COMMENTED OUT AI GENERATION:
+            # user_data = OnboardingDataProcessor.collect_user_data(request.user)
+            # generator = WorkoutPlanGenerator()
+            # logger.info(f"🧠 Starting AI plan generation (archetype: {user_data.get('archetype')})")
+            # milestone_times['call_openai_start'] = time.time()
+            # plan_data = generator.generate_plan(user_data)
+            # milestone_times['call_openai_finish'] = time.time()
             
-            logger.info(f"🧠 Starting AI plan generation (archetype: {user_data.get('archetype')})")
+            # REPLACED WITH: Create demo plan directly
             milestone_times['call_openai_start'] = time.time()
-            
-            # Generate plan data (not saved to DB yet) 
-            plan_data = generator.generate_plan(user_data)
-            
+            demo_plan = create_demo_plan_for_user(request.user)
             milestone_times['call_openai_finish'] = time.time()
-            logger.info(f"✅ AI generation completed in {milestone_times['call_openai_finish'] - milestone_times['call_openai_start']:.1f}s")
             
-            if settings.SHOW_AI_ANALYSIS and 'analysis' in plan_data:
-                # Store plan in session for confirmation
-                request.session['pending_plan_data'] = plan_data
-                
-                # Return analysis for preview
-                response_sent = True
-                return JsonResponse({
-                    'success': True,
-                    'status': 'needs_confirmation',
-                    'analysis': plan_data.get('analysis', {}),
-                    'plan_preview': {
-                        'plan_name': plan_data.get('plan_name', 'Персональный план'),
-                        'duration_weeks': plan_data.get('duration_weeks', 4),
-                        'weekly_frequency': plan_data.get('weekly_frequency', 3),
-                        'session_duration': plan_data.get('session_duration', 45),
-                        'first_week_focus': plan_data.get('weeks', [{}])[0].get('focus', '') if plan_data.get('weeks') else '',
-                    }
-                })
-            else:
-                # Direct creation without preview
-                milestone_times['build_response'] = time.time()
-                workout_plan = generator.create_plan(request.user, plan_data)
-                
+            if demo_plan:
                 # Mark onboarding as complete
                 request.user.completed_onboarding = True
                 request.user.save()
                 
-                milestone_times['total_duration'] = time.time() - request_start
+                logger.info(f"✅ Demo plan created in {milestone_times['call_openai_finish'] - milestone_times['call_openai_start']:.1f}s")
                 
-                result = {
+                # Return success immediately (no AI analysis to show)
+                return JsonResponse({
                     'success': True,
-                    'message': 'План успешно создан',
                     'progress': 100,
-                    'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
-                    'plan_id': workout_plan.id,
-                    'retry_allowed': False
-                }
-                
-                # Log detailed timing breakdown
-                logger.info(f"✅ === GENERATE_PLAN_AJAX SUCCESS ===")
-                logger.info(f"📊 Timing breakdown: " + 
-                           f"prepare={milestone_times['prepare_user_data'] - request_start:.1f}s, " +
-                           f"ai_call={milestone_times['call_openai_finish'] - milestone_times['call_openai_start']:.1f}s, " +
-                           f"total={milestone_times['total_duration']:.1f}s")
-                logger.info(f"🎯 Result: {result}")
-                
-                response_sent = True
-                return JsonResponse(result)
+                    'redirect_url': reverse('workouts:my_plan'),  # Redirect to plan instead of confirmation
+                })
+            else:
+                return JsonResponse({
+                    'status': 'error',
+                    'error': 'Не удалось создать план тренировок'
+                }, status=500)
         
     except Exception as e:
         milestone_times['total_duration'] = time.time() - request_start
         logger.error(f"❌ Plan generation failed for user {request.user.email} after {milestone_times['total_duration']:.1f}s: {str(e)}")
         
         # Handle specific AI client errors with standardized response format
-        from apps.ai_integration.ai_client_gpt5 import AIClientError, ServiceTimeoutError, ServiceCallError
+        # from apps.ai_integration.ai_client_gpt5 import AIClientError, ServiceTimeoutError, ServiceCallError  # DISABLED AI
         
-        # Map exceptions to standardized error codes and messages
-        if isinstance(e, ServiceTimeoutError):
-            error_code = "AI_TIMEOUT"
-            error_message = "Генерация плана заняла слишком много времени. Сервис перегружен, попробуйте через несколько минут."
-            status_code = 504  # Gateway timeout
-        elif isinstance(e, ServiceCallError):
-            if "too large" in str(e).lower():
-                error_code = "PAYLOAD_TOO_LARGE"  
-                error_message = "Слишком много данных для обработки. Упростите ответы в анкете."
-                status_code = 413  # Request Entity Too Large
-            else:
-                error_code = "AI_UPSTREAM_ERROR"
-                error_message = "Ошибка AI-сервиса. Попробуйте еще раз через минуту."
-                status_code = 502  # Bad gateway
-        elif isinstance(e, AIClientError):
-            error_code = "AI_CLIENT_ERROR"
-            error_message = "Не удалось сгенерировать план. Попробуйте еще раз."
-            status_code = 500
-        else:
-            error_code = "UNEXPECTED_ERROR"
-            error_message = "Неожиданная ошибка. Попробуйте еще раз."
-            status_code = 500
+        # DISABLED AI: Map exceptions to standardized error codes and messages
+        # Simple generic error since we don't have AI anymore
+        error_code = "PLAN_CREATION_ERROR"
+        error_message = "Ошибка создания плана тренировок. Попробуйте еще раз."
+        status_code = 500
         
         # Standardized error response format
         error_result = {
@@ -825,15 +782,20 @@ def plan_preview(request):
     ).order_by('-created_at').first()
     
     if not latest_plan:
-        # Generate new plan if no DRAFT exists
-        from apps.onboarding.services import OnboardingDataProcessor
-        from apps.ai_integration.services import WorkoutPlanGenerator
+        # DISABLED AI: Create demo plan instead of AI plan
+        # from apps.onboarding.services import OnboardingDataProcessor
+        # from apps.ai_integration.services import WorkoutPlanGenerator
+        # try:
+        #     user_data = OnboardingDataProcessor.collect_user_data(request.user)
+        #     latest_plan = WorkoutPlanGenerator(request.user).generate_plan_with_report(user_data)
+        # except Exception as e:
+        #     messages.error(request, f'Ошибка генерации плана: {str(e)}')
+        #     return redirect('users:dashboard')
         
-        try:
-            user_data = OnboardingDataProcessor.collect_user_data(request.user)
-            latest_plan = WorkoutPlanGenerator(request.user).generate_plan_with_report(user_data)
-        except Exception as e:
-            messages.error(request, f'Ошибка генерации плана: {str(e)}')
+        # Create demo plan instead
+        latest_plan = create_demo_plan_for_user(request.user)
+        if not latest_plan:
+            messages.error(request, 'Ошибка создания плана тренировок')
             return redirect('users:dashboard')
     
     # Extract report and plan from plan_data
@@ -1050,6 +1012,11 @@ def create_demo_plan_for_user(user):
     logger = logging.getLogger(__name__)
     
     try:
+        # CRITICAL: Check if demo plan already exists to prevent duplicates
+        existing_plan = WorkoutPlan.objects.filter(user=user, is_active=True).first()
+        if existing_plan:
+            logger.info(f"Demo plan already exists for user {user.email}: {existing_plan.id}")
+            return existing_plan
         # Используем реальные упражнения из базы данных
         # Берем любые доступные упражнения для демо
         available_exercises = CSVExercise.objects.all()[:10]  # Первые 10 доступных упражнений

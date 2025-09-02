@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'apps.workouts',
     'apps.onboarding',
     'apps.content',
-    'apps.ai_integration',
+    # 'apps.ai_integration',  # DISABLED AI: Commented out AI integration app
     'apps.notifications',
     'apps.analytics',
 ]
@@ -303,7 +303,7 @@ STRICT_ACCESS_MIDDLEWARE_ENABLED = os.getenv('STRICT_ACCESS_MIDDLEWARE_ENABLED',
 
 # Video generation flags
 STRICT_ALLOWED_ONLY = os.getenv('STRICT_ALLOWED_ONLY', 'False') == 'True'
-SHOW_AI_ANALYSIS = os.getenv('SHOW_AI_ANALYSIS', 'True') == 'True'
+SHOW_AI_ANALYSIS = False  # DISABLED AI: Force AI analysis to be disabled
 AI_REPROMPT_MAX_ATTEMPTS = int(os.getenv('AI_REPROMPT_MAX_ATTEMPTS', '2'))
 FALLBACK_TO_LEGACY_FLOW = os.getenv('FALLBACK_TO_LEGACY_FLOW', 'False') == 'True'
 
