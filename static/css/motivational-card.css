@@ -37,6 +37,9 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    /* Improved: Better handling for different aspect ratios */
+    min-height: 100vh;
+    min-width: 100vw;
 }
 
 /* Gradient Overlay - Fades image to bottom for text readability */

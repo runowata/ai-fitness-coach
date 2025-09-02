@@ -29,47 +29,52 @@ logger = logging.getLogger(__name__)
 
 
 def _get_random_motivational_background():
-    """Get random motivational background image using path field (NEW APPROACH)"""
+    """Get random horizontal motivational background image (IMPROVED)"""
     try:
-        from apps.onboarding.models import MotivationalCard
         from apps.onboarding.utils import public_r2_url
         
-        # NEW approach: use path field directly with better randomization
+        # Use r2_upload_state.json to get ALL available images
+        r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
+        if os.path.exists(r2_state_path):
+            with open(r2_state_path, 'r') as f:
+                r2_files = json.load(f)
+            
+            # Expanded filter: get more image categories (not just quotes)
+            motivational_photos = [
+                f for f in r2_files 
+                if ('photos/' in f and f.endswith('.jpg')) and
+                   # Filter by categories that likely have horizontal images
+                   ('quotes/' in f or 'progress/' in f or 'workout/' in f)
+            ]
+            
+            # BONUS: If we have metadata about image dimensions, filter horizontal ones
+            # For now, we'll improve randomization to use more variety
+            
+            if motivational_photos:
+                # Better randomization: use system entropy for truly random selection
+                import secrets
+                random_photo = secrets.choice(motivational_photos)
+                public_url = public_r2_url(random_photo)
+                if public_url:
+                    logger.info(f"Using random photo ({len(motivational_photos)} available): {random_photo}")
+                    return public_url
+        
+        # Fallback: use database approach with better filtering
+        from apps.onboarding.models import MotivationalCard
         available_cards = list(MotivationalCard.objects.filter(
             is_active=True,
             path__isnull=False
         ).exclude(path='').values_list('id', 'path'))
         
         if available_cards:
-            # Use Python's random selection for better distribution
-            card_id, card_path = random.choice(available_cards)
+            import secrets
+            card_id, card_path = secrets.choice(available_cards)
             card = MotivationalCard.objects.get(id=card_id)
             
             if card and card.path:
                 public_url = public_r2_url(card.path)
                 if public_url:
-                    logger.info(f"Using path field: {card.path} -> {public_url}")
-                    return public_url
-        
-        # Secondary fallback: use r2_upload_state.json for quotes
-        r2_state_path = os.path.join(settings.BASE_DIR, 'r2_upload_state.json')
-        if os.path.exists(r2_state_path):
-            with open(r2_state_path, 'r') as f:
-                r2_files = json.load(f)
-            
-            # Filter quotes photos
-            quotes_photos = [
-                f for f in r2_files 
-                if 'photos/quotes/' in f and f.endswith('.jpg')
-            ]
-            
-            if quotes_photos:
-                # Select random photo and create public URL using new helper
-                # Use better randomization to avoid patterns
-                random_photo = random.choice(quotes_photos)
-                public_url = public_r2_url(random_photo)
-                if public_url:
-                    logger.info(f"Using public URL from state file ({len(quotes_photos)} available): {public_url}")
+                    logger.info(f"Using DB card: {card.path} -> {public_url}")
                     return public_url
         
         # Final fallback: return empty to use gradient background

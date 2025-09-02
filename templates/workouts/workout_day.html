@@ -26,33 +26,82 @@
                 {% endif %}
             </div>
 
-            {% comment %} Плейлист из R2 {% endcomment %}
+            {% comment %} Плейлист из R2 (IMPROVED) {% endcomment %}
             {% if playlist %}
+              <div class="playlist-header mb-4">
+                <h3 class="playlist-title">
+                  <i class="fas fa-play-circle me-2" style="color: #667eea;"></i>
+                  Видео-плейлист дня ({{ playlist|length }} видео)
+                </h3>
+                <p class="text-muted">Следуйте порядку видео для максимального эффекта тренировки</p>
+              </div>
+              
               {% for it in playlist %}
-                <div class="card mb-3 shadow-sm border-0">
+                <div class="card mb-3 shadow-sm border-0 playlist-item">
                   <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="badge bg-secondary text-uppercase">{{ it.role }}</span>
-                      <small class="text-muted">#{{ it.order }}</small>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <div class="d-flex align-items-center">
+                        <span class="playlist-number me-3">{{ it.order|add:1 }}</span>
+                        <span class="badge bg-{{ it.role|role_color }} text-white role-badge">
+                          {{ it.role|role_name }}
+                        </span>
+                      </div>
+                      {% if it.duration_seconds %}
+                        <small class="text-muted">
+                          <i class="fas fa-clock me-1"></i>
+                          {{ it.duration_seconds }}с
+                        </small>
+                      {% endif %}
                     </div>
 
-                    <h6 class="mt-2 mb-2">{{ it.video.name }}</h6>
+                    <h6 class="video-title mb-3">{{ it.video.name }}</h6>
 
-                    <video controls preload="none" class="w-100 rounded-3">
-                      <source
-                        src="{{ it.video.r2_url }}"
-                        type="video/mp4" />
-                      Ваш браузер не поддерживает воспроизведение видео.
-                    </video>
-
-                    {% if it.duration_seconds %}
-                      <small class="text-muted d-block mt-1">Длительность: {{ it.duration_seconds }} c</small>
-                    {% endif %}
+                    <div class="video-wrapper">
+                      <video controls preload="none" class="w-100 rounded-3 shadow-sm">
+                        <source src="{{ it.video.r2_url }}" type="video/mp4" />
+                        Ваш браузер не поддерживает воспроизведение видео.
+                      </video>
+                    </div>
                   </div>
                 </div>
               {% endfor %}
+              
+              <!-- Playlist Summary -->
+              <div class="playlist-summary mt-4 p-3 bg-light rounded">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="summary-stat">
+                      <i class="fas fa-video text-primary"></i>
+                      <div class="stat-number">{{ playlist|length }}</div>
+                      <div class="stat-label">Видео</div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="summary-stat">
+                      <i class="fas fa-dumbbell text-success"></i>
+                      <div class="stat-number">{{ playlist|length_by_role:"main" }}</div>
+                      <div class="stat-label">Упражнений</div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="summary-stat">
+                      <i class="fas fa-heart text-danger"></i>
+                      <div class="stat-number">{{ playlist|length_by_role:"motivation" }}</div>
+                      <div class="stat-label">Мотивации</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             {% else %}
-              <div class="alert alert-warning">Для этого дня ещё не собран плейлист.</div>
+              <div class="alert alert-warning border-0 shadow-sm">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-exclamation-triangle me-3" style="font-size: 1.5rem; color: #f39c12;"></i>
+                  <div>
+                    <h5 class="alert-heading mb-1">Плейлист готовится</h5>
+                    <p class="mb-0">Для этого дня ещё собирается индивидуальный видео-плейлист. Попробуйте через несколько минут.</p>
+                  </div>
+                </div>
+              </div>
             {% endif %}
 
             <!-- Back to Plan Button -->
@@ -81,6 +130,92 @@
     font-weight: bold;
     font-size: 2rem;
     margin: 0 auto;
+}
+
+/* Improved playlist styles */
+.playlist-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.playlist-title {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.playlist-item {
+    border-left: 4px solid #667eea;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.playlist-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+}
+
+.playlist-number {
+    background: #667eea;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.role-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.video-title {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.video-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.video-wrapper video {
+    transition: transform 0.3s ease;
+}
+
+.video-wrapper:hover video {
+    transform: scale(1.02);
+}
+
+.playlist-summary {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+    border: 1px solid #e1e8f5;
+}
+
+.summary-stat {
+    padding: 1rem 0.5rem;
+}
+
+.summary-stat i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2c3e50;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
 }
 
 .exercise-card {
