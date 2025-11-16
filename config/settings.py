@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'apps.workouts',
     'apps.onboarding',
     'apps.content',
-    # 'apps.ai_integration',  # DISABLED AI: Commented out AI integration app
+    'apps.ai_integration',  # AI integration enabled
     'apps.notifications',
     'apps.analytics',
 ]

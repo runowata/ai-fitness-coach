@@ -15,12 +15,12 @@ urlpatterns = [
     path('plan-confirmation/', views.plan_confirmation, name='plan_confirmation'),
     path('plan-confirmation/<int:plan_id>/', views.plan_confirmation, name='plan_confirmation'),
     path('preview/', views.plan_preview, name='plan_preview'),
-    
-    # DISABLED AI: Comprehensive AI analysis routes (commented out)
-    # path('ai-analysis/', views.ai_analysis, name='ai_analysis'),
-    # path('ai-analysis-comprehensive/', views.ai_analysis_comprehensive, name='ai_analysis_comprehensive'),
-    # path('plan-preview-comprehensive/', views.plan_preview_comprehensive, name='plan_preview_comprehensive'),
-    
+
+    # AI analysis routes
+    path('ai-analysis/', views.ai_analysis, name='ai_analysis'),
+    path('ai-analysis-comprehensive/', views.ai_analysis_comprehensive, name='ai_analysis_comprehensive'),
+    path('plan-preview-comprehensive/', views.plan_preview_comprehensive, name='plan_preview_comprehensive'),
+
     # Diagnostic endpoints
     path('diag/sleep/<int:seconds>/', views.sleep_test, name='sleep_test'),
 ]

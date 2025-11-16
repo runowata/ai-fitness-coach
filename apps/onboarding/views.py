@@ -370,30 +370,15 @@ def select_archetype(request):
             # Check if user already has a confirmed plan
             from apps.workouts.models import WorkoutPlan
             existing_plan = WorkoutPlan.objects.filter(user=request.user, status="CONFIRMED").first()
-            
-            if not existing_plan:
-                # Create demo plan automatically
-                logger.info(f"Creating demo plan for user {request.user.email}")
-                demo_plan = create_demo_plan_for_user(request.user)
-                
-                if demo_plan:
-                    # CRITICAL: Mark onboarding as completed after demo plan creation
-                    request.user.completed_onboarding = True
-                    request.user.profile.onboarding_completed_at = timezone.now()
-                    request.user.save()
-                    request.user.profile.save()
-                    
-                    messages.success(request, 'Отлично! Ваш тренировочный план готов!')
-                    logger.info(f"Onboarding completed for user {request.user.email}")
-                else:
-                    messages.error(request, 'Ошибка при создании плана тренировок')
-                    return redirect('onboarding:select_archetype')
-            else:
+
+            if existing_plan:
                 logger.info(f"User {request.user.email} already has confirmed plan: {existing_plan.id}")
                 messages.info(request, 'У вас уже есть активный план тренировок!')
-            
-            # Redirect to workout plan
-            return redirect('workouts:my_plan')
+                return redirect('workouts:my_plan')
+
+            # Redirect to AI plan generation
+            logger.info(f"Redirecting user {request.user.email} to AI plan generation")
+            return redirect('onboarding:generate_plan')
         else:
             logger.error(f"Invalid archetype received: '{archetype}' not in {list(archetype_map.keys())}")
             messages.error(request, f'Выберите корректный архетип тренера. Получен: {archetype}')
@@ -491,12 +476,12 @@ def generate_plan(request):
     
     try:
         # Use centralized service for plan creation
-        # from apps.ai_integration.services import create_workout_plan_from_onboarding  # DISABLED AI
+        from apps.ai_integration.services import create_workout_plan_from_onboarding
 
         # Pass comprehensive flag through user_data
         if use_comprehensive:
             user_data['use_comprehensive'] = True
-        
+
         workout_plan = create_workout_plan_from_onboarding(request.user)
         
         # Check if we got comprehensive data
@@ -531,8 +516,8 @@ def generate_plan_ajax(request):
     
     from django.conf import settings
 
-    # from apps.ai_integration.services import WorkoutPlanGenerator  # DISABLED AI
-    # from apps.onboarding.services import OnboardingDataProcessor  # DISABLED AI
+    from apps.ai_integration.services import WorkoutPlanGenerator
+    from apps.onboarding.services import OnboardingDataProcessor
     from apps.workouts.models import WorkoutPlan
 
     # Check if plan already exists
@@ -606,36 +591,34 @@ def generate_plan_ajax(request):
             })
         
         else:
-            # DISABLED AI: Generate demo plan instead of AI plan
+            # AI plan generation
             milestone_times['prepare_user_data'] = time.time()
-            logger.info(f"📊 Creating demo plan for {request.user} (AI disabled)...")
-            
-            # COMMENTED OUT AI GENERATION:
-            # user_data = OnboardingDataProcessor.collect_user_data(request.user)
-            # generator = WorkoutPlanGenerator()
-            # logger.info(f"🧠 Starting AI plan generation (archetype: {user_data.get('archetype')})")
-            # milestone_times['call_openai_start'] = time.time()
-            # plan_data = generator.generate_plan(user_data)
-            # milestone_times['call_openai_finish'] = time.time()
-            
-            # REPLACED WITH: Create demo plan directly
+            logger.info(f"📊 Starting AI plan generation for {request.user}...")
+
+            # Call AI service to generate workout plan
             milestone_times['call_openai_start'] = time.time()
-            demo_plan = create_demo_plan_for_user(request.user)
+            workout_plan = create_workout_plan_from_onboarding(request.user)
             milestone_times['call_openai_finish'] = time.time()
-            
-            if demo_plan:
-                # Mark onboarding as complete
-                request.user.completed_onboarding = True
-                request.user.save()
-                
-                logger.info(f"✅ Demo plan created in {milestone_times['call_openai_finish'] - milestone_times['call_openai_start']:.1f}s")
-                
-                # Return success immediately (no AI analysis to show)
-                return JsonResponse({
-                    'success': True,
-                    'progress': 100,
-                    'redirect_url': reverse('workouts:my_plan'),  # Redirect to plan instead of confirmation
-                })
+
+            if workout_plan:
+                logger.info(f"✅ AI plan created in {milestone_times['call_openai_finish'] - milestone_times['call_openai_start']:.1f}s")
+
+                # Check if comprehensive analysis available
+                if hasattr(workout_plan, 'ai_analysis') and workout_plan.ai_analysis:
+                    # Comprehensive AI analysis - show analysis page
+                    return JsonResponse({
+                        'success': True,
+                        'progress': 100,
+                        'redirect_url': reverse('onboarding:ai_analysis_comprehensive'),
+                    })
+                else:
+                    # Standard plan - go to confirmation
+                    return JsonResponse({
+                        'success': True,
+                        'progress': 100,
+                        'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
+                        'plan_id': workout_plan.id
+                    })
             else:
                 return JsonResponse({
                     'status': 'error',
