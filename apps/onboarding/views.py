@@ -433,8 +433,15 @@ def generate_plan(request):
     # ГАРД: если план уже существует, не генерируем повторно
     existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
     if existing_plan:
-        messages.info(request, 'У вас уже есть активный план тренировок')
-        return redirect('users:dashboard')
+        # Check if plan has daily workouts - if not, it's broken and should be deactivated
+        if not existing_plan.daily_workouts.exists():
+            logger.warning(f"Deactivating broken plan {existing_plan.id} with no daily workouts")
+            existing_plan.is_active = False
+            existing_plan.save()
+            # Continue to generate new plan
+        else:
+            messages.info(request, 'У вас уже есть активный план тренировок')
+            return redirect('users:dashboard')
     
     # Show loading page for GET request
     if request.method == 'GET':
@@ -523,13 +530,20 @@ def generate_plan_ajax(request):
     # Check if plan already exists
     existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
     if existing_plan:
-        logger.info(f"✅ Existing plan found for user {request.user}: {existing_plan.id}")
-        return JsonResponse({
-            'success': True,
-            'progress': 100,
-            'redirect_url': reverse('users:dashboard'),
-            'plan_id': existing_plan.id
-        })
+        # Check if plan has daily workouts - if not, it's broken and should be deactivated
+        if not existing_plan.daily_workouts.exists():
+            logger.warning(f"Deactivating broken plan {existing_plan.id} with no daily workouts")
+            existing_plan.is_active = False
+            existing_plan.save()
+            # Continue to generate new plan
+        else:
+            logger.info(f"✅ Existing plan found for user {request.user}: {existing_plan.id}")
+            return JsonResponse({
+                'success': True,
+                'progress': 100,
+                'redirect_url': reverse('users:dashboard'),
+                'plan_id': existing_plan.id
+            })
     
     # Progress tracking with detailed timing
     response_sent = False
