@@ -1,12 +1,8 @@
-# DISABLED AI: Pydantic schemas for AI response validation commented out
-# """Pydantic schemas for strict AI response validation"""
-# 
-# from typing import Any, Dict, List, Optional
-# 
-# from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+"""Pydantic schemas for strict AI response validation"""
 
-# DISABLED AI: All schema definitions commented out
-\"\"\"
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 
 class ExerciseItem(BaseModel):
@@ -256,6 +252,3 @@ class ExerciseRecommendation(BaseModel):
     original_exercise: str
     recommended_alternatives: List[str] = Field(..., min_length=1, max_length=5)
     reasoning: str = Field(..., min_length=10, max_length=300)
-\"\"\"
-
-# DISABLED AI: End of schemas definitions
