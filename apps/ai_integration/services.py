@@ -120,7 +120,12 @@ class WorkoutPlanGenerator:
             # Create daily workouts
             self._create_daily_workouts(workout_plan, plan_data)
             logger.info("Daily workouts created successfully")
-            
+
+            logger.info("Generating video playlists...")
+            # Generate video playlists for all workouts
+            self._generate_playlists(workout_plan, user_data)
+            logger.info("Video playlists generated successfully")
+
             logger.info("Updating user completion status...")
             # Mark onboarding as completed
             user.onboarding_completed_at = timezone.now()
@@ -294,19 +299,39 @@ class WorkoutPlanGenerator:
     def _update_onboarding_session(self, user, user_data: Dict, plan_data: Dict):
         """Update onboarding session with AI data"""
         from apps.onboarding.models import OnboardingSession
-        
+
         session = OnboardingSession.objects.filter(
             user=user,
             is_completed=False
         ).first()
-        
+
         if session:
             session.is_completed = True
             session.completed_at = timezone.now()
             session.ai_request_data = user_data
             session.ai_response_data = plan_data
             session.save()
-    
+
+    def _generate_playlists(self, workout_plan, user_data: Dict):
+        """Generate video playlists for all daily workouts in the plan"""
+        try:
+            from apps.workouts.services.playlist_generator_v2 import PlaylistGeneratorV2
+
+            # Get user's archetype
+            archetype = user_data.get('archetype', 'mentor')
+            archetype = self.prompt_manager.normalize_archetype(archetype)
+
+            # Generate playlists for entire plan
+            generator = PlaylistGeneratorV2(workout_plan.user, archetype)
+            stats = generator.generate_full_program(workout_plan)
+
+            logger.info(f"Generated playlists for plan {workout_plan.id}: {stats}")
+
+        except Exception as e:
+            # Log error but don't fail plan creation
+            logger.error(f"Failed to generate playlists for plan {workout_plan.id}: {e}", exc_info=True)
+            logger.warning("Plan created without playlists - they will be generated on-demand")
+
     def generate_plan(self, user_data: Dict, use_comprehensive: bool = True) -> Dict:
         """Generate a complete workout plan based on user onboarding data"""
         # Check for legacy flow fallback
