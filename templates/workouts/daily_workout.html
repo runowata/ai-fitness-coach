@@ -1176,15 +1176,15 @@ function submitFeedback(rating) {
                 `;
             }
             
-            // Add story chapter button (placeholder for now)
-            completionMessage += `
-                <div class="mt-4 text-center">
-                    <button class="btn btn-outline-primary btn-sm" onclick="readNextChapter()">
-                        <i class="fas fa-book me-2"></i>
-                        Прочитать очередную главу
-                    </button>
-                </div>
-            `;
+            // TODO: Add story chapter button when content API is implemented
+            // completionMessage += `
+            //     <div class="mt-4 text-center">
+            //         <button class="btn btn-outline-primary btn-sm" onclick="readNextChapter()">
+            //             <i class="fas fa-book me-2"></i>
+            //             Прочитать очередную главу
+            //         </button>
+            //     </div>
+            // `;
             
             completionMessage += '</div>';
             
@@ -1265,34 +1265,35 @@ function closeCompletionModal() {
     }
 }
 
-// Function for reading next story chapter
-async function readNextChapter() {
-    try {
-        const response = await fetch('{% url "content:api_next_chapter" %}', {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json',
-            },
-        });
-        
-        const data = await response.json();
-        
-        if (data.success && data.next_chapter) {
-            const chapter = data.next_chapter;
-            
-            // Show chapter info in a modal or navigate directly
-            if (confirm(`📖 ${chapter.story_title}\n\nГлава ${chapter.chapter_number}: "${chapter.title}"\n\n🕐 Время чтения: ~${chapter.estimated_reading_time} мин${chapter.is_reread ? '\n\n(Перечитать)' : ''}\n\nПерейти к чтению?`)) {
-                window.location.href = chapter.url;
-            }
-        } else {
-            showErrorModal(data.error || 'Нет доступных глав для чтения');
-        }
-    } catch (error) {
-        console.error('Error fetching next chapter:', error);
-        showErrorModal('Ошибка загрузки главы. Попробуйте позже.');
-    }
-}
+// TODO: Implement story chapter API and uncomment this function
+// // Function for reading next story chapter
+// async function readNextChapter() {
+//     try {
+//         const response = await fetch('{% url "content:api_next_chapter" %}', {
+//             method: 'GET',
+//             headers: {
+//                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+//                 'Content-Type': 'application/json',
+//             },
+//         });
+//
+//         const data = await response.json();
+//
+//         if (data.success && data.next_chapter) {
+//             const chapter = data.next_chapter;
+//
+//             // Show chapter info in a modal or navigate directly
+//             if (confirm(`📖 ${chapter.story_title}\n\nГлава ${chapter.chapter_number}: "${chapter.title}"\n\n🕐 Время чтения: ~${chapter.estimated_reading_time} мин${chapter.is_reread ? '\n\n(Перечитать)' : ''}\n\nПерейти к чтению?`)) {
+//                 window.location.href = chapter.url;
+//             }
+//         } else {
+//             showErrorModal(data.error || 'Нет доступных глав для чтения');
+//         }
+//     } catch (error) {
+//         console.error('Error fetching next chapter:', error);
+//         showErrorModal('Ошибка загрузки главы. Попробуйте позже.');
+//     }
+// }
 
 // Show error modal
 function showErrorModal(message) {
