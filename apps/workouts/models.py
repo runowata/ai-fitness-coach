@@ -308,8 +308,8 @@ class DailyWorkout(models.Model):
     
     class Meta:
         db_table = 'daily_workouts'
-        unique_together = [['plan', 'day_number']]
-        ordering = ['day_number']
+        unique_together = [['plan', 'week_number', 'day_number']]
+        ordering = ['week_number', 'day_number']
 
 
 class WorkoutExecution(models.Model):
