@@ -560,34 +560,33 @@ def generate_plan_ajax(request):
             logger.info(f"POST data action: {action}")
         
         if action == 'confirm':
-            # User confirmed the plan after preview
-            plan_data = request.session.get('pending_plan_data')
-            if not plan_data:
+            # User confirmed the AI-generated plan after preview
+            # Plan already exists, just need to mark it as confirmed
+            existing_plan = WorkoutPlan.objects.filter(user=request.user, is_active=True).first()
+            if not existing_plan:
                 return JsonResponse({
                     'status': 'error',
-                    'error': 'No pending plan to confirm'
+                    'error': 'No plan found to confirm'
                 }, status=400)
-            
-            # DISABLED AI: Create demo plan instead of using AI generated plan_data
-            # generator = WorkoutPlanGenerator()
-            # workout_plan = generator.create_plan(request.user, plan_data)
-            
-            # Create demo plan directly
-            workout_plan = create_demo_plan_for_user(request.user)
-            
+
+            # Mark plan as confirmed
+            existing_plan.is_confirmed = True
+            existing_plan.status = 'CONFIRMED'
+            existing_plan.save()
+
             # Clear session data
             request.session.pop('pending_plan_data', None)
-            
+
             # Mark onboarding as complete
             request.user.completed_onboarding = True
             request.user.save()
-            
+
             response_sent = True
             return JsonResponse({
                 'success': True,
                 'progress': 100,
-                'redirect_url': reverse('onboarding:plan_confirmation', kwargs={'plan_id': workout_plan.id}),
-                'plan_id': workout_plan.id
+                'redirect_url': reverse('users:dashboard'),
+                'plan_id': existing_plan.id
             })
         
         else:
@@ -765,21 +764,9 @@ def plan_preview(request):
     ).order_by('-created_at').first()
     
     if not latest_plan:
-        # DISABLED AI: Create demo plan instead of AI plan
-        # from apps.onboarding.services import OnboardingDataProcessor
-        # from apps.ai_integration.services import WorkoutPlanGenerator
-        # try:
-        #     user_data = OnboardingDataProcessor.collect_user_data(request.user)
-        #     latest_plan = WorkoutPlanGenerator(request.user).generate_plan_with_report(user_data)
-        # except Exception as e:
-        #     messages.error(request, f'Ошибка генерации плана: {str(e)}')
-        #     return redirect('users:dashboard')
-        
-        # Create demo plan instead
-        latest_plan = create_demo_plan_for_user(request.user)
-        if not latest_plan:
-            messages.error(request, 'Ошибка создания плана тренировок')
-            return redirect('users:dashboard')
+        # No DRAFT plan found - redirect to generate new plan
+        messages.info(request, 'Сначала нужно сгенерировать план тренировок')
+        return redirect('onboarding:generate_plan')
     
     # Extract report and plan from plan_data
     report = latest_plan.plan_data.get('report', {}) if latest_plan.plan_data else {}
