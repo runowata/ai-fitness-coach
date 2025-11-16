@@ -516,7 +516,7 @@ def generate_plan_ajax(request):
     
     from django.conf import settings
 
-    from apps.ai_integration.services import WorkoutPlanGenerator
+    from apps.ai_integration.services import WorkoutPlanGenerator, create_workout_plan_from_onboarding
     from apps.onboarding.services import OnboardingDataProcessor
     from apps.workouts.models import WorkoutPlan
 
