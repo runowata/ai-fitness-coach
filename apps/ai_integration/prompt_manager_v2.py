@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
-Configuration - with Django settings fallback
+# Configuration - with Django settings fallback
 def get_prompts_profile():
     try:
         from django.conf import settings
@@ -25,7 +25,7 @@ PROMPTS_DIR = BASE_DIR / 'prompts' / PROMPTS_PROFILE
 INTRO_PATH = PROMPTS_DIR / '_intro.txt'
 SCHEMAS_DIR = PROMPTS_DIR / 'schemas'
 
-Default archetype mapping
+# Default archetype mapping
 DEFAULT_ARCHETYPE_ALIASES = {
     'bro': 'peer',
     'sergeant': 'professional',
@@ -314,10 +314,10 @@ class PromptManagerV2:
         return system, user
 
 
-Convenience instance for backward compatibility
+# Convenience instance for backward compatibility
 prompt_manager = PromptManagerV2()
 
-Convenience functions
+# Convenience functions
 def get_system_prompt(kind: str, archetype: Optional[str] = None) -> str:
     return prompt_manager.get_system_prompt(kind, archetype)
 
@@ -332,4 +332,3 @@ def normalize_archetype(slug: Optional[str]) -> Optional[str]:
 
 def load_schema(name: str) -> Dict[str, Any]:
     return prompt_manager.load_schema(name)
-

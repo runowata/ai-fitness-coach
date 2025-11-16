@@ -32,8 +32,6 @@ class ServiceTimeoutError(AIClientError):
 class ServiceCallError(AIClientError):
     """Raised when OpenAI service returns an error"""
 
-"""
-
 
 class OpenAIClient:
     """OpenAI API client with GPT-5 and Responses API support"""
@@ -50,8 +48,6 @@ class OpenAIClient:
         
         # Create httpx client with connection pooling and limits
         timeout = httpx.Timeout(
-
-
             timeout=self.total_timeout,
             connect=self.connect_timeout,
             read=self.read_timeout,
@@ -357,4 +353,3 @@ class AIClientFactory:
             return OpenAIClient()
         else:
             raise AIClientError(f"Unsupported AI provider: {provider}")
-

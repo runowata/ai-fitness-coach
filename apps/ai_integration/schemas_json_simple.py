@@ -1,5 +1,5 @@
-Простая и надежная JSON Schema для GPT-5 
-Только коды упражнений - все остальное собирается в коде
+# Простая и надежная JSON Schema для GPT-5 
+# Только коды упражнений - все остальное собирается в коде
 
 WORKOUT_PLAN_JSON_SCHEMA_SIMPLE = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
