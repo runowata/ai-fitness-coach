@@ -139,13 +139,13 @@ def complete_workout_view(request, workout_id):
         
         # Update user profile progress
         profile = request.user.profile
-        profile.workouts_completed = (profile.workouts_completed or 0) + 1
+        profile.total_workouts_completed = (profile.total_workouts_completed or 0) + 1
         profile.save()
-        
+
         return JsonResponse({
             'success': True,
             'message': 'Тренировка успешно завершена!',
-            'workouts_completed': profile.workouts_completed
+            'workouts_completed': profile.total_workouts_completed
         })
         
     except Exception as e:
