@@ -31,68 +31,49 @@ class ExerciseValidationService:
     @staticmethod
     def get_allowed_exercise_slugs(archetype: Optional[str] = None, locale: Optional[str] = None) -> Set[str]:
         """
-        Get set of exercise slugs that have complete video coverage
-        
-        Note: Exercise videos are archetype-agnostic (all users see same exercises).
-        Archetype is used only for motivational/speech videos, not exercises.
-        
+        Get set of exercise slugs that can be safely used in workout plans
+
+        Note: Videos in R2 are universal (warmup, main, endurance, cooldown types),
+        not linked to specific exercises. This method returns all active exercises
+        since video availability is determined by exercise type, not individual exercise.
+
         Args:
-            archetype: Ignored for exercises (kept for API compatibility)
-            locale: Filter by locale (default: all locales)
-        
+            archetype: Ignored (kept for API compatibility)
+            locale: Ignored (kept for API compatibility)
+
         Returns:
-            Set of exercise slugs that can be safely used in workout plans
+            Set of all active exercise IDs from CSVExercise
         """
-        # Build cache key (archetype doesn't affect exercise availability)
-        cache_key = 'allowed_exercise_slugs_v5_unified'
-        if locale:
-            cache_key += f'_loc_{locale}'
-        
+        # Build cache key
+        cache_key = 'allowed_exercise_slugs_v6_all_active'
+
         cached_slugs = cache.get(cache_key)
         if cached_slugs is not None:
             return cached_slugs
-            
+
         try:
             from apps.core.metrics import MetricNames, incr
+            from apps.workouts.models import CSVExercise
 
-            # Get all exercise videos regardless of archetype
-            # Exercises are universal - archetype affects only motivational videos
-            query = ExerciseValidationService.get_clips_with_video().filter(
-                r2_kind__in=ExerciseValidationService.REQUIRED_KINDS,
-            ).exclude(exercise__isnull=True)
-            
-            # Apply locale filter if specified (future: when locale field exists)
-            # if locale:
-            #     query = query.filter(locale=locale)
-            
-            # Find exercises that have all required video types with available content
-            slugs_with_coverage = (query
-                .values('exercise__id')
-                .annotate(
-                    kinds_count=Count(
-                        'r2_kind', 
-                        filter=Q(r2_kind__in=ExerciseValidationService.REQUIRED_KINDS),
-                        distinct=True
-                    )
-                )
-                .filter(kinds_count=len(ExerciseValidationService.REQUIRED_KINDS))
-                .values_list('exercise__id', flat=True)
+            # Return all active exercises - videos are universal by type
+            # not linked to individual exercises
+            slugs = set(
+                CSVExercise.objects.filter(is_active=True)
+                .values_list('id', flat=True)
             )
-            
-            slugs = set(slugs_with_coverage)
-            
+
             # Track metrics
             incr(MetricNames.AI_WHITELIST_COUNT, len(slugs))
-                
+
             # Cache results
             cache.set(cache_key, slugs, ExerciseValidationService.CACHE_TIMEOUT)
-            
-            logger.info(f"Found {len(slugs)} exercises with complete video coverage (archetype-agnostic)")
+
+            logger.info(f"Returning {len(slugs)} active exercises (videos are type-based, not exercise-specific)")
             return slugs
-            
+
         except Exception as e:
             logger.error(f"Error getting allowed exercise slugs: {e}")
-            # Return empty set on error - better safe than sorry
+            # Return empty set on error
             return set()
     
     @staticmethod
