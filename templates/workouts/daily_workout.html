@@ -39,22 +39,9 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
     
-    /* Video progress overlay */
+    /* Video progress overlay - HIDDEN to avoid blocking video */
     .video-progress-overlay {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(10px);
-        border-radius: 15px;
-        padding: 15px 20px;
-        color: white;
-        z-index: 5;
-        transition: all 0.3s ease;
-        opacity: 0;
-        transform: translateY(-20px);
-        pointer-events: none; /* Allow clicks to pass through */
+        display: none !important;
     }
     
     .video-progress-overlay.visible {
