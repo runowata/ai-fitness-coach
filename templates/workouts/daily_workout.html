@@ -278,6 +278,11 @@
         justify-content: center;
         z-index: 10;
         transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .start-workout-overlay.hidden {
+        display: none !important;
     }
     
     .start-workout-btn {
@@ -730,36 +735,58 @@ document.addEventListener('DOMContentLoaded', function() {
         rest: item.getAttribute('data-video-rest'),
         index: index
     }));
+
+    // Allow clicking anywhere on overlay to start workout
+    const startOverlay = document.getElementById('startWorkoutOverlay');
+    if (startOverlay) {
+        startOverlay.addEventListener('click', function(e) {
+            // Start workout when clicking on overlay (not just button)
+            startWorkout();
+        });
+    }
 });
 
 // Start workout function with enhanced features
 function startWorkout() {
+    console.log('startWorkout() called');
+
     const video = document.getElementById('mainVideo');
     const overlay = document.getElementById('startWorkoutOverlay');
     const progressOverlay = document.getElementById('videoProgressOverlay');
     const playlistControls = document.getElementById('playlistControls');
     const playlistItems = document.querySelectorAll('.playlist-item');
-    
+
+    if (!video || !overlay) {
+        console.error('Required elements not found');
+        return;
+    }
+
     workoutStarted = true;
-    
-    // Hide start overlay with animation
-    overlay.style.opacity = '0';
-    setTimeout(() => {
-        overlay.style.display = 'none';
-    }, 300);
-    
+
+    // Hide start overlay immediately with class
+    overlay.classList.add('hidden');
+
     // Show progress overlay
-    setTimeout(() => {
-        progressOverlay.classList.add('visible');
-    }, 500);
-    
+    if (progressOverlay) {
+        setTimeout(() => {
+            progressOverlay.classList.add('visible');
+        }, 300);
+    }
+
     // Show playlist controls
     if (playlistControls) {
         playlistControls.style.display = 'flex';
     }
-    
+
     // Start first video
-    video.play();
+    try {
+        video.play().catch(err => {
+            console.error('Error playing video:', err);
+        });
+    } catch (err) {
+        console.error('Exception playing video:', err);
+    }
+
     updateProgress();
     
     // Update playlist state
