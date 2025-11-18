@@ -34,11 +34,13 @@ def daily_workout_view(request, workout_id):
     
     # NEW SYSTEM: Use pre-generated playlist items from PlaylistGeneratorV2
     playlist_items = workout.playlist_items.all().order_by('order')
-    
+
+    logger.info(f"DEBUG: Workout {workout_id} has {playlist_items.count()} playlist items")
+
     # Convert playlist items to format expected by template
     video_playlist = []
     exercise_details = {}
-    
+
     if not playlist_items:
         # Fallback: Generate playlist if it doesn't exist
         try:
@@ -48,7 +50,7 @@ def daily_workout_view(request, workout_id):
         except Exception as e:
             logger.error(f"Failed to generate playlist for workout {workout_id}: {e}")
             playlist_items = []
-    
+
     # Convert DailyPlaylistItem objects to template format
     for item in playlist_items:
         try:
@@ -96,7 +98,9 @@ def daily_workout_view(request, workout_id):
         except Exception as e:
             logger.error(f"Error processing playlist item {item.id}: {e}")
             continue
-    
+
+    logger.info(f"DEBUG: Workout {workout_id} generated {len(video_playlist)} videos in playlist")
+
     # Check if workout is already started
     if not workout.started_at and not workout.is_rest_day:
         workout.started_at = timezone.now()
