@@ -42,7 +42,7 @@
     /* Video progress overlay */
     .video-progress-overlay {
         position: absolute;
-        bottom: 20px;
+        top: 20px;
         left: 20px;
         right: 20px;
         background: rgba(0, 0, 0, 0.7);
@@ -53,7 +53,8 @@
         z-index: 5;
         transition: all 0.3s ease;
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-20px);
+        pointer-events: none; /* Allow clicks to pass through */
     }
     
     .video-progress-overlay.visible {
