@@ -19,15 +19,7 @@ class ExerciseValidationService:
     
     REQUIRED_KINDS = REQUIRED_VIDEO_KINDS
     CACHE_TIMEOUT = 300  # 5 minutes
-    
-    @staticmethod
-    def get_clips_with_video():
-        """Get QuerySet of R2Videos that have available video content"""
-        from apps.workouts.models import R2Video
-        
-        # All R2Videos are available by definition (they exist in R2 storage)
-        return R2Video.objects.all()
-    
+
     @staticmethod
     def get_allowed_exercise_slugs(archetype: Optional[str] = None, locale: Optional[str] = None) -> Set[str]:
         """
@@ -80,90 +72,52 @@ class ExerciseValidationService:
     @staticmethod
     def get_coverage_report() -> Dict[str, any]:
         """
-        Generate detailed coverage report for all exercises
-        
+        Generate simplified coverage report for all exercises
+
+        Note: In current architecture, videos in R2 are type-based (warmup/main/endurance),
+        not linked to individual exercises. This report shows basic exercise counts.
+
         Returns:
             Dict with coverage statistics and details
         """
         try:
-            from apps.workouts.models import CSVExercise
+            from apps.workouts.models import CSVExercise, R2Video
 
-            # Use Django ORM instead of raw SQL for better database compatibility
+            # Count exercises by type
+            exercises = list(CSVExercise.objects.all())
             exercises_data = []
-            stats = {'complete': 0, 'partial': 0, 'none': 0}
-            
-            for exercise in CSVExercise.objects.all():
-                # Get available video kinds for this exercise using provider-aware logic
-                available_clips = ExerciseValidationService.get_clips_with_video().filter(
-                    exercise=exercise,
-                    r2_kind__in=ExerciseValidationService.REQUIRED_KINDS
-                )
-                
-                kinds_covered = available_clips.values_list('r2_kind', flat=True).distinct().count()
-                available_kinds = list(available_clips.values_list('r2_kind', flat=True).distinct())
-                
-                if kinds_covered >= len(ExerciseValidationService.REQUIRED_KINDS):
-                    status = 'complete'
-                elif kinds_covered >= 1:
-                    status = 'partial'
-                else:
-                    status = 'none'
-                
+
+            for exercise in exercises:
+                # Determine exercise type from ID prefix
+                exercise_type = 'unknown'
+                if exercise.id.startswith('warmup_'):
+                    exercise_type = 'warmup'
+                elif exercise.id.startswith('main_'):
+                    exercise_type = 'main'
+                elif exercise.id.startswith('endurance_'):
+                    exercise_type = 'endurance'
+                elif exercise.id.startswith('relaxation_'):
+                    exercise_type = 'cooldown'
+
                 exercises_data.append({
                     'slug': exercise.id,
                     'name': exercise.name_ru,
-                    'kinds_covered': kinds_covered,
-                    'available_kinds': ','.join(available_kinds),
-                    'status': status
+                    'type': exercise_type,
+                    'status': 'available'  # Simplified: all exercises available
                 })
-                stats[status] += 1
-                
-            # Sort exercises by coverage
-            exercises_data.sort(key=lambda x: (-x['kinds_covered'], x['name']))
-            
-            # Add required kinds info
-            from apps.workouts.constants import REQUIRED_VIDEO_KINDS
-            required_kinds = [k.value if hasattr(k, 'value') else str(k) for k in REQUIRED_VIDEO_KINDS]
-            
-            # Add by_archetype breakdown
-            by_archetype = {}
-            for archetype in ['mentor', 'peer', 'professional']:
-                # Get clips for this archetype only
-                archetype_clips = ExerciseValidationService.get_clips_with_video().filter(
-                    archetype=archetype,
-                    r2_kind__in=ExerciseValidationService.REQUIRED_KINDS
-                )
-                
-                # Count exercises that have ALL required kinds for this archetype
-                exercise_coverage = {}
-                for clip in archetype_clips:
-                    if clip.exercise_id not in exercise_coverage:
-                        exercise_coverage[clip.exercise_id] = set()
-                    exercise_coverage[clip.exercise_id].add(clip.r2_kind)
-                
-                # Count complete exercises (have all required kinds)
-                required_kinds_set = set(k.value if hasattr(k, 'value') else str(k) for k in REQUIRED_VIDEO_KINDS)
-                complete_exercises = sum(1 for kinds in exercise_coverage.values() 
-                                       if required_kinds_set.issubset(kinds))
-                
-                total_exercises = len(exercise_coverage)
-                coverage_pct = round(complete_exercises / total_exercises * 100, 1) if total_exercises else 0
-                
-                by_archetype[archetype] = {
-                    'total': total_exercises,
-                    'complete': complete_exercises,
-                    'coverage_percentage': coverage_pct
-                }
-                
+
+            # Count R2 videos by category
+            video_counts = {}
+            for category in ['exercises', 'motivation', 'final', 'progress', 'weekly']:
+                video_counts[category] = R2Video.objects.filter(category=category).count()
+
             return {
                 'total_exercises': len(exercises_data),
-                'statistics': stats,
-                'coverage_percentage': round(stats['complete'] / len(exercises_data) * 100, 1) if exercises_data else 0,
-                'required_kinds': required_kinds,
-                'by_archetype': by_archetype,
-                'exercises': exercises_data
+                'exercises': exercises_data,
+                'video_counts_by_category': video_counts,
+                'note': 'Simplified report: videos are type-based, not exercise-specific'
             }
-                
+
         except Exception as e:
             logger.error(f"Error generating coverage report: {e}")
             return {'error': str(e)}
@@ -171,90 +125,57 @@ class ExerciseValidationService:
     @staticmethod
     def find_exercise_alternatives(slug: str, required_equipment: List[str] = None) -> List[str]:
         """
-        Find alternative exercises for a given slug based on muscle groups and equipment
-        
+        Find alternative exercises for a given slug
+
+        Simplified version: CSVExercise has only id, name_ru, description fields.
+        Returns random alternatives from same exercise type (warmup/main/endurance).
+
         Args:
             slug: Exercise slug to find alternatives for
-            required_equipment: List of available equipment
-            
+            required_equipment: List of available equipment (currently unused)
+
         Returns:
-            List of alternative exercise slugs with complete coverage
+            List of alternative exercise slugs (up to 5)
         """
         try:
             allowed_slugs = ExerciseValidationService.get_allowed_exercise_slugs()
-            
+
             # Don't suggest the same exercise
             if slug in allowed_slugs:
                 allowed_slugs.remove(slug)
-            
-            # Get exercise details for filtering
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT ai_tags, level
-                    FROM csv_exercises 
-                    WHERE id = %s AND is_active = TRUE
-                """, [slug])
-                
-                result = cursor.fetchone()
-                if not result:
-                    return []
-                
-                original_muscle_groups, original_difficulty = result
-                
-                # Ensure muscle_groups is a valid list for PostgreSQL
-                if original_muscle_groups is None or not original_muscle_groups:
-                    muscle_groups_list = []
-                elif isinstance(original_muscle_groups, str):
-                    try:
-                        import json
-                        muscle_groups_list = json.loads(original_muscle_groups)
-                    except (json.JSONDecodeError, TypeError):
-                        muscle_groups_list = [original_muscle_groups]  # Single string
-                elif isinstance(original_muscle_groups, list):
-                    muscle_groups_list = original_muscle_groups
-                else:
-                    muscle_groups_list = []
-                
-                # Skip JSONb operator if no muscle groups to compare
-                if not muscle_groups_list:
-                    # Simpler query without muscle group matching
-                    cursor.execute("""
-                        SELECT e.id
-                        FROM csv_exercises e
-                        WHERE e.id = ANY(%s)
-                        AND e.is_active = TRUE
-                        AND e.level = %s
-                        ORDER BY e.id
-                        LIMIT 5
-                    """, [list(allowed_slugs), original_difficulty])
-                else:
-                    # Full query with muscle group matching
-                    cursor.execute("""
-                        SELECT e.id
-                        FROM csv_exercises e
-                        WHERE e.id = ANY(%s)
-                        AND e.is_active = TRUE
-                        AND (
-                            (e.ai_tags IS NOT NULL AND e.ai_tags::jsonb ?| %s)  -- Overlapping AI tags
-                            OR e.level = %s   -- Same difficulty
-                        )
-                        ORDER BY 
-                            CASE WHEN (e.ai_tags IS NOT NULL AND e.ai_tags::jsonb ?| %s) THEN 1 ELSE 2 END,  -- Prefer tag match
-                            CASE WHEN e.level = %s THEN 1 ELSE 2 END      -- Then level match
-                        LIMIT 5
-                    """, [
-                        list(allowed_slugs), 
-                        muscle_groups_list,
-                        original_difficulty,
-                        muscle_groups_list,
-                        original_difficulty
-                    ])
-                
-                alternatives = [row[0] for row in cursor.fetchall()]
-                
-                logger.debug(f"Found {len(alternatives)} alternatives for {slug}")
-                return alternatives
-                
+
+            if not allowed_slugs:
+                return []
+
+            # Determine exercise type from slug prefix
+            exercise_type = None
+            if slug.startswith('warmup_'):
+                exercise_type = 'warmup_'
+            elif slug.startswith('main_'):
+                exercise_type = 'main_'
+            elif slug.startswith('endurance_'):
+                exercise_type = 'endurance_'
+            elif slug.startswith('relaxation_'):
+                exercise_type = 'relaxation_'
+
+            # Filter alternatives by same type if possible
+            if exercise_type:
+                same_type_alternatives = [s for s in allowed_slugs if s.startswith(exercise_type)]
+                if same_type_alternatives:
+                    import random
+                    alternatives = random.sample(
+                        same_type_alternatives,
+                        min(5, len(same_type_alternatives))
+                    )
+                    logger.debug(f"Found {len(alternatives)} same-type alternatives for {slug}")
+                    return alternatives
+
+            # Fallback: return random alternatives
+            import random
+            alternatives = random.sample(list(allowed_slugs), min(5, len(allowed_slugs)))
+            logger.debug(f"Found {len(alternatives)} random alternatives for {slug}")
+            return alternatives
+
         except Exception as e:
             logger.error(f"Error finding alternatives for {slug}: {e}")
             return []
