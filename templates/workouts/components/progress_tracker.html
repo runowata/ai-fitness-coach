@@ -4,7 +4,7 @@
         <div class="progress-info">
             <h4 class="progress-title">Прогресс тренировки</h4>
             <div class="progress-stats">
-                <span class="current-exercise">Упражнение <span id="current-ex-num">1</span> из <span id="total-exercises">{{ workout.exercises|length }}</span></span>
+                <span class="current-exercise">Видео <span id="current-ex-num">1</span> из <span id="total-exercises">{{ video_playlist|length|default:0 }}</span></span>
                 <span class="time-info">
                     <i class="fas fa-clock me-1"></i>
                     <span id="workout-timer">00:00</span>
@@ -36,14 +36,13 @@
     
     <!-- Exercise List with Interactive Checkboxes -->
     <div class="exercise-checklist">
-        {% for exercise_data in workout.exercises %}
+        {% for video in video_playlist %}
         <div class="exercise-check-item" data-exercise-index="{{ forloop.counter0 }}">
             <div class="check-wrapper">
-                <input type="checkbox" 
-                       id="ex-{{ forloop.counter0 }}" 
+                <input type="checkbox"
+                       id="ex-{{ forloop.counter0 }}"
                        class="exercise-checkbox"
-                       data-exercise-slug="{{ exercise_data.exercise_slug }}"
-                       {% if exercise_data.completed %}checked{% endif %}>
+                       data-exercise-slug="{{ video.exercise_slug|default:'' }}">
                 <label for="ex-{{ forloop.counter0 }}" class="check-label">
                     <div class="check-icon">
                         <i class="fas fa-check"></i>
@@ -51,15 +50,15 @@
                 </label>
             </div>
             <div class="exercise-details">
-                <div class="exercise-name">{{ exercise_data.exercise_name|default:exercise_data.exercise_slug }}</div>
+                <div class="exercise-name">{{ video.exercise_name|default:video.title }}</div>
                 <div class="exercise-specs">
-                    {% if exercise_data.sets and exercise_data.reps %}
-                        {{ exercise_data.sets }} подходов × {{ exercise_data.reps }} повторений
-                    {% elif exercise_data.duration_seconds %}
-                        {{ exercise_data.duration_seconds }}сек
+                    {% if video.sets and video.reps %}
+                        {{ video.sets }} подходов × {{ video.reps }} повторений
+                    {% elif video.duration %}
+                        {{ video.duration }}
                     {% endif %}
-                    {% if exercise_data.rest_seconds %}
-                        • {{ exercise_data.rest_seconds }}сек отдых
+                    {% if video.rest %}
+                        • {{ video.rest }}сек отдых
                     {% endif %}
                 </div>
             </div>
@@ -89,17 +88,17 @@
 
     <!-- Quick Actions -->
     <div class="progress-actions">
-        <button class="btn btn-outline-primary" id="mark-current-complete">
-            <i class="fas fa-check-circle me-2"></i>
-            Отметить текущее как выполненное
+        <button class="btn btn-success" id="mark-current-complete">
+            <i class="fas fa-check me-2"></i>
+            Выполнено
         </button>
         <button class="btn btn-outline-secondary" id="skip-exercise">
             <i class="fas fa-forward me-2"></i>
-            Пропустить упражнение
+            Пропустить
         </button>
         <button class="btn btn-outline-success" id="get-motivation" style="display: none;">
             <i class="fas fa-bolt me-2"></i>
-            Получить мотивацию
+            Мотивация
         </button>
     </div>
 </div>

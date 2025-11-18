@@ -1408,15 +1408,8 @@ function closeFinalVideo() {
 }
 
 function completeWorkout() {
-    // Gather workout statistics
-    const workoutData = {
-        duration: document.getElementById('workout-timer')?.textContent || '00:00',
-        xpEarned: 50, // Base XP, can be calculated based on exercises
-        streak: 3 // This should come from backend
-    };
-    
-    // Show enhanced celebration modal
-    celebrationModal.show(workoutData);
+    // Show feedback modal
+    showFeedbackModal();
 }
 
 function showAIAnalysis(analysis) {
@@ -1487,4 +1480,39 @@ function closeAIAnalysis() {
     location.reload();
 }
 </script>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; background: rgba(255, 255, 255, 0.98);">
+            <div class="modal-header" style="border-bottom: 2px solid #4ecdc4; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title" id="feedbackModalLabel">
+                    <i class="fas fa-star me-2"></i>Как прошла тренировка?
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="mb-3">Оцените вашу тренировку:</p>
+                <div class="feedback-buttons d-flex justify-content-around mb-4">
+                    <button class="feedback-btn btn btn-outline-danger" onclick="submitFeedback(1)" style="border-radius: 15px; min-width: 80px;">
+                        <i class="fas fa-tired fa-2x mb-2"></i>
+                        <div>Сложно</div>
+                    </button>
+                    <button class="feedback-btn btn btn-outline-warning" onclick="submitFeedback(2)" style="border-radius: 15px; min-width: 80px;">
+                        <i class="fas fa-meh fa-2x mb-2"></i>
+                        <div>Нормально</div>
+                    </button>
+                    <button class="feedback-btn btn btn-outline-success" onclick="submitFeedback(3)" style="border-radius: 15px; min-width: 80px;">
+                        <i class="fas fa-smile fa-2x mb-2"></i>
+                        <div>Отлично</div>
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <label for="feedbackNote" class="form-label">Комментарий (необязательно):</label>
+                    <textarea class="form-control" id="feedbackNote" rows="3" placeholder="Как вы себя чувствуете? Есть ли замечания?" style="border-radius: 12px;"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

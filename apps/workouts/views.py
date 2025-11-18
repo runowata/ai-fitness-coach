@@ -66,34 +66,46 @@ def daily_workout_view(request, workout_id):
             video_entry = {
                 'url': signed_url,
                 'title': _get_video_title(item),
+                'exercise_name': _get_exercise_name(video.code) if item.role in ['warmup', 'main', 'cooldown'] else _get_video_title(item),
+                'exercise_slug': video.code,  # Add exercise_slug for linking to exercise_details
+                'type': item.role,  # Add type for exercise_info_panel
                 'role': item.role,
                 'duration': item.duration_seconds or 30,
                 'video_code': video.code,  # Get code from video object
                 'order': item.order,
                 # Exercise-specific data for exercises
                 'sets': _get_sets_from_role(item.role),
-                'reps': _get_reps_from_role(item.role), 
+                'reps': _get_reps_from_role(item.role),
                 'rest': _get_rest_from_role(item.role),
             }
             
             video_playlist.append(video_entry)
             
-            # Add exercise details for exercise videos
-            if item.role in ['warmup', 'main', 'cooldown']:
-                exercise_key = video.code
-                exercise_details[exercise_key] = {
-                    'id': exercise_key,
-                    'name_ru': _get_exercise_name(video.code),
-                    'name_en': '',
-                    'description': f'{item.role.title()} упражнение',
-                    'muscle_group': _get_muscle_group_from_code(video.code),
-                    'level': 'intermediate',
-                    'exercise_type': 'strength',
-                    'sets': _get_sets_from_role(item.role),
-                    'reps': _get_reps_from_role(item.role),
-                    'rest_seconds': _get_rest_from_role(item.role),
-                    'duration_seconds': item.duration_seconds or 30,
-                }
+            # Add exercise details for ALL videos (not just exercises)
+            exercise_key = video.code
+
+            # Try to get real exercise data from CSVExercise
+            exercise_obj = None
+            try:
+                from apps.workouts.models import CSVExercise
+                exercise_obj = CSVExercise.objects.filter(id=video.code).first()
+            except Exception as e:
+                logger.debug(f"No CSVExercise found for {video.code}: {e}")
+
+            # Build exercise details with real data when available
+            exercise_details[exercise_key] = {
+                'id': exercise_key,
+                'name_ru': exercise_obj.name_ru if exercise_obj else _get_exercise_name(video.code),
+                'name_en': '',
+                'description': exercise_obj.description if exercise_obj else f'Видео {item.role}',
+                'muscle_group': _get_muscle_group_from_code(video.code),
+                'level': 'intermediate',
+                'exercise_type': 'strength' if item.role == 'main' else item.role,
+                'sets': _get_sets_from_role(item.role),
+                'reps': _get_reps_from_role(item.role),
+                'rest_seconds': _get_rest_from_role(item.role),
+                'duration_seconds': item.duration_seconds or 30,
+            }
                 
         except Exception as e:
             logger.error(f"Error processing playlist item {item.id}: {e}")
