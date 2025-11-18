@@ -55,10 +55,11 @@ class ExerciseValidationService:
             from apps.core.metrics import MetricNames, incr
             from apps.workouts.models import CSVExercise
 
-            # Return all active exercises - videos are universal by type
-            # not linked to individual exercises
+            # Return all exercises - videos are universal by type, not linked to individual exercises
+            # Note: CSVExercise has no is_active field (only id, name_ru, description)
+            # All exercises in DB are available for use
             slugs = set(
-                CSVExercise.objects.filter(is_active=True)
+                CSVExercise.objects.all()
                 .values_list('id', flat=True)
             )
 
@@ -68,7 +69,7 @@ class ExerciseValidationService:
             # Cache results
             cache.set(cache_key, slugs, ExerciseValidationService.CACHE_TIMEOUT)
 
-            logger.info(f"Returning {len(slugs)} active exercises (videos are type-based, not exercise-specific)")
+            logger.info(f"Returning {len(slugs)} exercises from database (videos are type-based, not exercise-specific)")
             return slugs
 
         except Exception as e:
