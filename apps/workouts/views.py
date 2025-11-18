@@ -101,11 +101,14 @@ def daily_workout_view(request, workout_id):
 
     logger.info(f"DEBUG: Workout {workout_id} generated {len(video_playlist)} videos in playlist")
 
+    # Determine if this is really a rest day: only if marked as rest AND no playlist
+    is_actual_rest_day = workout.is_rest_day and len(video_playlist) == 0
+
     # Check if workout is already started
-    if not workout.started_at and not workout.is_rest_day:
+    if not workout.started_at and not is_actual_rest_day:
         workout.started_at = timezone.now()
         workout.save()
-    
+
     context = {
         'workout': workout,
         'video_playlist': video_playlist,
@@ -114,7 +117,9 @@ def daily_workout_view(request, workout_id):
         'exercise_details': exercise_details,
         'exercise_details_json': json.dumps(exercise_details),
         'is_completed': workout.completed_at is not None,
-        'can_substitute': False  # TODO: Implement substitutions for new system
+        'can_substitute': False,  # TODO: Implement substitutions for new system
+        # Override is_rest_day flag if workout has playlist
+        'is_rest_day': is_actual_rest_day,
     }
     
     return render(request, 'workouts/daily_workout.html', context)
